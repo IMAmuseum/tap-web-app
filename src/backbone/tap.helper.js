@@ -12,10 +12,6 @@ String.prototype.toCamel = function(){
 		.replace(/^(.)/, function($1) { return $1.toLowerCase(); });
 };
 
-String.prototype.trim = function(){
-	return this.replace(/^\s+|\s+$/g, "");
-};
-
 /*
  * Retrieve attribute based on language
  */
@@ -89,7 +85,7 @@ function xmlToJson(xml, namespace) {
 				var item = xml.childNodes.item(i),
 					key = item.nodeType === 3 ? 'value' : item.nodeName.replaceArray(namespace, '').toCamel(),
 					value = xmlToJson(item, namespace);
-				if($.trim(value).length != 0 && key != '#comment') { // ignore empty nodes and comments
+				if(value.length != 0 && key != '#comment') { // ignore empty nodes and comments
 					if (obj.hasOwnProperty(key)) {
 						if(item.nodeType === 3) { 
 							obj[key] += value; 
