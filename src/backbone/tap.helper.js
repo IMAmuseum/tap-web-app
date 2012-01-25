@@ -4,7 +4,7 @@ String.prototype.replaceArray = function(find, replace) {
 		replaceString = replaceString.replace(find[i], replace);
 	}
 	return replaceString;
-}
+};
 
 String.prototype.toCamel = function(){
     return this.replace(/\s(.)/g, function($1) { return $1.toUpperCase(); })
@@ -52,11 +52,12 @@ function objectToArray(obj) {
  * Convert xml to JSON
  */
 function xmlToJson(xml, namespace) {
-	var obj = true;
+	var obj = true,
+	    i = 0;
 	// retrieve namespaces
 	if(!namespace) {
-		var namespace = ['xml:'];
-		for(var i = 0; i < xml.documentElement.attributes.length; i++) {
+		namespace = ['xml:'];
+		for(i = 0; i < xml.documentElement.attributes.length; i++) {
 			if(xml.documentElement.attributes.item(i).nodeName.indexOf('xmlns') != -1) {
 				namespace.push(xml.documentElement.attributes.item(i).nodeName.replace('xmlns:', '') + ':');
 			}
@@ -68,9 +69,9 @@ function xmlToJson(xml, namespace) {
 		if (xml.nodeType === 1) { // element
 			// do attributes
 			if (xml.attributes.length > 0) {
-				var attribute,
-					obj = {};
-				for (var i = 0; i < xml.attributes.length; i++) {
+				var attribute;
+				obj = {};
+				for (i = 0; i < xml.attributes.length; i++) {
 					attribute = xml.attributes.item(i);
 					obj[attribute.nodeName.replaceArray(namespace, '').toCamel()] = attribute.nodeValue;
 				}
@@ -81,10 +82,10 @@ function xmlToJson(xml, namespace) {
 		if (xml.hasChildNodes()) {
 			var key, value, item;
 			if (obj === true) { obj = {}; }
-			for (var i = 0; i < xml.childNodes.length; i++) {
-				var item = xml.childNodes.item(i),
-					key = item.nodeType === 3 ? 'value' : item.nodeName.replaceArray(namespace, '').toCamel(),
-					value = xmlToJson(item, namespace);
+			for (i = 0; i < xml.childNodes.length; i++) {
+				item = xml.childNodes.item(i);
+				key = item.nodeType === 3 ? 'value' : item.nodeName.replaceArray(namespace, '').toCamel();
+				value = xmlToJson(item, namespace);
 				if(value.length != 0 && key != '#comment') { // ignore empty nodes and comments
 					if (obj.hasOwnProperty(key)) {
 						if(item.nodeType === 3) { 

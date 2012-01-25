@@ -12,6 +12,7 @@ var TapTourModel = Backbone.Model.extend({
 		}
 	}
 });
+
 // define tour collection
 var TapTourCollection = Backbone.Collection.extend({
 	model: TapTourModel,
@@ -50,6 +51,7 @@ var TapStopModel = Backbone.Model.extend({
 		}
 	}
 });
+
 // define stop collection
 var TapStopCollection = Backbone.Collection.extend({
 	model: TapStopModel,
@@ -84,6 +86,7 @@ var TapAssetModel = Backbone.Model.extend({
 		}
 	}
 });
+
 // define assett collection
 var TapAssetCollection = Backbone.Collection.extend({
 	model: TapAssetModel,

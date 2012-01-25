@@ -38,7 +38,8 @@ if (!tap) {
 		}
 		// trigger tap init end event
 		tap.trigger('tap.init.end');		
-	}
+	};
+    
 	/*
 	 * Initialize models with data
 	 */	
@@ -53,7 +54,7 @@ if (!tap) {
 			propertySet: objectToArray(data.propertySet.property),
 			publishDate: objectToArray(data.publishDate),
 			rootStopRef: objectToArray(data.rootStopRef),
-			title: objectToArray(data.title),
+			title: objectToArray(data.title)
 		});
 
 		// create new instance of StopCollection
@@ -101,5 +102,5 @@ if (!tap) {
 		// clear out the temporary models
 		stops.reset();
 		assets.reset();
-	}
+	};
 }
