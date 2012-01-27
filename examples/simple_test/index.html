@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>jQuery Mobile & Backbone.js Example</title>
+	<<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css" />>styl
+	<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js"></script>
+	<script src="js/underscore-min.js">
+	<script src="js/json2.js"></script>
+	<script src="js/backbone-min.js"></script>
+	<script src="js/backbone.localStorage-min.js"></script>
+	<script src="js/tap.helper.js"></script>
+	<script src="js/tap.models.js"></script>
+	<script src="js/tap.init.js"></script>
+	<script>
+		(function($){
+			// initialize jqm properties to allow backbone to handle routing
+			$.mobile.hashListeningEnabled = false;
+			$.mobile.linkBindingEnabled = false;
+            $.mobile.pushStateEnabled = false;		
+
+			$(document).ready(function() {
+				// specify url to tourML document
+				tap.url = 'TourMLTourSetInternal.xml';
+				// initialize app
+				tap.initApp();
+
+				// setup a simple view to handle listing all tours
+				window.TourListView = Backbone.View.extend({
+				    el: $('#tour-list'),
+				    initialize: function() {
+						$(this.el).empty();
+				        this.model.bind('reset', this.render);
+				    },
+				    render: function(event) {
+						// iterate through all of the tour models to setup new views
+				        _.each(this.model.models, function(tour) {
+							$(this.el).append(new TourListItemView({model: tour}).render().el);
+				        }, this);
+						$(this.el).listview('refresh'); // refresh listview since we generated the data dynamically
+				    }
+				});
+
+				// setup an individual view of a tour
+				window.TourListItemView = Backbone.View.extend({
+				    tagName: 'li',
+				    template: _.template($('#tour-list-item-tpl').html()),
+				    render: function() {
+						$(this.el).html(this.template({
+							title: this.model.get('title')[0].value,
+							id: this.model.get('id')
+						}));
+						return this;
+				    }
+				});
+				
+				// setup a detailed view of a tour
+				window.TourDetailedView = Backbone.View.extend({
+				   el: $('#tour-details').find(":jqmData(role='content')"),
+				    template: _.template($('#tour-details-tpl').html()),
+				    render: function() {
+						$(this.el).html(this.template({
+							publishDate: tap.tours.get(tap.currentTour).get('publishDate')[0].value,
+							description: tap.tours.get(tap.currentTour).get('description')[0].value,
+							stopCount: tap.tourStops.length,
+							assetCount: tap.tourAssets.length
+						}));
+						return this;
+				    }
+				});				
+
+				// declare router
+				var AppRouter = Backbone.Router.extend({
+					// define routes
+				    routes: {
+				        '': 'list',
+						'tour/:id': 'tourDetails'
+				    },
+					bookmarkMode:false,
+				    list: function() {
+						// have jqm change pages
+						$.mobile.changePage('#tours', {transition: 'slide', reverse: true, changeHash: false});
+						// setup list view of all the tours and render
+				        this.tourListView = new TourListView({model: tap.tours});
+						this.tourListView.render();
+
+				    },
+					tourDetails: function(id) {
+						// set the selected tour
+						tap.tours.selectTour(id);
+						// have jqm change pages
+						$.mobile.changePage('#tour-details', { transition: 'slide', reverse: false, changeHash: false});
+						// change the page title
+						$('#tour-details #page-title').html(tap.tours.get(tap.currentTour).get('title')[0].value);
+						// setup detailed view of tour and render
+						this.tourDetailedView = new TourDetailedView();
+						this.tourDetailedView.render();
+					}
+				});
+				// initialize router
+				var app = new AppRouter();
+				// start backbone history collection
+				Backbone.history.start();
+				
+				// override click event for back button
+				$('body').find(":jqmData(rel='back')").click(function(e) {
+					e.preventDefault();
+					window.history.back();
+				});
+			});		
+		}(jQuery));		
+	</script>	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+</head>
+<body>
+<!-- tour listing page -->
+<div data-role="page" id="tours">
+	<div data-role="header">
+		<h1 id="page-title">Tours</h1>
+	</div> 	
+	<div data-role="content">
+		<ul id="tour-list" class="ui-listview" data-inset="true" data-role="listview"></ul>
+	</div>
+</div>
+<!-- tour details page -->
+<div data-role="page" id="tour-details">
+	<div data-role="header">
+		<h1 id="page-title"></h1>
+		<a data-rel="back" data-icon="back">Back</a>
+	</div> 	
+	<div data-role="content">
+
+	</div>
+</div>
+</body>
+</html>
+<!-- templates -->
+<script type="text/template" id="tour-list-item-tpl">    
+  <a href="#tour/<%= id %>"><%= title %></a>
+</script>
+<script type="text/template" id="tour-details-tpl">
+	<div>
+		<label>Publish Date: </label>
+		<%= publishDate %>
+	</div>
+	<div>
+		<label>Description: </label>
+		<%= description %>
+	</div>
+	<div>
+		<label>Stop Count: </label>
+		<%= stopCount %>
+	</div>
+	<div>
+		<label>Asset Count: </label>
+		<%= assetCount %>
+	</div>
+</script>
