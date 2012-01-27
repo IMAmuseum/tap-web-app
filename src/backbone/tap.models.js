@@ -27,9 +27,9 @@ var TapTourCollection = Backbone.Collection.extend({
 		}
 
 		// create new instance of StopCollection
-		tap.tourStops = new StopCollection(null, id);
+		tap.tourStops = new TapStopCollection(null, id);
 		// create new instance of AssetCollection
-		tap.tourAssets = new AssetCollection(null, id);	
+		tap.tourAssets = new TapAssetCollection(null, id);	
 
 		// load data from local storage
 		tap.tourStops.fetch();
