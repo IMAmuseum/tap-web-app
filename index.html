@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>jQuery Mobile & Backbone.js Example</title>
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css" />
+	<link rel="stylesheet" href="css/tapweb.css" />
+
+	<!-- templates -->
+	<script type="text/template" id="tour-list-item-tpl">    
+		<a href="#tour/<%= id %>"><%= title %></a>
+	</script>
+	<script type="text/template" id="tour-details-tpl">
+		<form action="demo_form.asp">
+			<div>
+				<label>Publish Date: </label>
+				<%= publishDate %>
+			</div>
+			<div>
+				<label>Description: </label>
+				<%= description %>
+			</div>
+			<div>
+				<label>Stop Count: </label>
+				<%= stopCount %>
+			</div>
+			<div>
+				<label>Asset Count: </label>
+				<%= assetCount %>
+			</div>
+		</form>
+	</script>
+	<script type="text/template" id="tour-keypad-tpl">
+	</script>
+	<script type="text/template" id="tour-stop-tpl">
+		<form action="demo_form.asp">
+			<div>
+				<label>Publish Date: </label>
+				<%= publishDate %>
+			</div>
+			<div>
+				<label>Tour Stop ID: </label>
+				<%= tourStopId %>
+			</div>
+		</form>
+	</script>
+	<!-- /templates -->
+
+	<script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js"></script>
+	<script src="js/underscore-min.js">
+	<script src="js/json2.js"></script>
+	<script src="js/backbone-min.js"></script>
+	<script src="js/backbone.localStorage-min.js"></script>
+	<script src="js/tap.helper.js"></script>
+	<script src="js/tap.models.js"></script>
+	<script src="js/tap.init.js"></script>
+	<script src="js/keypad.js"></script>
+	<script src="js/tour.js"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+</head>
+<body>
+	<!-- tour listing page -->
+	<div data-role="page" id="tours">
+		<div data-role="header">
+			<h1 id="page-title">Tours</h1>
+		</div> 	
+		<div data-role="content">
+			<ul id="tour-list" class="ui-listview" data-inset="true" data-role="listview"></ul>
+		</div>
+	</div>
+	<!-- tour details page -->
+	<div data-role="page" id="tour-details">
+		<div data-role="header">
+			<h1 id="page-title"></h1>
+			<a data-rel="back" data-icon="back">Back</a>
+		</div> 	
+		<div data-role="content">
+
+		</div>
+		<div class="">
+			<a href="#tourkeypad/" id="start-tour-id" data-role="button" data-theme="a">Start Tour</a>
+		</div>
+	</div>
+	<!-- tour keypad page -->
+	<div data-role="page" id="tour-keypad">
+		<div data-role="header">
+			<h1 id="page-title">Keypad</h1>
+			<a data-rel="back" data-icon="back">Back</a>
+			<a data-rel="back" data-theme="b">Help</a>
+		</div> 	
+		<div data-role="content">
+
+		</div>
+		<div id="keypad">
+			<div class="ui-grid-b">
+				<div class="ui-block-a" style="width:66.4%;border:1px solid #666;background-color: #FFF;border-radius:.3em;-moz-border-radius:.3em;-webkit-border-radius:.3em;margin-top:.3em;"><div class="ui-bar" id="write"></div></div>
+				<div class="ui-block-b"><div class="ui-bar ui-bar-d">Go</div></div>
+				<div class="ui-block-a"><div class="ui-bar ui-bar-d"><keybtn>1</keybtn></div></div>
+				<div class="ui-block-b"><div class="ui-bar ui-bar-d"><keybtn>2</keybtn></div></div>
+				<div class="ui-block-c"><div class="ui-bar ui-bar-d"><keybtn>3</keybtn></div></div>
+				<div class="ui-block-a"><div class="ui-bar ui-bar-d"><keybtn>4</keybtn></div></div>
+				<div class="ui-block-b"><div class="ui-bar ui-bar-d"><keybtn>5</keybtn></div></div>
+				<div class="ui-block-c"><div class="ui-bar ui-bar-d"><keybtn>6</keybtn></div></div>
+				<div class="ui-block-a"><div class="ui-bar ui-bar-d"><keybtn>7</keybtn></div></div>
+				<div class="ui-block-b"><div class="ui-bar ui-bar-d"><keybtn>8</keybtn></div></div>
+				<div class="ui-block-c"><div class="ui-bar ui-bar-d"><keybtn>9</keybtn></div></div>
+				<div class="ui-block-a"><div class="ui-bar ui-bar-d"><keybtn>0</keybtn></div></div>
+				<div class="ui-block-b" style="width:66.55%;"><div class="ui-bar ui-bar-d"><keybtn class="delete">Del</keybtn></div></div>
+			</div>
+		</div>
+	</div>
+	<!-- tour stop page -->
+	<div data-role="page" id="tour-stop">
+		<div data-role="header">
+			<h1 id="page-title"></h1>
+			<a data-rel="back" data-icon="back">Back</a>
+		</div> 	
+		<div data-role="content">
+
+		</div>
+	</div>
+</body>
+</html>

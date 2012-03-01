@@ -17,7 +17,7 @@
 			// initialize jqm properties to allow backbone to handle routing
 			$.mobile.hashListeningEnabled = false;
 			$.mobile.linkBindingEnabled = false;
-            $.mobile.pushStateEnabled = false;		
+            		$.mobile.pushStateEnabled = false;		
 
 			$(document).ready(function() {
 				// specify url to tourML document
@@ -81,7 +81,7 @@
 						// have jqm change pages
 						$.mobile.changePage('#tours', {transition: 'slide', reverse: true, changeHash: false});
 						// setup list view of all the tours and render
-				        this.tourListView = new TourListView({model: tap.tours});
+				        	this.tourListView = new TourListView({model: tap.tours});
 						this.tourListView.render();
 
 				    },
@@ -136,7 +136,7 @@
 </html>
 <!-- templates -->
 <script type="text/template" id="tour-list-item-tpl">    
-  <a href="#tour/<%= id %>"><%= title %></a>
+	<a href="#tour/<%= id %>"><%= title %></a>
 </script>
 <script type="text/template" id="tour-details-tpl">
 	<div>

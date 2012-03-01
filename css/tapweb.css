@@ -1,0 +1,24 @@
+#keypad { 
+	margin: .5em;
+}
+#keypad keybtn { 
+	display: block; 
+	width: 100%; 
+	cursor: pointer; 
+	text-decoration:none;
+}
+.ui-bar {
+	padding:.4em;
+	margin: .3em;
+	text-align:center;
+	font-weight:bold;
+	cursor: pointer; 
+	font-family: arial, helvetica, sans-serif;
+	font-size:1em;
+	border-radius: .3em;
+	-moz-border-radius: 3.em;
+	-webkit-border-radius: 3.em;
+}
+.ui-block-a, .ui-block-b, .ui-block-c, .ui-block-d, .ui-block-e {
+	min-height:1.93em;
+}
