@@ -63,11 +63,6 @@
 				'click keybtn' : 'writekeycode',
 				'click .delete' : 'deletekeycode',
 			    },
-		    render: function() {
-				$(this.el).html(this.template({
-				}));
-				return this;
-		    },
 		    submit: function() {
 				$keycode = $('#write').html();
 				$id = this.options;
@@ -81,14 +76,18 @@
 				$character = $btnvalue.html();
 				// Add the character
 				$write.html($write.html() + $character);
-				return this;
+				return false;
 			},
 		    deletekeycode: function(e) {
 				var $write = $('#write');
 				$write.html("");
 				return false;
 			},
-
+		    render: function() {
+				$(this.el).html(this.template({
+				}));
+				return this;
+		    },
 		});				
 
 		// setup a tour stop view

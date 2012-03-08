@@ -103,10 +103,10 @@
 
 		<!-- Example of a stop group.  Refer to the Connections for this stop. -->
 		<tourml:Stop tourml:id="stop-1" tourml:view="StopGroup"> <!-- All stops require an id used for Ref -->
-			<tourml:Title xml:lang="en">Ankhaman's remains</tourml:Title>
-			<tourml:Title xml:lang="es">remainos Ankhaman's</tourml:Title>
-			<tourml:Description xml:lang="en">Ankhaman's remains</tourml:Description>
-			<tourml:Description xml:lang="es">remainos Ankhaman's</tourml:Description>
+			<tourml:Title xml:lang="en">Tour 1 - Ankhaman's remains</tourml:Title>
+			<tourml:Title xml:lang="es">Tour 1 - remainos Ankhaman's</tourml:Title>
+			<tourml:Description xml:lang="en">Tour 1 - Ankhaman's remains</tourml:Description>
+			<tourml:Description xml:lang="es">Tour 1 - remainos Ankhaman's</tourml:Description>
 			<tourml:PropertySet>
 				<tourml:Property tourml:name="code">100</tourml:Property>
 			</tourml:PropertySet>
@@ -114,7 +114,7 @@
 
 		<!-- Example of a stop for viewing an image -->
 		<tourml:Stop tourml:id="stop-2" tourml:view="ImageStop">
-			<tourml:Title xml:lang="en">CT imagery of the mummy</tourml:Title>
+			<tourml:Title xml:lang="en">Tour 1 - CT imagery of the mummy</tourml:Title>
 			<tourml:AssetRef tourml:id="img-1" tourml:usage="primary" /> <!-- Ref to the main image for this stop -->
 			<tourml:AssetRef tourml:id="icon-1" tourml:usage="icon" /> <!-- Ref to a interface icon for the image stop -->
 			<tourml:AssetRef tourml:id="caption-1" tourml:usage="caption" /> <!-- A caption to display with the image -->
@@ -125,7 +125,7 @@
 
 		<!-- Example of a video stop that autoplays -->
 		<tourml:Stop tourml:id="stop-3" tourml:view="VideoStop">
-			<tourml:Title>How do you give a mummy a CT scan?</tourml:Title>
+			<tourml:Title>Tour 1 - How do you give a mummy a CT scan?</tourml:Title>
 			<tourml:AssetRef tourml:id="vid-1" tourml:usage="primary" />
 			<tourml:PropertySet>
 				<!-- no code means this stop is not directly accessible in the TAP keypad interface -->
@@ -135,7 +135,7 @@
 
 		<!-- Example of an audio stop -->
 		<tourml:Stop tourml:id="stop-4" tourml:view="AudioStop">
-			<tourml:Title>Dr. Abbot's observations</tourml:Title>
+			<tourml:Title>Tour 1 - Dr. Abbot's observations</tourml:Title>
 			<tourml:AssetRef tourml:id="aud-1" tourml:usage="primary" />
 			<tourml:PropertySet>
 				<tourml:Property tourml:name="autoplay" xsd:type="boolean">true</tourml:Property>
@@ -144,7 +144,7 @@
 
 		<!-- Example of a web stop -->
 		<tourml:Stop tourml:id="stop-5">
-			<tourml:Title xml:lang="en">Learn about mummies on Wikipedia</tourml:Title>
+			<tourml:Title xml:lang="en">Tour 1 - Learn about mummies on Wikipedia</tourml:Title>
 			<tourml:AssetRef tourml:id="web-1" tourml:usage="primary"/>
 			<tourml:PropertySet>
 				<tourml:Property tourml:name="code">300</tourml:Property>
@@ -153,7 +153,7 @@
 
 		<!-- Example of an object stop -->
 		<tourml:Stop tourml:id="stop-6">
-			<tourml:Title xml:lang="en">Explore the object you are standing by</tourml:Title>
+			<tourml:Title xml:lang="en">Tour 1 - Explore the object you are standing by</tourml:Title>
 			<tourml:AssetRef tourml:id="obj-1" />
 			<tourml:PropertySet>
 				<tourml:Property tourml:name="code">400</tourml:Property>
@@ -162,7 +162,7 @@
 
 		<!-- Example of geolocation information in a stop -->
 		<tourml:Stop tourml:id="stop-7">
-			<tourml:Title xml:lang="en">See where this mummy was discovered</tourml:Title>
+			<tourml:Title xml:lang="en">Tour 1 - See where this mummy was discovered</tourml:Title>
 			<tourml:AssetRef tourml:id="geo-1" />
 		</tourml:Stop>
 
@@ -269,10 +269,10 @@
 
 		<!-- Example of a stop group.  Refer to the Connections for this stop. -->
 		<tourml:Stop tourml:id="stop-1" tourml:view="StopGroup"> <!-- All stops require an id used for Ref -->
-			<tourml:Title xml:lang="en">Ankhaman's remains</tourml:Title>
-			<tourml:Title xml:lang="es">remainos Ankhaman's</tourml:Title>
-			<tourml:Description xml:lang="en">Ankhaman's remains</tourml:Description>
-			<tourml:Description xml:lang="es">remainos Ankhaman's</tourml:Description>
+			<tourml:Title xml:lang="en">Tour 2 - Ankhaman's remains</tourml:Title>
+			<tourml:Title xml:lang="es">Tour 2 - remainos Ankhaman's</tourml:Title>
+			<tourml:Description xml:lang="en">Tour 2 - Ankhaman's remains</tourml:Description>
+			<tourml:Description xml:lang="es">Tour 2 - remainos Ankhaman's</tourml:Description>
 			<tourml:PropertySet>
 				<tourml:Property tourml:name="code">100</tourml:Property>
 			</tourml:PropertySet>
@@ -280,7 +280,7 @@
 
 		<!-- Example of a stop for viewing an image -->
 		<tourml:Stop tourml:id="stop-2" tourml:view="ImageStop">
-			<tourml:Title xml:lang="en">CT imagery of the mummy</tourml:Title>
+			<tourml:Title xml:lang="en">Tour 2 - CT imagery of the mummy</tourml:Title>
 			<tourml:AssetRef tourml:id="img-1" tourml:usage="primary" /> <!-- Ref to the main image for this stop -->
 			<tourml:AssetRef tourml:id="icon-1" tourml:usage="icon" /> <!-- Ref to a interface icon for the image stop -->
 			<tourml:AssetRef tourml:id="caption-1" tourml:usage="caption" /> <!-- A caption to display with the image -->
@@ -291,7 +291,7 @@
 
 		<!-- Example of a video stop that autoplays -->
 		<tourml:Stop tourml:id="stop-3" tourml:view="VideoStop">
-			<tourml:Title>How do you give a mummy a CT scan?</tourml:Title>
+			<tourml:Title>Tour 2 - How do you give a mummy a CT scan?</tourml:Title>
 			<tourml:AssetRef tourml:id="vid-1" tourml:usage="primary" />
 			<tourml:PropertySet>
 				<!-- no code means this stop is not directly accessible in the TAP keypad interface -->
@@ -301,7 +301,7 @@
 
 		<!-- Example of an audio stop -->
 		<tourml:Stop tourml:id="stop-4" tourml:view="AudioStop">
-			<tourml:Title>Dr. Abbot's observations</tourml:Title>
+			<tourml:Title>Tour 2 - Dr. Abbot's observations</tourml:Title>
 			<tourml:AssetRef tourml:id="aud-1" tourml:usage="primary" />
 			<tourml:PropertySet>
 				<tourml:Property tourml:name="autoplay" xsd:type="boolean">true</tourml:Property>
@@ -310,7 +310,7 @@
 
 		<!-- Example of a web stop -->
 		<tourml:Stop tourml:id="stop-5">
-			<tourml:Title xml:lang="en">Learn about mummies on Wikipedia</tourml:Title>
+			<tourml:Title xml:lang="en">Tour 2 - Learn about mummies on Wikipedia</tourml:Title>
 			<tourml:AssetRef tourml:id="web-1" tourml:usage="primary"/>
 			<tourml:PropertySet>
 				<tourml:Property tourml:name="code">300</tourml:Property>
@@ -319,7 +319,7 @@
 
 		<!-- Example of an object stop -->
 		<tourml:Stop tourml:id="stop-6">
-			<tourml:Title xml:lang="en">Explore the object you are standing by</tourml:Title>
+			<tourml:Title xml:lang="en">Tour 2 - Explore the object you are standing by</tourml:Title>
 			<tourml:AssetRef tourml:id="obj-1" />
 			<tourml:PropertySet>
 				<tourml:Property tourml:name="code">400</tourml:Property>
@@ -328,7 +328,7 @@
 
 		<!-- Example of geolocation information in a stop -->
 		<tourml:Stop tourml:id="stop-7">
-			<tourml:Title xml:lang="en">See where this mummy was discovered</tourml:Title>
+			<tourml:Title xml:lang="en">Tour 2 - See where this mummy was discovered</tourml:Title>
 			<tourml:AssetRef tourml:id="geo-1" />
 		</tourml:Stop>
 
