@@ -64,7 +64,7 @@ var TapStopCollection = Backbone.Collection.extend({
 			if(this.models[i].get('propertySet')) {
 				for(var j = 0; j < this.models[i].get('propertySet').length; j++) {
 					if(this.models[i].get('propertySet')[j].name == 'code' &&
-						this.models[i].get('propertySet')[j].value == key) return this.models[i].id;
+						this.models[i].get('propertySet')[j].value == key) return this.models[i];
 				}
 			} 
 		}
