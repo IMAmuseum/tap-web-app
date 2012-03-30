@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Tour xmlns="http://www.imamuseum.org/TourML/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imamuseum.org/TourML/1.0">
+  <Title>Dyeing Elegance</Title>
+  <Description>The artist Kuboku Takaku (1908–1993) perfected the ancient Japanese technique of wax resist dying to create textile paintings on obi, kimono, and screens. His works merged Japanese subjects with cubist and modernist styles, and he was the only textile artist who effectively transitioned from the Fine Arts circles of the 1930s through 1960s into the world of high fashion for Japan’s elite. His daughter Hisako (born 1944) ) is now one of the last living artists who preserves the knowledge of this painstaking dying technique, and her obi and kimono continue to be among the most chic and sought-after throughout Japan.&#13;
+&#13;
+&#13;
+In this exhibition 71 obi, kimono, and other textile paintings of Kuboku and Hisako Takaku will be on display outside of Japan for the first time, drawn from museum and private collections. They range in date from 1928 until the present day and document the art historical developments of how western modernism combines with traditional Japanese philosophies, spirituality, and craft through the volatile changes of the twentieth century.&#13;
+&#13;
+&#13;
+Through these beautiful works of wearable and usable art, visitors will learn about one of Japan’s most astonishing textile crafts: the ancient wax resist dying technique, called roketsuzome. This unique dying method allows for the creation of delicately modulated and calligraphic brushwork, each created individually by hand. Furthermore, western audiences will become familiar with the elegant art of kimono dressing with a uniquely Japanese aesthetic adapted to the modern world.</Description>
+  <StopGroup id="44" code="001">
+    <Title>Kimono with butterflies, Kūboku Takaku (1908–1993)</Title>
+    <Param key="header-image-portrait" value="images/001.jpg"/>
+    <StopRef id="43"/>
+    <StopRef id="63"/>
+  </StopGroup>
+  <WebStop id="63">
+    <Title>Text of "Kimono with butterflies" by Kūboku Takaku (1908–1993)</Title>
+    <Source>pages/stop-63.html</Source>
+  </WebStop>
+  <AudioStop id="43">
+    <Title>"Kimono with butterflies" by Kūboku Takaku (1908–1993)</Title>
+    <Description>Curator Sonya Quintanilla</Description>
+    <Source>videos/STOP001.mp3</Source>
+  </AudioStop>
+  <AudioStop id="45">
+    <Title>"Village Boys Playing" by Kūboku Takaku (1908–1993)</Title>
+    <Description>Curator Sonya Quintanilla</Description>
+    <Source>videos/STOP002.mp3</Source>
+  </AudioStop>
+  <StopGroup id="46" code="002">
+    <Title>Village Boys Playing, Kūboku Takaku (1908–1993)</Title>
+    <Param key="header-image-portrait" value="images/002_0.jpg"/>
+    <StopRef id="45"/>
+    <StopRef id="64"/>
+  </StopGroup>
+  <AudioStop id="47">
+    <Title>"Great Melon" by Kūboku Takaku (1908–1993)</Title>
+    <Description>Curator Sonya Quintanilla</Description>
+    <Source>videos/STOP003.mp3</Source>
+  </AudioStop>
+  <StopGroup id="48" code="003">
+    <Title>Great Melon, Kūboku Takaku (1908–1993)</Title>
+    <Param key="header-image-portrait" value="images/003.jpg"/>
+    <StopRef id="47"/>
+    <StopRef id="65"/>
+  </StopGroup>
+  <AudioStop id="49">
+    <Title>"Obi with water current" by Kūboku Takaku (1908–1993)</Title>
+    <Description>Curator Sonya Quintanilla</Description>
+    <Source>videos/STOP004.mp3</Source>
+  </AudioStop>
+  <StopGroup id="50" code="004">
+    <Title>Obi with water current, Kūboku Takaku (1908–1993)</Title>
+    <Param key="header-image-portrait" value="images/004.jpg"/>
+    <StopRef id="49"/>
+    <StopRef id="66"/>
+  </StopGroup>
+  <AudioStop id="51">
+    <Title>"Obi with mountains and distant pines" by Kūboku Takaku (1908–1993)</Title>
+    <Description>Curator Sonya Quintanilla</Description>
+    <Source>videos/STOP005.mp3</Source>
+  </AudioStop>
+  <StopGroup id="52" code="005">
+    <Title>Obi with mountains and distant pines, Kūboku Takaku (1908–1993)</Title>
+    <Param key="header-image-portrait" value="images/005.jpg"/>
+    <StopRef id="51"/>
+    <StopRef id="67"/>
+  </StopGroup>
+  <AudioStop id="53">
+    <Title>"Obi with 'Zensen Cherry Trees'" by Hisako Takaku (b. 1944)</Title>
+    <Description>Curator Sonya Quintanilla</Description>
+    <Source>videos/STOP006.mp3</Source>
+  </AudioStop>
+  <StopGroup id="54" code="006">
+    <Title>Obi with "Zensen Cherry Trees", Hisako Takaku (b. 1944)</Title>
+    <Param key="header-image-portrait" value="images/006.jpg"/>
+    <StopRef id="53"/>
+    <StopRef id="68"/>
+  </StopGroup>
+  <AudioStop id="55">
+    <Title>"Kimono with cherry blossoms" by Hisako Takaku (b. 1944)</Title>
+    <Description>Curator Sonya Quintanilla</Description>
+    <Source>videos/STOP007.mp3</Source>
+  </AudioStop>
+  <StopGroup id="56" code="007">
+    <Title>Kimono with cherry blossoms, Hisako Takaku (b. 1944)</Title>
+    <Param key="header-image-portrait" value="images/007.jpg"/>
+    <StopRef id="55"/>
+    <StopRef id="69"/>
+  </StopGroup>
+  <AudioStop id="57">
+    <Title>"Obi with 'water current' design" by Hisako Takaku (b. 1944)</Title>
+    <Description>Curator Sonya Quintanilla</Description>
+    <Source>videos/STOP008.mp3</Source>
+  </AudioStop>
+  <StopGroup id="58" code="008">
+    <Title>Obi with “water current” design, Hisako Takaku (b. 1944)</Title>
+    <Param key="header-image-portrait" value="images/008_0.jpg"/>
+    <StopRef id="57"/>
+    <StopRef id="70"/>
+  </StopGroup>
+  <AudioStop id="59">
+    <Title>"Kimono with cluster amaryllis" by Hisako Takaku (b. 1944)</Title>
+    <Description>Curator Sonya Quintanilla</Description>
+    <Source>videos/STOP009.mp3</Source>
+  </AudioStop>
+  <StopGroup id="60" code="009">
+    <Title>Kimono with cluster amaryllis, Hisako Takaku (b. 1944)</Title>
+    <Param key="header-image-portrait" value="images/009.jpg"/>
+    <StopRef id="59"/>
+    <StopRef id="71"/>
+  </StopGroup>
+  <AudioStop id="61">
+    <Title>"Kimono with plum blossoms" by Hisako Takaku (b. 1944)</Title>
+    <Description>Curator Sonya Quintanilla</Description>
+    <Source>videos/STOP010.mp3</Source>
+  </AudioStop>
+  <StopGroup id="62" code="010">
+    <Title>Kimono with plum blossoms, Hisako Takaku (b. 1944)</Title>
+    <Param key="header-image-portrait" value="images/010.jpg"/>
+    <StopRef id="61"/>
+    <StopRef id="72"/>
+  </StopGroup>
+  <WebStop id="64">
+    <Title>Text of "Village Boys Playing" by Kūboku Takaku (1908–1993)</Title>
+    <Source>pages/stop-64.html</Source>
+  </WebStop>
+  <WebStop id="65">
+    <Title>Text of "Great Melon" by Kūboku Takaku (1908–1993)</Title>
+    <Source>pages/stop-65.html</Source>
+  </WebStop>
+  <WebStop id="66">
+    <Title>Text of "Obi with water current" by Kūboku Takaku (1908–1993)</Title>
+    <Source>pages/stop-66.html</Source>
+  </WebStop>
+  <WebStop id="67">
+    <Title>Text of "Obi with mountains and distant pines" by Kūboku Takaku (1908–1993)</Title>
+    <Source>pages/stop-67.html</Source>
+  </WebStop>
+  <WebStop id="68">
+    <Title>Text of "Obi with 'Zensen Cherry Trees'" by Hisako Takaku (b. 1944)</Title>
+    <Source>pages/stop-68.html</Source>
+  </WebStop>
+  <WebStop id="69">
+    <Title>Text of "Kimono with cherry blossoms" by Hisako Takaku (b. 1944)</Title>
+    <Source>pages/stop-69.html</Source>
+  </WebStop>
+  <WebStop id="70">
+    <Title>Text of "Obi with 'water current' design" by Hisako Takaku (b. 1944)</Title>
+    <Source>pages/stop-70.html</Source>
+  </WebStop>
+  <WebStop id="71">
+    <Title>Text of "Kimono with cluster amaryllis" by Hisako Takaku (b. 1944)</Title>
+    <Source>pages/stop-71.html</Source>
+  </WebStop>
+  <WebStop id="72">
+    <Title>Text of "Kimono with plum blossoms" by Hisako Takaku (b. 1944)</Title>
+    <Source>pages/stop-72.html</Source>
+  </WebStop>
+  <VideoStop id="73" code="41111">
+    <Title>Help Video</Title>
+    <Description>To use your TAP enabled tour, look for a 3 digit code number at a tour stop.  Enter that via the touchscreen key pad, and you will be presented with more information about your stop.  Use your finger to drag the list up and down.  Click on an icon to see more information, which may include video, audio, descriptive text or more.</Description>
+    <Source>videos/tap_IMA_help_vid.mp4</Source>
+  </VideoStop>
+  <WebStop id="74" code="411">
+    <Title>How to use your tour device</Title>
+    <Source>pages/stop-74.html</Source>
+  </WebStop>
+</Tour>

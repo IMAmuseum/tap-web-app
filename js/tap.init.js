@@ -17,8 +17,15 @@ if (!tap) {
 		tap.trigger('tap.init.start');
 		// create new instance of tour collection
 		tap.tours = new TapTourCollection;		
+		//localStorage.clear();
+		//if(tap.tours.localStorage){
+		//	$(this).remove;	
+			//alert("there is ttls");
+		//} 
+		//console.dir(tap.tours.localStorage);
 		// retrieve tours from local storage
 		tap.tours.fetch();
+		//console.dir(tap.tours.localStorage);
 		// populate local storage if this is a first run
 		if(!tap.tours.length) {
 			// load tourML

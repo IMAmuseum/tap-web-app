@@ -10,6 +10,14 @@
 		// initialize app
 		tap.initApp();
 
+		Backbone.View.prototype.close = function () {
+			if(document.getElementById('audioPlayer')) document.getElementById('audioPlayer').pause();
+			if(document.getElementById('videoPlayer')) document.getElementById('videoPlayer').pause();
+			this.undelegateEvents();
+			$(this).empty;
+			this.unbind();
+		};
+
 		// setup a simple view to handle listing all tours
 		window.TourListView = Backbone.View.extend({
 		    el: $('#tour-list'),
@@ -41,7 +49,7 @@
 		
 		// setup a detailed view of a tour
 		window.TourDetailedView = Backbone.View.extend({
-		   el: $('#tour-details').find(":jqmData(role='content')"),
+		    el: $('#tour-details').find(":jqmData(role='content')"),
 		    template: _.template($('#tour-details-tpl').html()),
 		    render: function() {
 				$(this.el).html(this.template({
@@ -51,7 +59,7 @@
 					assetCount: tap.tourAssets.length
 				}));
 				return this;
-		    }
+		    },
 		});				
 		
 		// setup a tour keypad view
@@ -61,7 +69,7 @@
 		    events: {
 				'click #gobtn' : 'submit',
 				'click keybtn' : 'writekeycode',
-				'click .delete' : 'deletekeycode',
+				'click .delete' : 'clearkeycode',
 			    },
 		    submit: function() {
 				$keycode = $('#write').html();
@@ -73,12 +81,12 @@
 		    writekeycode: function(e) {
 				var $write = $('#write');
 				var $btnvalue = $(e.currentTarget);
-				$character = $btnvalue.html();
+				var $character = $btnvalue.html();
 				// Add the character
 				$write.html($write.html() + $character);
 				return false;
 			},
-		    deletekeycode: function(e) {
+		    clearkeycode: function(e) {
 				var $write = $('#write');
 				$write.html("");
 				return false;
@@ -98,7 +106,6 @@
 				$(this.el).html(this.template({
 					tourStopTitle : $stop["attributes"]["title"][0].value,
 					tourStopDescription : $stop["attributes"]["description"][0].value,
-					tourStopCode : $stop["attributes"]["propertySet"][0].value,
 				}));
 				return this;
 		    }
@@ -109,9 +116,23 @@
 		    el: $('#tour-stop').find(":jqmData(role='content')"),
 		    template: _.template($('#tour-stop-image-tpl').html()),
 		    render: function() {
+				if($stop["attributes"]["assetRef"]){
+					$.each($stop["attributes"]["assetRef"], function() {
+						$assetItem = tap.tourAssets.models;
+						for(var i=0;i<$assetItem.length;i++) {
+							if(($assetItem[i].get('id') == this['id']) && (this['usage']=="primary")){
+								$imageUri = $assetItem[i].attributes.source[0].uri;
+							}
+							if(($assetItem[i].get('id') == this['id']) && (this['usage']=="icon")){
+								$iconUri = $assetItem[i].attributes.source[0].uri;
+							}
+						}
+					});
+				}
 				$(this.el).html(this.template({
+					tourImageUri : $imageUri,
+					tourIconUri : $iconUri,
 					tourStopTitle : $stop["attributes"]["title"][0].value,
-					tourStopCode : $stop["attributes"]["propertySet"][0].value,
 				}));
 				return this;
 		    }
@@ -122,9 +143,27 @@
 		    el: $('#tour-stop').find(":jqmData(role='content')"),
 		    template: _.template($('#tour-stop-video-tpl').html()),
 		    render: function() {
+				if($stop["attributes"]["assetRef"]){
+					$.each($stop["attributes"]["assetRef"], function() {
+						$assetItem = tap.tourAssets.models;
+						for(var i=0;i<$assetItem.length;i++) {
+							if($assetItem[i].get('id') == this['id']){
+								for(var j=0;j<$assetItem[i].attributes.source.length;j++){
+									if($assetItem[i].attributes.source[j].format == "video/mp4"){
+										$mp4VideoUri = $assetItem[i].attributes.source[j].uri;
+									}
+									if($assetItem[i].attributes.source[j].format == "video/ogg"){
+										$oggVideoUri = $assetItem[i].attributes.source[j].uri;
+									}
+								}
+							}
+						}
+					});
+				}
 				$(this.el).html(this.template({
 					tourStopTitle : $stop["attributes"]["title"][0].value,
-					tourStopCode : $stop["attributes"]["propertySet"][0].value,
+					tourStopMp4Video : $mp4VideoUri,
+					tourStopOggVideo : $oggVideoUri,
 				}));
 				return this;
 		    }
@@ -135,9 +174,68 @@
 		    el: $('#tour-stop').find(":jqmData(role='content')"),
 		    template: _.template($('#tour-stop-audio-tpl').html()),
 		    render: function() {
+				if($stop["attributes"]["assetRef"]){
+					$.each($stop["attributes"]["assetRef"], function() {
+						$assetItem = tap.tourAssets.models;
+						for(var i=0;i<$assetItem.length;i++) {
+							if($assetItem[i].get('id') == this['id']){
+								for(var j=0;j<$assetItem[i].attributes.source.length;j++){
+									if($assetItem[i].attributes.source[j].format == "audio/mp3"){
+										$mp3AudioUri = $assetItem[i].attributes.source[j].uri;
+									}
+									if($assetItem[i].attributes.source[j].format == "audio/ogg"){
+										$oggAudioUri = $assetItem[i].attributes.source[j].uri;
+									}
+									if($assetItem[i].attributes.source[j].format == "audio/wav"){
+										$wavAudioUri = $assetItem[i].attributes.source[j].uri;
+									}
+								}
+							}
+						}
+					});
+				}
+				$(this.el).html(this.template({
+					tourStopMp3Audio : $mp3AudioUri,
+					tourStopOggAudio : $oggAudioUri,
+					tourStopWavAudio : $wavAudioUri,
+					tourStopTitle : $stop["attributes"]["title"][0].value,
+				}));
+				return this;
+		    }
+		});				
+
+
+		// setup a tour stop Web view
+		window.TourStopWebView = Backbone.View.extend({
+		    el: $('#tour-stop').find(":jqmData(role='content')"),
+		    template: _.template($('#tour-stop-web-tpl').html()),
+		    render: function() {
 				$(this.el).html(this.template({
 					tourStopTitle : $stop["attributes"]["title"][0].value,
-					tourStopCode : $stop["attributes"]["propertySet"][0].value,
+				}));
+				return this;
+		    }
+		});				
+
+		// setup a tour stop Object view
+		window.TourStopObjectView = Backbone.View.extend({
+		    el: $('#tour-stop').find(":jqmData(role='content')"),
+		    template: _.template($('#tour-stop-object-tpl').html()),
+		    render: function() {
+				$(this.el).html(this.template({
+					tourStopTitle : $stop["attributes"]["title"][0].value,
+				}));
+				return this;
+		    }
+		});				
+
+		// setup a tour stop Geo view
+		window.TourStopGeoView = Backbone.View.extend({
+		    el: $('#tour-stop').find(":jqmData(role='content')"),
+		    template: _.template($('#tour-stop-geo-tpl').html()),
+		    render: function() {
+				$(this.el).html(this.template({
+					tourStopTitle : $stop["attributes"]["title"][0].value,
 				}));
 				return this;
 		    }
@@ -145,77 +243,118 @@
 
 		// declare router
 		var AppRouter = Backbone.Router.extend({
-		    // define routes
-		    routes: {
+			// define routes
+			routes: {
 				'': 'list',
 				'tour/:id': 'tourDetails',
 				'tourkeypad/:id': 'tourKeypad',
 				'tourstop/:id/:keycode': 'tourStop'
-		    },
+			},
 			bookmarkMode:false,
+			showView: function(selector, view) {
+			    if (tap.currentView){
+				tap.currentView.close();
+			    }
+			    $(selector).html(view.render().el);
+			    tap.currentView = view;
+			    return view;
+			},
 		    	list: function() {
 				// have jqm change pages
-				$.mobile.changePage('#tours', {transition: 'none', reverse: true, changeHash: false});
+				$.mobile.changePage('#tours', {transition: 'slide', reverse: true, changeHash: false});
 				// setup list view of all the tours and render
 				this.tourListView = new TourListView({model: tap.tours});
+				tap.currentView = this.tourListView;
+            			//this.tourListView.showView('#content', this.tourListView);
 				this.tourListView.render();
 
-		    },
+			},
 			tourDetails: function(id) {
 				// set the selected tour
 				tap.tours.selectTour(id);
 				// have jqm change pages
-				$.mobile.changePage('#tour-details', { transition: 'none', reverse: false, changeHash: false});
+				$.mobile.changePage('#tour-details', { transition: 'slide', reverse: false, changeHash: false});
 				// change the page title
 				$('#tour-details #page-title').html(tap.tours.get(tap.currentTour).get('title')[0].value);
 				// attach the tour id to the get started button 
 				$('#tour-details #start-tour-id').attr("href", "#tourkeypad/"+id);
 				// setup detailed view of tour and render
 				this.tourDetailedView = new TourDetailedView();
-				this.tourDetailedView.render();
-		    },
+            			app.showView('#content', this.tourDetailedView);
+				//this.tourDetailedView.render();
+			},
 			tourKeypad: function(id) {
 				// set the selected tour
 				tap.tours.selectTour(id);
 				// have jqm change pages
-				$.mobile.changePage('#tour-keypad', { transition: 'none', reverse: false, changeHash: false});
+				$.mobile.changePage('#tour-keypad', { transition: 'slide', reverse: false, changeHash: false});
 				// change the page title
 				$('#tour-details #page-title').html(tap.tours.get(tap.currentTour).get('title')[0].value);
 				// setup detailed view of keypad and render
 				this.tourKeypadView = new TourKeypadView(id);
-				this.tourKeypadView.render();
-		    },
+            			app.showView('#content', this.tourKeypadView);
+				//this.tourKeypadView.render();
+		    	},
 			tourStop: function(id, keycode) {
+				if(tap.tourStops.getStopByKeycode(keycode)){
+					$stop = tap.tourStops.getStopByKeycode(keycode);
+					if($stop["attributes"]["view"]){
+						$stopView = $stop["attributes"]["view"];
+					}else{
+						alert("There is no stopView for this number.");
+						var $write = $('#write');
+						$write.html("");
+						return;
+					}
+				}else{
+					//can we move this validation into the keypad itself?
+					alert("There is no stop for this code.");
+					var $write = $('#write');
+					$write.html("");
+					return;
+				}
 				// set the selected tour
 				tap.tours.selectTour(id);
 				// have jqm change pages
-				$.mobile.changePage('#tour-stop', { transition: 'none', reverse: false, changeHash: false});
+				$.mobile.changePage('#tour-stop', { transition: 'slide', reverse: false, changeHash: false});
 				// change the page title
 				$('#tour-stop #page-title').html(tap.tours.get(tap.currentTour).get('title')[0].value);
 				// setup detailed view of tour and render
-				$stop = tap.tourStops.getStopByKeycode(keycode);
 				switch($stop["attributes"]["view"]) {  // Set appropriate tour stop view type 
 					case 'StopGroup':
-						this.tourStopView = new TourStopView(keycode);
+						this.tourStopView = new TourStopView();
+            					app.showView('#content', this.tourStopView);
 						return;
 					case 'ImageStop':
-						this.tourStopView = new TourStopImageView(keycode);
-						this.tourStopView.render();
+						this.tourStopImageView = new TourStopImageView();
+            					app.showView('#content', this.tourStopImageView);
 						return;
 					case 'VideoStop':
-						this.tourStopView = new TourStopVideoView(keycode);
-						this.tourStopView.render();
+						this.tourStopVideoView = new TourStopVideoView();
+            					app.showView('#content', this.tourStopVideoView);
 						return;
 					case 'AudioStop':
-						this.tourStopView = new TourStopAudioView(keycode);
-						this.tourStopView.render();
+						this.tourStopAudioView = new TourStopAudioView();
+            					app.showView('#content', this.tourStopAudioView);
+						return;
+					case 'WebStop':
+						this.tourStopWebView = new TourStopWebView();
+            					app.showView('#content', this.tourStopWebView);
+						return;
+					case 'ObjectStop':
+						this.tourStopObjectView = new TourStopObjectView();
+            					app.showView('#content', this.tourStopObjectView);
+						return;
+					case 'GeoStop':
+						this.tourStopGeoView = new TourStopGeoView();
+            					app.showView('#content', this.tourStopGeoView);
 						return;
 					default:
-						this.tourStopView = new TourStopView(keycode);
-						this.tourStopView.render();
+						this.tourStopView = new TourStopView();
+            					app.showView('#content', this.tourStopView);
 						return;
 				}
-		    }
+		    	},
 		});
 		// initialize router
 		var app = new AppRouter();
@@ -227,9 +366,6 @@
 			e.preventDefault();
 			window.history.back();
 		});
-
-
-
 
 	});		
 }(jQuery));		

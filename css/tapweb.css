@@ -1,5 +1,5 @@
 #keypad { 
-	margin: .5em;
+	margin: .1em;
 }
 #keypad keybtn { 
 	display: block; 
@@ -14,16 +14,32 @@
 }
 .ui-bar {
 	padding:.4em;
-	margin: .3em;
+	margin: .1em;
 	text-align:center;
 	font-weight:bold;
 	cursor: pointer; 
 	font-family: arial, helvetica, sans-serif;
-	font-size:1em;
+	font-size:2em;
 	border-radius: .3em;
-	-moz-border-radius: 3em;
-	-webkit-border-radius: 3em;
+	-moz-border-radius: .3em;
+	-webkit-border-radius: .3em;
+}
+.ui-bar:active {
+	background:#33CCFF;
 }
 .ui-block-a, .ui-block-b, .ui-block-c, .ui-block-d, .ui-block-e {
 	min-height:1.93em;
+}
+.ui-content stoptitle {
+	color:#666;
+	font-weight:bold;
+}
+.ui-content stopdescription{
+	color:#666;
+}
+
+.primaryImg {
+	display:block;
+	margin-left: auto;
+   	margin-right: auto;
 }
