@@ -265,7 +265,6 @@
 				// setup list view of all the tours and render
 				this.tourListView = new TourListView({model: tap.tours});
 				tap.currentView = this.tourListView;
-            			//this.tourListView.showView('#content', this.tourListView);
 				this.tourListView.render();
 
 			},
@@ -281,7 +280,6 @@
 				// setup detailed view of tour and render
 				this.tourDetailedView = new TourDetailedView();
             			app.showView('#content', this.tourDetailedView);
-				//this.tourDetailedView.render();
 			},
 			tourKeypad: function(id) {
 				// set the selected tour
@@ -293,7 +291,6 @@
 				// setup detailed view of keypad and render
 				this.tourKeypadView = new TourKeypadView(id);
             			app.showView('#content', this.tourKeypadView);
-				//this.tourKeypadView.render();
 		    	},
 			tourStop: function(id, keycode) {
 				if(tap.tourStops.getStopByKeycode(keycode)){
@@ -304,6 +301,7 @@
 						alert("There is no stopView for this number.");
 						var $write = $('#write');
 						$write.html("");
+						window.history.back();
 						return;
 					}
 				}else{
@@ -311,6 +309,7 @@
 					alert("There is no stop for this code.");
 					var $write = $('#write');
 					$write.html("");
+					window.history.back();
 					return;
 				}
 				// set the selected tour
