@@ -54,14 +54,14 @@ if (!tap) {
 		// create new tour
 		tap.tours.create({
 			id: data.id,
-			appResource: objectToArray(data.appResource),
+			appResource: data.tourMetadata && data.tourMetadata.appResource ? objectToArray(data.tourMetadata.appResource) : undefined,
 			connection: objectToArray(data.connection),
-			description: objectToArray(data.description),
-			lastModified: data.lastModified,
-			propertySet: objectToArray(data.propertySet.property),
-			publishDate: objectToArray(data.publishDate),
-			rootStopRef: objectToArray(data.rootStopRef),
-			title: objectToArray(data.title)
+			description: data.tourMetadata && data.tourMetadata.description ? objectToArray(data.tourMetadata.description) : undefined,
+			lastModified: data.tourMetadata && data.tourMetadata.lastModified ? data.tourMetadata.lastModified : undefined,
+			propertySet: data.tourMetadata && data.tourMetadata.propertySet ? objectToArray(data.tourMetadata.property) : undefined,
+			publishDate: data.tourMetadata && data.tourMetadata.publishDate ? objectToArray(data.tourMetadata.publishDate) : undefined,
+			rootStopRef: data.tourMetadata && data.tourMetadata.rootStopRef ? objectToArray(data.tourMetadata.rootStopRef) : undefined,
+			title: data.tourMetadata && data.tourMetadata.title ? objectToArray(data.tourMetadata.title) : undefined
 		});
 
 		// create new instance of StopCollection
