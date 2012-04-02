@@ -2,7 +2,7 @@ if (!tap) {
 	var tap = {};
 	tap.tours = {};
 	tap.tourAssets = {};
-	tap.tourStops = {}; // initialize tour stop 
+	tap.tourStops = {}; // initialize tour stop
 	tap.language = 'en'; // set default language
 	tap.currentStop = ''; // id of the current stop
 	tap.currentTour = ''; // id of the current tour
@@ -16,7 +16,7 @@ if (!tap) {
 		// trigger tap init start event
 		tap.trigger('tap.init.start');
 		// create new instance of tour collection
-		tap.tours = new TapTourCollection;		
+		tap.tours = new TapTourCollection;
 		//localStorage.clear();
 		//if(tap.tours.localStorage){
 		//	$(this).remove;	
@@ -44,7 +44,7 @@ if (!tap) {
 			}
 		}
 		// trigger tap init end event
-		tap.trigger('tap.init.end');		
+		tap.trigger('tap.init.end');
 	};
     
 	/*
@@ -60,7 +60,7 @@ if (!tap) {
 			lastModified: data.tourMetadata && data.tourMetadata.lastModified ? data.tourMetadata.lastModified : undefined,
 			propertySet: data.tourMetadata && data.tourMetadata.propertySet ? objectToArray(data.tourMetadata.property) : undefined,
 			publishDate: data.tourMetadata && data.tourMetadata.publishDate ? objectToArray(data.tourMetadata.publishDate) : undefined,
-			rootStopRef: data.tourMetadata && data.tourMetadata.rootStopRef ? objectToArray(data.tourMetadata.rootStopRef) : undefined,
+			rootStopRef: data.tourMetadata && data.tourMetadata.rootStopRef ? data.tourMetadata.rootStopRef : undefined,
 			title: data.tourMetadata && data.tourMetadata.title ? objectToArray(data.tourMetadata.title) : undefined
 		});
 
@@ -82,7 +82,7 @@ if (!tap) {
 				propertySet: data.stop[i].propertySet ? objectToArray(data.stop[i].propertySet.property) : undefined,
 				assetRef: objectToArray(data.stop[i].assetRef),
 				title: objectToArray(data.stop[i].title)
-			});				
+			});
 		}
 
 		// create new instance of AssetCollection
@@ -104,7 +104,7 @@ if (!tap) {
 				id: data.asset[i].id,
 				source: objectToArray(data.asset[i].source),
 				propertySet: data.asset[i].propertySet ? objectToArray(data.asset[i].propertySet.property) : undefined
-			});			
+			});
 		}
 		// clear out the temporary models
 		stops.reset();

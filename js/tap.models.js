@@ -4,7 +4,7 @@ var TapTourModel = Backbone.Model.extend({
 		if(!this.attributes[attr]) return this.attributes[attr];
 		switch(attr) {  // retrieve attribute based on language
 			case 'propertySet':
-			case 'description':				
+			case 'description':
 			case 'title':
 				return getAttributeByLanguage(this.attributes[attr]);
 			default:
@@ -29,7 +29,7 @@ var TapTourCollection = Backbone.Collection.extend({
 		// create new instance of StopCollection
 		tap.tourStops = new TapStopCollection(null, id);
 		// create new instance of AssetCollection
-		tap.tourAssets = new TapAssetCollection(null, id);	
+		tap.tourAssets = new TapAssetCollection(null, id);
 
 		// load data from local storage
 		tap.tourStops.fetch();
@@ -40,10 +40,10 @@ var TapTourCollection = Backbone.Collection.extend({
 // define stop model
 var TapStopModel = Backbone.Model.extend({
 	get: function(attr) { // override get method
-		if(!this.attributes[attr]) return this.attributes[attr];			
+		if(!this.attributes[attr]) return this.attributes[attr];
 		switch(attr) {  // retrieve attribute based on language
 			case 'propertySet':
-			case 'description':				
+			case 'description':
 			case 'title':
 				return getAttributeByLanguage(this.attributes[attr]);
 			default:
@@ -66,7 +66,7 @@ var TapStopCollection = Backbone.Collection.extend({
 					if(this.models[i].get('propertySet')[j].name == 'code' &&
 						this.models[i].get('propertySet')[j].value == key) return this.models[i];
 				}
-			} 
+			}
 		}
 		return false;
 	}
@@ -77,7 +77,7 @@ var TapAssetModel = Backbone.Model.extend({
 	get: function(attr) { // override get method
 		if(!this.attributes[attr]) return this.attributes[attr];
 		switch(attr) { // retrieve attribute based on language
-			case 'propertySet':			
+			case 'propertySet':
 			case 'source':
 			case 'content':
 				return getAttributeByLanguage(objectToArray(this.attributes[attr]));
