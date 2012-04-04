@@ -5,6 +5,7 @@
 	<title>jQuery Mobile & Backbone.js Example</title>
 	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css" />
 	<link rel="stylesheet" href="css/tapweb.css" />
+	<link rel="stylesheet" href="css/photoswipe.css" />
 
 	<!-- templates -->
 	<script type="text/template" id="tour-list-item-tpl">    
@@ -15,23 +16,31 @@
 				<%= description %>
 			</div>
 	</script>
+	<script type="text/template" id="tour-gallery-tpl">
+	<ul id="Gallery">
+		<li><a href="assets/images/001.jpg"><img src="assets/images/icons/001.ico" alt="Image 01" /></a></li>
+		<li><a href="assets/images/002.jpg"><img src="assets/images/icons/002.ico" alt="Image 02" /></a></li>
+		<li><a href="assets/images/003.jpg"><img src="assets/images/icons/003.ico" alt="Image 03" /></a></li>
+		<li><a href="assets/images/004.jpg"><img src="assets/images/icons/004.ico" alt="Image 04" /></a></li>
+		<li><a href="assets/images/005.jpg"><img src="assets/images/icons/005.ico" alt="Image 05" /></a></li>
+		<li><a href="assets/images/006.jpg"><img src="assets/images/icons/006.ico" alt="Image 06" /></a></li>
+	</ul>
+	</script>
 	<script type="text/template" id="tour-keypad-tpl">
-		<div id="keypad">
-			<div class="ui-grid-b">
+		<fieldset class="ui-grid-b" id="keypad">
 				<div class="ui-block-a" style="width:66.4%;border:1px solid #666;background-color: #FFF;border-radius:.3em;-moz-border-radius:.3em;-webkit-border-radius:.3em;margin-top:.3em;height:60px;"><div class="ui-bar" id="write"></div></div>
-				<div class="ui-block-b" id="gobtn"><div class="ui-bar ui-bar-d">Go</div></div>
-				<div class="ui-block-a"><div class="ui-bar ui-bar-d" data-role="button"><keybtn>1</keybtn></div></div>
-				<a class="ui-block-b" data-role="button"><div class="ui-bar ui-bar-d"><keybtn>2</keybtn></div></a>
-				<div class="ui-block-c"><div class="ui-bar ui-bar-d"><keybtn>3</keybtn></div></div>
-				<div class="ui-block-a"><div class="ui-bar ui-bar-d"><keybtn>4</keybtn></div></div>
-				<div class="ui-block-b"><div class="ui-bar ui-bar-d"><keybtn>5</keybtn></div></div>
-				<div class="ui-block-c"><div class="ui-bar ui-bar-d"><keybtn>6</keybtn></div></div>
-				<div class="ui-block-a"><div class="ui-bar ui-bar-d"><keybtn>7</keybtn></div></div>
-				<div class="ui-block-b"><div class="ui-bar ui-bar-d"><keybtn>8</keybtn></div></div>
-				<div class="ui-block-c"><div class="ui-bar ui-bar-d"><keybtn>9</keybtn></div></div>
-				<div class="ui-block-a"><div class="ui-bar ui-bar-d"><keybtn>0</keybtn></div></div>
-				<div class="ui-block-b" style="width:66.55%;"><div class="ui-bar ui-bar-d"><keybtn class="delete">Clear</keybtn></div></div>
-			</div>
+				<div class="ui-block-b"><div class="ui-bar ui-bar-d" id="gobtn">Go</div></div>
+				<div class="ui-block-a"><button class="ui-bar ui-bar-d">1</button></div>
+				<div class="ui-block-b"><button class="ui-bar ui-bar-d">2</button></div>	 
+				<div class="ui-block-b"><button class="ui-bar ui-bar-d">3</button></div>  
+				<div class="ui-block-a"><button class="ui-bar ui-bar-d">4</button></div>
+				<div class="ui-block-b"><button class="ui-bar ui-bar-d">5</button></div>	 
+				<div class="ui-block-b"><button class="ui-bar ui-bar-d">6</button></div>  
+				<div class="ui-block-a"><button class="ui-bar ui-bar-d">7</button></div>
+				<div class="ui-block-b"><button class="ui-bar ui-bar-d">8</button></div>	 
+				<div class="ui-block-b"><button class="ui-bar ui-bar-d">9</button></div>  
+				<div class="ui-block-a"><button class="ui-bar ui-bar-d">0</button></div>
+				<div class="ui-block-b" style="width:66.55%;"><div class="ui-bar ui-bar-d" id="delete">Clear</div></div>
 		</div>
 	</script>
 	<script type="text/template" id="tour-stop-tpl">
@@ -41,8 +50,8 @@
 			</div>
 	</script>
 	<script type="text/template" id="tour-stop-image-tpl">
-			<div>
-				<img src="<%= tourImageUri %>" class="primaryImg"><br />
+			<div id="soloImage">
+				<a href="<%= tourImageUri %>"><img src="<%= tourImageUri %>" alt="Image 01" class="primaryImg" /></a><br />
 				<stoptitle><%= tourStopTitle %></stoptitle><br />
 			</div>
 	</script>
@@ -89,6 +98,8 @@
 	<script src="js/json2.js"></script>
 	<script src="js/backbone-min-0.9.1.js"></script>
 	<script src="js/backbone.localStorage-min.js"></script>
+	<script src="js/klass.min.js"></script>
+	<script src="js/photoswipe/code.photoswipe.jquery-3.0.4.js"></script>
 	<script src="js/tap.helper.js"></script>
 	<script src="js/tap.models.js"></script>
 	<script src="js/tap.init.js"></script>
@@ -122,7 +133,7 @@
 	<!-- tour keypad page -->
 	<div data-role="page" id="tour-keypad">
 		<div data-role="header">
-			<a data-rel="back">Tour Info</a>
+			<a data-rel="back" data-back="true">Tour Info</a>
 			<h1 id="page-title">Enter a Code</h1>
 			<a data-theme="b" href="assets/video/tap_IMA_help_vid.mp4">Help</a>
 		</div> 	

@@ -68,28 +68,18 @@
 		    template: _.template($('#tour-keypad-tpl').html()),
 		    events: {
 				'click #gobtn' : 'submit',
-				'click keybtn' : 'writekeycode',
-				'click .delete' : 'clearkeycode',
+				'click #keypad div button' : 'writekeycode',
+				'click #delete' : 'clearkeycode',
 			    },
 		    submit: function() {
-				$keycode = $('#write').html();
-				$id = this.options;
-				$destUrl = "#tourstop/"+$id+"/"+$keycode;
+				$destUrl = "#tourstop/"+this.options+"/"+$('#write').html();
 				Backbone.history.navigate($destUrl, true);
-				return false;
 		    },
 		    writekeycode: function(e) {
-				var $write = $('#write');
-				var $btnvalue = $(e.currentTarget);
-				var $character = $btnvalue.html();
-				// Add the character
-				$write.html($write.html() + $character);
-				return false;
+				$('#write').html($('#write').html() + $(e.currentTarget).html());
 			},
 		    clearkeycode: function(e) {
-				var $write = $('#write');
-				$write.html("");
-				return false;
+				$('#write').html("");
 			},
 		    render: function() {
 				$(this.el).html(this.template({
@@ -134,6 +124,35 @@
 					tourIconUri : $iconUri,
 					tourStopTitle : $stop["attributes"]["title"][0].value,
 				}));
+				var soloPhotoSwipe = $("#soloImage a").photoSwipe({ 
+					enableMouseWheel: false, 
+					enableKeyboard: true, 
+					doubleTapZoomLevel : 0,
+					captionAndToolbarOpacity : 0.8,
+					minUserZoom : 0.0,
+					preventSlideshow : true,
+					jQueryMobile : true,
+				});
+				return this;
+		    }
+		});				
+
+		// setup a tour stop Gallery view
+		window.TourStopGalleryView = Backbone.View.extend({
+		    el: $('#tour-stop').find(":jqmData(role='content')"),
+		    template: _.template($('#tour-gallery-tpl').html()),
+		    render: function() {
+				$(this.el).html(this.template({
+					tourStopTitle : $stop["attributes"]["title"][0].value,
+				}));
+				var myPhotoSwipe = $("#Gallery a").photoSwipe({ 
+					enableMouseWheel: false, 
+					enableKeyboard: true, 
+					doubleTapZoomLevel : 0,
+					captionAndToolbarOpacity : 0.8,
+					minUserZoom : 0,
+					jQueryMobile : true,
+				});
 				return this;
 		    }
 		});				
@@ -328,6 +347,10 @@
 						this.tourStopImageView = new TourStopImageView();
             					app.showView('#content', this.tourStopImageView);
 						return;
+					case 'GalleryStop':
+						this.tourStopGalleryView = new TourStopGalleryView();
+            					app.showView('#content', this.tourStopGalleryView);
+						return;
 					case 'VideoStop':
 						this.tourStopVideoView = new TourStopVideoView();
             					app.showView('#content', this.tourStopVideoView);
@@ -365,6 +388,7 @@
 			e.preventDefault();
 			window.history.back();
 		});
+
 
 	});		
 }(jQuery));		
