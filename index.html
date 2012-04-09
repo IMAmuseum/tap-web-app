@@ -31,7 +31,7 @@
 	</script>
 	<script type="text/template" id="tour-keypad-tpl">
 		<fieldset class="ui-grid-b" id="keypad">
-				<div class="ui-block-a" style="width:66.4%;border:1px solid #666;background-color: #FFF;border-radius:.3em;-moz-border-radius:.3em;-webkit-border-radius:.3em;margin-top:.3em;height:60px;"><div class="ui-bar" id="write"></div></div>
+				<div class="ui-block-a" id="writeStyle"><div class="ui-bar" id="write"></div></div>
 				<div class="ui-block-b"><div class="ui-bar ui-bar-d" id="gobtn">Go</div></div>
 				<div class="ui-block-a"><button class="ui-bar ui-bar-d">1</button></div>
 				<div class="ui-block-b"><button class="ui-bar ui-bar-d">2</button></div>	 
@@ -43,7 +43,7 @@
 				<div class="ui-block-b"><button class="ui-bar ui-bar-d">8</button></div>	 
 				<div class="ui-block-b"><button class="ui-bar ui-bar-d">9</button></div>  
 				<div class="ui-block-a"><button class="ui-bar ui-bar-d">0</button></div>
-				<div class="ui-block-b" style="width:66.55%;"><div class="ui-bar ui-bar-d" id="delete">Clear</div></div>
+				<div class="ui-block-b" id="clearStyle"><div class="ui-bar ui-bar-d" id="delete">Clear</div></div>
 		</div>
 	</script>
 	<script type="text/template" id="tour-stop-tpl">
@@ -69,13 +69,13 @@
 	</script>
 	<script type="text/template" id="tour-stop-audio-tpl">
 			<div>
-				<audio autoplay controls="controls" id="audioPlayer">
+				<%= tourStopTitle %><br /><br /><br />
+				<audio autoplay controls="controls" id="audioPlayer" style="width:100%">
 					<source src="<%= tourStopOggAudio %>" type="audio/ogg" />
 					<source src="<%= tourStopMp3Audio %>" type="audio/mp3" />
 					<source src="<%= tourStopWavAudio %>" type="audio/wav" />
 					Your browser does not support the audio element.
 				</audio>
-				<%= tourStopTitle %><br />
 			</div>
 	</script>
 	<script type="text/template" id="tour-stop-web-tpl">
@@ -127,7 +127,7 @@
 		</div> 	
 		<div class="">
 			<br /><br />
-			<a href="#tourkeypad/" id="start-tour-id" data-role="button" data-theme="a">Start Tour</a>
+			<a href="#tourkeypad/" id="start-tour-id" data-role="button" data-theme="b">Start Tour</a>
 		</div>
 		<div data-role="content">
 
@@ -136,7 +136,7 @@
 	<!-- tour keypad page -->
 	<div data-role="page" id="tour-keypad">
 		<div data-role="header">
-			<a data-rel="back" data-back="true">Tour Info</a>
+			<a data-rel="back">Tour Info</a>
 			<h1 id="page-title">Enter a Code</h1>
 			<a data-theme="b" href="assets/video/tap_IMA_help_vid.mp4">Help</a>
 		</div> 	
@@ -152,6 +152,17 @@
 		</div> 	
 		<div data-role="content">
 
+		</div>
+	</div>
+	<!-- Error: invalid tour stop code -->
+	<div data-role="dialog" id="error_invalidCode">
+			<div data-role="header" data-theme="d">
+				<h1></h1>
+			</div>
+			<div data-role="content" data-theme="c" align="center">
+				<p>This is an invalid code.  Please enter another.</p>
+				<a href="#" data-role="button" data-rel="back" data-theme="b">Close</a>       
+			</div>
 		</div>
 	</div>
 </body>

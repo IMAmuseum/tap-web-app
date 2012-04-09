@@ -67,11 +67,18 @@
 		    el: $('#tour-keypad').find(":jqmData(role='content')"),
 		    template: _.template($('#tour-keypad-tpl').html()),
 		    events: {
-				'click #gobtn' : 'submit',
-				'click #keypad div button' : 'writekeycode',
-				'click #delete' : 'clearkeycode',
+				'tap #gobtn' : 'submit',
+				'tap #keypad div button' : 'writekeycode',
+				'tap #delete' : 'clearkeycode',
 			    },
 		    submit: function() {
+				// validate tour stop code
+				if(!$('#write').html()) return;
+				if(!tap.tourStops.getStopByKeycode($('#write').html())){
+					$.mobile.changePage('#error_invalidCode', 'pop', true, true);
+					$('#write').html("");
+					return;
+				}
 				$destUrl = "#tourstop/"+this.options+"/"+$('#write').html();
 				Backbone.history.navigate($destUrl, true);
 		    },
@@ -150,7 +157,7 @@
 					enableKeyboard: true, 
 					doubleTapZoomLevel : 0,
 					captionAndToolbarOpacity : 0.8,
-					minUserZoom : 0,
+					minUserZoom : 0.0,
 					jQueryMobile : true,
 				});
 				return this;
@@ -280,7 +287,7 @@
 			},
 		    	list: function() {
 				// have jqm change pages
-				$.mobile.changePage('#tours', {transition: 'slide', reverse: true, changeHash: false});
+				$.mobile.changePage('#tours', {transition: 'fade', reverse: true, changeHash: false});
 				// setup list view of all the tours and render
 				this.tourListView = new TourListView({model: tap.tours});
 				tap.currentView = this.tourListView;
@@ -291,7 +298,7 @@
 				// set the selected tour
 				tap.tours.selectTour(id);
 				// have jqm change pages
-				$.mobile.changePage('#tour-details', { transition: 'slide', reverse: false, changeHash: false});
+				$.mobile.changePage('#tour-details', { transition: 'fade', reverse: false, changeHash: false});
 				// change the page title
 				$('#tour-details #page-title').html(tap.tours.get(tap.currentTour).get('title')[0].value);
 				// attach the tour id to the get started button 
@@ -304,7 +311,7 @@
 				// set the selected tour
 				tap.tours.selectTour(id);
 				// have jqm change pages
-				$.mobile.changePage('#tour-keypad', { transition: 'slide', reverse: false, changeHash: false});
+				$.mobile.changePage('#tour-keypad', { transition: 'fade', reverse: false, changeHash: false});
 				// change the page title
 				$('#tour-details #page-title').html(tap.tours.get(tap.currentTour).get('title')[0].value);
 				// setup detailed view of keypad and render
@@ -312,32 +319,14 @@
             			app.showView('#content', this.tourKeypadView);
 		    	},
 			tourStop: function(id, keycode) {
-				if(tap.tourStops.getStopByKeycode(keycode)){
-					$stop = tap.tourStops.getStopByKeycode(keycode);
-					if($stop["attributes"]["view"]){
-						$stopView = $stop["attributes"]["view"];
-					}else{
-						alert("There is no stopView for this number.");
-						var $write = $('#write');
-						$write.html("");
-						window.history.back();
-						return;
-					}
-				}else{
-					//can we move this validation into the keypad itself?
-					alert("There is no stop for this code.");
-					var $write = $('#write');
-					$write.html("");
-					window.history.back();
-					return;
-				}
 				// set the selected tour
 				tap.tours.selectTour(id);
 				// have jqm change pages
-				$.mobile.changePage('#tour-stop', { transition: 'slide', reverse: false, changeHash: false});
+				$.mobile.changePage('#tour-stop', { transition: 'fade', reverse: false, changeHash: false});
 				// change the page title
 				$('#tour-stop #page-title').html(tap.tours.get(tap.currentTour).get('title')[0].value);
 				// setup detailed view of tour and render
+				$stop = tap.tourStops.getStopByKeycode(keycode);
 				switch($stop["attributes"]["view"]) {  // Set appropriate tour stop view type 
 					case 'StopGroup':
 						this.tourStopView = new TourStopView();
