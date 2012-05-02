@@ -8,15 +8,15 @@
 
 	<tourml:Tour tourml:id="org.imamuseum.tap.ToLiveForever1">
 
-		<!-- Title information of the tour -->
-		<tourml:Title xml:lang="en">Dyeing Elegance</tourml:Title>
-		<tourml:Title xml:lang="es">Dyeing Elegance</tourml:Title>
-		<tourml:Description xml:lang="en">
-		The artist Kuboku Takaku (1908?1993) perfected the ancient Japanese technique of wax resist dying to create textile paintings on obi, kimono, and screens. His works merged Japanese subjects with cubist and modernist styles, and he was the only textile artist who effectively transitioned from the Fine Arts circles of the 1930s through 1960s into the world of high fashion for Japan?s elite. His daughter Hisako (born 1944) ) is now one of the last living artists who preserves the knowledge of this painstaking dying technique, and her obi and kimono continue to be among the most chic and sought-after throughout Japan. In this exhibition 71 obi, kimono, and other textile paintings of Kuboku and Hisako Takaku will be on display outside of Japan for the first time, drawn from museum and private collections. They range in date from 1928 until the present day and document the art historical developments of how western modernism combines with traditional Japanese philosophies, spirituality, and craft through the volatile changes of the twentieth century. Through these beautiful works of wearable and usable art, visitors will learn about one of Japan?s most astonishing textile crafts: the ancient wax resist dying technique, called roketsuzome. This unique dying method allows for the creation of delicately modulated and calligraphic brushwork, each created individually by hand. Furthermore, western audiences will become familiar with the elegant art of kimono dressing with a uniquely Japanese aesthetic adapted to the modern world.
-		</tourml:Description>
-		<tourml:Description xml:lang="es">
-	        Descripcion de la visita guiada en Espanol.
-		</tourml:Description>
+			<tourml:Title xml:lang="en">Dyeing Elegance</tourml:Title>
+			<tourml:Title xml:lang="es">Dyeing Elegance</tourml:Title>
+			<tourml:Description xml:lang="en">
+				The artist Kuboku Takaku (1908?1993) perfected the ancient Japanese technique of wax resist dying to create textile paintings on obi, kimono, and screens. His works merged Japanese subjects with cubist and modernist styles, and he was the only textile artist who effectively transitioned from the Fine Arts circles of the 1930s through 1960s into the world of high fashion for Japan?s elite. His daughter Hisako (born 1944) ) is now one of the last living artists who preserves the knowledge of this painstaking dying technique, and her obi and kimono continue to be among the most chic and sought-after throughout Japan. In this exhibition 71 obi, kimono, and other textile paintings of Kuboku and Hisako Takaku will be on display outside of Japan for the first time, drawn from museum and private collections. They range in date from 1928 until the present day and document the art historical developments of how western modernism combines with traditional Japanese philosophies, spirituality, and craft through the volatile changes of the twentieth century. Through these beautiful works of wearable and usable art, visitors will learn about one of Japan?s most astonishing textile crafts: the ancient wax resist dying technique, called roketsuzome. This unique dying method allows for the creation of delicately modulated and calligraphic brushwork, each created individually by hand. Furthermore, western audiences will become familiar with the elegant art of kimono dressing with a uniquely Japanese aesthetic adapted to the modern world.
+			</tourml:Description>
+			<tourml:Description xml:lang="es">
+				Descripcion de la visita guiada en Espanol.
+			</tourml:Description>
+
 
 		<!-- General tour metadata -->
 		<tourml:Author>San Diego Museum of Art</tourml:Author>
