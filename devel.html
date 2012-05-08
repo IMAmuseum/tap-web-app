@@ -7,7 +7,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 	<title>TAP Web</title>
 
-	<link rel="stylesheet" href="dist/Tap-0.1.0.css" />
+	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css" />
+	<link rel="stylesheet" href="css/tapweb.css" />
+	<link rel="stylesheet" href="css/photoswipe.css" />
 
 	<script src="js/external/jquery-1.7.2.js"></script>
 	<script src="js/external/jquery.mobile-1.1.0.js"></script>
@@ -17,8 +19,27 @@
 	<script src="js/external/backbone.localStorage-min.js"></script>
 	<script src="js/external/klass.js"></script>
 	<script src="js/external/code.photoswipe.jquery-3.0.4.js"></script>
-	<script src="dist/Tap-0.1.0.js"></script>
-	
+	<script src="js/backbone/helper.js"></script>
+	<script src="js/backbone/models/TourModel.js"></script>
+	<script src="js/backbone/models/StopModel.js"></script>
+	<script src="js/backbone/models/AssetModel.js"></script>
+	<script src="js/backbone/collections/TourCollection.js"></script>
+	<script src="js/backbone/collections/StopCollection.js"></script>
+	<script src="js/backbone/collections/AssetCollection.js"></script>
+	<script src="js/backbone/views/HelperView.js"></script>
+	<script src="js/backbone/views/TourListView.js"></script>
+	<script src="js/backbone/views/TourDetailsView.js"></script>
+	<script src="js/backbone/views/KeypadView.js"></script>
+	<script src="js/backbone/views/DefaultStopView.js"></script>
+	<script src="js/backbone/views/ImageStopView.js"></script>
+	<script src="js/backbone/views/VideoStopView.js"></script>
+	<script src="js/backbone/views/GalleryView.js"></script>
+	<script src="js/backbone/views/AudioStopView.js"></script>
+	<script src="js/backbone/views/WebStopView.js"></script>
+	<script src="js/backbone/views/ObjectStopView.js"></script>
+	<script src="js/backbone/views/GeoStopView.js"></script>
+	<script src="js/backbone/Router.js"></script>
+	<script src="js/backbone/Init.js"></script>
 	<script type="text/javascript">
 		(function($){
 
@@ -41,7 +62,6 @@
 					e.preventDefault();
 					window.history.back();
 				});
-
 			});
 		}(jQuery));
 	</script>

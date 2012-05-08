@@ -15,23 +15,28 @@ if (!tap) {
 	tap.initApp = function() {
 		// trigger tap init start event
 		tap.trigger('tap.init.start');
+
 		// create new instance of tour collection
-		tap.tours = new TapTourCollection;
-		//localStorage.clear();
+		tap.tours = new TapTourCollection();
+
 		tap.tours.fetch();
+
 		// populate local storage if this is a first run
 		if(!tap.tours.length) {
 			// load tourML
 			var tourML = xmlToJson(loadXMLDoc(tap.url));
+			var i, len;
 			if(tourML.tour) { // Single tour
 				tap.initModels(tourML.tour);
 			} else if(tourML.tourSet && tourML.tourSet.tourRef) { // TourSet w/ external tours
-				for(var i = 0; i < tourML.tourSet.tourRef.length; i++) {
+				len = tourML.tourSet.tourRef.length;
+				for(i = 0; i < len; i++) {
 					var data = xmlToJson(loadXMLDoc(tourML.tourSet.tourRef[i].uri));
 					tap.initModels(data.tour);
 				}
 			} else if(tourML.tourSet && tourML.tourSet.tour) { // TourSet w/ tours as children elements
-				for(var i = 0; i < tourML.tourSet.tour.length; i++) {
+				len = tourML.tourSet.tour.length;
+				for(i = 0; i < len; i++) {
 					tap.initModels(tourML.tourSet.tour[i]);
 				}
 			}
@@ -42,7 +47,7 @@ if (!tap) {
     
 	/*
 	 * Initialize models with data
-	 */	
+	 */
 	tap.initModels = function(data) {
 		// create new tour
 		tap.tours.create({
@@ -64,12 +69,15 @@ if (!tap) {
 			title: objectToArray(data.title)
 		});
 
+		var i, j;
 		// create new instance of StopCollection
 		var stops = new TapStopCollection(null, data.id);
 		// load tour models
-		for (var i = 0; i < data.stop.length; i++) {
+		var numStops = data.stop.length;
+		for (i = 0; i < numStops; i++) {
 			var connections = [];
-			for(var j = 0; j < data.connection.length; j++) {
+			var numConnections = data.connection.length;
+			for(j = 0; j < numConnections; j++) {
 				if(data.connection[j].srcId == data.stop[i].id) {
 					connections.push({priority: data.connection[j].priority, destId: data.connection[j].destId});
 				}
@@ -88,11 +96,13 @@ if (!tap) {
 		// create new instance of AssetCollection
 		var assets = new TapAssetCollection(null, data.id);
 		// load asset models
-		for (var i = 0; i < data.asset.length; i++) {
+		var numAssets = data.asset.length;
+		for (i = 0; i < numAssets; i++) {
 			// modifiy source propertySet child to match similar elements
 			if(data.asset[i].source && data.asset[i].source) {
 				var propertySet = [];
-				for (var j = 0; j < data.asset[i].source.length; j++) {
+				var numSources = data.asset[i].source.length;
+				for (j = 0; j < numSources; j++) {
 					if(data.asset[i].source[j].propertySet) {
 						data.asset[i].source[j].propertySet = data.asset[i].source[j].propertySet.property;
 					}

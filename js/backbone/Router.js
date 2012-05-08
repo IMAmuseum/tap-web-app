@@ -9,12 +9,12 @@ jQuery(function() {
 		},
 		bookmarkMode:false,
 		showView: function(selector, view) {
-		    if (tap.currentView){
-			tap.currentView.close();
-		    }
-		    $(selector).html(view.render().el);
-		    tap.currentView = view;
-		    return view;
+			if (tap.currentView){
+				tap.currentView.close();
+			}
+			$(selector).html(view.render().el);
+			tap.currentView = view;
+			return view;
 		},
 		list: function() {
 			// have jqm change pages
@@ -32,7 +32,7 @@ jQuery(function() {
 			$.mobile.changePage('#tour-details', { transition: 'fade', reverse: false, changeHash: false});
 			// change the page title
 			$('#tour-details #page-title').html(tap.tours.get(tap.currentTour).get('title')[0].value);
-			// attach the tour id to the get started button 
+			// attach the tour id to the get started button
 			$('#tour-details #start-tour-id').attr("href", "#tourkeypad/"+id);
 			// setup detailed view of tour and render
 			this.tourDetailedView = new TourDetailedView();
@@ -58,7 +58,7 @@ jQuery(function() {
 			$('#tour-stop #page-title').html(tap.tours.get(tap.currentTour).get('title')[0].value);
 			// setup detailed view of tour and render
 			$stop = tap.tourStops.getStopByKeycode(keycode);
-			switch($stop["attributes"]["view"]) {  // Set appropriate tour stop view type 
+			switch($stop["attributes"]["view"]) {  // Set appropriate tour stop view type
 				case 'StopGroup':
 					this.tourStopView = new TourStopView();
 					app.showView('#content', this.tourStopView);
