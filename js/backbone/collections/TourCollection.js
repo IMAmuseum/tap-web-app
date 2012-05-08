@@ -1,7 +1,7 @@
 // define tour collection
 TapTourCollection = Backbone.Collection.extend({
 	model: TapTourModel,
-	localStorage: new Store('tours'),
+	localStorage: new Backbone.LocalStorage('tours'),
 	selectTour: function(id) { // load data for the selected tour
 		// set the current tour
 		tap.currentTour = id;

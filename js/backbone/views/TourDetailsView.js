@@ -4,9 +4,11 @@ jQuery(function() {
 		el: $('#tour-details').find(":jqmData(role='content')"),
 		template: _.template($('#tour-details-tpl').html()),
 		render: function() {
+			var currentTour = tap.tours.get(tap.currentTour);
+
 			$(this.el).html(this.template({
-				publishDate: tap.tours.get(tap.currentTour).get('publishDate')[0].value,
-				description: tap.tours.get(tap.currentTour).get('description')[0].value,
+				publishDate: currentTour.get('publishDate') ? currentTour.get('publishDate')[0].value : undefined,
+				description: currentTour.get('description') ? currentTour.get('description')[0].value : undefined,
 				stopCount: tap.tourStops.length,
 				assetCount: tap.tourAssets.length
 			}));

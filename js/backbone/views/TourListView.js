@@ -21,7 +21,7 @@ jQuery(function() {
 		template: _.template($('#tour-list-item-tpl').html()),
 		render: function() {
 			$(this.el).html(this.template({
-				title: this.model.get('title')[0].value,
+				title: this.model.get('title') ? this.model.get('title')[0].value : undefined,
 				id: this.model.get('id')
 			}));
 			return this;

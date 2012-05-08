@@ -60,10 +60,12 @@ jQuery(function() {
 			$stop = tap.tourStops.getStopByKeycode(keycode);
 			switch($stop["attributes"]["view"]) {  // Set appropriate tour stop view type
 				case 'StopGroup':
+				case 'tour_stop_group':
 					this.tourStopView = new TourStopView();
 					app.showView('#content', this.tourStopView);
 					return;
 				case 'ImageStop':
+				case 'tour_image_stop':
 					this.tourStopImageView = new TourStopImageView();
 					app.showView('#content', this.tourStopImageView);
 					return;
@@ -72,10 +74,12 @@ jQuery(function() {
 					app.showView('#content', this.tourStopGalleryView);
 					return;
 				case 'VideoStop':
+				case 'tour_video_stop':
 					this.tourStopVideoView = new TourStopVideoView();
 					app.showView('#content', this.tourStopVideoView);
 					return;
 				case 'AudioStop':
+				case 'tour_audio_stop':
 					this.tourStopAudioView = new TourStopAudioView();
 					app.showView('#content', this.tourStopAudioView);
 					return;

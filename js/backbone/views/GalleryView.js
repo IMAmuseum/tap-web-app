@@ -7,7 +7,7 @@ jQuery(function() {
 			this.$el.html(this.template({
 				tourStopTitle : $stop["attributes"]["title"][0].value
 			}));
-			myPhotoSwipe = $("#Gallery a").photoSwipe({
+			var myPhotoSwipe = $("#Gallery a").photoSwipe({
 				enableMouseWheel: false,
 				enableKeyboard: true,
 				doubleTapZoomLevel : 0,

@@ -2,7 +2,7 @@
 TapStopCollection = Backbone.Collection.extend({
 	model: TapStopModel,
 	initialize: function(models, id) {
-		this.localStorage = new Store(id + '-stop');
+		this.localStorage = new Backbone.LocalStorage(id + '-stop');
 	},
 	// retrieve the stop id of a given key code
 	getStopByKeycode: function(key) {

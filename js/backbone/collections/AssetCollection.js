@@ -2,6 +2,6 @@
 TapAssetCollection = Backbone.Collection.extend({
 	model: TapAssetModel,
 	initialize: function(models, id) {
-		this.localStorage = new Store(id + '-asset');
+		this.localStorage = new Backbone.LocalStorage(id + '-asset');
 	}
 });
