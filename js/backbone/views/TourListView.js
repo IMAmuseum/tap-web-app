@@ -11,7 +11,7 @@ jQuery(function() {
 			_.each(this.model.models, function(tour) {
 					$(this.el).append(new TourListItemView({model: tour}).render().el);
 			}, this);
-			$(this.el).listview('refresh'); // refresh listview since we generated the data dynamically
+			this.$el.listview('refresh'); // refresh listview since we generated the data dynamically
 		}
 	});
 

@@ -7,7 +7,7 @@
 	xsi:schemaLocation="http://www.imamuseum.org/TourML/2011/11 TourML.xsd">
 
 	<tourml:Tour tourml:id="org.imamuseum.tap.ToLiveForever1">
-
+		<tourml:TourMetadata>
 			<tourml:Title xml:lang="en">Dyeing Elegance</tourml:Title>
 			<tourml:Title xml:lang="es">Dyeing Elegance</tourml:Title>
 			<tourml:Description xml:lang="en">
@@ -17,21 +17,21 @@
 				Descripcion de la visita guiada en Espanol.
 			</tourml:Description>
 
+			<!-- General tour metadata -->
+			<tourml:Author>San Diego Museum of Art</tourml:Author>
+			<tourml:PublishDate>2012-02-13</tourml:PublishDate>
 
-		<!-- General tour metadata -->
-		<tourml:Author>San Diego Museum of Art</tourml:Author>
-		<tourml:PublishDate>2012-02-13</tourml:PublishDate>
+			<tourml:PropertySet>
+				<tourml:Property tourml:name="google-analytics">UA-123456</tourml:Property>
+			</tourml:PropertySet>
 
-		<tourml:PropertySet>
-			<tourml:Property tourml:name="google-analytics">UA-123456</tourml:Property>
-		</tourml:PropertySet>
+			<!-- An optional pointer to the first stop to start at -->
+			<tourml:RootStopRef tourml:id="stop-1"/>
 
-		<!-- An optional pointer to the first stop to start at -->
-		<tourml:RootStopRef tourml:id="stop-1"/>
-
-		<!-- List of all application specific resources -->
-		<tourml:AppResource tourml:id="app-icon" tourml:usage="icon" />
-		<tourml:AppResource tourml:id="app-splash" tourml:usage="splash" />
+			<!-- List of all application specific resources -->
+			<tourml:AppResource tourml:id="app-icon" tourml:usage="icon" />
+			<tourml:AppResource tourml:id="app-splash" tourml:usage="splash" />
+		</tourml:TourMetadata>
 
 		<!-- List of all tour assets -->
 		<tourml:Asset tourml:id="img-1">
@@ -205,30 +205,32 @@
 	</tourml:Tour>
 	<tourml:Tour tourml:id="org.imamuseum.tap.ToLiveForever2">
 
-		<!-- Title information of the tour -->
-		<tourml:Title xml:lang="en">Egyptian Mummies</tourml:Title>
-		<tourml:Title xml:lang="es">Una muestra TourML documento</tourml:Title>
-		<tourml:Description xml:lang="en">
-	        This tour is meant to demonstrate proper usage of the TourML standard.
-		</tourml:Description>
-		<tourml:Description xml:lang="es">
-	        .....
-		</tourml:Description>
+		<tourml:TourMetadata>
+			<!-- Title information of the tour -->
+			<tourml:Title xml:lang="en">Egyptian Mummies</tourml:Title>
+			<tourml:Title xml:lang="es">Una muestra TourML documento</tourml:Title>
+			<tourml:Description xml:lang="en">
+		        This tour is meant to demonstrate proper usage of the TourML standard.
+			</tourml:Description>
+			<tourml:Description xml:lang="es">
+		        .....
+			</tourml:Description>
 
-		<!-- General tour metadata -->
-		<tourml:Author>Indianapolis Museum of Art</tourml:Author>
-		<tourml:PublishDate>2010-10-14</tourml:PublishDate>
+			<!-- General tour metadata -->
+			<tourml:Author>Indianapolis Museum of Art</tourml:Author>
+			<tourml:PublishDate>2010-10-14</tourml:PublishDate>
 
-		<tourml:PropertySet>
-			<tourml:Property tourml:name="google-analytics">UA-123456</tourml:Property>
-		</tourml:PropertySet>
+			<tourml:PropertySet>
+				<tourml:Property tourml:name="google-analytics">UA-123456</tourml:Property>
+			</tourml:PropertySet>
 
-		<!-- An optional pointer to the first stop to start at -->
-		<tourml:RootStopRef tourml:id="stop-1"/>
+			<!-- An optional pointer to the first stop to start at -->
+			<tourml:RootStopRef tourml:id="stop-1"/>
 
-		<!-- List of all application specific resources -->
-		<tourml:AppResource tourml:id="app-icon" tourml:usage="icon" />
-		<tourml:AppResource tourml:id="app-splash" tourml:usage="splash" />
+			<!-- List of all application specific resources -->
+			<tourml:AppResource tourml:id="app-icon" tourml:usage="icon" />
+			<tourml:AppResource tourml:id="app-splash" tourml:usage="splash" />
+		</tourml:TourMetadata>
 
 		<!-- List of all tour assets -->
 		<tourml:Asset tourml:id="img-1">

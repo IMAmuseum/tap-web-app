@@ -64,3 +64,13 @@
 #Gallery li a { display: block; margin: 5px; border: 1px solid #3c3c3c; }
 #Gallery li img { display: block; width: 100%; height: auto; }
 #Gallery1 .ui-content, #Gallery2 .ui-content { overflow: hidden; }
+
+stoptitle {
+	display: block;
+	margin: 0 0 20px 10px;
+}
+
+stopdescription {
+	display: block;
+	margin: 10px;
+}

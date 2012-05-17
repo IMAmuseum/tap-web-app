@@ -61,8 +61,8 @@ jQuery(function() {
 			switch($stop["attributes"]["view"]) {  // Set appropriate tour stop view type
 				case 'StopGroup':
 				case 'tour_stop_group':
-					this.tourStopView = new TourStopView();
-					app.showView('#content', this.tourStopView);
+					this.TourStopGroupView = new TourStopGroupView();
+					app.showView('#content', this.TourStopGroupView);
 					return;
 				case 'ImageStop':
 				case 'tour_image_stop':

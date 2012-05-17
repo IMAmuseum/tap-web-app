@@ -7,7 +7,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 	<title>TAP Web</title>
 
-	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css" />
+	<link rel="stylesheet" href="css/jquery.mobile-1.1.0.css" />
 	<link rel="stylesheet" href="css/tapweb.css" />
 	<link rel="stylesheet" href="css/photoswipe.css" />
 
@@ -37,6 +37,7 @@
 	<script src="js/backbone/views/AudioStopView.js"></script>
 	<script src="js/backbone/views/WebStopView.js"></script>
 	<script src="js/backbone/views/ObjectStopView.js"></script>
+	<script src="js/backbone/views/StopGroupView.js"></script>
 	<script src="js/backbone/views/GeoStopView.js"></script>
 	<script src="js/backbone/Router.js"></script>
 	<script src="js/backbone/Init.js"></script>
@@ -203,6 +204,16 @@
 			<div style="width:100%;">
 				<stoptitle><%= tourStopTitle %></stoptitle><br />
 			</div>
+	</script>
+	<script type="text/template" id="tour-stop-group-tpl">
+			<div style="width:100%;">
+				<stoptitle><%= tourStopTitle %></stoptitle>
+				<stopdescription><%= description %></stopdescription>
+				<ul id="stop-list" class="ui-listview" data-inset="true" data-role="listview"></ul>
+			</div>
+	</script>
+	<script type="text/template" id="tour-stop-group-list-item-tpl">    
+		<a href="#tourstop/<%= tourId %>/<%= id %>"><%= title %></a>
 	</script>
 	<!-- /templates -->
 </body>
