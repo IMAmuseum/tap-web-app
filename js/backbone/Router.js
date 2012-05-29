@@ -67,59 +67,13 @@ jQuery(function() {
 				var view = new TapAPI.views[api_class]();
 				app.showView('#content', view);
 				return;
-			} /* else {
+			} else {
 				console.log('View not in registry: ', tap.currentStop.get('view'));
-				var view = new TourStopView();
+				var view = new TapAPI.views.Stop();
 				app.showView('#content', view);	
 				return;
-			}*/
-
-
-
-			switch(tap.currentStop["attributes"]["view"]) {  // Set appropriate tour stop view type
-				case 'StopGroup':
-				case 'tour_stop_group':
-					this.TourStopGroupView = new TourStopGroupView();
-					app.showView('#content', this.TourStopGroupView);
-					return;
-				case 'ImageStop':
-				case 'tour_image_stop':
-					this.tourStopImageView = new TourStopImageView();
-					app.showView('#content', this.tourStopImageView);
-					return;
-				case 'GalleryStop':
-					this.tourStopGalleryView = new TourStopGalleryView();
-					app.showView('#content', this.tourStopGalleryView);
-					return;
-				/*
-				case 'VideoStop':
-				case 'tour_video_stop':
-					this.tourStopVideoView = new TourStopVideoView();
-					app.showView('#content', this.tourStopVideoView);
-					return;
-				*/
-				case 'AudioStop':
-				case 'tour_audio_stop':
-					this.tourStopAudioView = new TourStopAudioView();
-					app.showView('#content', this.tourStopAudioView);
-					return;
-				case 'WebStop':
-					this.tourStopWebView = new TourStopWebView();
-					app.showView('#content', this.tourStopWebView);
-					return;
-				case 'ObjectStop':
-					this.tourStopObjectView = new TourStopObjectView();
-					app.showView('#content', this.tourStopObjectView);
-					return;
-				case 'GeoStop':
-					this.tourStopGeoView = new TourStopGeoView();
-					app.showView('#content', this.tourStopGeoView);
-					return;
-				default:
-					this.tourStopView = new TourStopView();
-					app.showView('#content', this.tourStopView);
-					return;
 			}
+
 		}
 	});
 });
