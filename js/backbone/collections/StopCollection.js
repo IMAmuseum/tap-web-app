@@ -1,6 +1,6 @@
 // define stop collection
 TapStopCollection = Backbone.Collection.extend({
-	model: TapStopModel,
+	model: TapAPI.models.Stop,
 	initialize: function(models, id) {
 		this.localStorage = new Backbone.LocalStorage(id + '-stop');
 	},

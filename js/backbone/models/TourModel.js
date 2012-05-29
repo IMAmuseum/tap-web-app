@@ -1,5 +1,10 @@
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === 'undefined'){TapAPI = {};}
+if (typeof TapAPI.models === 'undefined'){TapAPI.models = {};}
+// TapAPI Namespace Initialization //
+
 // define tour model
-TapTourModel = Backbone.Model.extend({
+TapAPI.models.Tour = Backbone.Model.extend({
 	get: function(attr) { // override get method
 		if(!this.attributes[attr]) return this.attributes[attr];
 		switch(attr) {  // retrieve attribute based on language
