@@ -83,8 +83,7 @@
 			<a data-rel="back">Tours</a>
 			<h1 id="page-title"></h1>
 		</div> 	
-		<div class="">
-			<br /><br />
+		<div class="">			
 			<a href="#tourkeypad/" id="start-tour-id" data-role="button" data-theme="b">Start Tour</a>
 		</div>
 		<div data-role="content">
@@ -158,19 +157,19 @@
 				<div class="ui-block-b" id="clearStyle"><div class="ui-bar ui-bar-d" id="delete">Clear</div></div>
 		</div>
 	</script>
-	<script type="text/template" id="tour-stop-tpl">
+	<script type="text/template" id="tour-stop-tpl" class='tour-stop'>
 			<div style="width:100%;">
-				<stoptitle><%= tourStopTitle %></stoptitle><br />
-				<stopdescription><%= tourStopDescription %></stopdescription><br />
+				<div class='title'><%= tourStopTitle %></div>
+				<div class='description'><%= tourStopDescription %></div>
 			</div>
 	</script>
-	<script type="text/template" id="tour-stop-image-tpl">
+	<script type="text/template" id="tour-stop-image-tpl" class='tour-stop'>
 			<div id="soloImage">
-				<a href="<%= tourImageUri %>"><img src="<%= tourImageUri %>" alt="Image 01" class="primaryImg" /></a><br />
-				<stoptitle><%= tourStopTitle %></stoptitle><br />
+				<a href="<%= tourImageUri %>"><img src="<%= tourImageUri %>" alt="Image 01" class="primaryImg" /></a>
+				<div class='title'><%= tourStopTitle %></div>
 			</div>
 	</script>
-	<script type="text/template" id="tour-stop-video-tpl">
+	<script type="text/template" id="tour-stop-video-tpl" class='tour-stop'>
 			<div>
 				<video width="95%" controls="controls" autoplay="autoplay" id="videoPlayer" poster="assets/images/tapPoster.png">
 					<source src="<%= tourStopOggVideo %>" type="video/ogg" />
@@ -179,9 +178,9 @@
 				</video>
 			</div>
 	</script>
-	<script type="text/template" id="tour-stop-audio-tpl">
+	<script type="text/template" id="tour-stop-audio-tpl" class='tour-stop'>
 			<div>
-				<%= tourStopTitle %><br /><br /><br />
+				<%= tourStopTitle %>
 				<audio autoplay controls="controls" id="audioPlayer" style="width:100%">
 					<source src="<%= tourStopOggAudio %>" type="audio/ogg" />
 					<source src="<%= tourStopMp3Audio %>" type="audio/mp3" />
@@ -190,25 +189,25 @@
 				</audio>
 			</div>
 	</script>
-	<script type="text/template" id="tour-stop-web-tpl">
+	<script type="text/template" id="tour-stop-web-tpl" class='tour-stop'>
 			<div style="width:100%;">
-				<stoptitle><%= tourStopTitle %></stoptitle><br />
+				<div class='title'><%= tourStopTitle %></div>
 			</div>
 	</script>
-	<script type="text/template" id="tour-stop-object-tpl">
+	<script type="text/template" id="tour-stop-object-tpl" class='tour-stop'>
 			<div style="width:100%;">
-				<stoptitle><%= tourStopTitle %></stoptitle><br />
+				<div class='title'><%= tourStopTitle %></div>
 			</div>
 	</script>
-	<script type="text/template" id="tour-stop-geo-tpl">
+	<script type="text/template" id="tour-stop-geo-tpl" class='tour-stop'>
 			<div style="width:100%;">
-				<stoptitle><%= tourStopTitle %></stoptitle><br />
+				<div class='title'><%= tourStopTitle %></div>
 			</div>
 	</script>
-	<script type="text/template" id="tour-stop-group-tpl">
+	<script type="text/template" id="tour-stop-group-tpl" class='tour-stop'>
 			<div style="width:100%;">
-				<stoptitle><%= tourStopTitle %></stoptitle>
-				<stopdescription><%= description %></stopdescription>
+				<div class='title'><%= tourStopTitle %></div>
+				<div class='description'><%= description %></div>
 				<ul id="stop-list" class="ui-listview" data-inset="true" data-role="listview"></ul>
 			</div>
 	</script>

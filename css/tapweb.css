@@ -65,12 +65,10 @@
 #Gallery li img { display: block; width: 100%; height: auto; }
 #Gallery1 .ui-content, #Gallery2 .ui-content { overflow: hidden; }
 
-stoptitle {
-	display: block;
+.tour-stop .title {
 	margin: 0 0 20px 10px;
 }
 
-stopdescription {
-	display: block;
+.tour-stop .description {
 	margin: 10px;
 }
