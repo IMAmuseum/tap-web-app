@@ -29,7 +29,7 @@ jQuery(function() {
 	});
 
 	// setup an individual view of a tour
-	window.TourListItemView = Backbone.View.extend({
+	window.TourStopGroupListItemView = Backbone.View.extend({
 		tagName: 'li',
 		template: _.template($('#tour-stop-group-list-item-tpl').html()),
 		render: function() {
