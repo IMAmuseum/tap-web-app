@@ -17,7 +17,7 @@ if (!tap) {
 		tap.trigger('tap.init.start');
 
 		// create new instance of tour collection
-		tap.tours = new TapTourCollection();
+		tap.tours = new TapAPI.collections.Tours();
 
 		tap.tours.fetch();
 
@@ -71,7 +71,7 @@ if (!tap) {
 
 		var i, j;
 		// create new instance of StopCollection
-		var stops = new TapStopCollection(null, data.id);
+		var stops = new TapAPI.collections.Stops(null, data.id);
 		// load tour models
 		var numStops = data.stop.length;
 		for (i = 0; i < numStops; i++) {
@@ -94,7 +94,7 @@ if (!tap) {
 		}
 
 		// create new instance of AssetCollection
-		var assets = new TapAssetCollection(null, data.id);
+		var assets = new TapAPI.collections.Assets(null, data.id);
 		// load asset models
 		var numAssets = data.asset.length;
 		for (i = 0; i < numAssets; i++) {

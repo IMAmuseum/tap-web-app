@@ -1,5 +1,10 @@
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === 'undefined'){TapAPI = {};}
+if (typeof TapAPI.collections === 'undefined'){TapAPI.collections = {};}
+// TapAPI Namespace Initialization //
+
 // define tour collection
-TapTourCollection = Backbone.Collection.extend({
+TapAPI.collections.Tours = Backbone.Collection.extend({
 	model: TapAPI.models.Tour,
 	localStorage: new Backbone.LocalStorage('tours'),
 	selectTour: function(id) { // load data for the selected tour
@@ -12,9 +17,9 @@ TapTourCollection = Backbone.Collection.extend({
 		}
 
 		// create new instance of StopCollection
-		tap.tourStops = new TapStopCollection(null, id);
+		tap.tourStops = new TapAPI.collections.Stops(null, id);
 		// create new instance of AssetCollection
-		tap.tourAssets = new TapAssetCollection(null, id);
+		tap.tourAssets = new TapAPI.collections.Assets(null, id);
 
 		// load data from local storage
 		tap.tourStops.fetch();

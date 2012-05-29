@@ -1,5 +1,10 @@
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === 'undefined'){TapAPI = {};}
+if (typeof TapAPI.collections === 'undefined'){TapAPI.collections = {};}
+// TapAPI Namespace Initialization //
+
 // define stop collection
-TapStopCollection = Backbone.Collection.extend({
+TapAPI.collections.Stops = Backbone.Collection.extend({
 	model: TapAPI.models.Stop,
 	initialize: function(models, id) {
 		this.localStorage = new Backbone.LocalStorage(id + '-stop');
