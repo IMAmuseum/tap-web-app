@@ -6,8 +6,8 @@ jQuery(function() {
 		render: function() {
 			var imageUri, iconUri;
 
-			if($stop["attributes"]["assetRef"]){
-				$.each($stop["attributes"]["assetRef"], function() {
+			if(tap.currentStop["attributes"]["assetRef"]){
+				$.each(tap.currentStop["attributes"]["assetRef"], function() {
 					$assetItem = tap.tourAssets.models;
 					for(var i=0;i<$assetItem.length;i++) {
 						if(($assetItem[i].get('id') == this['id']) && (this['usage'] == "primary" || this['usage'] == "tour_image")){
@@ -23,7 +23,7 @@ jQuery(function() {
 			this.$el.html(this.template({
 				tourImageUri : imageUri,
 				tourIconUri : iconUri,
-				tourStopTitle : $stop["attributes"]["title"][0].value
+				tourStopTitle : tap.currentStop["attributes"]["title"][0].value
 			}));
 
 			var soloPhotoSwipe = $("#soloImage a").photoSwipe({

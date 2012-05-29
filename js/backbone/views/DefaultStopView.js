@@ -5,8 +5,8 @@ jQuery(function() {
 		template: _.template($('#tour-stop-tpl').html()),
 		render: function() {
 			this.$el.html(this.template({
-				tourStopTitle : $stop.get("title") ? $stop.get("title")[0].value : undefined,
-				tourStopDescription : $stop.get('description') ? $stop.get('description')[0].value : undefined
+				tourStopTitle : tap.currentStop.get("title") ? tap.currentStop.get("title")[0].value : undefined,
+				tourStopDescription : tap.currentStop.get('description') ? tap.currentStop.get('description')[0].value : undefined
 			}));
 			return this;
 		}

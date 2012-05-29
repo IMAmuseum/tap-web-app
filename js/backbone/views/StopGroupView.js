@@ -5,11 +5,11 @@ jQuery(function() {
 		template: _.template($('#tour-stop-group-tpl').html()),
 		render: function() {
 			this.$el.html(this.template({
-				tourStopTitle : getAttributeByLanguage($stop.get("title"))[0].value,
-				description : getAttributeByLanguage($stop.get("description"))[0].value
+				tourStopTitle : getAttributeByLanguage(tap.currentStop.get("title"))[0].value,
+				description : getAttributeByLanguage(tap.currentStop.get("description"))[0].value
 			}));
 
-			var connections = $stop.get('connection');
+			var connections = tap.currentStop.get('connection');
 			var listContainer = this.$el.find("#stop-list");
 			_.each(connections, function(connection) {
 				var stop = tap.tourStops.get(connection.destId);

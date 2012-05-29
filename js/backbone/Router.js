@@ -57,8 +57,8 @@ jQuery(function() {
 			// change the page title
 			$('#tour-stop #page-title').html(tap.tours.get(tap.currentTour).get('title')[0].value);
 			// setup detailed view of tour and render
-			$stop = tap.tourStops.getStopByKeycode(keycode);
-			switch($stop["attributes"]["view"]) {  // Set appropriate tour stop view type
+			tap.currentStop = tap.tourStops.getStopByKeycode(keycode);
+			switch(tap.currentStop["attributes"]["view"]) {  // Set appropriate tour stop view type
 				case 'StopGroup':
 				case 'tour_stop_group':
 					this.TourStopGroupView = new TourStopGroupView();

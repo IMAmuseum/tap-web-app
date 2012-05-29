@@ -5,8 +5,8 @@ jQuery(function() {
 		template: _.template($('#tour-stop-video-tpl').html()),
 		render: function() {
 			var mp4ViedoUri, oggVideoUri;
-			if($stop["attributes"]["assetRef"]){
-				_.each($stop.get("assetRef"), function(assetRef) {
+			if(tap.currentStop["attributes"]["assetRef"]){
+				_.each(tap.currentStop.get("assetRef"), function(assetRef) {
 					var asset = tap.tourAssets.get(assetRef.id);
 					var assetSources = asset.get("source");
 
@@ -24,7 +24,7 @@ jQuery(function() {
 			}
 
 			this.$el.html(this.template({
-				tourStopTitle : $stop["attributes"]["title"][0].value,
+				tourStopTitle : tap.currentStop["attributes"]["title"][0].value,
 				tourStopMp4Video : mp4VideoUri,
 				tourStopOggVideo : oggVideoUri
 			}));

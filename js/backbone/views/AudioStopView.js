@@ -6,8 +6,8 @@ jQuery(function() {
 		render: function() {
 			var mp3AudioUri, oggAudioUri, wavAudioUri;
 
-			if($stop["attributes"]["assetRef"]){
-				_.each($stop.get("assetRef"), function(assetRef) {
+			if(tap.currentStop["attributes"]["assetRef"]){
+				_.each(tap.currentStop.get("assetRef"), function(assetRef) {
 					var asset = tap.tourAssets.get(assetRef.id);
 					var assetSources = asset.get("source");
 
@@ -32,7 +32,7 @@ jQuery(function() {
 				tourStopMp3Audio : mp3AudioUri,
 				tourStopOggAudio : oggAudioUri,
 				tourStopWavAudio : wavAudioUri,
-				tourStopTitle : $stop["attributes"]["title"][0].value
+				tourStopTitle : tap.currentStop["attributes"]["title"][0].value
 			}));
 			return this;
 		}
