@@ -1,6 +1,7 @@
 jQuery(function() {
 	AppRouter = Backbone.Router.extend({
 		// define routes
+		views: {},
 		routes: {
 			'': 'list',
 			'tour/:id': 'tourDetails',
@@ -58,6 +59,23 @@ jQuery(function() {
 			$('#tour-stop #page-title').html(tap.tours.get(tap.currentTour).get('title')[0].value);
 			// setup detailed view of tour and render
 			tap.currentStop = tap.tourStops.getStopByKeycode(keycode);
+
+			// Look up the class to instantiate in the views registry
+			var api_class = TapAPI.views.registry[tap.currentStop.get('view')];
+			if (api_class != undefined) {
+				// TODO: Try to show the view first, create if it doesn't exist?
+				var view = new TapAPI.views[api_class]();
+				app.showView('#content', view);
+				return;
+			} /* else {
+				console.log('View not in registry: ', tap.currentStop.get('view'));
+				var view = new TourStopView();
+				app.showView('#content', view);	
+				return;
+			}*/
+
+
+
 			switch(tap.currentStop["attributes"]["view"]) {  // Set appropriate tour stop view type
 				case 'StopGroup':
 				case 'tour_stop_group':
@@ -73,11 +91,13 @@ jQuery(function() {
 					this.tourStopGalleryView = new TourStopGalleryView();
 					app.showView('#content', this.tourStopGalleryView);
 					return;
+				/*
 				case 'VideoStop':
 				case 'tour_video_stop':
 					this.tourStopVideoView = new TourStopVideoView();
 					app.showView('#content', this.tourStopVideoView);
 					return;
+				*/
 				case 'AudioStop':
 				case 'tour_audio_stop':
 					this.tourStopAudioView = new TourStopAudioView();

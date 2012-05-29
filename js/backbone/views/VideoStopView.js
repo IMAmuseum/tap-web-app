@@ -1,6 +1,19 @@
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === 'undefined'){TapAPI = {};}
+if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
+if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
+// TapAPI Namespace Initialization //
+
+// Add this view to the registry
+TapAPI.views.registry['tour_video_stop'] = 'VideoStop';
+
+// TODO: remove this deprecated mapping
+TapAPI.views.registry['VideoStop'] = 'VideoStop';
+
+
 jQuery(function() {
 	// setup a tour stop Video view
-	window.TourStopVideoView = Backbone.View.extend({
+	TapAPI.views.VideoStop = Backbone.View.extend({
 		el: $('#tour-stop').find(":jqmData(role='content')"),
 		template: _.template($('#tour-stop-video-tpl').html()),
 		render: function() {

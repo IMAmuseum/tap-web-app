@@ -1,6 +1,18 @@
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === 'undefined'){TapAPI = {};}
+if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
+if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
+// TapAPI Namespace Initialization //
+
+// Add this view to the registry
+TapAPI.views.registry['tour_audio_stop'] = 'AudioStop';
+
+// TODO: remove this deprecated mapping
+TapAPI.views.registry['AudioStop'] = 'AudioStop';
+
 jQuery(function() {
 	// setup a tour stop Audio view
-	window.TourStopAudioView = Backbone.View.extend({
+	TapAPI.views.AudioStop = Backbone.View.extend({
 		el: $('#tour-stop').find(":jqmData(role='content')"),
 		template: _.template($('#tour-stop-audio-tpl').html()),
 		render: function() {
