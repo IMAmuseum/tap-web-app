@@ -11,15 +11,20 @@ TapAPI.views.registry['tour_audio_stop'] = 'AudioStop';
 TapAPI.views.registry['AudioStop'] = 'AudioStop';
 
 jQuery(function() {
-	// setup a tour stop Audio view
+
+	// Define the AudioStop View
 	TapAPI.views.AudioStop = Backbone.View.extend({
+
 		el: $('#tour-stop').find(":jqmData(role='content')"),
 		template: _.template($('#tour-stop-audio-tpl').html()),
-		render: function() {
-			var mp3AudioUri, oggAudioUri, wavAudioUri;
 
-			if(tap.currentStop["attributes"]["assetRef"]){
-				_.each(tap.currentStop.get("assetRef"), function(assetRef) {
+		render: function() {
+
+			var mp3AudioUri, oggAudioUri, wavAudioUri;
+			var asset_refs = tap.currentStop.get("assetRef");
+
+			if (asset_refs) {
+				_.each(asset_refs, function(assetRef) {
 					var asset = tap.tourAssets.get(assetRef.id);
 					var assetSources = asset.get("source");
 
@@ -44,7 +49,7 @@ jQuery(function() {
 				tourStopMp3Audio : mp3AudioUri,
 				tourStopOggAudio : oggAudioUri,
 				tourStopWavAudio : wavAudioUri,
-				tourStopTitle : tap.currentStop["attributes"]["title"][0].value
+				tourStopTitle : tap.currentStop.get("title")[0].value
 			}));
 			return this;
 		}

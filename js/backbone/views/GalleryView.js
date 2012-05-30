@@ -5,7 +5,7 @@ jQuery(function() {
 		template: _.template($('#tour-gallery-tpl').html()),
 		render: function() {
 			this.$el.html(this.template({
-				tourStopTitle : tap.currentStop["attributes"]["title"][0].value
+				tourStopTitle : tap.currentStop.get("title")[0].value
 			}));
 			var myPhotoSwipe = $("#Gallery a").photoSwipe({
 				enableMouseWheel: false,

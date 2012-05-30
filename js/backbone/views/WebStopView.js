@@ -5,7 +5,7 @@ jQuery(function() {
 		template: _.template($('#tour-stop-web-tpl').html()),
 		render: function() {
 			$(this.el).html(this.template({
-				tourStopTitle : tap.currentStop["attributes"]["title"][0].value
+				tourStopTitle : tap.currentStop.get("title")[0].value
 			}));
 			return this;
 		}
