@@ -18,7 +18,7 @@ jQuery(function() {
 	// setup an individual view of a tour
 	window.TourListItemView = Backbone.View.extend({
 		tagName: 'li',
-		template: _.template($('#tour-list-item-tpl').html()),
+		template: TapAPI.templateManager.get('tour-list-item'),
 		render: function() {
 			$(this.el).html(this.template({
 				title: this.model.get('title') ? this.model.get('title')[0].value : undefined,
