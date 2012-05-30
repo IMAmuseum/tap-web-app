@@ -1,6 +1,14 @@
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === 'undefined'){TapAPI = {};}
+if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
+if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
+// TapAPI Namespace Initialization //
+
 jQuery(function() {
-	// setup a tour keypad view
-	window.TourKeypadView = Backbone.View.extend({
+
+	// Define the Keypad View
+	TapAPI.views.Keypad = Backbone.View.extend({
+
 		el: $('#tour-keypad').find(":jqmData(role='content')"),
 		template: _.template($('#tour-keypad-tpl').html()),
 		events: {
@@ -8,6 +16,7 @@ jQuery(function() {
 			'tap #keypad div button' : 'writekeycode',
 			'tap #delete' : 'clearkeycode'
 		},
+
 		submit: function() {
 			// validate tour stop code
 			if(!$('#write').html()) return;
@@ -16,7 +25,7 @@ jQuery(function() {
 				$('#write').html("");
 				return;
 			}
-			$destUrl = "#tourstop/"+this.options+"/"+$('#write').html();
+			$destUrl = "#tourstop/"+tap.currentTour+"/"+$('#write').html();
 			Backbone.history.navigate($destUrl, true);
 		},
 		writekeycode: function(e) {
