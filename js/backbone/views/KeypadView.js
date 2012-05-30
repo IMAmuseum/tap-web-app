@@ -37,6 +37,9 @@ jQuery(function() {
 		render: function() {
 			this.$el.html(this.template({}));
 			return this;
+		},
+		close: function() {
+			// Override base close function so that events are not unbound
 		}
 	});
 });
