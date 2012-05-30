@@ -50,12 +50,8 @@
 			$.mobile.pushStateEnabled = false;
 
 			$(document).ready(function() {
-				// specify url to tourML document
-				tap.url = 'data/TourMLTourSetInternal.xml';
 				// initialize app
-				tap.initApp();
-				// initialize router
-				app = new AppRouter();
+				tap.initApp('data/TourMLTourSetInternal.xml');
 				// start backbone history collection
 				Backbone.history.start();
 				// override click event for back button

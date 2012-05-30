@@ -11,8 +11,12 @@ if (!tap) {
 	/*
 	 * Takes care of storing/loading data in local storage and initializing
 	 * the tour collection.
+	 * @param url The url to the TourML document
 	 */
-	tap.initApp = function() {
+	tap.initApp = function(url) {
+
+		tap.url = url;
+
 		// trigger tap init start event
 		tap.trigger('tap.init.start');
 
@@ -43,6 +47,10 @@ if (!tap) {
 		}
 		// trigger tap init end event
 		tap.trigger('tap.init.end');
+
+		// initialize router
+		tap.router = new AppRouter();		
+		
 	};
     
 	/*
