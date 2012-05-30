@@ -9,7 +9,7 @@ jQuery(function() {
 	// Define the TourDetails View
 	TapAPI.views.TourDetails = Backbone.View.extend({
 		el: $('#tour-details').find(":jqmData(role='content')"),
-		template: _.template($('#tour-details-tpl').html()),
+		template: TapAPI.templateManager.get('tour-details'),
 		render: function() {
 			var currentTour = tap.tours.get(tap.currentTour);
 

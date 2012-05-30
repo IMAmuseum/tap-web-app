@@ -28,7 +28,8 @@ module.exports = function(grunt) {
 					'js/backbone/views/**/*.js',
 					'js/backbone/Router.js',
 					'js/backbone/Init.js',
-					'js/backbone/Tap.js'
+					'js/backbone/Tap.js',
+					'js/backbone/TemplateManager.js'
 				],
 				dest: 'dist/Tap-<%= meta.version %>.js'
 			},

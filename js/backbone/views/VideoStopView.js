@@ -16,7 +16,7 @@ jQuery(function() {
 	TapAPI.views.VideoStop = Backbone.View.extend({
 
 		el: $('#tour-stop').find(":jqmData(role='content')"),
-		template: _.template($('#tour-stop-video-tpl').html()),
+		template: TapAPI.templateManager.get('video-stop'),
 
 		render: function() {
 

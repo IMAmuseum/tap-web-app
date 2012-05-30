@@ -19,28 +19,32 @@
 	<script src="js/external/backbone.localStorage-min.js"></script>
 	<script src="js/external/klass.js"></script>
 	<script src="js/external/code.photoswipe.jquery-3.0.4.js"></script>
+
 	<script src="js/backbone/helper.js"></script>
-	<script src="js/backbone/models/TourModel.js"></script>
-	<script src="js/backbone/models/StopModel.js"></script>
+	<script src="js/backbone/Init.js"></script>	
+	<script src="js/backbone/Router.js"></script>	
+	<script src="js/backbone/TemplateManager.js"></script>
+
 	<script src="js/backbone/models/AssetModel.js"></script>
+	<script src="js/backbone/models/StopModel.js"></script>		
+	<script src="js/backbone/models/TourModel.js"></script>	
+
+	<script src="js/backbone/collections/AssetCollection.js"></script>	
+	<script src="js/backbone/collections/StopCollection.js"></script>	
 	<script src="js/backbone/collections/TourCollection.js"></script>
-	<script src="js/backbone/collections/StopCollection.js"></script>
-	<script src="js/backbone/collections/AssetCollection.js"></script>
-	<script src="js/backbone/views/HelperView.js"></script>
-	<script src="js/backbone/views/TourListView.js"></script>
-	<script src="js/backbone/views/TourDetailsView.js"></script>
-	<script src="js/backbone/views/KeypadView.js"></script>
-	<script src="js/backbone/views/DefaultStopView.js"></script>
-	<script src="js/backbone/views/ImageStopView.js"></script>
-	<script src="js/backbone/views/VideoStopView.js"></script>
-	<!--<script src="js/backbone/views/GalleryView.js"></script>-->
+
 	<script src="js/backbone/views/AudioStopView.js"></script>
+	<script src="js/backbone/views/DefaultStopView.js"></script>	
+	<script src="js/backbone/views/KeypadView.js"></script>	
+	<script src="js/backbone/views/HelperView.js"></script>
+	<script src="js/backbone/views/ImageStopView.js"></script>	
+	<!--<script src="js/backbone/views/ObjectStopView.js"></script>-->	
+	<script src="js/backbone/views/StopGroupView.js"></script>	
+	<script src="js/backbone/views/TourDetailsView.js"></script>	
+	<script src="js/backbone/views/TourListView.js"></script>
+	<script src="js/backbone/views/VideoStopView.js"></script>
 	<!--<script src="js/backbone/views/WebStopView.js"></script>-->
-	<!--<script src="js/backbone/views/ObjectStopView.js"></script>-->
-	<script src="js/backbone/views/StopGroupView.js"></script>
-	<!--<script src="js/backbone/views/GeoStopView.js"></script>-->
-	<script src="js/backbone/Router.js"></script>
-	<script src="js/backbone/Init.js"></script>
+
 	<script type="text/javascript">
 		(function($){
 
@@ -96,7 +100,7 @@
 		<div data-role="content">
 
 		</div>
-	</div>
+	</div>	
 	<!-- tour stop page -->
 	<div data-role="page" id="tour-stop">
 		<div data-role="header">
@@ -117,15 +121,7 @@
 			<a href="#" data-role="button" data-rel="back" data-theme="b">Close</a>       
 		</div>
 	</div>
-	<!-- templates -->
-	<script type="text/template" id="tour-list-item-tpl">    
-		<a href="#tour/<%= id %>"><%= title %></a>
-	</script>
-	<script type="text/template" id="tour-details-tpl">
-			<div>
-				<%= description %>
-			</div>
-	</script>
+	<!-- deprecated templates, potentially to be moved into template files
 	<script type="text/template" id="tour-gallery-tpl">
 	<ul id="Gallery">
 		<li><a href="assets/images/001.jpg"><img src="assets/images/icons/001.ico" alt="Image 01" /></a></li>
@@ -135,55 +131,6 @@
 		<li><a href="assets/images/005.jpg"><img src="assets/images/icons/005.ico" alt="Image 05" /></a></li>
 		<li><a href="assets/images/006.jpg"><img src="assets/images/icons/006.ico" alt="Image 06" /></a></li>
 	</ul>
-	</script>
-	<script type="text/template" id="tour-keypad-tpl">
-		<fieldset class="ui-grid-b" id="keypad">
-				<div class="ui-block-a" id="writeStyle"><div class="ui-bar" id="write"></div></div>
-				<div class="ui-block-b"><div class="ui-bar ui-bar-d" id="gobtn">Go</div></div>
-				<div class="ui-block-a"><button class="ui-bar ui-bar-d">1</button></div>
-				<div class="ui-block-b"><button class="ui-bar ui-bar-d">2</button></div>	 
-				<div class="ui-block-b"><button class="ui-bar ui-bar-d">3</button></div>  
-				<div class="ui-block-a"><button class="ui-bar ui-bar-d">4</button></div>
-				<div class="ui-block-b"><button class="ui-bar ui-bar-d">5</button></div>	 
-				<div class="ui-block-b"><button class="ui-bar ui-bar-d">6</button></div>  
-				<div class="ui-block-a"><button class="ui-bar ui-bar-d">7</button></div>
-				<div class="ui-block-b"><button class="ui-bar ui-bar-d">8</button></div>	 
-				<div class="ui-block-b"><button class="ui-bar ui-bar-d">9</button></div>  
-				<div class="ui-block-a"><button class="ui-bar ui-bar-d">0</button></div>
-				<div class="ui-block-b" id="clearStyle"><div class="ui-bar ui-bar-d" id="delete">Clear</div></div>
-		</div>
-	</script>
-	<script type="text/template" id="tour-stop-tpl" class='tour-stop'>
-			<div style="width:100%;">
-				<div class='title'><%= tourStopTitle %></div>
-				<div class='description'><%= tourStopDescription %></div>
-			</div>
-	</script>
-	<script type="text/template" id="tour-stop-image-tpl" class='tour-stop'>
-			<div id="soloImage">
-				<a href="<%= tourImageUri %>"><img src="<%= tourImageUri %>" alt="Image 01" class="primaryImg" /></a>
-				<div class='title'><%= tourStopTitle %></div>
-			</div>
-	</script>
-	<script type="text/template" id="tour-stop-video-tpl" class='tour-stop'>
-			<div>
-				<video width="95%" controls="controls" autoplay="autoplay" id="videoPlayer" poster="assets/images/tapPoster.png">
-					<source src="<%= tourStopOggVideo %>" type="video/ogg" />
-					<source src="<%= tourStopMp4Video %>" type="video/mp4" />
-					Your browser does not support the video tag.
-				</video>
-			</div>
-	</script>
-	<script type="text/template" id="tour-stop-audio-tpl" class='tour-stop'>
-			<div>
-				<%= tourStopTitle %>
-				<audio autoplay controls="controls" id="audioPlayer" style="width:100%">
-					<source src="<%= tourStopOggAudio %>" type="audio/ogg" />
-					<source src="<%= tourStopMp3Audio %>" type="audio/mp3" />
-					<source src="<%= tourStopWavAudio %>" type="audio/wav" />
-					Your browser does not support the audio element.
-				</audio>
-			</div>
 	</script>
 	<script type="text/template" id="tour-stop-web-tpl" class='tour-stop'>
 			<div style="width:100%;">
@@ -200,16 +147,6 @@
 				<div class='title'><%= tourStopTitle %></div>
 			</div>
 	</script>
-	<script type="text/template" id="tour-stop-group-tpl" class='tour-stop'>
-			<div style="width:100%;">
-				<div class='title'><%= tourStopTitle %></div>
-				<div class='description'><%= description %></div>
-				<ul id="stop-list" class="ui-listview" data-inset="true" data-role="listview"></ul>
-			</div>
-	</script>
-	<script type="text/template" id="tour-stop-group-list-item-tpl">    
-		<a href="#tourstop/<%= tourId %>/<%= id %>"><%= title %></a>
-	</script>
-	<!-- /templates -->
+	-->
 </body>
 </html>

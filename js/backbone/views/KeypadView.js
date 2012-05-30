@@ -10,7 +10,7 @@ jQuery(function() {
 	TapAPI.views.Keypad = Backbone.View.extend({
 
 		el: $('#tour-keypad').find(":jqmData(role='content')"),
-		template: _.template($('#tour-keypad-tpl').html()),
+		template: TapAPI.templateManager.get('keypad'),
 		events: {
 			'tap #gobtn' : 'submit',
 			'tap #keypad div button' : 'writekeycode',
@@ -35,7 +35,7 @@ jQuery(function() {
 			$('#write').html("");
 		},
 		render: function() {
-			this.$el.html(this.template({}));
+			this.$el.html(this.template());
 			return this;
 		},
 		close: function() {

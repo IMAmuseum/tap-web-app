@@ -16,7 +16,7 @@ jQuery(function() {
 	TapAPI.views.ImageStop = Backbone.View.extend({
 
 		el: $('#tour-stop').find(":jqmData(role='content')"),
-		template: _.template($('#tour-stop-image-tpl').html()),
+		template: TapAPI.templateManager.get('image-stop'),
 
 		render: function() {
 

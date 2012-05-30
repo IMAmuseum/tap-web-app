@@ -16,7 +16,7 @@ jQuery(function() {
 	TapAPI.views.AudioStop = Backbone.View.extend({
 
 		el: $('#tour-stop').find(":jqmData(role='content')"),
-		template: _.template($('#tour-stop-audio-tpl').html()),
+		template: TapAPI.templateManager.get('audio-stop'),
 
 		render: function() {
 
