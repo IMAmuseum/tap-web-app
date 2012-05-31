@@ -1,5 +1,5 @@
 /*
- * TAP - v0.1.0 - 2012-05-08
+ * TAP - v0.1.0 - 2012-05-31
  * http://tapintomuseums.org/
  * Copyright (c) 2011-2012 Indianapolis Museum of Art
  * GPLv3
@@ -2125,6 +2125,13 @@ span.ui-slider-label-b { z-index: 0; right: 0; text-indent: 1.5em;}
 #Gallery li img { display: block; width: 100%; height: auto; }
 #Gallery1 .ui-content, #Gallery2 .ui-content { overflow: hidden; }
 
+.tour-stop .title {
+	margin: 0 0 20px 10px;
+}
+
+.tour-stop .description {
+	margin: 10px;
+}
 /*
  * photoswipe.css
  * Copyright (c) %%year%% by Code Computerlove (http://www.codecomputerlove.com)

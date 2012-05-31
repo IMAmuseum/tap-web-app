@@ -29,7 +29,8 @@ module.exports = function(grunt) {
 					'js/backbone/Router.js',
 					'js/backbone/Init.js',
 					'js/backbone/Tap.js',
-					'js/backbone/TemplateManager.js'
+					'js/backbone/TemplateManager.js',
+					'js/backbone/templates/CompiledTemplates.js'
 				],
 				dest: 'dist/Tap-<%= meta.version %>.js'
 			},
@@ -76,12 +77,12 @@ module.exports = function(grunt) {
 			files: '<config:lint.files>',
 			tasks: 'concat min'
 		},
-		// precompileTemplates: {
-		// 	dist : {
-		// 		src: ['js/backbone/templates/*.tpl.html'],
-		// 		dest: 'js/backbone/templates/CompiledTemplates.js'
-		// 	}
-		// },
+		precompileTemplates: {
+		 	dist : {
+		 		src: ['js/backbone/templates/*.tpl.html'],
+		 		dest: 'js/backbone/templates/CompiledTemplates.js'
+		 	}
+		},
 		jshint: {
 			options: {
 				curly: true,
@@ -115,12 +116,12 @@ module.exports = function(grunt) {
 		grunt.log.writeln('File "' + this.file.dest + '" created.');
 	});
 
-	//Helper for compiligin Underscore templates
+	// Helper for compiling Underscore templates
 	grunt.registerHelper('precompileTemplates', function(files) {
-		var output = '// OsciTk Namespace Initialization //\n' +
-			'if (typeof OsciTk === "undefined"){OsciTk = {};}\n' +
-			'if (typeof OsciTk.templates === "undefined"){OsciTk.templates = {};}\n' +
-			'// OsciTk Namespace Initialization //\n';
+		var output = '// TapAPI Namespace Initialization //\n' +
+			'if (typeof TapAPI === "undefined"){TapAPI = {};}\n' +
+			'if (typeof TapAPI.templates === "undefined"){TapAPI.templates = {};}\n' +
+			'// TapAPI Namespace Initialization //\n';
 
 		if (files) {
 			output += files.map(function(filepath) {
@@ -129,16 +130,24 @@ module.exports = function(grunt) {
 					fileParts = filepath.split("\/"),
 					fileName = fileParts[fileParts.length - 1];
 
-				return "OsciTk.templates['" + fileName.substr(0,fileName.indexOf('.tpl.html')) + "'] = " + templateSrc;
+				grunt.log.writeln('template:');
+				grunt.log.write(templateHtml);
+				grunt.log.writeln('templated:');
+				grunt.log.write(grunt.utils._.template(templateHtml));
+				grunt.log.writeln('source:');
+				grunt.log.write(templateSrc);
+
+				return "TapAPI.templates['" + fileName.substr(0,fileName.indexOf('.tpl.html')) + "'] = " + templateSrc;
 			}).join('\n');
 		}
 
 		return output;
 	});
 
-	grunt.loadNpmTasks('/usr/local/lib/node_modules/grunt/node_modules/grunt-css');
+	//grunt.loadNpmTasks('/usr/local/lib/node_modules/grunt/node_modules/grunt-css');
+	grunt.loadNpmTasks('/usr/local/lib/node_modules/grunt-css');
 
 	// Default task.
-	grunt.registerTask('default', 'concat min cssmin');
+	grunt.registerTask('default', 'precompileTemplates concat min cssmin');
 
 };

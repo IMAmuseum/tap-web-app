@@ -1,5 +1,5 @@
 /*
- * TAP - v0.1.0 - 2012-05-08
+ * TAP - v0.1.0 - 2012-05-31
  * http://tapintomuseums.org/
  * Copyright (c) 2011-2012 Indianapolis Museum of Art
  * GPLv3
@@ -70,51 +70,45 @@ function xmlToJson(xml, namespace) {
 			}
 		}
 	}
-	if (xml.nodeType === Node.TEXT_NODE) { // text
-		obj = xml.nodeValue.replace(/^\s+|\s+$/g, '');
-	} else {
-		if (xml.nodeType === 1) { // element
-			// do attributes
-			if (xml.attributes.length > 0) {
-				var attribute;
-				obj = {};
-				for (i = 0; i < xml.attributes.length; i++) {
-					attribute = xml.attributes.item(i);
-					obj[attribute.nodeName.replaceArray(namespace, '').toCamel()] = attribute.nodeValue;
-				}
-			}
-		}
 
-		// do children
-		if (xml.hasChildNodes()) {
-			var key, value, item;
-			if (obj === true) { obj = {}; }
-			for (i = 0; i < xml.childNodes.length; i++) {
-				item = xml.childNodes.item(i);
-				key = item.nodeType === 3 ? 'value' : item.nodeName.replaceArray(namespace, '').toCamel();
-				value = xmlToJson(item, namespace);
-				if(value.length !== 0 && key !== '#comment') { // ignore empty nodes and comments
-					if (obj.hasOwnProperty(key)) {
-						if(item.nodeType === 3) {
-							obj[key] += value;
-						} else {
-							if (obj[key].constructor !== Array) {
-								obj[key] = [obj[key]];
-							}
-							obj[key].push(value);
-						}
-					} else if (item.nodeType !== 3 || value !== '') {
-						obj[key] = value;
-					}
-				}
+	var result = true;
+	if (xml.attributes && xml.attributes.length > 0) {
+		var attribute;
+		result = {};
+		for (var attributeID = 0; attributeID < xml.attributes.length; attributeID++) {
+			attribute = xml.attributes.item(attributeID);
+			result[attribute.nodeName.replaceArray(namespace, '').toCamel()] = attribute.nodeValue;
+		}
+	}
+	if (xml.hasChildNodes()) {
+		var key, value, xmlChild;
+		if (result === true) { result = {}; }
+		for (var child = 0; child < xml.childNodes.length; child++) {
+			xmlChild = xml.childNodes.item(child);
+			if ((xmlChild.nodeType & 7) === 1) {
+				key = xmlChild.nodeName.replaceArray(namespace, '').toCamel();
+				value = xmlToJson(xmlChild, namespace);
+				if (result.hasOwnProperty(key)) {
+					if (result[key].constructor !== Array) { result[key] = [result[key]]; }
+					result[key].push(value);
+				} else { result[key] = value; }
+			} else if ((xmlChild.nodeType - 1 | 1) === 3) {
+				key = 'value';
+				value = xmlChild.nodeType === 3 ? xmlChild.nodeValue.replace(/^\s+|\s+$/g, '') : xmlChild.nodeValue;
+				if (result.hasOwnProperty(key)) { result[key] += value; }
+				else if (xmlChild.nodeType === 4 || value !== '') { result[key] = value; }
 			}
 		}
 	}
-	return(obj);
+	return(result);
 }
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === 'undefined'){TapAPI = {};}
+if (typeof TapAPI.models === 'undefined'){TapAPI.models = {};}
+// TapAPI Namespace Initialization //
 
 // define asset model
-TapAssetModel = Backbone.Model.extend({
+TapAPI.models.Asset = Backbone.Model.extend({
 	get: function(attr) { // override get method
 		if(!this.attributes[attr]) return this.attributes[attr];
 		switch(attr) { // retrieve attribute based on language
@@ -129,8 +123,13 @@ TapAssetModel = Backbone.Model.extend({
 	}
 });
 
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === 'undefined'){TapAPI = {};}
+if (typeof TapAPI.models === 'undefined'){TapAPI.models = {};}
+// TapAPI Namespace Initialization //
+
 // define stop model
-TapStopModel = Backbone.Model.extend({
+TapAPI.models.Stop = Backbone.Model.extend({
 	get: function(attr) { // override get method
 		if(!this.attributes[attr]) return this.attributes[attr];
 		switch(attr) {  // retrieve attribute based on language
@@ -144,9 +143,14 @@ TapStopModel = Backbone.Model.extend({
 		}
 	}
 });
+
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === 'undefined'){TapAPI = {};}
+if (typeof TapAPI.models === 'undefined'){TapAPI.models = {};}
+// TapAPI Namespace Initialization //
 
 // define tour model
-TapTourModel = Backbone.Model.extend({
+TapAPI.models.Tour = Backbone.Model.extend({
 	get: function(attr) { // override get method
 		if(!this.attributes[attr]) return this.attributes[attr];
 		switch(attr) {  // retrieve attribute based on language
@@ -161,17 +165,27 @@ TapTourModel = Backbone.Model.extend({
 	}
 });
 
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === 'undefined'){TapAPI = {};}
+if (typeof TapAPI.collections === 'undefined'){TapAPI.collections = {};}
+// TapAPI Namespace Initialization //
+
 // define assett collection
-TapAssetCollection = Backbone.Collection.extend({
-	model: TapAssetModel,
+TapAPI.collections.Assets = Backbone.Collection.extend({
+	model: TapAPI.models.Asset,
 	initialize: function(models, id) {
 		this.localStorage = new Backbone.LocalStorage(id + '-asset');
 	}
 });
 
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === 'undefined'){TapAPI = {};}
+if (typeof TapAPI.collections === 'undefined'){TapAPI.collections = {};}
+// TapAPI Namespace Initialization //
+
 // define stop collection
-TapStopCollection = Backbone.Collection.extend({
-	model: TapStopModel,
+TapAPI.collections.Stops = Backbone.Collection.extend({
+	model: TapAPI.models.Stop,
 	initialize: function(models, id) {
 		this.localStorage = new Backbone.LocalStorage(id + '-stop');
 	},
@@ -189,9 +203,14 @@ TapStopCollection = Backbone.Collection.extend({
 	}
 });
 
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === 'undefined'){TapAPI = {};}
+if (typeof TapAPI.collections === 'undefined'){TapAPI.collections = {};}
+// TapAPI Namespace Initialization //
+
 // define tour collection
-TapTourCollection = Backbone.Collection.extend({
-	model: TapTourModel,
+TapAPI.collections.Tours = Backbone.Collection.extend({
+	model: TapAPI.models.Tour,
 	localStorage: new Backbone.LocalStorage('tours'),
 	selectTour: function(id) { // load data for the selected tour
 		// set the current tour
@@ -203,9 +222,9 @@ TapTourCollection = Backbone.Collection.extend({
 		}
 
 		// create new instance of StopCollection
-		tap.tourStops = new TapStopCollection(null, id);
+		tap.tourStops = new TapAPI.collections.Stops(null, id);
 		// create new instance of AssetCollection
-		tap.tourAssets = new TapAssetCollection(null, id);
+		tap.tourAssets = new TapAPI.collections.Assets(null, id);
 
 		// load data from local storage
 		tap.tourStops.fetch();
@@ -224,16 +243,33 @@ Backbone.View.prototype.close = function () {
 		this.onClose();
 	}
 };
-jQuery(function() {
-	// setup a tour stop Audio view
-	window.TourStopAudioView = Backbone.View.extend({
-		el: $('#tour-stop').find(":jqmData(role='content')"),
-		template: _.template($('#tour-stop-audio-tpl').html()),
-		render: function() {
-			var mp3AudioUri, oggAudioUri, wavAudioUri;
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === 'undefined'){TapAPI = {};}
+if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
+if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
+// TapAPI Namespace Initialization //
 
-			if($stop["attributes"]["assetRef"]){
-				_.each($stop.get("assetRef"), function(assetRef) {
+// Add this view to the registry
+TapAPI.views.registry['tour_audio_stop'] = 'AudioStop';
+
+// TODO: remove this deprecated mapping
+TapAPI.views.registry['AudioStop'] = 'AudioStop';
+
+jQuery(function() {
+
+	// Define the AudioStop View
+	TapAPI.views.AudioStop = Backbone.View.extend({
+
+		el: $('#tour-stop').find(":jqmData(role='content')"),
+		template: TapAPI.templateManager.get('audio-stop'),
+
+		render: function() {
+
+			var mp3AudioUri, oggAudioUri, wavAudioUri;
+			var asset_refs = tap.currentStop.get("assetRef");
+
+			if (asset_refs) {
+				_.each(asset_refs, function(assetRef) {
 					var asset = tap.tourAssets.get(assetRef.id);
 					var assetSources = asset.get("source");
 
@@ -258,22 +294,28 @@ jQuery(function() {
 				tourStopMp3Audio : mp3AudioUri,
 				tourStopOggAudio : oggAudioUri,
 				tourStopWavAudio : wavAudioUri,
-				tourStopTitle : $stop["attributes"]["title"][0].value
+				tourStopTitle : tap.currentStop.get("title")[0].value
 			}));
 			return this;
 		}
 	});
 });
 
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === 'undefined'){TapAPI = {};}
+if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
+if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
+// TapAPI Namespace Initialization //
+
 jQuery(function() {
 	// setup a tour stop view
-	window.TourStopView = Backbone.View.extend({
+	TapAPI.views.Stop = Backbone.View.extend({
 		el: $('#tour-stop').find(":jqmData(role='content')"),
-		template: _.template($('#tour-stop-tpl').html()),
+		template: TapAPI.templateManager.get('stop'),
 		render: function() {
 			this.$el.html(this.template({
-				tourStopTitle : $stop.get("title") ? $stop.get("title")[0].value : undefined,
-				tourStopDescription : $stop.get('description') ? $stop.get('description')[0].value : undefined
+				tourStopTitle : tap.currentStop.get("title") ? tap.currentStop.get("title")[0].value : undefined,
+				tourStopDescription : tap.currentStop.get('description') ? tap.currentStop.get('description')[0].value : undefined
 			}));
 			return this;
 		}
@@ -287,7 +329,7 @@ jQuery(function() {
 		template: _.template($('#tour-gallery-tpl').html()),
 		render: function() {
 			this.$el.html(this.template({
-				tourStopTitle : $stop["attributes"]["title"][0].value
+				tourStopTitle : tap.currentStop.get("title")[0].value
 			}));
 			var myPhotoSwipe = $("#Gallery a").photoSwipe({
 				enableMouseWheel: false,
@@ -309,30 +351,47 @@ jQuery(function() {
 		template: _.template($('#tour-stop-geo-tpl').html()),
 		render: function() {
 			$(this.el).html(this.template({
-				tourStopTitle : $stop["attributes"]["title"][0].value
+				tourStopTitle : tap.currentStop.get("title")[0].value
 			}));
 			return this;
 		}
 	});
 });
 
-jQuery(function() {
-	// setup a tour stop Image view
-	window.TourStopImageView = Backbone.View.extend({
-		el: $('#tour-stop').find(":jqmData(role='content')"),
-		template: _.template($('#tour-stop-image-tpl').html()),
-		render: function() {
-			var imageUri, iconUri;
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === 'undefined'){TapAPI = {};}
+if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
+if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
+// TapAPI Namespace Initialization //
 
-			if($stop["attributes"]["assetRef"]){
-				$.each($stop["attributes"]["assetRef"], function() {
+// Add this view to the registry
+TapAPI.views.registry['tour_image_stop'] = 'ImageStop';
+
+// TODO: remove this deprecated mapping
+TapAPI.views.registry['ImageStop'] = 'ImageStop';
+
+jQuery(function() {
+
+	// Define the ImageStop View
+	TapAPI.views.ImageStop = Backbone.View.extend({
+
+		el: $('#tour-stop').find(":jqmData(role='content')"),
+		template: TapAPI.templateManager.get('image-stop'),
+
+		render: function() {
+
+			var imageUri, iconUri;
+			var asset_refs = tap.currentStop.get("assetRef");
+
+			if (asset_refs) {
+				$.each(asset_refs, function() {
 					$assetItem = tap.tourAssets.models;
 					for(var i=0;i<$assetItem.length;i++) {
 						if(($assetItem[i].get('id') == this['id']) && (this['usage'] == "primary" || this['usage'] == "tour_image")){
-							imageUri = $assetItem[i].attributes.source[0].uri;
+							imageUri = $assetItem[i].get('source')[0].uri;
 						}
 						if(($assetItem[i].get('id') == this['id']) && (this['usage']=="icon")){
-							iconUri = $assetItem[i].attributes.source[0].uri;
+							iconUri = $assetItem[i].get('source')[0].uri;
 						}
 					}
 				});
@@ -341,7 +400,7 @@ jQuery(function() {
 			this.$el.html(this.template({
 				tourImageUri : imageUri,
 				tourIconUri : iconUri,
-				tourStopTitle : $stop["attributes"]["title"][0].value
+				tourStopTitle : tap.currentStop.get("title")[0].value
 			}));
 
 			var soloPhotoSwipe = $("#soloImage a").photoSwipe({
@@ -358,16 +417,25 @@ jQuery(function() {
 		}
 	});
 });
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === 'undefined'){TapAPI = {};}
+if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
+if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
+// TapAPI Namespace Initialization //
+
 jQuery(function() {
-	// setup a tour keypad view
-	window.TourKeypadView = Backbone.View.extend({
+
+	// Define the Keypad View
+	TapAPI.views.Keypad = Backbone.View.extend({
+
 		el: $('#tour-keypad').find(":jqmData(role='content')"),
-		template: _.template($('#tour-keypad-tpl').html()),
+		template: TapAPI.templateManager.get('keypad'),
 		events: {
 			'tap #gobtn' : 'submit',
 			'tap #keypad div button' : 'writekeycode',
 			'tap #delete' : 'clearkeycode'
 		},
+
 		submit: function() {
 			// validate tour stop code
 			if(!$('#write').html()) return;
@@ -376,7 +444,7 @@ jQuery(function() {
 				$('#write').html("");
 				return;
 			}
-			$destUrl = "#tourstop/"+this.options+"/"+$('#write').html();
+			$destUrl = "#tourstop/"+tap.currentTour+"/"+$('#write').html();
 			Backbone.history.navigate($destUrl, true);
 		},
 		writekeycode: function(e) {
@@ -386,8 +454,11 @@ jQuery(function() {
 			$('#write').html("");
 		},
 		render: function() {
-			this.$el.html(this.template({}));
+			this.$el.html(this.template());
 			return this;
+		},
+		close: function() {
+			// Override base close function so that events are not unbound
 		}
 	});
 });
@@ -398,18 +469,82 @@ jQuery(function() {
 		template: _.template($('#tour-stop-object-tpl').html()),
 		render: function() {
 			$(this.el).html(this.template({
-				tourStopTitle : $stop["attributes"]["title"][0].value
+				tourStopTitle : tap.currentStop.get("title")[0].value
 			}));
 			return this;
 		}
 	});
 });
 
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === 'undefined'){TapAPI = {};}
+if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
+if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
+// TapAPI Namespace Initialization //
+
+// Add this view to the registry
+TapAPI.views.registry['tour_stop_group'] = 'StopGroup';
+
+// TODO: remove this deprecated mapping
+TapAPI.views.registry['StopGroup'] = 'StopGroup';
+
 jQuery(function() {
-	// setup a detailed view of a tour
-	window.TourDetailedView = Backbone.View.extend({
+	// setup a tour stop Audio view
+	TapAPI.views.StopGroup = Backbone.View.extend({
+		el: $('#tour-stop').find(":jqmData(role='content')"),
+		template: TapAPI.templateManager.get('stop-group'),
+		render: function() {
+			this.$el.html(this.template({
+				tourStopTitle : getAttributeByLanguage(tap.currentStop.get("title"))[0].value,
+				description : getAttributeByLanguage(tap.currentStop.get("description"))[0].value
+			}));
+
+			var connections = tap.currentStop.get('connection');
+			var listContainer = this.$el.find("#stop-list");
+			_.each(connections, function(connection) {
+				var stop = tap.tourStops.get(connection.destId);
+				if (stop) {
+					var stopView = new TapAPI.views.StopGroupListItem({
+						model: stop
+					});
+
+					listContainer.append(stopView.render().$el);
+				}
+			});
+			
+			listContainer.listview();
+
+			return this;
+		}
+	});
+
+	// setup an individual view of a tour
+	TapAPI.views.StopGroupListItem = Backbone.View.extend({
+		tagName: 'li',
+		template: TapAPI.templateManager.get('stop-group-list-item'),
+		render: function() {
+			this.$el.html(this.template({
+				title: this.model.get('title') ? this.model.get('title')[0].value : undefined,
+				id: this.model.get('id'),
+				tourId: tap.currentTour
+			}));
+			return this;
+		}
+	});
+});
+
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === 'undefined'){TapAPI = {};}
+if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
+if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
+// TapAPI Namespace Initialization //
+
+jQuery(function() {
+
+	// Define the TourDetails View
+	TapAPI.views.TourDetails = Backbone.View.extend({
 		el: $('#tour-details').find(":jqmData(role='content')"),
-		template: _.template($('#tour-details-tpl').html()),
+		template: TapAPI.templateManager.get('tour-details'),
 		render: function() {
 			var currentTour = tap.tours.get(tap.currentTour);
 
@@ -437,14 +572,14 @@ jQuery(function() {
 			_.each(this.model.models, function(tour) {
 					$(this.el).append(new TourListItemView({model: tour}).render().el);
 			}, this);
-			$(this.el).listview('refresh'); // refresh listview since we generated the data dynamically
+			this.$el.listview('refresh'); // refresh listview since we generated the data dynamically
 		}
 	});
 
 	// setup an individual view of a tour
 	window.TourListItemView = Backbone.View.extend({
 		tagName: 'li',
-		template: _.template($('#tour-list-item-tpl').html()),
+		template: TapAPI.templateManager.get('tour-list-item'),
 		render: function() {
 			$(this.el).html(this.template({
 				title: this.model.get('title') ? this.model.get('title')[0].value : undefined,
@@ -455,15 +590,33 @@ jQuery(function() {
 	});
 });
 
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === 'undefined'){TapAPI = {};}
+if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
+if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
+// TapAPI Namespace Initialization //
+
+// Add this view to the registry
+TapAPI.views.registry['tour_video_stop'] = 'VideoStop';
+
+// TODO: remove this deprecated mapping
+TapAPI.views.registry['VideoStop'] = 'VideoStop';
+
 jQuery(function() {
-	// setup a tour stop Video view
-	window.TourStopVideoView = Backbone.View.extend({
+
+	// Define the VideoStop View
+	TapAPI.views.VideoStop = Backbone.View.extend({
+
 		el: $('#tour-stop').find(":jqmData(role='content')"),
-		template: _.template($('#tour-stop-video-tpl').html()),
+		template: TapAPI.templateManager.get('video-stop'),
+
 		render: function() {
+
 			var mp4ViedoUri, oggVideoUri;
-			if($stop["attributes"]["assetRef"]){
-				_.each($stop.get("assetRef"), function(assetRef) {
+			var asset_refs = tap.currentStop.get("assetRef");
+
+			if (asset_refs) {
+				_.each(asset_refs, function(assetRef) {
 					var asset = tap.tourAssets.get(assetRef.id);
 					var assetSources = asset.get("source");
 
@@ -481,7 +634,7 @@ jQuery(function() {
 			}
 
 			this.$el.html(this.template({
-				tourStopTitle : $stop["attributes"]["title"][0].value,
+				tourStopTitle : tap.currentStop.get("title")[0].value,
 				tourStopMp4Video : mp4VideoUri,
 				tourStopOggVideo : oggVideoUri
 			}));
@@ -498,7 +651,7 @@ jQuery(function() {
 		template: _.template($('#tour-stop-web-tpl').html()),
 		render: function() {
 			$(this.el).html(this.template({
-				tourStopTitle : $stop["attributes"]["title"][0].value
+				tourStopTitle : tap.currentStop.get("title")[0].value
 			}));
 			return this;
 		}
@@ -508,6 +661,7 @@ jQuery(function() {
 jQuery(function() {
 	AppRouter = Backbone.Router.extend({
 		// define routes
+		views: {},
 		routes: {
 			'': 'list',
 			'tour/:id': 'tourDetails',
@@ -515,14 +669,32 @@ jQuery(function() {
 			'tourstop/:id/:keycode': 'tourStop'
 		},
 		bookmarkMode:false,
-		showView: function(selector, view) {
+
+		/**
+		 * Show the view of the given class
+		 * @param selector   Selector for the element to render within
+		 * @param view_class The class of the view to render
+		 * @note The view will attempt to render the current stop
+		 */
+		showView: function(selector, view_class) {
+
+			// Close the current view
+			// TODO: Check if the class is the same?
 			if (tap.currentView){
 				tap.currentView.close();
 			}
-			$(selector).html(view.render().el);
-			tap.currentView = view;
-			return view;
+
+			// See if we have one of these views instantiated already
+			if (this.views[view_class] == undefined) {
+				this.views[view_class] = new TapAPI.views[view_class]();
+			}
+
+			// Render the view into the given element
+			$(selector).html(this.views[view_class].render().el);
+			tap.currentView = this.views[view_class];
+			return tap.currentView;
 		},
+
 		list: function() {
 			// have jqm change pages
 			$.mobile.changePage('#tours', {transition: 'fade', reverse: true, changeHash: false});
@@ -530,8 +702,12 @@ jQuery(function() {
 			this.tourListView = new TourListView({model: tap.tours});
 			tap.currentView = this.tourListView;
 			this.tourListView.render();
-
 		},
+
+		/**
+		 * Route to the tour details 
+		 * @param id The id of the tour
+		 */
 		tourDetails: function(id) {
 			// set the selected tour
 			tap.tours.selectTour(id);
@@ -541,10 +717,13 @@ jQuery(function() {
 			$('#tour-details #page-title').html(tap.tours.get(tap.currentTour).get('title')[0].value);
 			// attach the tour id to the get started button
 			$('#tour-details #start-tour-id').attr("href", "#tourkeypad/"+id);
-			// setup detailed view of tour and render
-			this.tourDetailedView = new TourDetailedView();
-			app.showView('#content', this.tourDetailedView);
+			this.showView('#content', 'TourDetails');
 		},
+
+		/**
+		 * Route to the keypad
+		 * @param id The id of the tour
+		 */
 		tourKeypad: function(id) {
 			// set the selected tour
 			tap.tours.selectTour(id);
@@ -552,11 +731,16 @@ jQuery(function() {
 			$.mobile.changePage('#tour-keypad', { transition: 'fade', reverse: false, changeHash: false});
 			// change the page title
 			$('#tour-details #page-title').html(tap.tours.get(tap.currentTour).get('title')[0].value);
-			// setup detailed view of keypad and render
-			this.tourKeypadView = new TourKeypadView(id);
-			app.showView('#content', this.tourKeypadView);
+			this.showView('#content', 'Keypad');
 		},
+
+		/**
+		 * Route to the stop with the given code
+		 * @param id      The tour ID
+		 * @param keycode The code for the stop
+		 */
 		tourStop: function(id, keycode) {
+
 			// set the selected tour
 			tap.tours.selectTour(id);
 			// have jqm change pages
@@ -564,50 +748,19 @@ jQuery(function() {
 			// change the page title
 			$('#tour-stop #page-title').html(tap.tours.get(tap.currentTour).get('title')[0].value);
 			// setup detailed view of tour and render
-			$stop = tap.tourStops.getStopByKeycode(keycode);
-			switch($stop["attributes"]["view"]) {  // Set appropriate tour stop view type
-				case 'StopGroup':
-				case 'tour_stop_group':
-					this.tourStopView = new TourStopView();
-					app.showView('#content', this.tourStopView);
-					return;
-				case 'ImageStop':
-				case 'tour_image_stop':
-					this.tourStopImageView = new TourStopImageView();
-					app.showView('#content', this.tourStopImageView);
-					return;
-				case 'GalleryStop':
-					this.tourStopGalleryView = new TourStopGalleryView();
-					app.showView('#content', this.tourStopGalleryView);
-					return;
-				case 'VideoStop':
-				case 'tour_video_stop':
-					this.tourStopVideoView = new TourStopVideoView();
-					app.showView('#content', this.tourStopVideoView);
-					return;
-				case 'AudioStop':
-				case 'tour_audio_stop':
-					this.tourStopAudioView = new TourStopAudioView();
-					app.showView('#content', this.tourStopAudioView);
-					return;
-				case 'WebStop':
-					this.tourStopWebView = new TourStopWebView();
-					app.showView('#content', this.tourStopWebView);
-					return;
-				case 'ObjectStop':
-					this.tourStopObjectView = new TourStopObjectView();
-					app.showView('#content', this.tourStopObjectView);
-					return;
-				case 'GeoStop':
-					this.tourStopGeoView = new TourStopGeoView();
-					app.showView('#content', this.tourStopGeoView);
-					return;
-				default:
-					this.tourStopView = new TourStopView();
-					app.showView('#content', this.tourStopView);
-					return;
+			tap.currentStop = tap.tourStops.getStopByKeycode(keycode);
+
+			// Look up the class to instantiate in the views registry
+			var api_class = TapAPI.views.registry[tap.currentStop.get('view')];
+			if (api_class != undefined) {
+				this.showView('#content', api_class);
+			} else {
+				console.log('View not in registry: ', tap.currentStop.get('view'));
+				this.showView('#content', 'Stop');
 			}
+
 		}
+
 	});
 });
 
@@ -624,13 +777,17 @@ if (!tap) {
 	/*
 	 * Takes care of storing/loading data in local storage and initializing
 	 * the tour collection.
+	 * @param url The url to the TourML document
 	 */
-	tap.initApp = function() {
+	tap.initApp = function(url) {
+
+		tap.url = url;
+
 		// trigger tap init start event
 		tap.trigger('tap.init.start');
 
 		// create new instance of tour collection
-		tap.tours = new TapTourCollection();
+		tap.tours = new TapAPI.collections.Tours();
 
 		tap.tours.fetch();
 
@@ -656,6 +813,10 @@ if (!tap) {
 		}
 		// trigger tap init end event
 		tap.trigger('tap.init.end');
+
+		// initialize router
+		tap.router = new AppRouter();		
+		
 	};
     
 	/*
@@ -684,7 +845,7 @@ if (!tap) {
 
 		var i, j;
 		// create new instance of StopCollection
-		var stops = new TapStopCollection(null, data.id);
+		var stops = new TapAPI.collections.Stops(null, data.id);
 		// load tour models
 		var numStops = data.stop.length;
 		for (i = 0; i < numStops; i++) {
@@ -707,7 +868,7 @@ if (!tap) {
 		}
 
 		// create new instance of AssetCollection
-		var assets = new TapAssetCollection(null, data.id);
+		var assets = new TapAPI.collections.Assets(null, data.id);
 		// load asset models
 		var numAssets = data.asset.length;
 		for (i = 0; i < numAssets; i++) {
@@ -734,3 +895,40 @@ if (!tap) {
 		assets.reset();
 	};
 }
+
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === 'undefined'){TapAPI = {};}
+if (typeof TapAPI.templates === 'undefined'){TapAPI.templates = {};}
+// TapAPI Namespace Initialization //
+
+TapAPI.templateManager = {
+
+        get : function(templateName) {
+                if (TapAPI.templates[templateName] === undefined) {
+                        $.ajax({
+                                async : false,
+                                dataType : 'html',
+                                url : 'js/backbone/templates/' + templateName + '.tpl.html',
+                                success : function(data, textStatus, jqXHR) {
+                                        TapAPI.templates[templateName] = _.template(data);
+                                }
+                        });
+                }
+
+                return TapAPI.templates[templateName];
+        }
+
+};
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === "undefined"){TapAPI = {};}
+if (typeof TapAPI.templates === "undefined"){TapAPI.templates = {};}
+// TapAPI Namespace Initialization //
+TapAPI.templates['audio-stop'] = undefined
+TapAPI.templates['image-stop'] = undefined
+TapAPI.templates['keypad'] = undefined
+TapAPI.templates['stop-group-list-item'] = undefined
+TapAPI.templates['stop-group'] = undefined
+TapAPI.templates['stop'] = undefined
+TapAPI.templates['tour-details'] = undefined
+TapAPI.templates['tour-list-item'] = undefined
+TapAPI.templates['video-stop'] = undefined
