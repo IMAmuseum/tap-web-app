@@ -20,8 +20,13 @@ jQuery(function() {
 
 		render: function() {
 
-			var mp3AudioUri, oggAudioUri, wavAudioUri;
 			var asset_refs = tap.currentStop.get("assetRef");
+
+			// TODO: handle audio stops that refer to video assets
+
+			this.$el.html(this.template({
+				tourStopTitle : tap.currentStop.get("title")[0].value
+			}));			
 
 			if (asset_refs) {
 				_.each(asset_refs, function(assetRef) {
@@ -29,28 +34,11 @@ jQuery(function() {
 					var assetSources = asset.get("source");
 
 					_.each(assetSources, function(assetSource){
-						switch (assetSource.format) {
-							case 'audio/mp3':
-							case 'audio/mpeg':
-								mp3AudioUri = assetSource.uri;
-								break;
-							case 'audio/ogg':
-								oggAudioUri = assetSource.uri;
-								break;
-							case 'audio/wav':
-								wavAudioUri = assetSource.uri;
-								break;
-						}
+						$('audio', this.$el).append("<source src='" + assetSource.uri + "' type='" + assetSource.format + "' />");
 					});
 				});
 			}
 
-			this.$el.html(this.template({
-				tourStopMp3Audio : mp3AudioUri,
-				tourStopOggAudio : oggAudioUri,
-				tourStopWavAudio : wavAudioUri,
-				tourStopTitle : tap.currentStop.get("title")[0].value
-			}));
 			return this;
 		}
 	});

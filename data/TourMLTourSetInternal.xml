@@ -49,6 +49,10 @@
 			<tourml:Source tourml:format="audio/mp3" tourml:lastModified="2011-09-29T12:01:32" xml:lang="es" tourml:uri="assets/audio/STOP001.mp3" />
 		</tourml:Asset>
 
+		<tourml:Asset tourml:id="aud-2">
+			<tourml:Source tourml:format="audio/mp3" tourml:lastModified="2011-09-29T12:01:32" xml:lang="en" tourml:uri="assets/audio/STOP001.mp3" />
+		</tourml:Asset>
+
 		<tourml:Asset tourml:id="www-1">
 			<tourml:Source tourml:format="text/html" tourml:uri="http://en.wikipedia.org/wiki/Mummy" />
 		</tourml:Asset>
@@ -148,6 +152,16 @@
 				<tourml:Property tourml:name="autoplay" xsd:type="boolean">true</tourml:Property>
 			</tourml:PropertySet>
 		</tourml:Stop>
+
+		<!-- Example of an audio stop -->
+		<tourml:Stop tourml:id="stop-2b" tourml:view="AudioStop">
+			<tourml:Title>MP3 Only</tourml:Title>
+			<tourml:AssetRef tourml:id="aud-2" tourml:usage="primary" />
+			<tourml:PropertySet>
+				<tourml:Property tourml:name="code">403</tourml:Property>
+				<tourml:Property tourml:name="autoplay" xsd:type="boolean">true</tourml:Property>
+			</tourml:PropertySet>
+		</tourml:Stop>		
 
 		<!-- Example of a video stop that autoplays -->
 		<tourml:Stop tourml:id="stop-3" tourml:view="VideoStop">

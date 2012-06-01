@@ -1,9 +1,6 @@
 <div class='audio-stop'>
-	<%= tourStopTitle %>
+	<div class='title'><%= tourStopTitle %></div>
 	<audio autoplay controls="controls" id="audioPlayer" style="width:100%">
-		<source src="<%= tourStopOggAudio %>" type="audio/ogg" />
-		<source src="<%= tourStopMp3Audio %>" type="audio/mp3" />
-		<source src="<%= tourStopWavAudio %>" type="audio/wav" />
-		Your browser does not support the audio element.
+		<p>Your browser does not support the audio element.</p>
 	</audio>
 </div>

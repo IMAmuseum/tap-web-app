@@ -20,8 +20,11 @@ jQuery(function() {
 
 		render: function() {
 
-			var mp4ViedoUri, oggVideoUri;
 			var asset_refs = tap.currentStop.get("assetRef");
+
+			this.$el.html(this.template({
+				tourStopTitle : tap.currentStop.get("title")[0].value,
+			}));
 
 			if (asset_refs) {
 				_.each(asset_refs, function(assetRef) {
@@ -29,23 +32,10 @@ jQuery(function() {
 					var assetSources = asset.get("source");
 
 					_.each(assetSources, function(assetSource){
-						switch (assetSource.format) {
-							case 'video/mp4':
-								mp4VideoUri = assetSource.uri;
-								break;
-							case 'video/ogg':
-								oggVideoUri = assetSource.uri;
-								break;
-						}
+						$('video', this.$el).append("<source src='" + assetSource.uri + "' type='" + assetSource.format + "' />");
 					});
 				});
 			}
-
-			this.$el.html(this.template({
-				tourStopTitle : tap.currentStop.get("title")[0].value,
-				tourStopMp4Video : mp4VideoUri,
-				tourStopOggVideo : oggVideoUri
-			}));
 
 			return this;
 		}
