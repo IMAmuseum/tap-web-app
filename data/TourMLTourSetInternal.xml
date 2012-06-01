@@ -163,6 +163,16 @@
 			</tourml:PropertySet>
 		</tourml:Stop>		
 
+		<!-- Example of an audio stop -->
+		<tourml:Stop tourml:id="stop-2c" tourml:view="AudioStop">
+			<tourml:Title>Video as audio</tourml:Title>
+			<tourml:AssetRef tourml:id="vid-1" tourml:usage="primary" />
+			<tourml:PropertySet>
+				<tourml:Property tourml:name="code">444</tourml:Property>
+				<tourml:Property tourml:name="autoplay" xsd:type="boolean">true</tourml:Property>
+			</tourml:PropertySet>
+		</tourml:Stop>		
+
 		<!-- Example of a video stop that autoplays -->
 		<tourml:Stop tourml:id="stop-3" tourml:view="VideoStop">
 			<tourml:Title>Tour 1 - How to use TAP</tourml:Title>

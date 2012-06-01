@@ -22,21 +22,40 @@ jQuery(function() {
 
 			var asset_refs = tap.currentStop.get("assetRef");
 
-			// TODO: handle audio stops that refer to video assets
-
 			this.$el.html(this.template({
 				tourStopTitle : tap.currentStop.get("title")[0].value
-			}));			
+			}));
 
 			if (asset_refs) {
 				_.each(asset_refs, function(assetRef) {
+
 					var asset = tap.tourAssets.get(assetRef.id);
 					var assetSources = asset.get("source");
 
-					_.each(assetSources, function(assetSource){
-						$('audio', this.$el).append("<source src='" + assetSource.uri + "' type='" + assetSource.format + "' />");
+					_.each(assetSources, function(assetSource) {
+
+						var source_str = "<source src='" + assetSource.uri + "' type='" + assetSource.format + "' />";
+
+						switch(assetSource.format.substring(0,5)) {
+							case 'audio':
+								$('#audio-player', this.$el).append(source_str);
+								break;
+							case 'video':
+								$('#video-player', this.$el).append(source_str);
+								break;
+							default:
+								console.log('Unsupported format for audio asset:', assetSource);
+						}
+
 					});
 				});
+
+				// If there are video sources and no audio sources, switch to the video element
+				if ($('#video-player source').length && !$('#audio-player source').length) {
+					$('#audio-player').hide();
+					$('#video-player').show();
+				}
+
 			}
 
 			return this;

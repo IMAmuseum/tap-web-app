@@ -65,10 +65,29 @@
 #Gallery li img { display: block; width: 100%; height: auto; }
 #Gallery1 .ui-content, #Gallery2 .ui-content { overflow: hidden; }
 
+/*** Tour Stops ***/
+
 .tour-stop .title {
+	font-size: 120%;
 	margin: 0 0 20px 10px;
 }
 
 .tour-stop .description {
 	margin: 10px;
 }
+
+
+/*** Audio Stops ***/
+#audio-player {
+	width: 100%;
+}
+
+#audio-player.audio-only {
+	height: 20px;
+}
+
+/*** Video Stops ***/
+#video-player {
+	width: 100%;
+}
+
