@@ -84,7 +84,7 @@ if (!tap) {
 		var numStops = data.stop.length;
 		for (i = 0; i < numStops; i++) {
 			var connections = [];
-			if(!_.isUndefined(data.connections)) {
+			if(!_.isUndefined(data.connection)) {
 				for(j = 0; j < data.connection.length; j++) {
 					if(data.connection[j].srcId == data.stop[i].id) {
 						connections.push({priority: data.connection[j].priority, destId: data.connection[j].destId});
