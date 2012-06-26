@@ -84,10 +84,11 @@ if (!tap) {
 		var numStops = data.stop.length;
 		for (i = 0; i < numStops; i++) {
 			var connections = [];
-			var numConnections = data.connection.length;
-			for(j = 0; j < numConnections; j++) {
-				if(data.connection[j].srcId == data.stop[i].id) {
-					connections.push({priority: data.connection[j].priority, destId: data.connection[j].destId});
+			if(!_.isUndefined(data.connections)) {
+				for(j = 0; j < data.connection.length; j++) {
+					if(data.connection[j].srcId == data.stop[i].id) {
+						connections.push({priority: data.connection[j].priority, destId: data.connection[j].destId});
+					}
 				}
 			}
 			stops.create({
