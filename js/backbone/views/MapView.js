@@ -15,6 +15,11 @@ jQuery(function() {
 	TapAPI.views.Map = Backbone.View.extend({
 		el: $('#tour-map-page').find(":jqmData(role='content')"),
 		template: TapAPI.templateManager.get('tour-map'),
+		attributes: {
+			'data-init-lat': 39.829104,
+			'data-init-lon': -86.189504,
+			'data-init-zoom': 16
+		},
 		map: null,
 		render: function() {
 
@@ -28,8 +33,12 @@ jQuery(function() {
 			    maxZoom: 18
 			});
 
+			console.log(this.attributes['data-init-lat']);
 			// add the CloudMade layer to the map set the view to a given center and zoom
-			this.map.addLayer(cloudmade).setView(new L.LatLng(39.829104, -86.189504), 13);			
+			this.map.addLayer(cloudmade).setView(
+				new L.LatLng(this.attributes['data-init-lat'], this.attributes['data-init-lon']),
+				this.attributes['data-init-zoom']
+			);
 
 			this.resizeContentArea();
 
