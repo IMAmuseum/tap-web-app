@@ -12,6 +12,17 @@
 	cursor: pointer; 
 	text-decoration:none;
 }
+
+#tour-map-page .ui-content {
+	padding: 0px;
+}
+
+#tour-map {
+	width: 100%;
+	height: 400px;
+}
+
+
 #error_invalidCode .ui-header a {
 	display: none;
 }

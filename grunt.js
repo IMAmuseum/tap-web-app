@@ -43,7 +43,8 @@ module.exports = function(grunt) {
 					'js/external/backbone-0.9.2.js',
 					'js/external/backbone.localStorage-min.js',
 					'js/external/klass.min.js',
-					'js/external/code.photoswipe.jquery-3.0.4.js'
+					'js/external/code.photoswipe.jquery-3.0.4.js',
+					'external/leaflet/leaflet.js'
 				],
 				dest: 'dist/Tap-<%= meta.version %>-dependencies.js'
 			},
@@ -52,7 +53,8 @@ module.exports = function(grunt) {
 					'<banner:meta.banner>',
 					'css/jquery.mobile-1.1.0.css',
 					'css/tapweb.css',
-					'css/photoswipe.css'
+					'css/photoswipe.css',
+					'external/leaflet/leaflet.css'
 				],
 				dest: 'dist/Tap-<%= meta.version %>.css'
 			}

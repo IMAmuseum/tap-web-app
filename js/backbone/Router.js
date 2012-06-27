@@ -6,7 +6,8 @@ jQuery(function() {
 			'': 'list',
 			'tour/:id': 'tourDetails',
 			'tourkeypad/:id': 'tourKeypad',
-			'tourstop/:id/:keycode': 'tourStop'
+			'tourstop/:id/:keycode': 'tourStop',
+			'tourmap': 'tourMap'
 		},
 		bookmarkMode:false,
 
@@ -99,6 +100,14 @@ jQuery(function() {
 				this.showView('#content', 'Stop');
 			}
 
+		},
+
+		/**
+		 * Route to the tour map
+		 */
+		tourMap: function() {
+			$.mobile.changePage('#tour-map-page', { transition: 'fade', reverse: false, changeHash: false});
+			this.showView('#content', 'Map');
 		}
 
 	});

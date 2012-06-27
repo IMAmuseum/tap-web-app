@@ -10,6 +10,7 @@
 	<link rel="stylesheet" href="css/jquery.mobile-1.1.0.css" />
 	<link rel="stylesheet" href="css/tapweb.css" />
 	<link rel="stylesheet" href="css/photoswipe.css" />
+	<link rel="stylesheet" href="external/leaflet/leaflet.css" />
 
 	<script src="js/external/jquery-1.7.2.js"></script>
 	<script src="js/external/jquery.mobile-1.1.0.js"></script>
@@ -19,6 +20,7 @@
 	<script src="js/external/backbone.localStorage-min.js"></script>
 	<script src="js/external/klass.js"></script>
 	<script src="js/external/code.photoswipe.jquery-3.0.4.js"></script>
+	<script src="external/leaflet/leaflet.js"></script>
 
 	<script src="js/backbone/helper.js"></script>
 	<script src="js/backbone/Init.js"></script>	
@@ -38,6 +40,7 @@
 	<script src="js/backbone/views/KeypadView.js"></script>	
 	<script src="js/backbone/views/HelperView.js"></script>
 	<script src="js/backbone/views/ImageStopView.js"></script>	
+	<script src="js/backbone/views/MapView.js"></script>		
 	<!--<script src="js/backbone/views/ObjectStopView.js"></script>-->	
 	<script src="js/backbone/views/StopGroupView.js"></script>	
 	<script src="js/backbone/views/TourDetailsView.js"></script>	
@@ -101,6 +104,17 @@
 
 		</div>
 	</div>	
+	<!-- tour map page -->
+	<div data-role="page" id="tour-map-page">
+		<div data-role="header">
+			<a data-rel="back">Tour Info</a>
+			<h1 id="page-title">Tour Map</h1>
+			<a data-theme="b">Help</a>
+		</div> 	
+		<div data-role="content">
+
+		</div>
+	</div>		
 	<!-- tour stop page -->
 	<div data-role="page" id="tour-stop">
 		<div data-role="header">
