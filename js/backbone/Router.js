@@ -30,8 +30,10 @@ jQuery(function() {
 				this.views[view_class] = new TapAPI.views[view_class]();
 			}
 
-			// Render the view into the given element
-			$(selector).html(this.views[view_class].render().el);
+			// Render the view 
+			this.views[view_class].render();
+
+			// Set the current view
 			tap.currentView = this.views[view_class];
 			return tap.currentView;
 		},
