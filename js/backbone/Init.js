@@ -65,16 +65,10 @@ if (!tap) {
 			connection: objectToArray(data.connection),
 			description: data.tourMetadata && data.tourMetadata.description ? objectToArray(data.tourMetadata.description) : undefined,
 			lastModified: data.tourMetadata && data.tourMetadata.lastModified ? data.tourMetadata.lastModified : undefined,
-			propertySet: data.tourMetadata && data.tourMetadata.propertySet ? objectToArray(data.tourMetadata.property) : undefined,
+			propertySet: data.tourMetadata && data.tourMetadata.propertySet ? objectToArray(data.tourMetadata.propertySet.property) : undefined,
 			publishDate: data.tourMetadata && data.tourMetadata.publishDate ? objectToArray(data.tourMetadata.publishDate) : undefined,
 			rootStopRef: data.tourMetadata && data.tourMetadata.rootStopRef ? data.tourMetadata.rootStopRef : undefined,
 			title: data.tourMetadata && data.tourMetadata.title ? objectToArray(data.tourMetadata.title) : undefined
-			// description: objectToArray(data.description),
-			// lastModified: data.lastModified,
-			// propertySet: objectToArray(data.propertySet.property),
-			// publishDate: objectToArray(data.publishDate),
-			// rootStopRef: objectToArray(data.rootStopRef),
-			// title: objectToArray(data.title)
 		});
 
 		var i, j;
