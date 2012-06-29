@@ -7,7 +7,7 @@ jQuery(function() {
 			'tour/:id': 'tourDetails',
 			'tourkeypad/:id': 'tourKeypad',
 			'tourstop/:id/:keycode': 'tourStop',
-			'tourmap': 'tourMap'
+			'tourmap/:id': 'tourMap'
 		},
 		bookmarkMode:false,
 
@@ -30,7 +30,7 @@ jQuery(function() {
 				this.views[view_class] = new TapAPI.views[view_class]();
 			}
 
-			// Render the view 
+			// Render the view
 			this.views[view_class].render();
 
 			// Set the current view
@@ -48,7 +48,7 @@ jQuery(function() {
 		},
 
 		/**
-		 * Route to the tour details 
+		 * Route to the tour details
 		 * @param id The id of the tour
 		 */
 		tourDetails: function(id) {
@@ -106,10 +106,61 @@ jQuery(function() {
 
 		/**
 		 * Route to the tour map
+		 * Certain parameters are determined here in the router to leave open the possibility of 
+		 * plotting markers for several tours on the same map
 		 */
-		tourMap: function() {
+		tourMap: function(id) {
+
 			$.mobile.changePage('#tour-map-page', { transition: 'fade', reverse: false, changeHash: false});
-			this.showView('#content', 'Map');
+
+			// See if we have one of these views instantiated already
+			// TODO: If we do, might need to check if it needs to be reset
+			if (this.views['Map'] == undefined) {
+
+				// Determine which stops to display
+				tap.tours.selectTour(id);
+				var map_options = {
+					'stops': tap.tourStops
+				};
+
+				// Look to see if a location is defined for the tour to use as the initial map center
+				var tour = tap.tours.get(tap.currentTour);
+				_.each(tour.get('appResource'), function(resource) {
+
+					// Make sure this is a geo asset reference
+					if ((resource == undefined) || (resource.usage != 'geo')) return;
+
+					asset = tap.tourAssets.get(resource.id);
+					var data = $.parseJSON(asset.get('content')[0].data.value);
+
+					if (data.type == 'Point') {
+						map_options['init-lon'] = data.coordinates[0];
+						map_options['init-lat'] = data.coordinates[1];
+					}
+
+				});
+
+				// Look to see if the initial map zoom level is set
+				_.each(tour.get('propertySet'), function(property) {
+					if (property.name == 'initial_map_zoom') {
+						map_options['init-zoom'] = property.value
+					}
+				});
+
+				this.views['Map'] = new TapAPI.views.Map(map_options);
+
+			}
+
+			if (tap.currentView){
+				tap.currentView.close();
+			}
+
+			// Render the view
+			this.views['Map'].render();
+
+			// Set the current view
+			tap.currentView = this.views['Map'];
+
 		}
 
 	});

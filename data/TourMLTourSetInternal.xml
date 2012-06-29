@@ -395,4 +395,110 @@
 		<tourml:Connection tourml:srcId="stop-1" tourml:destId="stop-4" tourml:priority="1" /> <!-- Ref to Dr's audio interview -->
 
 	</tourml:Tour>
+
+	<!-- MHS Tour -->
+	<tourml:Tour xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tourml="http://www.imamuseum.org/TourML/2011/11" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://www.imamuseum.org/TourML/2011/11 TourML.xsd" tourml:id="mhs-tour">
+	  <tourml:TourMetadata>
+	    <tourml:Title xml:lang="en">Minnesota River Valley Mobile Tour</tourml:Title>
+	    <tourml:Description xml:lang="en">Listen to stories and reflections about historic sites along the Minnesota River Valley. Learn about the people who lived there and the lasting impact of the U.S.-Dakota War of 1862. Call from any location--from the byway, from home, from anywhere. Press the * key on your phone at any time to return to the menu and select another stop. More stops will be added in 2013 </tourml:Description>
+	    <tourml:AppResource tourml:id="asset-field_geo-0" tourml:usage="geo"/>
+	    <tourml:PropertySet>
+      	  <tourml:Property tourml:name="initial_map_zoom">10</tourml:Property>
+        </tourml:PropertySet>	    
+	  </tourml:TourMetadata>
+	  <tourml:Stop tourml:id="stop-2" tourml:view="tour_audio_stop">
+	    <tourml:Title xml:lang="en">Introduction</tourml:Title>
+	    <tourml:PropertySet>
+	      <tourml:Property tourml:name="code">01</tourml:Property>
+	    </tourml:PropertySet>
+	  </tourml:Stop>
+	  <tourml:Stop tourml:id="stop-3" tourml:view="tour_audio_stop">
+	    <tourml:Title xml:lang="en">Traverse des Sioux</tourml:Title>
+	  </tourml:Stop>
+	  <tourml:Stop tourml:id="stop-4" tourml:view="tour_audio_stop">
+	    <tourml:Title xml:lang="en">New Ulm, Minnesota</tourml:Title>
+	  </tourml:Stop>
+	  <tourml:Stop tourml:id="stop-5" tourml:view="tour_audio_stop">
+	    <tourml:Title xml:lang="en">Lower Sioux Agency</tourml:Title>
+	    <tourml:PropertySet>
+	      <tourml:Property tourml:name="code">04</tourml:Property>
+	    </tourml:PropertySet>
+	  </tourml:Stop>
+	  <tourml:Stop tourml:id="stop-6" tourml:view="tour_audio_stop">
+	    <tourml:Title xml:lang="en">Birch Coulee Battlefield</tourml:Title>
+	  </tourml:Stop>
+	  <tourml:Stop tourml:id="stop-7" tourml:view="tour_audio_stop">
+	    <tourml:Title xml:lang="en">Upper Sioux Agency</tourml:Title>
+	    <tourml:PropertySet>
+	      <tourml:Property tourml:name="code">06</tourml:Property>
+	    </tourml:PropertySet>
+	  </tourml:Stop>
+	  <tourml:Stop tourml:id="stop-8" tourml:view="tour_audio_stop">
+	    <tourml:Title xml:lang="en">Camp Release</tourml:Title>
+	    <tourml:PropertySet>
+	      <tourml:Property tourml:name="code">07</tourml:Property>
+	    </tourml:PropertySet>
+	  </tourml:Stop>
+	  <tourml:Stop tourml:id="stop-10" tourml:view="tour_stop_group">
+	    <tourml:Title xml:lang="en">Traverse des Sioux</tourml:Title>
+	    <tourml:AssetRef tourml:id="asset-field_geo-1" tourml:usage="geo"/>
+	    <tourml:PropertySet>
+	      <tourml:Property tourml:name="code">02</tourml:Property>
+	    </tourml:PropertySet>
+	  </tourml:Stop>
+	  <tourml:Stop tourml:id="stop-11" tourml:view="tour_stop_group">
+	    <tourml:Title xml:lang="en">Lower Sioux Agency</tourml:Title>
+	    <tourml:AssetRef tourml:id="asset-field_geo-2" tourml:usage="geo"/>
+	    <tourml:PropertySet>
+	      <tourml:Property tourml:name="code">03</tourml:Property>
+	    </tourml:PropertySet>
+	  </tourml:Stop>
+	  <tourml:Stop tourml:id="stop-12" tourml:view="tour_stop_group">
+	    <tourml:Title xml:lang="en">Birch Coulee</tourml:Title>
+	    <tourml:AssetRef tourml:id="asset-field_geo-3" tourml:usage="geo"/>
+	    <tourml:PropertySet>
+	      <tourml:Property tourml:name="code">05</tourml:Property>
+	    </tourml:PropertySet>
+	  </tourml:Stop>
+      <tourml:Asset tourml:id="asset-field_geo-0">
+	    <tourml:Content>
+	      <tourml:Data>{"type":"Point","coordinates":[-94.454956,44.41024]}</tourml:Data>
+	      <tourml:PropertySet>
+	        <tourml:Property tourml:name="centroid">44.4102,-94.455</tourml:Property>
+	        <tourml:Property tourml:name="bbox">-94.455,-94.455,44.4102,44.4102</tourml:Property>
+	      </tourml:PropertySet>
+	    </tourml:Content>
+      </tourml:Asset>
+	  <tourml:Asset tourml:id="asset-field_geo-1">
+	    <tourml:Content>
+	      <tourml:Data>{"type":"Point","coordinates":[-93.953282,44.349285]}</tourml:Data>
+	      <tourml:PropertySet>
+	        <tourml:Property tourml:name="centroid">44.3493,-93.9533</tourml:Property>
+	        <tourml:Property tourml:name="bbox">-93.9533,-93.9533,44.3493,44.3493</tourml:Property>
+	      </tourml:PropertySet>
+	    </tourml:Content>
+	  </tourml:Asset>
+	  <tourml:Asset tourml:id="asset-field_geo-2">
+	    <tourml:Content>
+	      <tourml:Data>{"type":"Point","coordinates":[-94.9578,44.5262]}</tourml:Data>
+	      <tourml:PropertySet>
+	        <tourml:Property tourml:name="centroid">44.5262,-94.9578</tourml:Property>
+	        <tourml:Property tourml:name="bbox">-94.9578,-94.9578,44.5262,44.5262</tourml:Property>
+	      </tourml:PropertySet>
+	    </tourml:Content>
+	  </tourml:Asset>
+	  <tourml:Asset tourml:id="asset-field_geo-3">
+	    <tourml:Content>
+	      <tourml:Data>{"type":"Point","coordinates":[-94.9844,44.5515]}</tourml:Data>
+	      <tourml:PropertySet>
+	        <tourml:Property tourml:name="centroid">44.5515,-94.9844</tourml:Property>
+	        <tourml:Property tourml:name="bbox">-94.9844,-94.9844,44.5515,44.5515</tourml:Property>
+	      </tourml:PropertySet>
+	    </tourml:Content>
+	  </tourml:Asset>  
+	  <tourml:Connection tourml:srcId="stop-10" tourml:destId="stop-3" tourml:priority="1"/>
+	  <tourml:Connection tourml:srcId="stop-10" tourml:destId="stop-5" tourml:priority="2"/>
+	</tourml:Tour>
+
+
 </tourml:TourSet>
