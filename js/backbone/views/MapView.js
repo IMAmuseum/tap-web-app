@@ -39,10 +39,11 @@ jQuery(function() {
 			);
 
 			// Find stops with geo coordinate assets
-			this.options.stops.each(function(stop) {
+			for (var i = 0; i<this.options.stops.size(); i++) {
 
-				var asset_refs = stop.get('assetRef');
-				_.each(asset_refs, function(asset_ref) {
+				var tour_stop = this.options.stops.at(i);
+				var asset_refs = tour_stop.get('assetRef');
+				var result = _.each(asset_refs, function(asset_ref) {
 
 					// Make sure this is a geo asset reference
 					if ((asset_ref == undefined) || (asset_ref.usage != 'geo')) return;
@@ -52,12 +53,20 @@ jQuery(function() {
 
 					if (data.type == 'Point') {
 						var marker_location = new L.LatLng(data.coordinates[1], data.coordinates[0]);
-						this.map.addLayer(new L.Marker(marker_location));
+						var marker = new L.Marker(marker_location);
+						var template = TapAPI.templateManager.get('tour-map-marker-bubble');
+
+						console.log(tour_stop.get('title')[0].value)
+						marker.bindPopup(template({
+							'title': tour_stop.get('title')[0].value
+						})).openPopup();
+
+						this.map.addLayer(marker);
 					}
 
-				}, this)
+				}, this);
 
-			}, this);
+			}
 
 
 			$(window).bind('orientationchange pageshow resize', this.resizeContentArea).resize();

@@ -22,6 +22,10 @@
 	height: 400px;
 }
 
+#tour-map .marker-bubble-content .title {
+	font-weight: bold;
+}
+
 
 #error_invalidCode .ui-header a {
 	display: none;
