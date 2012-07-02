@@ -14,12 +14,13 @@
 }
 
 #tour-map-page .ui-content {
+	margin: 0px;
 	padding: 0px;
 }
 
 #tour-map {
 	width: 100%;
-	height: 400px;
+	height: 100%;
 }
 
 #tour-map .marker-bubble-content .title {

@@ -24,6 +24,20 @@ jQuery(function() {
 		tile_layer: null,
 		render: function() {
 
+			$('#tour-map-page').live('pageshow', {map: this}, function(e) {
+				e.data.map.resizeContentArea();
+				if (this.map == null) {
+					e.data.map.initMap();
+				}
+				console.log(this);
+			});
+
+			$(window).bind('orientationchange resize', this.resizeContentArea);
+
+		},
+
+		initMap: function() {
+
 			$(this.el).html(this.template());
 			this.map = new L.Map('tour-map');
 
@@ -56,7 +70,6 @@ jQuery(function() {
 						var marker = new L.Marker(marker_location);
 						var template = TapAPI.templateManager.get('tour-map-marker-bubble');
 
-						console.log(tour_stop.get('title')[0].value)
 						marker.bindPopup(template({
 							'title': tour_stop.get('title')[0].value
 						})).openPopup();
@@ -68,22 +81,19 @@ jQuery(function() {
 
 			}
 
-
-			$(window).bind('orientationchange pageshow resize', this.resizeContentArea).resize();
-
 			return this;
 		},
 
 		resizeContentArea: function() {
 			var content, contentHeight, footer, header, viewportHeight;
 			window.scroll(0, 0);
-			header = $(":jqmData(role='header'):visible");
-			footer = $(":jqmData(role='footer'):visible");
-			content = $(":jqmData(role='content'):visible");
+			var tour_map_page = $('#tour-map-page');
+			header = tour_map_page.find(":jqmData(role='header'):visible");
+			footer = tour_map_page.find(":jqmData(role='footer'):visible");
+			content = tour_map_page.find(":jqmData(role='content'):visible");
 			viewportHeight = $(window).height();
 			contentHeight = viewportHeight - header.outerHeight() - footer.outerHeight();
-			$(":jqmData(role='content')").first().height(contentHeight);
-			return $("#tour-map").height(contentHeight);
+			tour_map_page.find(":jqmData(role='content')").first().height(contentHeight);
 		},
 
 		close: function() {
