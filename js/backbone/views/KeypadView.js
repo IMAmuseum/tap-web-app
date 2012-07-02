@@ -25,7 +25,7 @@ jQuery(function() {
 				$('#write').html("");
 				return;
 			}
-			$destUrl = "#tourstop/"+tap.currentTour+"/"+$('#write').html();
+			$destUrl = "#tourstop/"+tap.currentTour+"/code/"+$('#write').html();
 			Backbone.history.navigate($destUrl, true);
 		},
 		writekeycode: function(e) {

@@ -4,10 +4,10 @@ jQuery(function() {
 		views: {},
 		routes: {
 			'': 'list',
-			'tour/:id': 'tourDetails',
-			'tourkeypad/:id': 'tourKeypad',
-			'tourstop/:id/:keycode': 'tourStop',
-			'tourmap/:id': 'tourMap'
+			'tour/:tour_id': 'tourDetails',
+			'tourkeypad/:tour_id': 'tourKeypad',
+			'tourstop/:tour_id/code/:stop_code': 'tourStop',
+			'tourmap/:tour_id': 'tourMap'
 		},
 		bookmarkMode:false,
 
