@@ -71,10 +71,13 @@ jQuery(function() {
 						var template = TapAPI.templateManager.get('tour-map-marker-bubble');
 
 						marker.bindPopup(template({
-							'title': tour_stop.get('title')[0].value
+							'title': tour_stop.get('title')[0].value,
+							'tour_id': tap.currentTour,
+							'stop_id': tour_stop.id
 						})).openPopup();
 
 						this.map.addLayer(marker);
+						console.log(tour_stop);
 					}
 
 				}, this);
