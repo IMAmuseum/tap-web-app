@@ -16,10 +16,19 @@ jQuery(function() {
 		el: $('#tour-stop').find(":jqmData(role='content')"),
 		template: TapAPI.templateManager.get('stop-group'),
 		render: function() {
-			this.$el.html(this.template({
-				tourStopTitle : getAttributeByLanguage(tap.currentStop.get("title"))[0].value,
-				description : getAttributeByLanguage(tap.currentStop.get("description"))[0].value
-			}));
+
+			var template_args = {
+				tourStopTitle : tap.currentStop.get('title')[0].value
+			};
+
+			var description = tap.currentStop.get("description");
+			if (description != undefined) {
+				template_args['description'] = description[0].value;
+			} else {
+				template_args['description'] = '';
+			}
+
+			this.$el.html(this.template(template_args));
 
 			var connections = tap.currentStop.get('connection');
 			var listContainer = this.$el.find("#stop-list");
