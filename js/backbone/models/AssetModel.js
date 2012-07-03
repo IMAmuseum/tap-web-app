@@ -16,5 +16,17 @@ TapAPI.models.Asset = Backbone.Model.extend({
 			default:
 				return this.attributes[attr];
 		}
+	},
+	/**
+	* Retrieves the property value of a given property name
+	* @param  string key The propety name
+	* @return string The property value
+	*/
+	getPropertyByName: function(name) {
+		if(_.isUndefined(this.get('propertySet'))) return false;
+		var property = _.find(this.get('propertySet'), function(item) {
+			return item['name'] === key;
+		});
+		return _.isUndefined(property) ? false : property.value;
 	}
 });
