@@ -25,6 +25,12 @@ jQuery(function() {
 		tile_layer: null,
 		view_initialized: false,
 		latest_location: null,
+		LocationIcon: L.Icon.extend({
+			iconUrl: 'assets/images/icon-locate.png',
+			shadowUrl: null,
+			iconSize: new L.Point(24, 24),
+			iconAnchor: new L.Point(12, 12)
+		}),
 
 		render: function() {
 
@@ -38,6 +44,7 @@ jQuery(function() {
 			$(window).bind('orientationchange resize', this.resizeContentArea);
 
 		},
+
 
 		initMap: function() {
 
@@ -62,44 +69,59 @@ jQuery(function() {
 
 				var tour_stop = this.options.stops.at(i);
 				var asset_refs = tour_stop.get('assetRef');
-				var result = _.each(asset_refs, function(asset_ref) {
-
-					// Make sure this is a geo asset reference
-					if ((asset_ref === undefined) || (asset_ref.usage != 'geo')) return;
-
-					asset = tap.tourAssets.get(asset_ref.id);
-					var data = $.parseJSON(asset.get('content')[0].data.value);
-
-					if (data.type == 'Point') {
-						var marker_location = new L.LatLng(data.coordinates[1], data.coordinates[0]);
-						var marker = new L.Marker(marker_location);
-						var template = TapAPI.templateManager.get('tour-map-marker-bubble');
-
-						marker.bindPopup(template({
-							'title': tour_stop.get('title')[0].value,
-							'tour_id': tap.currentTour,
-							'stop_id': tour_stop.id
-						})).openPopup();
-
-						this.map.addLayer(marker);
-
+				var result = _.each(
+					asset_refs,
+					this.plotTourStopMarker,
+					{
+						stop: tour_stop,
+						map: this.map
 					}
-
-				}, this);
+				);
 
 			}
 
 			return this;
 		},
 
+
+		// Plot a single tour stop marker on the map
+		// @note Assumes that the context is set to { stop: (StopModel), map: (L.Map) }
+		plotTourStopMarker: function(asset_ref) {
+
+			// Make sure this is a geo asset reference
+			if ((asset_ref === undefined) || (asset_ref.usage != 'geo')) return;
+
+			// Parse the contents of the asset
+			asset = tap.tourAssets.get(asset_ref.id);
+			var data = $.parseJSON(asset.get('content')[0].data.value);
+
+			if (data.type == 'Point') {
+
+				var marker_location = new L.LatLng(data.coordinates[1], data.coordinates[0]);
+				var marker = new L.Marker(marker_location);
+				var template = TapAPI.templateManager.get('tour-map-marker-bubble');
+
+				marker.bindPopup(template({
+					'title': this.stop.get('title')[0].value,
+					'tour_id': tap.currentTour,
+					'stop_id': this.stop.id
+				}));
+
+				this.map.addLayer(marker);
+
+			}
+
+		},
+
+
 		onLocationFound: function(e) {
 
 			console.log('onLocationFound', e);
 			var radius = e.accuracy / 2;
 
-			var marker = new L.Marker(e.latlng);
+			var marker = new L.Marker(e.latlng, {icon: new this.LocationIcon()});
 			this.map.addLayer(marker);
-			marker.bindPopup("You are within " + radius + " meters from this point").openPopup();
+			//marker.bindPopup("You are within " + radius + " meters from this point").openPopup();
 
 			var circle = new L.Circle(e.latlng, radius);
 			this.map.addLayer(circle);
@@ -108,6 +130,7 @@ jQuery(function() {
 			this.view_initialized = true;
 
 		},
+
 
 		onLocationError: function(e) {
 
@@ -125,6 +148,7 @@ jQuery(function() {
 
 		},
 
+
 		resizeContentArea: function() {
 			var content, contentHeight, footer, header, viewportHeight;
 			window.scroll(0, 0);
@@ -137,8 +161,9 @@ jQuery(function() {
 			tour_map_page.find(":jqmData(role='content')").first().height(contentHeight);
 		},
 
+
 		close: function() {
-			$(window).unbind('orientationchange pageshow resize', this.resizeContentArea);
+			$(window).unbind('orientationchange resize', this.resizeContentArea);
 		}
 
 	});
