@@ -13,6 +13,7 @@ jQuery(function() {
 
 	// Define the Map View
 	TapAPI.views.Map = Backbone.View.extend({
+
 		el: $('#tour-map-page').find(":jqmData(role='content')"),
 		template: TapAPI.templateManager.get('tour-map'),
 		options: {
@@ -22,14 +23,16 @@ jQuery(function() {
 		},
 		map: null,
 		tile_layer: null,
+		view_initialized: false,
+		latest_location: null,
+
 		render: function() {
 
-			$('#tour-map-page').live('pageshow', {map: this}, function(e) {
-				e.data.map.resizeContentArea();
-				if (this.map == null) {
-					e.data.map.initMap();
+			$('#tour-map-page').live('pageshow', {map_view: this}, function(e) {
+				e.data.map_view.resizeContentArea();
+				if (e.data.map_view.map === null) {
+					e.data.map_view.initMap();
 				}
-				console.log(this);
 			});
 
 			$(window).bind('orientationchange resize', this.resizeContentArea);
@@ -45,12 +48,14 @@ jQuery(function() {
 				attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery &copy; <a href="http://cloudmade.com">CloudMade</a>',
 				maxZoom: 18
 			});
+			this.map.addLayer(this.tile_layer);
 
-			// Add the tile layer to the map and set the view to the initial center and zoom
-			this.map.addLayer(this.tile_layer).setView(
-				new L.LatLng(this.options['init-lat'], this.options['init-lon']),
-				this.options['init-zoom']
-			);
+			// Set up location event callbacks
+			this.map.addEventListener('locationfound', this.onLocationFound, this);
+			this.map.addEventListener('locationerror', this.onLocationError, this);
+
+			// First, try to set the view by locating the device
+			this.map.locateAndSetView(this.options['init-zoom']);
 
 			// Find stops with geo coordinate assets
 			for (var i = 0; i<this.options.stops.size(); i++) {
@@ -60,7 +65,7 @@ jQuery(function() {
 				var result = _.each(asset_refs, function(asset_ref) {
 
 					// Make sure this is a geo asset reference
-					if ((asset_ref == undefined) || (asset_ref.usage != 'geo')) return;
+					if ((asset_ref === undefined) || (asset_ref.usage != 'geo')) return;
 
 					asset = tap.tourAssets.get(asset_ref.id);
 					var data = $.parseJSON(asset.get('content')[0].data.value);
@@ -77,7 +82,7 @@ jQuery(function() {
 						})).openPopup();
 
 						this.map.addLayer(marker);
-						console.log(tour_stop);
+
 					}
 
 				}, this);
@@ -85,6 +90,39 @@ jQuery(function() {
 			}
 
 			return this;
+		},
+
+		onLocationFound: function(e) {
+
+			console.log('onLocationFound', e);
+			var radius = e.accuracy / 2;
+
+			var marker = new L.Marker(e.latlng);
+			this.map.addLayer(marker);
+			marker.bindPopup("You are within " + radius + " meters from this point").openPopup();
+
+			var circle = new L.Circle(e.latlng, radius);
+			this.map.addLayer(circle);
+
+			this.latest_location = e.latlng;
+			this.view_initialized = true;
+
+		},
+
+		onLocationError: function(e) {
+
+			console.log('onLocationError', e);
+
+			// If the map view has not been initialized,
+			// set the view to the initial center and zoom
+			if (!this.view_initialized) {
+				this.map.setView(
+					new L.LatLng(this.options['init-lat'], this.options['init-lon']),
+					this.options['init-zoom']
+				);
+				this.view_initialized = true;
+			}
+
 		},
 
 		resizeContentArea: function() {
