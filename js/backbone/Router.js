@@ -4,10 +4,11 @@ jQuery(function() {
 		views: {},
 		routes: {
 			'': 'list',
-			'tour/:id': 'tourDetails',
-			'tourkeypad/:id': 'tourKeypad',
-			'tourstop/:id/:keycode': 'tourStop',
-			'tourmap/:id': 'tourMap'
+			'tour/:tour_id': 'tourDetails',
+			'tourkeypad/:tour_id': 'tourKeypad',
+			'tourstop/:tour_id/:stop_id': 'tourStopById',			
+			'tourstop/:tour_id/code/:stop_code': 'tourStopByCode',
+			'tourmap/:tour_id': 'tourMap'
 		},
 		bookmarkMode:false,
 
@@ -78,20 +79,14 @@ jQuery(function() {
 		},
 
 		/**
-		 * Route to the stop with the given code
-		 * @param id      The tour ID
-		 * @param keycode The code for the stop
+		 * Route to a stop
 		 */
-		tourStop: function(id, keycode) {
+		tourStop: function() {
 
-			// set the selected tour
-			tap.tours.selectTour(id);
 			// have jqm change pages
 			$.mobile.changePage('#tour-stop', { transition: 'fade', reverse: false, changeHash: false});
 			// change the page title
 			$('#tour-stop #page-title').html(tap.tours.get(tap.currentTour).get('title')[0].value);
-			// setup detailed view of tour and render
-			tap.currentStop = tap.tourStops.getStopByKeycode(keycode);
 
 			// Look up the class to instantiate in the views registry
 			var api_class = TapAPI.views.registry[tap.currentStop.get('view')];
@@ -101,6 +96,30 @@ jQuery(function() {
 				console.log('View not in registry: ', tap.currentStop.get('view'));
 				this.showView('#content', 'Stop');
 			}
+
+		},
+
+		/**
+		 * Route to a stop by stop ID
+		 **/
+		tourStopById: function(tour_id, stop_id) {
+
+			// set the selected tour
+			tap.tours.selectTour(tour_id);
+			tap.currentStop = tap.tourStops.get(stop_id);
+			this.tourStop();
+
+		},
+
+		/**
+		 * Route to a stop by stop code
+		 */
+		tourStopByCode: function(tour_id, stop_code) {
+
+			// set the selected tour
+			tap.tours.selectTour(tour_id);
+			tap.currentStop = tap.tourStops.getStopByKeycode(stop_code);
+			this.tourStop();
 
 		},
 
