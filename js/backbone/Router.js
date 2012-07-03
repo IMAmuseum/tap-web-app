@@ -6,7 +6,7 @@ jQuery(function() {
 			'': 'list',
 			'tour/:tour_id': 'tourDetails',
 			'tourkeypad/:tour_id': 'tourKeypad',
-			'tourstop/:tour_id/:stop_id': 'tourStopById',			
+			'tourstop/:tour_id/:stop_id': 'tourStopById',
 			'tourstop/:tour_id/code/:stop_code': 'tourStopByCode',
 			'tourmap/:tour_id': 'tourMap'
 		},
@@ -27,7 +27,7 @@ jQuery(function() {
 			}
 
 			// See if we have one of these views instantiated already
-			if (this.views[view_class] == undefined) {
+			if (this.views[view_class] === undefined) {
 				this.views[view_class] = new TapAPI.views[view_class]();
 			}
 

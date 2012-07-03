@@ -24,6 +24,7 @@
 	
 	<script src="js/backbone/helper.js"></script>
 	<script src="js/backbone/Init.js"></script>	
+	<script src="js/backbone/GeoLocation.js"></script>
 	<script src="js/backbone/Router.js"></script>	
 	<script src="js/backbone/TemplateManager.js"></script>
 
@@ -59,6 +60,7 @@
 			$(document).ready(function() {
 				// initialize app
 				tap.initApp('data/TourMLTourSetInternal.xml');
+
 				// start backbone history collection
 				Backbone.history.start();
 				// override click event for back button

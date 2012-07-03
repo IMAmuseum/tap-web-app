@@ -31,6 +31,8 @@ jQuery(function() {
 			iconSize: new L.Point(24, 24),
 			iconAnchor: new L.Point(12, 12)
 		}),
+		stop_markers: {},
+		units: 'si',
 
 		render: function() {
 
@@ -58,11 +60,24 @@ jQuery(function() {
 			this.map.addLayer(this.tile_layer);
 
 			// Set up location event callbacks
-			this.map.addEventListener('locationfound', this.onLocationFound, this);
-			this.map.addEventListener('locationerror', this.onLocationError, this);
+			//this.map.addEventListener('locationfound', this.onLocationFound, this);
+			//this.map.addEventListener('locationerror', this.onLocationError, this);
 
 			// First, try to set the view by locating the device
-			this.map.locateAndSetView(this.options['init-zoom']);
+			//this.map.locateAndSetView(this.options['init-zoom']);
+			if (TapAPI.geoLocation !== null) {
+				if (TapAPI.geoLocation.latest_location !== null) {
+
+					this.options['init-lat'] = TapAPI.geoLocation.latest_location.coords.latitude;
+					this.options['init-lon'] = TapAPI.geoLocation.latest_location.coords.longitude;
+
+				}
+			}
+
+			this.map.setView(
+				new L.LatLng(this.options['init-lat'], this.options['init-lon']),
+				this.options['init-zoom']
+			);			
 
 			// Find stops with geo coordinate assets
 			for (var i = 0; i<this.options.stops.size(); i++) {
@@ -74,18 +89,20 @@ jQuery(function() {
 					this.plotTourStopMarker,
 					{
 						stop: tour_stop,
-						map: this.map
+						map_view: this
 					}
 				);
 
 			}
+
+			TapAPI.geoLocation.on("gotlocation", function() {console.log('foo');});
 
 			return this;
 		},
 
 
 		// Plot a single tour stop marker on the map
-		// @note Assumes that the context is set to { stop: (StopModel), map: (L.Map) }
+		// @note Assumes that the context is set to { stop: (StopModel), map_view: (MapView) }
 		plotTourStopMarker: function(asset_ref) {
 
 			// Make sure this is a geo asset reference
@@ -107,7 +124,8 @@ jQuery(function() {
 					'stop_id': this.stop.id
 				}));
 
-				this.map.addLayer(marker);
+				this.map_view.stop_markers[this.stop.id] = marker;
+				this.map_view.map.addLayer(marker);
 
 			}
 
@@ -129,6 +147,8 @@ jQuery(function() {
 			this.latest_location = e.latlng;
 			this.view_initialized = true;
 
+			this.calculateStopDistance();
+
 		},
 
 
@@ -145,6 +165,24 @@ jQuery(function() {
 				);
 				this.view_initialized = true;
 			}
+
+		},
+
+
+		calculateStopDistance: function() {
+
+			if (this.latest_location === null) return;
+
+			var nearest = null;
+			for (var stop_id in this.stop_markers) {
+				var d = this.latest_location.distanceTo(this.stop_markers[stop_id].getLatLng());
+				console.log(d);
+				if ((nearest === null) || (nearest.distance > d)) {
+					nearest = { id: stop_id, distance: d };
+				}
+			}
+
+			console.log('nearest: ', nearest.distance);
 
 		},
 
