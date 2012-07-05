@@ -24,7 +24,6 @@ jQuery(function() {
 		map: null,
 		tile_layer: null,
 		view_initialized: false,
-		latest_location: null,
 		LocationIcon: L.Icon.extend({
 			iconUrl: 'assets/images/icon-locate.png',
 			shadowUrl: null,
@@ -32,6 +31,7 @@ jQuery(function() {
 			iconAnchor: new L.Point(12, 12)
 		}),
 		stop_markers: {},
+		position_marker: null,
 		units: 'si',
 
 		render: function() {
@@ -71,13 +71,21 @@ jQuery(function() {
 					this.options['init-lat'] = TapAPI.geoLocation.latest_location.coords.latitude;
 					this.options['init-lon'] = TapAPI.geoLocation.latest_location.coords.longitude;
 
+					if (this.position_marker === null) {
+						this.position_marker = new L.Marker(
+							new L.LatLng(this.options['init-lat'], this.options['init-lon']),
+							{icon: new this.LocationIcon()}
+						);
+						this.map.addLayer(this.position_marker);
+					}
+
 				}
 			}
 
 			this.map.setView(
 				new L.LatLng(this.options['init-lat'], this.options['init-lon']),
 				this.options['init-zoom']
-			);			
+			);
 
 			// Find stops with geo coordinate assets
 			for (var i = 0; i<this.options.stops.size(); i++) {
@@ -95,7 +103,7 @@ jQuery(function() {
 
 			}
 
-			TapAPI.geoLocation.on("gotlocation", function() {console.log('foo');});
+			TapAPI.geoLocation.on("gotlocation", this.onLocationFound, this);
 
 			return this;
 		},
@@ -121,7 +129,8 @@ jQuery(function() {
 				marker.bindPopup(template({
 					'title': this.stop.get('title')[0].value,
 					'tour_id': tap.currentTour,
-					'stop_id': this.stop.id
+					'stop_id': this.stop.id,
+					'distance': 'Distance: ' + this.map_view.formatStopDistance(this.stop.get('distance'))
 				}));
 
 				this.map_view.stop_markers[this.stop.id] = marker;
@@ -129,25 +138,26 @@ jQuery(function() {
 
 			}
 
+			this.stop.on('change:distance', function() { console.log('d changed'); });
+
 		},
 
 
-		onLocationFound: function(e) {
+		onLocationFound: function(position) {
 
-			console.log('onLocationFound', e);
-			var radius = e.accuracy / 2;
+			//console.log('onLocationFound', position);
+			var latlng = new L.LatLng(position.coords.latitude, position.coords.longitude);
 
-			var marker = new L.Marker(e.latlng, {icon: new this.LocationIcon()});
-			this.map.addLayer(marker);
-			//marker.bindPopup("You are within " + radius + " meters from this point").openPopup();
+			if (this.position_marker === null) {
 
-			var circle = new L.Circle(e.latlng, radius);
-			this.map.addLayer(circle);
+				this.position_marker = new L.Marker(latlng, {icon: new this.LocationIcon()});
+				this.map.addLayer(this.position_marker);
 
-			this.latest_location = e.latlng;
-			this.view_initialized = true;
+			} else {
 
-			this.calculateStopDistance();
+				this.position_marker.setLatLng(latlng);
+
+			}
 
 		},
 
@@ -156,33 +166,22 @@ jQuery(function() {
 
 			console.log('onLocationError', e);
 
-			// If the map view has not been initialized,
-			// set the view to the initial center and zoom
-			if (!this.view_initialized) {
-				this.map.setView(
-					new L.LatLng(this.options['init-lat'], this.options['init-lon']),
-					this.options['init-zoom']
-				);
-				this.view_initialized = true;
-			}
+			// TODO: hide the position marker?
 
 		},
 
 
-		calculateStopDistance: function() {
+		formatStopDistance: function(d) {
 
-			if (this.latest_location === null) return;
+			if (this.units == 'si') {
 
-			var nearest = null;
-			for (var stop_id in this.stop_markers) {
-				var d = this.latest_location.distanceTo(this.stop_markers[stop_id].getLatLng());
-				console.log(d);
-				if ((nearest === null) || (nearest.distance > d)) {
-					nearest = { id: stop_id, distance: d };
+				if (d < 1000) {
+					return d + ' m';
+				} else {
+					return (d/1000).toFixed(2) + ' km';
 				}
-			}
 
-			console.log('nearest: ', nearest.distance);
+			}
 
 		},
 
