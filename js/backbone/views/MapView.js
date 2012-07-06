@@ -19,20 +19,34 @@ jQuery(function() {
 		options: {
 			'init-lat': 39.829104,
 			'init-lon': -86.189504,
-			'init-zoom': 2
+			'init-zoom': 2,
+			'units': 'si',
 		},
-		map: null,
-		tile_layer: null,
-		view_initialized: false,
 		LocationIcon: L.Icon.extend({
 			iconUrl: 'assets/images/icon-locate.png',
 			shadowUrl: null,
 			iconSize: new L.Point(24, 24),
 			iconAnchor: new L.Point(12, 12)
 		}),
-		stop_markers: {},
-		position_marker: null,
-		units: 'si',
+
+
+		initialize: function() {
+
+			console.log('MapView.initialize');
+
+			this.tile_layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+				attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery &copy; <a href="http://cloudmade.com">CloudMade</a>',
+				maxZoom: 18
+			});
+
+			this.map = null;
+			this.stop_markers = {};
+			this.stop_popups = {};
+			this.position_marker = null;
+			this.view_initialized = false;
+
+		},
+
 
 		render: function() {
 
@@ -53,15 +67,7 @@ jQuery(function() {
 			$(this.el).html(this.template());
 			this.map = new L.Map('tour-map');
 
-			this.tile_layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-				attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery &copy; <a href="http://cloudmade.com">CloudMade</a>',
-				maxZoom: 18
-			});
 			this.map.addLayer(this.tile_layer);
-
-			// Set up location event callbacks
-			//this.map.addEventListener('locationfound', this.onLocationFound, this);
-			//this.map.addEventListener('locationerror', this.onLocationError, this);
 
 			// First, try to set the view by locating the device
 			//this.map.locateAndSetView(this.options['init-zoom']);
@@ -126,20 +132,56 @@ jQuery(function() {
 				var marker = new L.Marker(marker_location);
 				var template = TapAPI.templateManager.get('tour-map-marker-bubble');
 
-				marker.bindPopup(template({
+				var popup = new L.Popup();
+				popup.setLatLng(marker_location);
+
+				var d_content = '';
+				if (this.stop.get('distance')) {
+					d_content = 'Distance: ' + this.map_view.formatStopDistance(this.stop.get('distance'));
+				}
+
+				popup.setContent(template({
 					'title': this.stop.get('title')[0].value,
 					'tour_id': tap.currentTour,
 					'stop_id': this.stop.id,
-					'distance': 'Distance: ' + this.map_view.formatStopDistance(this.stop.get('distance'))
+					'distance': d_content
 				}));
+
+				this.map_view.stop_popups[this.stop.id] = popup;
+
+				marker.stop_id = this.stop.id;
+				marker.addEventListener('click', this.map_view.onMarkerSelected, this.map_view);
 
 				this.map_view.stop_markers[this.stop.id] = marker;
 				this.map_view.map.addLayer(marker);
 
 			}
 
-			this.stop.on('change:distance', function() { console.log('d changed'); });
+			// Update the marker bubble when the distance to a stop changes
+			this.stop.on('change:distance', function(stop) {
 
+				var d_content = '';
+				if (stop.get('distance')) {
+					d_content = 'Distance: ' + this.formatStopDistance(stop.get('distance'));
+				}
+
+				this.stop_popups[stop.id].setContent(template({
+					'title': stop.get('title')[0].value,
+					'tour_id': tap.currentTour,
+					'stop_id': stop.get('id'),
+					'distance': d_content
+				}));
+
+
+			}, this.map_view);
+
+		},
+
+
+		// When a marker is selected, show the popup
+		// Assumes that the context is set to (MapView)
+		onMarkerSelected: function(e) {
+			this.map.openPopup(this.stop_popups[e.target.stop_id]);
 		},
 
 
@@ -173,10 +215,10 @@ jQuery(function() {
 
 		formatStopDistance: function(d) {
 
-			if (this.units == 'si') {
+			if (this.options.units == 'si') {
 
 				if (d < 1000) {
-					return d + ' m';
+					return d.toFixed(2) + ' m';
 				} else {
 					return (d/1000).toFixed(2) + ' km';
 				}
