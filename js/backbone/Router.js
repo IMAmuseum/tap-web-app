@@ -8,7 +8,8 @@ jQuery(function() {
 			'tourkeypad/:tour_id': 'tourKeypad',
 			'tourstop/:tour_id/:stop_id': 'tourStopById',
 			'tourstop/:tour_id/code/:stop_code': 'tourStopByCode',
-			'tourmap/:tour_id': 'tourMap'
+			'tourmap/:tour_id': 'tourMap',
+			'tourstoplist/:tour_id': 'tourStopList'
 		},
 		bookmarkMode:false,
 
@@ -28,7 +29,7 @@ jQuery(function() {
 
 			// See if we have one of these views instantiated already
 			if (this.views[view_class] === undefined) {
-				this.views[view_class] = new TapAPI.views[view_class]();
+				this.views[view_class] = new TapAPI.views[view_class]({model: tap.tours.get(tap.currentTour)});
 			}
 
 			// Render the view
@@ -90,7 +91,7 @@ jQuery(function() {
 
 			// Look up the class to instantiate in the views registry
 			var api_class = TapAPI.views.registry[tap.currentStop.get('view')];
-			if (api_class != undefined) {
+			if (api_class !== undefined) {
 				this.showView('#content', api_class);
 			} else {
 				console.log('View not in registry: ', tap.currentStop.get('view'));
@@ -123,6 +124,21 @@ jQuery(function() {
 
 		},
 
+
+		/**
+		 * Route to the tour list
+		 * @param id The id of the tour
+		 */
+		tourStopList: function(id) {
+			// set the selected tour
+			tap.tours.selectTour(id);
+			// have jqm change pages
+			$.mobile.changePage('#tour-stop-list-page', { transition: 'fade', reverse: false, changeHash: false});
+	
+			this.showView('#content', 'StopList');
+		},
+
+
 		/**
 		 * Route to the tour map
 		 * Certain parameters are determined here in the router to leave open the possibility of 
@@ -134,7 +150,7 @@ jQuery(function() {
 
 			// See if we have one of these views instantiated already
 			// TODO: If we do, might need to check if it needs to be reset
-			if (this.views['Map'] == undefined) {
+			if (this.views['Map'] === undefined) {
 
 				// Determine which stops to display
 				tap.tours.selectTour(id);
@@ -147,7 +163,7 @@ jQuery(function() {
 				_.each(tour.get('appResource'), function(resource) {
 
 					// Make sure this is a geo asset reference
-					if ((resource == undefined) || (resource.usage != 'geo')) return;
+					if ((resource === undefined) || (resource.usage != 'geo')) return;
 
 					asset = tap.tourAssets.get(resource.id);
 					var data = $.parseJSON(asset.get('content')[0].data.value);
@@ -162,7 +178,7 @@ jQuery(function() {
 				// Look to see if the initial map zoom level is set
 				_.each(tour.get('propertySet'), function(property) {
 					if (property.name == 'initial_map_zoom') {
-						map_options['init-zoom'] = property.value
+						map_options['init-zoom'] = property.value;
 					}
 				});
 
