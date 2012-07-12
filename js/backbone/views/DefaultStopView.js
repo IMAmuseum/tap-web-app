@@ -5,16 +5,20 @@ if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
 // TapAPI Namespace Initialization //
 
 jQuery(function() {
-	// setup a tour stop view
-	TapAPI.views.Stop = Backbone.View.extend({
-		el: $('#tour-stop').find(":jqmData(role='content')"),
-		template: TapAPI.templateManager.get('stop'),
-		render: function() {
-			this.$el.html(this.template({
-				tourStopTitle : tap.currentStop.get("title") ? tap.currentStop.get("title")[0].value : undefined,
-				tourStopDescription : tap.currentStop.get('description') ? tap.currentStop.get('description')[0].value : undefined
+
+	// Defines the default stop view	
+	TapAPI.views.Stop = TapAPI.views.Page.extend({
+
+		content_template: TapAPI.templateManager.get('stop'),
+
+		renderContent: function() {
+
+			$(":jqmData(role='content')", this.$el).append(this.content_template({
+				tourStopTitle : this.model.get("title") ? this.model.get("title")[0].value : undefined,
+				tourStopDescription : this.model.get('description') ? this.model.get('description')[0].value : undefined
 			}));
 			return this;
+
 		}
 	});
 });

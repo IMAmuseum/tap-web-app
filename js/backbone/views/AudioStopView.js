@@ -13,18 +13,17 @@ TapAPI.views.registry['AudioStop'] = 'AudioStop';
 jQuery(function() {
 
 	// Define the AudioStop View
-	TapAPI.views.AudioStop = Backbone.View.extend({
+	TapAPI.views.AudioStop = TapAPI.views.Page.extend({
 
-		el: $('#tour-stop').find(":jqmData(role='content')"),
-		template: TapAPI.templateManager.get('audio-stop'),
+		content_template: TapAPI.templateManager.get('audio-stop'),
 
-		render: function() {
+		renderContent: function() {
+
+			$(":jqmData(role='content')", this.$el).append(this.content_template({
+				tourStopTitle: this.model.get('title')[0].value
+			}));
 
 			var asset_refs = tap.currentStop.get("assetRef");
-
-			this.$el.html(this.template({
-				tourStopTitle : tap.currentStop.get("title")[0].value
-			}));
 
 			if (asset_refs) {
 				_.each(asset_refs, function(assetRef) {
@@ -47,13 +46,13 @@ jQuery(function() {
 								console.log('Unsupported format for audio asset:', assetSource);
 						}
 
-					});
-				});
+					}, this);
+				}, this);
 
 				// If there are video sources and no audio sources, switch to the video element
-				if ($('#video-player source').length && !$('#audio-player source').length) {
-					$('#audio-player').hide();
-					$('#video-player').show();
+				if ($('#video-player source', this.$el).length && !$('#audio-player source', this.$el).length) {
+					$('#audio-player', this.$el).hide();
+					$('#video-player', this.$el).show();
 				}
 
 			}

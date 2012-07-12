@@ -12,10 +12,9 @@ if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
 jQuery(function() {
 
 	// Define the Map View
-	TapAPI.views.Map = Backbone.View.extend({
+	TapAPI.views.Map = TapAPI.views.Page.extend({
 
-		el: $('#tour-map-page').find(":jqmData(role='content')"),
-		template: TapAPI.templateManager.get('tour-map'),
+		content_template: TapAPI.templateManager.get('tour-map'),
 		options: {
 			'init-lat': 39.829104,
 			'init-lon': -86.189504,
@@ -48,9 +47,12 @@ jQuery(function() {
 		},
 
 
-		render: function() {
+		renderContent: function() {
 
-			$('#tour-map-page').live('pageshow', {map_view: this}, function(e) {
+			//$(":jqmData(role='page')", this.$el).attr('id', 'tour-map-page');
+			$(":jqmData(role='content')", this.$el).addClass('map-content').append(this.content_template());
+
+			$(":jqmData(role='page')").live('pageshow', {map_view: this}, function(e) {
 				e.data.map_view.resizeContentArea();
 				if (e.data.map_view.map === null) {
 					e.data.map_view.initMap();
@@ -64,7 +66,7 @@ jQuery(function() {
 
 		initMap: function() {
 
-			$(this.el).html(this.template());
+			//$(this.el).html(this.template());
 			this.map = new L.Map('tour-map');
 
 			this.map.addLayer(this.tile_layer);
@@ -231,7 +233,7 @@ jQuery(function() {
 		resizeContentArea: function() {
 			var content, contentHeight, footer, header, viewportHeight;
 			window.scroll(0, 0);
-			var tour_map_page = $('#tour-map-page');
+			var tour_map_page = $(":jqmData(role='page')");
 			header = tour_map_page.find(":jqmData(role='header'):visible");
 			footer = tour_map_page.find(":jqmData(role='footer'):visible");
 			content = tour_map_page.find(":jqmData(role='content'):visible");

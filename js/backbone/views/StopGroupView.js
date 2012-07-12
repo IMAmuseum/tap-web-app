@@ -11,26 +11,28 @@ TapAPI.views.registry['tour_stop_group'] = 'StopGroup';
 TapAPI.views.registry['StopGroup'] = 'StopGroup';
 
 jQuery(function() {
-	// setup a tour stop Audio view
-	TapAPI.views.StopGroup = Backbone.View.extend({
-		el: $('#tour-stop').find(":jqmData(role='content')"),
-		template: TapAPI.templateManager.get('stop-group'),
-		render: function() {
+
+	// Define the StopGroup view
+	TapAPI.views.StopGroup = TapAPI.views.Page.extend({
+
+		content_template: TapAPI.templateManager.get('stop-group'),
+
+		renderContent: function() {
 
 			var template_args = {
-				tourStopTitle : tap.currentStop.get('title')[0].value
+				tourStopTitle : this.model.get('title')[0].value
 			};
 
-			var description = tap.currentStop.get("description");
-			if (description != undefined) {
+			var description = this.model.get("description");
+			if (description !== undefined) {
 				template_args['description'] = description[0].value;
 			} else {
 				template_args['description'] = '';
 			}
 
-			this.$el.html(this.template(template_args));
+			$(":jqmData(role='content')", this.$el).append(this.content_template(template_args));
 
-			var connections = tap.currentStop.get('connection');
+			var connections = this.model.get('connection');
 			var listContainer = this.$el.find("#stop-list");
 			_.each(connections, function(connection) {
 				var stop = tap.tourStops.get(connection.destId);
@@ -38,14 +40,10 @@ jQuery(function() {
 					var stopView = new TapAPI.views.StopGroupListItem({
 						model: stop
 					});
-
 					listContainer.append(stopView.render().$el);
 				}
 			});
-			
-			listContainer.listview();
 
-			return this;
 		}
 	});
 

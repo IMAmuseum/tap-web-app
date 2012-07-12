@@ -7,21 +7,28 @@ if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
 jQuery(function() {
 
 	// Define the Keypad View
-	TapAPI.views.Keypad = Backbone.View.extend({
+	TapAPI.views.Keypad = TapAPI.views.Page.extend({
 
-		el: $('#tour-keypad').find(":jqmData(role='content')"),
-		template: TapAPI.templateManager.get('keypad'),
+		page_title: 'Enter a code',
+		content_template: TapAPI.templateManager.get('keypad'),
+
 		events: {
 			'tap #gobtn' : 'submit',
 			'tap #keypad div button' : 'writekeycode',
 			'tap #delete' : 'clearkeycode'
 		},
 
+		renderContent: function() {
+
+			$(":jqmData(role='content')", this.$el).append(this.content_template());
+
+		},
+
 		submit: function() {
 			// validate tour stop code
 			if(!$('#write').html()) return;
 			if(!tap.tourStops.getStopByKeycode($('#write').html())){
-				$.mobile.changePage('#error_invalidCode', 'pop', true, true);
+				tap.router.showDialog('error', 'This is an invalid code. Please enter another.');
 				$('#write').html("");
 				return;
 			}
@@ -33,10 +40,6 @@ jQuery(function() {
 		},
 		clearkeycode: function(e) {
 			$('#write').html("");
-		},
-		render: function() {
-			this.$el.html(this.template());
-			return this;
 		},
 		close: function() {
 			// Override base close function so that events are not unbound

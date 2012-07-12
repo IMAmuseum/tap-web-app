@@ -13,18 +13,17 @@ TapAPI.views.registry['VideoStop'] = 'VideoStop';
 jQuery(function() {
 
 	// Define the VideoStop View
-	TapAPI.views.VideoStop = Backbone.View.extend({
+	TapAPI.views.VideoStop = TapAPI.views.Page.extend({
 
-		el: $('#tour-stop').find(":jqmData(role='content')"),
-		template: TapAPI.templateManager.get('video-stop'),
+		content_template: TapAPI.templateManager.get('video-stop'),
 
-		render: function() {
+		renderContent: function() {
+
+			$(":jqmData(role='content')", this.$el).append(this.content_template({
+				tourStopTitle: this.model.get('title')[0].value
+			}));
 
 			var asset_refs = tap.currentStop.get("assetRef");
-
-			this.$el.html(this.template({
-				tourStopTitle : tap.currentStop.get("title")[0].value,
-			}));
 
 			if (asset_refs) {
 				_.each(asset_refs, function(assetRef) {
@@ -33,8 +32,8 @@ jQuery(function() {
 
 					_.each(assetSources, function(assetSource){
 						$('video', this.$el).append("<source src='" + assetSource.uri + "' type='" + assetSource.format + "' />");
-					});
-				});
+					}, this);
+				}, this);
 			}
 
 			return this;

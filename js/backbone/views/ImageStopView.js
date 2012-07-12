@@ -13,12 +13,11 @@ TapAPI.views.registry['ImageStop'] = 'ImageStop';
 jQuery(function() {
 
 	// Define the ImageStop View
-	TapAPI.views.ImageStop = Backbone.View.extend({
+	TapAPI.views.ImageStop = TapAPI.views.Page.extend({
 
-		el: $('#tour-stop').find(":jqmData(role='content')"),
-		template: TapAPI.templateManager.get('image-stop'),
+		content_template: TapAPI.templateManager.get('image-stop'),
 
-		render: function() {
+		renderContent: function() {
 
 			var imageUri, iconUri;
 			var asset_refs = tap.currentStop.get("assetRef");
@@ -37,13 +36,13 @@ jQuery(function() {
 				});
 			}
 
-			this.$el.html(this.template({
+			$(":jqmData(role='content')", this.$el).append(this.content_template({
 				tourImageUri : imageUri,
 				tourIconUri : iconUri,
 				tourStopTitle : tap.currentStop.get("title")[0].value
 			}));
-
-			var soloPhotoSwipe = $("#soloImage a").photoSwipe({
+			
+			var soloPhotoSwipe = $("#soloImage a", this.$el).photoSwipe({
 				enableMouseWheel: false,
 				enableKeyboard: true,
 				doubleTapZoomLevel : 0,

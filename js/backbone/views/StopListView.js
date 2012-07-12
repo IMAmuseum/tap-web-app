@@ -5,38 +5,25 @@ if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
 // TapAPI Namespace Initialization //
 
 
-/**
- * The MapView supports the display of multiple tours or a single tour
- */
-
 jQuery(function() {
 
 	// Define the stop list view
-	TapAPI.views.StopList = Backbone.View.extend({
+	TapAPI.views.StopList = TapAPI.views.Page.extend({
 
-		el: $('#tour-stop-list'),
+		content_template: TapAPI.templateManager.get('tour-stop-list'),
 
-		initialize: function() {
-			this.$el.empty();
-			this.model.bind('reset', this.render);
-		},
+		renderContent: function() {
 
-		render: function() {
+			$(":jqmData(role='content')", this.$el).append(this.content_template());
 
 			// TODO: figure out a better way to avoid rendering again
-			if ($('li', this.$el).length == tap.tourStops.models.length) return;
+			//if ($('li', this.$el).length == tap.tourStops.models.length) return;
 
 			_.each(tap.tourStops.models, function(stop) {
 				var item = new TapAPI.views.StopListItem({model: stop});
-				this.$el.append(item.render().el);
+				$('#tour-stop-list', this.$el).append(item.render().el);
 			}, this);
 
-			this.$el.listview('refresh');
-			return this;
-		},
-
-		close: function() {
-			// Override base close function so that events are not unbound
 		}
 
 	});
