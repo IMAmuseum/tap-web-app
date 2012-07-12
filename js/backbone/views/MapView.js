@@ -14,23 +14,7 @@ jQuery(function() {
 	// Define the Map View
 	TapAPI.views.Map = TapAPI.views.Page.extend({
 
-		content_template: TapAPI.templateManager.get('tour-map'),
-		options: {
-			'init-lat': 39.829104,
-			'init-lon': -86.189504,
-			'init-zoom': 2,
-			'units': 'si',
-		},
-		LocationIcon: L.Icon.extend({
-			iconUrl: 'assets/images/icon-locate.png',
-			shadowUrl: null,
-			iconSize: new L.Point(24, 24),
-			iconAnchor: new L.Point(12, 12)
-		}),
-
-
-		initialize: function() {
-
+		onInit: function() {
 			console.log('MapView.initialize');
 
 			this.tile_layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -43,14 +27,26 @@ jQuery(function() {
 			this.stop_popups = {};
 			this.position_marker = null;
 			this.view_initialized = false;
+			this.LocationIcon = L.Icon.extend({
+				iconUrl: 'assets/images/icon-locate.png',
+				shadowUrl: null,
+				iconSize: new L.Point(24, 24),
+				iconAnchor: new L.Point(12, 12)
+			});
 
+			_.defaults(this.options, {
+				'init-lat': 39.829104,
+				'init-lon': -86.189504,
+				'init-zoom': 2,
+				'units': 'si'
+			});
 		},
 
-
 		renderContent: function() {
+			var content_template = TapAPI.templateManager.get('tour-map');
 
 			//$(":jqmData(role='page')", this.$el).attr('id', 'tour-map-page');
-			$(":jqmData(role='content')", this.$el).addClass('map-content').append(this.content_template());
+			$(":jqmData(role='content')", this.$el).addClass('map-content').append(content_template());
 
 			$(":jqmData(role='page')").live('pageshow', {map_view: this}, function(e) {
 				e.data.map_view.resizeContentArea();
@@ -243,7 +239,7 @@ jQuery(function() {
 		},
 
 
-		close: function() {
+		onClose: function() {
 			$(window).unbind('orientationchange resize', this.resizeContentArea);
 		}
 

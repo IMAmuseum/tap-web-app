@@ -9,9 +9,6 @@ jQuery(function() {
 	// Define the Keypad View
 	TapAPI.views.Keypad = TapAPI.views.Page.extend({
 
-		page_title: 'Enter a code',
-		content_template: TapAPI.templateManager.get('keypad'),
-
 		events: {
 			'tap #gobtn' : 'submit',
 			'tap #keypad div button' : 'writekeycode',
@@ -19,8 +16,9 @@ jQuery(function() {
 		},
 
 		renderContent: function() {
+			var content_template = TapAPI.templateManager.get('keypad');
 
-			$(":jqmData(role='content')", this.$el).append(this.content_template());
+			$(":jqmData(role='content')", this.$el).append(content_template());
 
 		},
 

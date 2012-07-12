@@ -15,11 +15,10 @@ jQuery(function() {
 	// Define the VideoStop View
 	TapAPI.views.VideoStop = TapAPI.views.Page.extend({
 
-		content_template: TapAPI.templateManager.get('video-stop'),
-
 		renderContent: function() {
+			var content_template = TapAPI.templateManager.get('video-stop');
 
-			$(":jqmData(role='content')", this.$el).append(this.content_template({
+			$(":jqmData(role='content')", this.$el).append(content_template({
 				tourStopTitle: this.model.get('title')[0].value
 			}));
 

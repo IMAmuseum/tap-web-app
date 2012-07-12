@@ -9,10 +9,14 @@ jQuery(function() {
 	// The tour list view displays a list of all tours
 	TapAPI.views.TourList = TapAPI.views.Page.extend({
 
-		content_template: TapAPI.templateManager.get('tour-list'),
-		page_title: 'Tour List',
+		onInit: function() {
+			_.defaults(this.options, {
+				page_title: 'Tour List'
+			});
+		},
 
 		renderContent: function() {
+			var content_template = TapAPI.templateManager.get('tour-list');
 
 			$(":jqmData(role='content')", this.$el).append(this.content_template);
 

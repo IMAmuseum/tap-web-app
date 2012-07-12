@@ -15,10 +15,8 @@ jQuery(function() {
 	// Define the StopGroup view
 	TapAPI.views.StopGroup = TapAPI.views.Page.extend({
 
-		content_template: TapAPI.templateManager.get('stop-group'),
-
 		renderContent: function() {
-
+			var content_template = TapAPI.templateManager.get('stop-group');
 			var template_args = {
 				tourStopTitle : this.model.get('title')[0].value
 			};
@@ -30,7 +28,7 @@ jQuery(function() {
 				template_args['description'] = '';
 			}
 
-			$(":jqmData(role='content')", this.$el).append(this.content_template(template_args));
+			$(":jqmData(role='content')", this.$el).append(content_template(template_args));
 
 			var connections = this.model.get('connection');
 			var listContainer = this.$el.find("#stop-list");

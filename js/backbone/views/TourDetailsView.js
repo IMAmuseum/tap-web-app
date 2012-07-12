@@ -9,13 +9,12 @@ jQuery(function() {
 	// Define the TourDetails View
 	TapAPI.views.TourDetails = TapAPI.views.Page.extend({
 
-		content_template: TapAPI.templateManager.get('tour-details'),
-
 		initialize: function() {
 			this.page_title = this.model.get('title')[0].value;
 		},
 
 		renderContent: function() {
+			var content_template = TapAPI.templateManager.get('tour-details');
 
 			$(":jqmData(role='content')", this.$el).append(this.content_template({
 				tour_id: this.model.id,

@@ -10,11 +10,10 @@ jQuery(function() {
 	// Define the stop list view
 	TapAPI.views.StopList = TapAPI.views.Page.extend({
 
-		content_template: TapAPI.templateManager.get('tour-stop-list'),
-
 		renderContent: function() {
+			var content_template = TapAPI.templateManager.get('tour-stop-list');
 
-			$(":jqmData(role='content')", this.$el).append(this.content_template());
+			$(":jqmData(role='content')", this.$el).append(content_template());
 
 			// TODO: figure out a better way to avoid rendering again
 			//if ($('li', this.$el).length == tap.tourStops.models.length) return;

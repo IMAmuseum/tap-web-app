@@ -10,19 +10,34 @@ jQuery(function() {
 	TapAPI.views.Page = Backbone.View.extend({
 
 		template: TapAPI.templateManager.get('page'),
-		page_title: '',
-		back_label: 'Back',
 
 		initialize: function(args) {
-			this.page_title = args.page_title;
+
+			_defaults(this.options, {
+				page_title: '',
+				back_label: 'Back'
+			});
+
+			if (this.onInit) {
+				this.onInit();
+			}
+		},
+
+		close: function() {
+			this.$el.empty().undelegate();
+			this.unbind();
+			this.undelegateEvents();
+			if (this.onClose){
+				this.onClose();
+			}
 		},
 
 		render: function(event) {
 
 			this.$el.empty();
-			$(this.el).html(this.template({
-				title: this.page_title,
-				back_label: this.back_label
+			this.$el.html(this.template({
+				title: this.options.page_title,
+				back_label: this.options.back_label
 			}));
 			this.renderContent();
 			return this;
@@ -32,7 +47,7 @@ jQuery(function() {
 		// Sub-classes should override this function
 		renderContent: function() {
 			console.log('Warning: abstract TapApi.views.Page::renderContent');
-		},
+		}
 
 	});
 	

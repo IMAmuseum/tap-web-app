@@ -15,12 +15,11 @@ jQuery(function() {
 	// Define the ImageStop View
 	TapAPI.views.ImageStop = TapAPI.views.Page.extend({
 
-		content_template: TapAPI.templateManager.get('image-stop'),
-
 		renderContent: function() {
 
 			var imageUri, iconUri;
 			var asset_refs = tap.currentStop.get("assetRef");
+			var content_template = TapAPI.templateManager.get('image-stop');
 
 			if (asset_refs) {
 				$.each(asset_refs, function() {
@@ -36,7 +35,7 @@ jQuery(function() {
 				});
 			}
 
-			$(":jqmData(role='content')", this.$el).append(this.content_template({
+			$(":jqmData(role='content')", this.$el).append(content_template({
 				tourImageUri : imageUri,
 				tourIconUri : iconUri,
 				tourStopTitle : tap.currentStop.get("title")[0].value

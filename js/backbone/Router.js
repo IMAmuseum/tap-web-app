@@ -48,7 +48,10 @@ jQuery(function() {
 		tourKeypad: function(id) {
 
 			tap.tours.selectTour(id);
-			this.changePage(new TapAPI.views.Keypad({model: tap.tours.get(tap.currentTour)}));
+			this.changePage(new TapAPI.views.Keypad({
+				model: tap.tours.get(tap.currentTour),
+				page_title: "Enter a code"
+			}));
 
 		},
 

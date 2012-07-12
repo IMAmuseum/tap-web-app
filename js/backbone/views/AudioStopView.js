@@ -15,15 +15,16 @@ jQuery(function() {
 	// Define the AudioStop View
 	TapAPI.views.AudioStop = TapAPI.views.Page.extend({
 
-		content_template: TapAPI.templateManager.get('audio-stop'),
-
 		renderContent: function() {
 
-			$(":jqmData(role='content')", this.$el).append(this.content_template({
+			var content_template = TapAPI.templateManager.get('audio-stop');
+
+			$(":jqmData(role='content')", this.$el).append(content_template({
 				tourStopTitle: this.model.get('title')[0].value
 			}));
 
 			var asset_refs = tap.currentStop.get("assetRef");
+			
 
 			if (asset_refs) {
 				_.each(asset_refs, function(assetRef) {

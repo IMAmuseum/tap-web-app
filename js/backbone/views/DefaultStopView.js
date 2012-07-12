@@ -6,14 +6,12 @@ if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
 
 jQuery(function() {
 
-	// Defines the default stop view	
+	// Defines the default stop view
 	TapAPI.views.Stop = TapAPI.views.Page.extend({
-
-		content_template: TapAPI.templateManager.get('stop'),
-
 		renderContent: function() {
+			var content_template = TapAPI.templateManager.get('stop');
 
-			$(":jqmData(role='content')", this.$el).append(this.content_template({
+			$(":jqmData(role='content')", this.$el).append(content_template({
 				tourStopTitle : this.model.get("title") ? this.model.get("title")[0].value : undefined,
 				tourStopDescription : this.model.get('description') ? this.model.get('description')[0].value : undefined
 			}));
