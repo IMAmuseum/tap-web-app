@@ -25,6 +25,7 @@ module.exports = function(grunt) {
 					'js/backbone/models/**/*.js',
 					'js/backbone/collections/**/*.js',
 					'js/backbone/views/HelperView.js',
+					'js/backbone/views/PageView.js',
 					'js/backbone/views/**/*.js',
 					'js/backbone/Router.js',
 					'js/backbone/Init.js',
@@ -36,6 +37,7 @@ module.exports = function(grunt) {
 			},
 			dependencies: {
 				src: [
+					'js/jqm-config.js',
 					'js/external/json2.js',
 					'js/external/jquery-1.7.2.js',
 					'js/external/jquery.mobile-1.1.0.js',
@@ -135,7 +137,7 @@ module.exports = function(grunt) {
 				grunt.log.writeln('template:');
 				grunt.log.write(templateHtml);
 				grunt.log.writeln('templated:');
-				grunt.log.write(grunt.utils._.template(templateHtml));
+				//grunt.log.write(grunt.utils._.template(templateHtml));
 				grunt.log.writeln('source:');
 				grunt.log.write(templateSrc);
 

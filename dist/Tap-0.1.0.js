@@ -1,5 +1,5 @@
 /*
- * TAP - v0.1.0 - 2012-05-31
+ * TAP - v0.1.0 - 2012-07-12
  * http://tapintomuseums.org/
  * Copyright (c) 2011-2012 Indianapolis Museum of Art
  * GPLv3
@@ -120,6 +120,18 @@ TapAPI.models.Asset = Backbone.Model.extend({
 			default:
 				return this.attributes[attr];
 		}
+	},
+	/**
+	* Retrieves the property value of a given property name
+	* @param  string key The propety name
+	* @return string The property value
+	*/
+	getPropertyByName: function(name) {
+		if(_.isUndefined(this.get('propertySet'))) return false;
+		var property = _.find(this.get('propertySet'), function(item) {
+			return item['name'] === key;
+		});
+		return _.isUndefined(property) ? false : property.value;
 	}
 });
 
@@ -141,6 +153,55 @@ TapAPI.models.Stop = Backbone.Model.extend({
 			default:
 				return this.attributes[attr];
 		}
+	},
+	/**
+	* Retrieves the property value of a given property name
+	* @param  string name The propety name
+	* @return string The property value
+	*/
+	getPropertyByName: function(name) {
+		if(_.isUndefined(this.get('propertySet'))) return false;
+		var property = _.find(this.get('propertySet'), function(item) {
+			return item['name'] === name;
+		});
+		return _.isUndefined(property) ? false : property.value;
+	},
+	/**
+	* Retrieves all asset models for a stop
+	* @return array An array of asset models
+	*/
+	getAssets: function() {
+		if(_.isUndefined(this.get('assetRef'))) return false;
+		var assets = [];
+		_.each(this.get('assetRef'), function(item) {
+			assets.push(tap.tourAssets.get(item.id));
+		});
+		return _.isEmpty(assets) ? false : assets;
+	},
+	/**
+	* Retrieves an asset with a given usage
+	* @param string usage The asset usage
+	* @return mixed The asset model
+	*/
+	getAssetsByUsage: function(usage) {
+		if(_.isUndefined(this.get('assetRef'))) return false;
+		var assets = [];
+		_.each(this.get('assetRef'), function(item) {
+			if(item['usage'] === usage) {
+				assets.push(tap.tourAssets.get(item.id));
+			}
+		});
+		return _.isEmpty(assets) ? false : assets;
+	},
+	/**
+	* Retrieves a sorted array of connections
+	* @return array The connection array ordered by priority in ascending order
+	*/
+	getSortedConnections: function() {
+		if(_.isUndefined(this.get('connections'))) return false;
+		return _.sortBy(this.get('connection'), function(connection) {
+			return parseInt(connection.priority, 10);
+		});
 	}
 });
 
@@ -226,9 +287,14 @@ TapAPI.collections.Tours = Backbone.Collection.extend({
 		// create new instance of AssetCollection
 		tap.tourAssets = new TapAPI.collections.Assets(null, id);
 
+		if (tap.GeoLocation !== null) {
+			tap.tourStops.on('reset', TapAPI.geoLocation.stopsReset);
+		}
+
 		// load data from local storage
+		tap.tourAssets.fetch();		
 		tap.tourStops.fetch();
-		tap.tourAssets.fetch();
+
 	}
 });
 
@@ -249,6 +315,46 @@ if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
 if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
 // TapAPI Namespace Initialization //
 
+jQuery(function() {
+
+	// Defines the base view for a page
+	TapAPI.views.Page = Backbone.View.extend({
+
+		template: TapAPI.templateManager.get('page'),
+		page_title: '',
+		back_label: 'Back',
+
+		initialize: function(args) {
+			this.page_title = args.page_title;
+		},
+
+		render: function(event) {
+
+			this.$el.empty();
+			$(this.el).html(this.template({
+				title: this.page_title,
+				back_label: this.back_label
+			}));
+			this.renderContent();
+			return this;
+
+		},
+
+		// Sub-classes should override this function
+		renderContent: function() {
+			console.log('Warning: abstract TapApi.views.Page::renderContent');
+		},
+
+	});
+	
+});
+
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === 'undefined'){TapAPI = {};}
+if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
+if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
+// TapAPI Namespace Initialization //
+
 // Add this view to the registry
 TapAPI.views.registry['tour_audio_stop'] = 'AudioStop';
 
@@ -258,44 +364,50 @@ TapAPI.views.registry['AudioStop'] = 'AudioStop';
 jQuery(function() {
 
 	// Define the AudioStop View
-	TapAPI.views.AudioStop = Backbone.View.extend({
+	TapAPI.views.AudioStop = TapAPI.views.Page.extend({
 
-		el: $('#tour-stop').find(":jqmData(role='content')"),
-		template: TapAPI.templateManager.get('audio-stop'),
+		content_template: TapAPI.templateManager.get('audio-stop'),
 
-		render: function() {
+		renderContent: function() {
 
-			var mp3AudioUri, oggAudioUri, wavAudioUri;
+			$(":jqmData(role='content')", this.$el).append(this.content_template({
+				tourStopTitle: this.model.get('title')[0].value
+			}));
+
 			var asset_refs = tap.currentStop.get("assetRef");
 
 			if (asset_refs) {
 				_.each(asset_refs, function(assetRef) {
+
 					var asset = tap.tourAssets.get(assetRef.id);
 					var assetSources = asset.get("source");
 
-					_.each(assetSources, function(assetSource){
-						switch (assetSource.format) {
-							case 'audio/mp3':
-							case 'audio/mpeg':
-								mp3AudioUri = assetSource.uri;
+					_.each(assetSources, function(assetSource) {
+
+						var source_str = "<source src='" + assetSource.uri + "' type='" + assetSource.format + "' />";
+
+						switch(assetSource.format.substring(0,5)) {
+							case 'audio':
+								$('#audio-player', this.$el).append(source_str);
 								break;
-							case 'audio/ogg':
-								oggAudioUri = assetSource.uri;
+							case 'video':
+								$('#video-player', this.$el).append(source_str);
 								break;
-							case 'audio/wav':
-								wavAudioUri = assetSource.uri;
-								break;
+							default:
+								console.log('Unsupported format for audio asset:', assetSource);
 						}
-					});
-				});
+
+					}, this);
+				}, this);
+
+				// If there are video sources and no audio sources, switch to the video element
+				if ($('#video-player source', this.$el).length && !$('#audio-player source', this.$el).length) {
+					$('#audio-player', this.$el).hide();
+					$('#video-player', this.$el).show();
+				}
+
 			}
 
-			this.$el.html(this.template({
-				tourStopMp3Audio : mp3AudioUri,
-				tourStopOggAudio : oggAudioUri,
-				tourStopWavAudio : wavAudioUri,
-				tourStopTitle : tap.currentStop.get("title")[0].value
-			}));
 			return this;
 		}
 	});
@@ -308,18 +420,50 @@ if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
 // TapAPI Namespace Initialization //
 
 jQuery(function() {
-	// setup a tour stop view
-	TapAPI.views.Stop = Backbone.View.extend({
-		el: $('#tour-stop').find(":jqmData(role='content')"),
-		template: TapAPI.templateManager.get('stop'),
-		render: function() {
-			this.$el.html(this.template({
-				tourStopTitle : tap.currentStop.get("title") ? tap.currentStop.get("title")[0].value : undefined,
-				tourStopDescription : tap.currentStop.get('description') ? tap.currentStop.get('description')[0].value : undefined
+
+	// Defines the default stop view	
+	TapAPI.views.Stop = TapAPI.views.Page.extend({
+
+		content_template: TapAPI.templateManager.get('stop'),
+
+		renderContent: function() {
+
+			$(":jqmData(role='content')", this.$el).append(this.content_template({
+				tourStopTitle : this.model.get("title") ? this.model.get("title")[0].value : undefined,
+				tourStopDescription : this.model.get('description') ? this.model.get('description')[0].value : undefined
 			}));
 			return this;
+
 		}
 	});
+});
+
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === 'undefined'){TapAPI = {};}
+if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
+if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
+// TapAPI Namespace Initialization //
+
+jQuery(function() {
+
+	// Defines the base view for a page
+	TapAPI.views.Dialog = Backbone.View.extend({
+
+		template: TapAPI.templateManager.get('dialog'),
+		content: '',
+
+		render: function(event) {
+
+			this.$el.empty();
+			$(this.el).html(this.template({
+				content: this.content
+			}));
+			return this;
+
+		}
+
+	});
+	
 });
 
 jQuery(function() {
@@ -373,12 +517,11 @@ TapAPI.views.registry['ImageStop'] = 'ImageStop';
 jQuery(function() {
 
 	// Define the ImageStop View
-	TapAPI.views.ImageStop = Backbone.View.extend({
+	TapAPI.views.ImageStop = TapAPI.views.Page.extend({
 
-		el: $('#tour-stop').find(":jqmData(role='content')"),
-		template: TapAPI.templateManager.get('image-stop'),
+		content_template: TapAPI.templateManager.get('image-stop'),
 
-		render: function() {
+		renderContent: function() {
 
 			var imageUri, iconUri;
 			var asset_refs = tap.currentStop.get("assetRef");
@@ -397,13 +540,13 @@ jQuery(function() {
 				});
 			}
 
-			this.$el.html(this.template({
+			$(":jqmData(role='content')", this.$el).append(this.content_template({
 				tourImageUri : imageUri,
 				tourIconUri : iconUri,
 				tourStopTitle : tap.currentStop.get("title")[0].value
 			}));
-
-			var soloPhotoSwipe = $("#soloImage a").photoSwipe({
+			
+			var soloPhotoSwipe = $("#soloImage a", this.$el).photoSwipe({
 				enableMouseWheel: false,
 				enableKeyboard: true,
 				doubleTapZoomLevel : 0,
@@ -426,25 +569,32 @@ if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
 jQuery(function() {
 
 	// Define the Keypad View
-	TapAPI.views.Keypad = Backbone.View.extend({
+	TapAPI.views.Keypad = TapAPI.views.Page.extend({
 
-		el: $('#tour-keypad').find(":jqmData(role='content')"),
-		template: TapAPI.templateManager.get('keypad'),
+		page_title: 'Enter a code',
+		content_template: TapAPI.templateManager.get('keypad'),
+
 		events: {
 			'tap #gobtn' : 'submit',
 			'tap #keypad div button' : 'writekeycode',
 			'tap #delete' : 'clearkeycode'
 		},
 
+		renderContent: function() {
+
+			$(":jqmData(role='content')", this.$el).append(this.content_template());
+
+		},
+
 		submit: function() {
 			// validate tour stop code
 			if(!$('#write').html()) return;
 			if(!tap.tourStops.getStopByKeycode($('#write').html())){
-				$.mobile.changePage('#error_invalidCode', 'pop', true, true);
+				tap.router.showDialog('error', 'This is an invalid code. Please enter another.');
 				$('#write').html("");
 				return;
 			}
-			$destUrl = "#tourstop/"+tap.currentTour+"/"+$('#write').html();
+			$destUrl = "#tourstop/"+tap.currentTour+"/code/"+$('#write').html();
 			Backbone.history.navigate($destUrl, true);
 		},
 		writekeycode: function(e) {
@@ -453,14 +603,262 @@ jQuery(function() {
 		clearkeycode: function(e) {
 			$('#write').html("");
 		},
-		render: function() {
-			this.$el.html(this.template());
-			return this;
-		},
 		close: function() {
 			// Override base close function so that events are not unbound
 		}
 	});
+});
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === 'undefined'){TapAPI = {};}
+if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
+if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
+// TapAPI Namespace Initialization //
+
+
+/**
+ * The MapView supports the display of multiple tours or a single tour
+ */
+
+jQuery(function() {
+
+	// Define the Map View
+	TapAPI.views.Map = TapAPI.views.Page.extend({
+
+		content_template: TapAPI.templateManager.get('tour-map'),
+		options: {
+			'init-lat': 39.829104,
+			'init-lon': -86.189504,
+			'init-zoom': 2,
+			'units': 'si',
+		},
+		LocationIcon: L.Icon.extend({
+			iconUrl: 'assets/images/icon-locate.png',
+			shadowUrl: null,
+			iconSize: new L.Point(24, 24),
+			iconAnchor: new L.Point(12, 12)
+		}),
+
+
+		initialize: function() {
+
+			console.log('MapView.initialize');
+
+			this.tile_layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+				attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery &copy; <a href="http://cloudmade.com">CloudMade</a>',
+				maxZoom: 18
+			});
+
+			this.map = null;
+			this.stop_markers = {};
+			this.stop_popups = {};
+			this.position_marker = null;
+			this.view_initialized = false;
+
+		},
+
+
+		renderContent: function() {
+
+			//$(":jqmData(role='page')", this.$el).attr('id', 'tour-map-page');
+			$(":jqmData(role='content')", this.$el).addClass('map-content').append(this.content_template());
+
+			$(":jqmData(role='page')").live('pageshow', {map_view: this}, function(e) {
+				e.data.map_view.resizeContentArea();
+				if (e.data.map_view.map === null) {
+					e.data.map_view.initMap();
+				}
+			});
+
+			$(window).bind('orientationchange resize', this.resizeContentArea);
+
+		},
+
+
+		initMap: function() {
+
+			//$(this.el).html(this.template());
+			this.map = new L.Map('tour-map');
+
+			this.map.addLayer(this.tile_layer);
+
+			// First, try to set the view by locating the device
+			//this.map.locateAndSetView(this.options['init-zoom']);
+			if (TapAPI.geoLocation !== null) {
+				if (TapAPI.geoLocation.latest_location !== null) {
+
+					this.options['init-lat'] = TapAPI.geoLocation.latest_location.coords.latitude;
+					this.options['init-lon'] = TapAPI.geoLocation.latest_location.coords.longitude;
+
+					if (this.position_marker === null) {
+						this.position_marker = new L.Marker(
+							new L.LatLng(this.options['init-lat'], this.options['init-lon']),
+							{icon: new this.LocationIcon()}
+						);
+						this.map.addLayer(this.position_marker);
+					}
+
+				}
+			}
+
+			this.map.setView(
+				new L.LatLng(this.options['init-lat'], this.options['init-lon']),
+				this.options['init-zoom']
+			);
+
+			// Find stops with geo coordinate assets
+			for (var i = 0; i<this.options.stops.size(); i++) {
+
+				var tour_stop = this.options.stops.at(i);
+				var asset_refs = tour_stop.get('assetRef');
+				var result = _.each(
+					asset_refs,
+					this.plotTourStopMarker,
+					{
+						stop: tour_stop,
+						map_view: this
+					}
+				);
+
+			}
+
+			TapAPI.geoLocation.on("gotlocation", this.onLocationFound, this);
+
+			return this;
+		},
+
+
+		// Plot a single tour stop marker on the map
+		// @note Assumes that the context is set to { stop: (StopModel), map_view: (MapView) }
+		plotTourStopMarker: function(asset_ref) {
+
+			// Make sure this is a geo asset reference
+			if ((asset_ref === undefined) || (asset_ref.usage != 'geo')) return;
+
+			// Parse the contents of the asset
+			asset = tap.tourAssets.get(asset_ref.id);
+			var data = $.parseJSON(asset.get('content')[0].data.value);
+
+			if (data.type == 'Point') {
+
+				var marker_location = new L.LatLng(data.coordinates[1], data.coordinates[0]);
+				var marker = new L.Marker(marker_location);
+				var template = TapAPI.templateManager.get('tour-map-marker-bubble');
+
+				var popup = new L.Popup();
+				popup.setLatLng(marker_location);
+
+				var d_content = '';
+				if (this.stop.get('distance')) {
+					d_content = 'Distance: ' + this.map_view.formatStopDistance(this.stop.get('distance'));
+				}
+
+				popup.setContent(template({
+					'title': this.stop.get('title')[0].value,
+					'tour_id': tap.currentTour,
+					'stop_id': this.stop.id,
+					'distance': d_content
+				}));
+
+				this.map_view.stop_popups[this.stop.id] = popup;
+
+				marker.stop_id = this.stop.id;
+				marker.addEventListener('click', this.map_view.onMarkerSelected, this.map_view);
+
+				this.map_view.stop_markers[this.stop.id] = marker;
+				this.map_view.map.addLayer(marker);
+
+			}
+
+			// Update the marker bubble when the distance to a stop changes
+			this.stop.on('change:distance', function(stop) {
+
+				var d_content = '';
+				if (stop.get('distance')) {
+					d_content = 'Distance: ' + this.formatStopDistance(stop.get('distance'));
+				}
+
+				this.stop_popups[stop.id].setContent(template({
+					'title': stop.get('title')[0].value,
+					'tour_id': tap.currentTour,
+					'stop_id': stop.get('id'),
+					'distance': d_content
+				}));
+
+
+			}, this.map_view);
+
+		},
+
+
+		// When a marker is selected, show the popup
+		// Assumes that the context is set to (MapView)
+		onMarkerSelected: function(e) {
+			this.map.openPopup(this.stop_popups[e.target.stop_id]);
+		},
+
+
+		onLocationFound: function(position) {
+
+			//console.log('onLocationFound', position);
+			var latlng = new L.LatLng(position.coords.latitude, position.coords.longitude);
+
+			if (this.position_marker === null) {
+
+				this.position_marker = new L.Marker(latlng, {icon: new this.LocationIcon()});
+				this.map.addLayer(this.position_marker);
+
+			} else {
+
+				this.position_marker.setLatLng(latlng);
+
+			}
+
+		},
+
+
+		onLocationError: function(e) {
+
+			console.log('onLocationError', e);
+
+			// TODO: hide the position marker?
+
+		},
+
+
+		formatStopDistance: function(d) {
+
+			if (this.options.units == 'si') {
+
+				if (d < 1000) {
+					return d.toFixed(2) + ' m';
+				} else {
+					return (d/1000).toFixed(2) + ' km';
+				}
+
+			}
+
+		},
+
+
+		resizeContentArea: function() {
+			var content, contentHeight, footer, header, viewportHeight;
+			window.scroll(0, 0);
+			var tour_map_page = $(":jqmData(role='page')");
+			header = tour_map_page.find(":jqmData(role='header'):visible");
+			footer = tour_map_page.find(":jqmData(role='footer'):visible");
+			content = tour_map_page.find(":jqmData(role='content'):visible");
+			viewportHeight = $(window).height();
+			contentHeight = viewportHeight - header.outerHeight() - footer.outerHeight();
+			tour_map_page.find(":jqmData(role='content')").first().height(contentHeight);
+		},
+
+
+		close: function() {
+			$(window).unbind('orientationchange resize', this.resizeContentArea);
+		}
+
+	});
+
 });
 jQuery(function() {
 	// setup a tour stop Object view
@@ -489,17 +887,28 @@ TapAPI.views.registry['tour_stop_group'] = 'StopGroup';
 TapAPI.views.registry['StopGroup'] = 'StopGroup';
 
 jQuery(function() {
-	// setup a tour stop Audio view
-	TapAPI.views.StopGroup = Backbone.View.extend({
-		el: $('#tour-stop').find(":jqmData(role='content')"),
-		template: TapAPI.templateManager.get('stop-group'),
-		render: function() {
-			this.$el.html(this.template({
-				tourStopTitle : getAttributeByLanguage(tap.currentStop.get("title"))[0].value,
-				description : getAttributeByLanguage(tap.currentStop.get("description"))[0].value
-			}));
 
-			var connections = tap.currentStop.get('connection');
+	// Define the StopGroup view
+	TapAPI.views.StopGroup = TapAPI.views.Page.extend({
+
+		content_template: TapAPI.templateManager.get('stop-group'),
+
+		renderContent: function() {
+
+			var template_args = {
+				tourStopTitle : this.model.get('title')[0].value
+			};
+
+			var description = this.model.get("description");
+			if (description !== undefined) {
+				template_args['description'] = description[0].value;
+			} else {
+				template_args['description'] = '';
+			}
+
+			$(":jqmData(role='content')", this.$el).append(this.content_template(template_args));
+
+			var connections = this.model.get('connection');
 			var listContainer = this.$el.find("#stop-list");
 			_.each(connections, function(connection) {
 				var stop = tap.tourStops.get(connection.destId);
@@ -507,14 +916,10 @@ jQuery(function() {
 					var stopView = new TapAPI.views.StopGroupListItem({
 						model: stop
 					});
-
 					listContainer.append(stopView.render().$el);
 				}
 			});
-			
-			listContainer.listview();
 
-			return this;
 		}
 	});
 
@@ -539,45 +944,111 @@ if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
 if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
 // TapAPI Namespace Initialization //
 
+
 jQuery(function() {
 
-	// Define the TourDetails View
-	TapAPI.views.TourDetails = Backbone.View.extend({
-		el: $('#tour-details').find(":jqmData(role='content')"),
-		template: TapAPI.templateManager.get('tour-details'),
-		render: function() {
-			var currentTour = tap.tours.get(tap.currentTour);
+	// Define the stop list view
+	TapAPI.views.StopList = TapAPI.views.Page.extend({
 
+		content_template: TapAPI.templateManager.get('tour-stop-list'),
+
+		renderContent: function() {
+
+			$(":jqmData(role='content')", this.$el).append(this.content_template());
+
+			// TODO: figure out a better way to avoid rendering again
+			//if ($('li', this.$el).length == tap.tourStops.models.length) return;
+
+			_.each(tap.tourStops.models, function(stop) {
+				var item = new TapAPI.views.StopListItem({model: stop});
+				$('#tour-stop-list', this.$el).append(item.render().el);
+			}, this);
+
+		}
+
+	});
+
+	// Define the item view to populate this list
+	TapAPI.views.StopListItem = Backbone.View.extend({
+
+		tagName: 'li',
+		template: TapAPI.templateManager.get('tour-stop-list-item'),
+
+		render: function() {
 			$(this.el).html(this.template({
-				publishDate: currentTour.get('publishDate') ? currentTour.get('publishDate')[0].value : undefined,
-				description: currentTour.get('description') ? currentTour.get('description')[0].value : undefined,
-				stopCount: tap.tourStops.length,
-				assetCount: tap.tourAssets.length
+				title: this.model.get('title') ? this.model.get('title')[0].value : undefined,
+				stop_id: this.model.get('id'),
+				tour_id: tap.currentTour
 			}));
 			return this;
 		}
+
 	});
+
 });
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === 'undefined'){TapAPI = {};}
+if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
+if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
+// TapAPI Namespace Initialization //
 
 jQuery(function() {
-	// setup a simple view to handle listing all tours
-	window.TourListView = Backbone.View.extend({
-		el: $('#tour-list'),
+
+	// Define the TourDetails View
+	TapAPI.views.TourDetails = TapAPI.views.Page.extend({
+
+		content_template: TapAPI.templateManager.get('tour-details'),
+
 		initialize: function() {
-			this.$el.empty();
-			this.model.bind('reset', this.render);
+			this.page_title = this.model.get('title')[0].value;
 		},
-		render: function(event) {
+
+		renderContent: function() {
+
+			$(":jqmData(role='content')", this.$el).append(this.content_template({
+				tour_id: this.model.id,
+				publishDate: this.model.get('publishDate') ? this.model.get('publishDate')[0].value : undefined,
+				description: this.model.get('description') ? this.model.get('description')[0].value : undefined,
+				stopCount: tap.tourStops.length,
+				assetCount: tap.tourAssets.length
+			}));
+
+		}
+
+	});
+
+});
+
+// TapAPI Namespace Initialization //
+if (typeof TapAPI === 'undefined'){TapAPI = {};}
+if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
+if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
+// TapAPI Namespace Initialization //
+
+jQuery(function() {
+
+	// The tour list view displays a list of all tours
+	TapAPI.views.TourList = TapAPI.views.Page.extend({
+
+		content_template: TapAPI.templateManager.get('tour-list'),
+		page_title: 'Tour List',
+
+		renderContent: function() {
+
+			$(":jqmData(role='content')", this.$el).append(this.content_template);
+
 			// iterate through all of the tour models to setup new views
 			_.each(this.model.models, function(tour) {
-					$(this.el).append(new TourListItemView({model: tour}).render().el);
+					$('#tour-list', this.$el).append(new TapAPI.views.TourListItem({model: tour}).render().el);
 			}, this);
-			this.$el.listview('refresh'); // refresh listview since we generated the data dynamically
+			$('#tour-list').listview('refresh'); // refresh listview since we generated the data dynamically
+
 		}
+
 	});
 
 	// setup an individual view of a tour
-	window.TourListItemView = Backbone.View.extend({
+	TapAPI.views.TourListItem = Backbone.View.extend({
 		tagName: 'li',
 		template: TapAPI.templateManager.get('tour-list-item'),
 		render: function() {
@@ -588,6 +1059,7 @@ jQuery(function() {
 			return this;
 		}
 	});
+
 });
 
 // TapAPI Namespace Initialization //
@@ -605,14 +1077,16 @@ TapAPI.views.registry['VideoStop'] = 'VideoStop';
 jQuery(function() {
 
 	// Define the VideoStop View
-	TapAPI.views.VideoStop = Backbone.View.extend({
+	TapAPI.views.VideoStop = TapAPI.views.Page.extend({
 
-		el: $('#tour-stop').find(":jqmData(role='content')"),
-		template: TapAPI.templateManager.get('video-stop'),
+		content_template: TapAPI.templateManager.get('video-stop'),
 
-		render: function() {
+		renderContent: function() {
 
-			var mp4ViedoUri, oggVideoUri;
+			$(":jqmData(role='content')", this.$el).append(this.content_template({
+				tourStopTitle: this.model.get('title')[0].value
+			}));
+
 			var asset_refs = tap.currentStop.get("assetRef");
 
 			if (asset_refs) {
@@ -621,23 +1095,10 @@ jQuery(function() {
 					var assetSources = asset.get("source");
 
 					_.each(assetSources, function(assetSource){
-						switch (assetSource.format) {
-							case 'video/mp4':
-								mp4VideoUri = assetSource.uri;
-								break;
-							case 'video/ogg':
-								oggVideoUri = assetSource.uri;
-								break;
-						}
-					});
-				});
+						$('video', this.$el).append("<source src='" + assetSource.uri + "' type='" + assetSource.format + "' />");
+					}, this);
+				}, this);
 			}
-
-			this.$el.html(this.template({
-				tourStopTitle : tap.currentStop.get("title")[0].value,
-				tourStopMp4Video : mp4VideoUri,
-				tourStopOggVideo : oggVideoUri
-			}));
 
 			return this;
 		}
@@ -664,60 +1125,41 @@ jQuery(function() {
 		views: {},
 		routes: {
 			'': 'list',
-			'tour/:id': 'tourDetails',
-			'tourkeypad/:id': 'tourKeypad',
-			'tourstop/:id/:keycode': 'tourStop'
+			'tour/:tour_id': 'tourDetails',
+			'tourkeypad/:tour_id': 'tourKeypad',
+			'tourstop/:tour_id/:stop_id': 'tourStopById',
+			'tourstop/:tour_id/code/:stop_code': 'tourStopByCode',
+			'tourmap/:tour_id': 'tourMap',
+			'tourstoplist/:tour_id': 'tourStopList'
 		},
 		bookmarkMode:false,
 
-		/**
-		 * Show the view of the given class
-		 * @param selector   Selector for the element to render within
-		 * @param view_class The class of the view to render
-		 * @note The view will attempt to render the current stop
-		 */
-		showView: function(selector, view_class) {
 
-			// Close the current view
-			// TODO: Check if the class is the same?
-			if (tap.currentView){
-				tap.currentView.close();
-			}
-
-			// See if we have one of these views instantiated already
-			if (this.views[view_class] == undefined) {
-				this.views[view_class] = new TapAPI.views[view_class]();
-			}
-
-			// Render the view into the given element
-			$(selector).html(this.views[view_class].render().el);
-			tap.currentView = this.views[view_class];
-			return tap.currentView;
+		initialize:function () {
+			//console.log('AppRouter::initialize');
+			$('#back-button').live('click', function(e) {
+				e.preventDefault();
+				window.history.back();
+				return false;
+			});
+			this.firstPage = true;
 		},
 
 		list: function() {
-			// have jqm change pages
-			$.mobile.changePage('#tours', {transition: 'fade', reverse: true, changeHash: false});
-			// setup list view of all the tours and render
-			this.tourListView = new TourListView({model: tap.tours});
-			tap.currentView = this.tourListView;
-			this.tourListView.render();
+
+			this.changePage(new TapAPI.views.TourList({model: tap.tours}));
+
 		},
 
 		/**
-		 * Route to the tour details 
+		 * Route to the tour details
 		 * @param id The id of the tour
 		 */
 		tourDetails: function(id) {
-			// set the selected tour
+
 			tap.tours.selectTour(id);
-			// have jqm change pages
-			$.mobile.changePage('#tour-details', { transition: 'fade', reverse: false, changeHash: false});
-			// change the page title
-			$('#tour-details #page-title').html(tap.tours.get(tap.currentTour).get('title')[0].value);
-			// attach the tour id to the get started button
-			$('#tour-details #start-tour-id').attr("href", "#tourkeypad/"+id);
-			this.showView('#content', 'TourDetails');
+			this.changePage(new TapAPI.views.TourDetails({model: tap.tours.get(tap.currentTour)}));
+
 		},
 
 		/**
@@ -725,39 +1167,141 @@ jQuery(function() {
 		 * @param id The id of the tour
 		 */
 		tourKeypad: function(id) {
-			// set the selected tour
+
 			tap.tours.selectTour(id);
-			// have jqm change pages
-			$.mobile.changePage('#tour-keypad', { transition: 'fade', reverse: false, changeHash: false});
-			// change the page title
-			$('#tour-details #page-title').html(tap.tours.get(tap.currentTour).get('title')[0].value);
-			this.showView('#content', 'Keypad');
+			this.changePage(new TapAPI.views.Keypad({model: tap.tours.get(tap.currentTour)}));
+
 		},
 
 		/**
-		 * Route to the stop with the given code
-		 * @param id      The tour ID
-		 * @param keycode The code for the stop
+		 * Route to a stop
 		 */
-		tourStop: function(id, keycode) {
+		tourStop: function() {
+
+			var api_class = TapAPI.views.registry[tap.currentStop.get('view')];
+			if (api_class === undefined) {
+				console.log('View not in registry: ', tap.currentStop.get('view'));
+				api_class = 'Stop';
+			}
+
+			this.changePage(new TapAPI.views[api_class]({
+				model: tap.currentStop,
+				page_title: tap.tours.get(tap.currentTour).get('title')[0].value
+			}));
+
+		},
+
+		/**
+		 * Route to a stop by stop ID
+		 **/
+		tourStopById: function(tour_id, stop_id) {
+
+			// set the selected tour
+			tap.tours.selectTour(tour_id);
+			tap.currentStop = tap.tourStops.get(stop_id);
+			this.tourStop();
+
+		},
+
+		/**
+		 * Route to a stop by stop code
+		 */
+		tourStopByCode: function(tour_id, stop_code) {
+
+			// set the selected tour
+			tap.tours.selectTour(tour_id);
+			tap.currentStop = tap.tourStops.getStopByKeycode(stop_code);
+			this.tourStop();
+
+		},
+
+
+		/**
+		 * Route to the tour list
+		 * @param id The id of the tour
+		 */
+		tourStopList: function(id) {
 
 			// set the selected tour
 			tap.tours.selectTour(id);
-			// have jqm change pages
-			$.mobile.changePage('#tour-stop', { transition: 'fade', reverse: false, changeHash: false});
-			// change the page title
-			$('#tour-stop #page-title').html(tap.tours.get(tap.currentTour).get('title')[0].value);
-			// setup detailed view of tour and render
-			tap.currentStop = tap.tourStops.getStopByKeycode(keycode);
+			this.changePage(new TapAPI.views.StopList({model: tap.tours.get(tap.currentTour)}));
 
-			// Look up the class to instantiate in the views registry
-			var api_class = TapAPI.views.registry[tap.currentStop.get('view')];
-			if (api_class != undefined) {
-				this.showView('#content', api_class);
-			} else {
-				console.log('View not in registry: ', tap.currentStop.get('view'));
-				this.showView('#content', 'Stop');
+		},
+
+
+		/**
+		 * Route to the tour map
+		 * Certain parameters are determined here in the router to leave open the possibility of 
+		 * plotting markers for several tours on the same map
+		 */
+		tourMap: function(id) {
+
+
+			// Determine which stops to display
+			tap.tours.selectTour(id);
+			var map_options = {
+				'stops': tap.tourStops
+			};
+
+			// Look to see if a location is defined for the tour to use as the initial map center
+			var tour = tap.tours.get(tap.currentTour);
+			_.each(tour.get('appResource'), function(resource) {
+
+				// Make sure this is a geo asset reference
+				if ((resource === undefined) || (resource.usage != 'geo')) return;
+
+				asset = tap.tourAssets.get(resource.id);
+				var data = $.parseJSON(asset.get('content')[0].data.value);
+
+				if (data.type == 'Point') {
+					map_options['init-lon'] = data.coordinates[0];
+					map_options['init-lat'] = data.coordinates[1];
+				}
+
+			});
+
+			// Look to see if the initial map zoom level is set
+			_.each(tour.get('propertySet'), function(property) {
+				if (property.name == 'initial_map_zoom') {
+					map_options['init-zoom'] = property.value;
+				}
+			});
+
+			// Set the current view
+			this.changePage(new TapAPI.views.Map(map_options));
+
+		},
+
+		changePage: function(page) {
+
+			if (tap.currentView !== undefined) {
+				tap.currentView.close();
 			}
+
+			tap.currentView = page;
+
+			$(page.el).attr('data-role', 'page');
+			page.render();
+			$('body').append($(page.el));
+			var transition = $.mobile.defaultPageTransition;
+
+			// We don't want to slide the first page
+			if (this.firstPage) {
+				transition = 'none';
+				this.firstPage = false;
+			}
+			$.mobile.changePage($(page.el), {changeHash:false, transition: transition});
+
+		},
+
+		showDialog: function(id, content) {
+
+			var dialog = TapAPI.templateManager.get('dialog')({
+				id: id,
+				content: content
+			});
+			$('body').append(dialog);
+			$.mobile.changePage('#' + id, {changeHash:false, transition:'pop'});
 
 		}
 
@@ -831,16 +1375,10 @@ if (!tap) {
 			connection: objectToArray(data.connection),
 			description: data.tourMetadata && data.tourMetadata.description ? objectToArray(data.tourMetadata.description) : undefined,
 			lastModified: data.tourMetadata && data.tourMetadata.lastModified ? data.tourMetadata.lastModified : undefined,
-			propertySet: data.tourMetadata && data.tourMetadata.propertySet ? objectToArray(data.tourMetadata.property) : undefined,
+			propertySet: data.tourMetadata && data.tourMetadata.propertySet ? objectToArray(data.tourMetadata.propertySet.property) : undefined,
 			publishDate: data.tourMetadata && data.tourMetadata.publishDate ? objectToArray(data.tourMetadata.publishDate) : undefined,
 			rootStopRef: data.tourMetadata && data.tourMetadata.rootStopRef ? data.tourMetadata.rootStopRef : undefined,
 			title: data.tourMetadata && data.tourMetadata.title ? objectToArray(data.tourMetadata.title) : undefined
-			// description: objectToArray(data.description),
-			// lastModified: data.lastModified,
-			// propertySet: objectToArray(data.propertySet.property),
-			// publishDate: objectToArray(data.publishDate),
-			// rootStopRef: objectToArray(data.rootStopRef),
-			// title: objectToArray(data.title)
 		});
 
 		var i, j;
@@ -850,10 +1388,11 @@ if (!tap) {
 		var numStops = data.stop.length;
 		for (i = 0; i < numStops; i++) {
 			var connections = [];
-			var numConnections = data.connection.length;
-			for(j = 0; j < numConnections; j++) {
-				if(data.connection[j].srcId == data.stop[i].id) {
-					connections.push({priority: data.connection[j].priority, destId: data.connection[j].destId});
+			if(!_.isUndefined(data.connection)) {
+				for(j = 0; j < data.connection.length; j++) {
+					if(data.connection[j].srcId == data.stop[i].id) {
+						connections.push({priority: data.connection[j].priority, destId: data.connection[j].destId});
+					}
 				}
 			}
 			stops.create({
@@ -923,12 +1462,169 @@ TapAPI.templateManager = {
 if (typeof TapAPI === "undefined"){TapAPI = {};}
 if (typeof TapAPI.templates === "undefined"){TapAPI.templates = {};}
 // TapAPI Namespace Initialization //
-TapAPI.templates['audio-stop'] = undefined
-TapAPI.templates['image-stop'] = undefined
-TapAPI.templates['keypad'] = undefined
-TapAPI.templates['stop-group-list-item'] = undefined
-TapAPI.templates['stop-group'] = undefined
-TapAPI.templates['stop'] = undefined
-TapAPI.templates['tour-details'] = undefined
-TapAPI.templates['tour-list-item'] = undefined
-TapAPI.templates['video-stop'] = undefined
+TapAPI.templates['audio-stop'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div class=\'tour-stop audio\'>\n\t<div class=\'title\'>'+
+( tourStopTitle )+
+'</div>\n\t<audio id="audio-player" autoplay controls="controls">\n\t\t<p>Your browser does not support the audio element.</p>\n\t</audio>\t\n\t<video id="video-player" autoplay controls="controls" style=\'display:none;\'>\n\t\t<p>Your browser does not support the video element.</p>\n\t</video>\n</div>';
+}
+return __p;
+}
+TapAPI.templates['dialog'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div data-role="dialog" id="'+
+( id )+
+'">\n\t<div data-role="header" data-theme="d">\n\t\t<h1></h1>\n\t</div>\n\t<div data-role="content" data-theme="c" align="center">\n\t\t'+
+( content )+
+'\n\t</div>\n</div>';
+}
+return __p;
+}
+TapAPI.templates['image-stop'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div id="soloImage">\n\t<a href="'+
+( tourImageUri )+
+'"><img src="'+
+( tourImageUri )+
+'" alt="Image 01" class="primaryImg" /></a>\n\t<div class=\'title\'>'+
+( tourStopTitle )+
+'</div>\n</div>';
+}
+return __p;
+}
+TapAPI.templates['keypad'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<fieldset class="ui-grid-b" id="keypad" data-theme=\'d\'>\n\t<div class="ui-block-a" id="writeStyle">\n\t\t<div class="ui-bar" id="write"></div>\n\t</div>\n\t<div class="ui-block-b">\n\t\t<div class="ui-bar ui-bar-d" id="gobtn">Go</div>\t\n\t</div>\n\t<div class="ui-block-a"><button class="ui-bar ui-bar-d">1</button></div>\n\t<div class="ui-block-b"><button class="ui-bar ui-bar-d">2</button></div>\t \n\t<div class="ui-block-b"><button class="ui-bar ui-bar-d">3</button></div>  \n\t<div class="ui-block-a"><button class="ui-bar ui-bar-d">4</button></div>\n\t<div class="ui-block-b"><button class="ui-bar ui-bar-d">5</button></div>\t \n\t<div class="ui-block-b"><button class="ui-bar ui-bar-d">6</button></div>  \n\t<div class="ui-block-a"><button class="ui-bar ui-bar-d">7</button></div>\n\t<div class="ui-block-b"><button class="ui-bar ui-bar-d">8</button></div>\t \n\t<div class="ui-block-b"><button class="ui-bar ui-bar-d">9</button></div>  \n\t<div class="ui-block-a"><button class="ui-bar ui-bar-d">0</button></div>\n\t<div class="ui-block-b" id="clearStyle">\n\t\t<div class="ui-bar ui-bar-d" id="delete">Clear</div>\n\t</div>\n</fieldset>\n';
+}
+return __p;
+}
+TapAPI.templates['page'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div data-role="header">\n\t<a id=\'back-button\' data-rel="back">'+
+( back_label )+
+'</a>\n\t<h1 id="page-title">'+
+( title )+
+'</h1>\n</div>\n<div data-role="content">\n</div>\n<!--\n<div data-role="footer">\n</div>\n-->';
+}
+return __p;
+}
+TapAPI.templates['stop-group-list-item'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<a href="#tourstop/'+
+( tourId )+
+'/'+
+( id )+
+'">'+
+( title )+
+'</a>\n';
+}
+return __p;
+}
+TapAPI.templates['stop-group'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div class=\'tour-stop stop-group\' style="width:100%;">\n\t<div class=\'title\'>'+
+( tourStopTitle )+
+'</div>\n\t<div class=\'description\'>'+
+( description )+
+'</div>\n\t<ul id="stop-list" class="ui-listview" data-inset="true" data-role="listview"></ul>\n</div>\n';
+}
+return __p;
+}
+TapAPI.templates['stop'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div class=\'stop\' style="width:100%;">\n\t<div class=\'title\'>'+
+( tourStopTitle )+
+'</div>\n\t<div class=\'description\'>'+
+( tourStopDescription )+
+'</div>\n</div>\n';
+}
+return __p;
+}
+TapAPI.templates['tour-details'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div class="">\t\t\t\n\t<a href="#tourkeypad/'+
+( tour_id )+
+'" id="start-tour" data-role="button" data-theme="b">Start Tour</a>\n</div>\n<div class=\'tour-details\'>\n\t'+
+( description )+
+'\n</div>\n';
+}
+return __p;
+}
+TapAPI.templates['tour-list-item'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<a href="#tour/'+
+( id )+
+'">'+
+( title )+
+'</a>\n';
+}
+return __p;
+}
+TapAPI.templates['tour-list'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<ul id="tour-list" class="ui-listview" data-inset="true" data-role="listview"></ul>';
+}
+return __p;
+}
+TapAPI.templates['tour-map-marker-bubble'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div class=\'marker-bubble-content\'>\n\t<div class=\'title\'>'+
+( title )+
+'</div>\n\t<div class=\'distance\'>'+
+( distance )+
+'</div>\n\t<div class=\'view-button\'><a href=\'#tourstop/'+
+( tour_id )+
+'/'+
+( stop_id )+
+'\'>View stop</a></div>\n\t<div class=\'directions\'>Get Directions</div>\n</div>';
+}
+return __p;
+}
+TapAPI.templates['tour-map'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div id=\'tour-map\'>Unable to display the map</div>';
+}
+return __p;
+}
+TapAPI.templates['tour-stop-list-item'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<a href=\'#tourstop/'+
+( tour_id )+
+'/'+
+( stop_id )+
+'\'>'+
+( title )+
+'</a>';
+}
+return __p;
+}
+TapAPI.templates['tour-stop-list'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<ul id="tour-stop-list" class="ui-listview" data-inset="true" data-role="listview"></ul>';
+}
+return __p;
+}
+TapAPI.templates['video-stop'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div class=\'tour-stop video\'>\n\t<div class=\'title\'>'+
+( tourStopTitle )+
+'</div>\n\t<video id="video-player" poster="assets/images/tapPoster.png" controls="controls" autoplay="autoplay">\n\t\t<p>Your browser does not support the video tag.</p>\n\t</video>\n</div>\n';
+}
+return __p;
+}
