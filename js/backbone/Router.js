@@ -156,6 +156,7 @@ jQuery(function() {
 
 		changePage: function(page) {
 
+			// Close the current view to unbind events, etc.
 			if (tap.currentView !== undefined) {
 				tap.currentView.close();
 			}
@@ -173,6 +174,8 @@ jQuery(function() {
 				this.firstPage = false;
 			}
 			$.mobile.changePage($(page.el), {changeHash:false, transition: transition});
+
+			// The old page is removed from the DOM by an event handler in jqm-config.js
 
 		},
 
