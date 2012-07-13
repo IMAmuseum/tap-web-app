@@ -18,7 +18,7 @@ jQuery(function() {
 		renderContent: function() {
 			var content_template = TapAPI.templateManager.get('tour-list');
 
-			$(":jqmData(role='content')", this.$el).append(this.content_template);
+			$(":jqmData(role='content')", this.$el).append(content_template);
 
 			// iterate through all of the tour models to setup new views
 			_.each(this.model.models, function(tour) {

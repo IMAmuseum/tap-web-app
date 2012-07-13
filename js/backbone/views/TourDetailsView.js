@@ -9,14 +9,14 @@ jQuery(function() {
 	// Define the TourDetails View
 	TapAPI.views.TourDetails = TapAPI.views.Page.extend({
 
-		initialize: function() {
-			this.page_title = this.model.get('title')[0].value;
+		onInit: function() {
+			this.options.page_title = this.model.get('title')[0].value;
 		},
 
 		renderContent: function() {
 			var content_template = TapAPI.templateManager.get('tour-details');
 
-			$(":jqmData(role='content')", this.$el).append(this.content_template({
+			$(":jqmData(role='content')", this.$el).append(content_template({
 				tour_id: this.model.id,
 				publishDate: this.model.get('publishDate') ? this.model.get('publishDate')[0].value : undefined,
 				description: this.model.get('description') ? this.model.get('description')[0].value : undefined,

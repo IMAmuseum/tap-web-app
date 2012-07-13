@@ -9,11 +9,9 @@ jQuery(function() {
 	// Defines the base view for a page
 	TapAPI.views.Page = Backbone.View.extend({
 
-		template: TapAPI.templateManager.get('page'),
-
 		initialize: function(args) {
 
-			_defaults(this.options, {
+			_.defaults(this.options, {
 				page_title: '',
 				back_label: 'Back'
 			});
@@ -35,7 +33,7 @@ jQuery(function() {
 		render: function(event) {
 
 			this.$el.empty();
-			this.$el.html(this.template({
+			this.$el.html(TapAPI.templateManager.get('page')({
 				title: this.options.page_title,
 				back_label: this.options.back_label
 			}));
