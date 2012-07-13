@@ -26,9 +26,10 @@ module.exports = function(grunt) {
 					'js/backbone/collections/**/*.js',
 					'js/backbone/views/HelperView.js',
 					'js/backbone/views/PageView.js',
-					'js/backbone/views/**/*.js',
+					'js/backbone/views/**/!(GalleryView|GeoStop|ObjectStop|WebStop)*.js',
 					'js/backbone/Router.js',
 					'js/backbone/Init.js',
+					'js/backbone/GeoLocation.js',
 					'js/backbone/Tap.js',
 					'js/backbone/TemplateManager.js',
 					'js/backbone/templates/CompiledTemplates.js'
@@ -37,15 +38,15 @@ module.exports = function(grunt) {
 			},
 			dependencies: {
 				src: [
-					'js/jqm-config.js',
 					'js/external/json2.js',
 					'js/external/jquery-1.7.2.js',
-					'js/external/jquery.mobile-1.1.0.js',
+					'js/backbone/jqm-config.js',
 					'js/external/underscore-1.3.3.js',
+					'external/jqmobile/jquery.mobile-1.1.0.js',
 					'js/external/backbone-0.9.2.js',
 					'js/external/backbone.localStorage-min.js',
-					'js/external/klass.min.js',
-					'js/external/code.photoswipe.jquery-3.0.4.js',
+					'js/external/klass.js',
+					'external/photoswipe/code.photoswipe.jquery-3.0.4.js',
 					'external/leaflet/leaflet.js'
 				],
 				dest: 'dist/Tap-<%= meta.version %>-dependencies.js'
@@ -53,10 +54,10 @@ module.exports = function(grunt) {
 			css: {
 				src: [
 					'<banner:meta.banner>',
-					'css/jquery.mobile-1.1.0.css',
 					'css/tapweb.css',
-					'css/photoswipe.css',
-					'external/leaflet/leaflet.css'
+					'external/jqmobile/jquery.mobile-1.1.0.css',
+					'external/leaflet/leaflet.css',
+					'external/photoswipe/photoswipe.css'
 				],
 				dest: 'dist/Tap-<%= meta.version %>.css'
 			}
@@ -152,6 +153,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('/usr/local/lib/node_modules/grunt-css');
 
 	// Default task.
-	grunt.registerTask('default', 'precompileTemplates concat min cssmin');
+	grunt.registerTask('default', 'precompileTemplates concat cssmin');
 
 };
