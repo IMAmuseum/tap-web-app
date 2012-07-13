@@ -54,10 +54,10 @@ module.exports = function(grunt) {
 			css: {
 				src: [
 					'<banner:meta.banner>',
-					'css/tapweb.css',
 					'external/jqmobile/jquery.mobile-1.1.0.css',
 					'external/leaflet/leaflet.css',
-					'external/photoswipe/photoswipe.css'
+					'external/photoswipe/photoswipe.css',
+					'css/tapweb.css',
 				],
 				dest: 'dist/Tap-<%= meta.version %>.css'
 			}
@@ -153,6 +153,6 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('/usr/local/lib/node_modules/grunt-css');
 
 	// Default task.
-	grunt.registerTask('default', 'precompileTemplates concat cssmin');
+	grunt.registerTask('default', 'precompileTemplates concat min cssmin');
 
 };

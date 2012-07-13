@@ -5,116 +5,6 @@
  * GPLv3
  */
 
-#keypad { 
-	margin: .1em;
-}
-#keypad button { 
-	display: block; 
-	width: 98%; 
-	cursor: pointer; 
-	text-decoration:none;
-}
-#keypad gobtn { 
-	display: block; 
-	cursor: pointer; 
-	text-decoration:none;
-}
-
-.map-content {
-	margin: 0px;
-	padding: 0px;
-}
-
-#tour-map {
-	width: 100%;
-	height: 100%;
-}
-
-#tour-map .marker-bubble-content .title {
-	font-weight: bold;
-}
-
-
-#error_invalidCode .ui-header a {
-	display: none;
-}
-.ui-bar {
-	padding:.4em;
-	margin: .1em;
-	text-align:center;
-	font-weight:bold;
-	cursor: pointer; 
-	font-family: arial, helvetica, sans-serif;
-	font-size:2em;
-	border-radius: .3em;
-	-moz-border-radius: .3em;
-	-webkit-border-radius: .3em;
-}
-.ui-bar:active {
-	background:#33CCFF;
-}
-.ui-block-a, .ui-block-b, .ui-block-c, .ui-block-d, .ui-block-e {
-	min-height:1.93em;
-}
-.ui-content stoptitle {
-	color:#666;
-	font-weight:bold;
-}
-.ui-content stopdescription{
-	color:#666;
-}
-
-.primaryImg {
-	display:block;
-	margin-left: auto;
-   	margin-right: auto;
-}
-#writeStyle {
-	width:66.4%;
-	border:1px solid #666;
-	background-color: #FFF;
-	border-radius:.3em;
-	-moz-border-radius:.3em;
-	-webkit-border-radius:.3em;
-	margin-top:.3em;height:60px;
-}
-#clearStyle {
-	width:66.55%;
-}
-#Gallery { list-style: none; padding: 0; margin: 0; }
-#Gallery:after { clear: both; content: "."; display: block; height: 0; visibility: hidden; }
-#Gallery li { float: left; width: 33.33333333%; }
-#Gallery li a { display: block; margin: 5px; border: 1px solid #3c3c3c; }
-#Gallery li img { display: block; width: 100%; height: auto; }
-#Gallery1 .ui-content, #Gallery2 .ui-content { overflow: hidden; }
-
-/*** Tour Stops ***/
-
-.tour-stop .title {
-	font-size: 120%;
-	margin: 0 0 20px 10px;
-}
-
-.tour-stop .description {
-	margin: 10px;
-}
-
-
-/*** Audio Stops ***/
-#audio-player {
-	width: 100%;
-}
-
-#audio-player.audio-only {
-	height: 20px;
-}
-
-/*** Video Stops ***/
-#video-player {
-	width: 100%;
-}
-
-
 /*
 * jQuery Mobile Framework 1.1.0 db342b1f315c282692791aa870455901fdb46a55
 * http://jquerymobile.com
@@ -2669,3 +2559,113 @@ div.ps-toolbar-play div.ps-toolbar-content
 		background-image: url(../assets/images/icons2x.png);
 	}
 }
+
+#keypad { 
+	margin: .1em;
+}
+#keypad button { 
+	display: block; 
+	width: 98%; 
+	cursor: pointer; 
+	text-decoration:none;
+}
+#keypad gobtn { 
+	display: block; 
+	cursor: pointer; 
+	text-decoration:none;
+}
+
+.map-content {
+	margin: 0px;
+	padding: 0px;
+}
+
+#tour-map {
+	width: 100%;
+	height: 100%;
+}
+
+#tour-map .marker-bubble-content .title {
+	font-weight: bold;
+}
+
+
+#error_invalidCode .ui-header a {
+	display: none;
+}
+.ui-bar {
+	padding:.4em;
+	margin: .1em;
+	text-align:center;
+	font-weight:bold;
+	cursor: pointer; 
+	font-family: arial, helvetica, sans-serif;
+	font-size:2em;
+	border-radius: .3em;
+	-moz-border-radius: .3em;
+	-webkit-border-radius: .3em;
+}
+.ui-bar:active {
+	background:#33CCFF;
+}
+.ui-block-a, .ui-block-b, .ui-block-c, .ui-block-d, .ui-block-e {
+	min-height:1.93em;
+}
+.ui-content stoptitle {
+	color:#666;
+	font-weight:bold;
+}
+.ui-content stopdescription{
+	color:#666;
+}
+
+.primaryImg {
+	display:block;
+	margin-left: auto;
+   	margin-right: auto;
+}
+#writeStyle {
+	width:66.4%;
+	border:1px solid #666;
+	background-color: #FFF;
+	border-radius:.3em;
+	-moz-border-radius:.3em;
+	-webkit-border-radius:.3em;
+	margin-top:.3em;height:60px;
+}
+#clearStyle {
+	width:66.55%;
+}
+#Gallery { list-style: none; padding: 0; margin: 0; }
+#Gallery:after { clear: both; content: "."; display: block; height: 0; visibility: hidden; }
+#Gallery li { float: left; width: 33.33333333%; }
+#Gallery li a { display: block; margin: 5px; border: 1px solid #3c3c3c; }
+#Gallery li img { display: block; width: 100%; height: auto; }
+#Gallery1 .ui-content, #Gallery2 .ui-content { overflow: hidden; }
+
+/*** Tour Stops ***/
+
+.tour-stop .title {
+	font-size: 120%;
+	margin: 0 0 20px 10px;
+}
+
+.tour-stop .description {
+	margin: 10px;
+}
+
+
+/*** Audio Stops ***/
+#audio-player {
+	width: 100%;
+}
+
+#audio-player.audio-only {
+	height: 20px;
+}
+
+/*** Video Stops ***/
+#video-player {
+	width: 100%;
+}
+
