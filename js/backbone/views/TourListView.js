@@ -10,9 +10,8 @@ jQuery(function() {
 	TapAPI.views.TourList = TapAPI.views.Page.extend({
 
 		onInit: function() {
-			_.defaults(this.options, {
-				page_title: 'Tour List'
-			});
+			this.options.page_title = 'Tour List';
+			this.options.header_nav = false;
 		},
 
 		renderContent: function() {

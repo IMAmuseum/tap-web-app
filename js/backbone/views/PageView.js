@@ -13,7 +13,13 @@ jQuery(function() {
 
 			_.defaults(this.options, {
 				page_title: '',
-				back_label: 'Back'
+				back_label: 'Back',
+				nav_menu: [
+					{ label: 'Menu', prefix: 'tourstoplist' },
+					{ label: 'Keypad', prefix: 'tourkeypad' },
+					{ label: 'Map', prefix: 'tourmap'}
+				],
+				header_nav: true
 			});
 
 			if (this.onInit) {
@@ -35,7 +41,10 @@ jQuery(function() {
 			this.$el.empty();
 			this.$el.html(TapAPI.templateManager.get('page')({
 				title: this.options.page_title,
-				back_label: this.options.back_label
+				back_label: this.options.back_label,
+				header_nav: this.options.header_nav,
+				nav_menu: this.options.nav_menu,
+				tour_id: tap.currentTour
 			}));
 			this.renderContent();
 			return this;

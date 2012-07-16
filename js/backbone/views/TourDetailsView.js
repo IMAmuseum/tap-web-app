@@ -11,6 +11,7 @@ jQuery(function() {
 
 		onInit: function() {
 			this.options.page_title = this.model.get('title')[0].value;
+			this.options.header_nav = false;
 		},
 
 		renderContent: function() {
