@@ -548,7 +548,7 @@ jQuery(function() {
 
 		events: {
 			'tap #gobtn' : 'submit',
-			'tap #keypad div button' : 'writekeycode',
+			'tap #keypad div .button' : 'writekeycode',
 			'tap #delete' : 'clearkeycode'
 		},
 
@@ -1564,7 +1564,7 @@ return __p;
 TapAPI.templates['keypad'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<fieldset class="ui-grid-b" id="keypad" data-theme=\'d\'>\n\t<div class="ui-block-a" id="writeStyle">\n\t\t<div class="ui-bar" id="write"></div>\n\t</div>\n\t<div class="ui-block-b">\n\t\t<div class="ui-bar ui-bar-d" id="gobtn">Go</div>\t\n\t</div>\n\t<div class="ui-block-a"><button class="ui-bar ui-bar-d">1</button></div>\n\t<div class="ui-block-b"><button class="ui-bar ui-bar-d">2</button></div>\t \n\t<div class="ui-block-b"><button class="ui-bar ui-bar-d">3</button></div>  \n\t<div class="ui-block-a"><button class="ui-bar ui-bar-d">4</button></div>\n\t<div class="ui-block-b"><button class="ui-bar ui-bar-d">5</button></div>\t \n\t<div class="ui-block-b"><button class="ui-bar ui-bar-d">6</button></div>  \n\t<div class="ui-block-a"><button class="ui-bar ui-bar-d">7</button></div>\n\t<div class="ui-block-b"><button class="ui-bar ui-bar-d">8</button></div>\t \n\t<div class="ui-block-b"><button class="ui-bar ui-bar-d">9</button></div>  \n\t<div class="ui-block-a"><button class="ui-bar ui-bar-d">0</button></div>\n\t<div class="ui-block-b" id="clearStyle">\n\t\t<div class="ui-bar ui-bar-d" id="delete">Clear</div>\n\t</div>\n</fieldset>\n';
+__p+='<fieldset class="ui-grid-b" id="keypad" data-theme=\'d\'>\n\t<div class="ui-block-a" id="writeStyle">\n\t\t<div class="ui-bar" id="write"></div>\n\t</div>\n\t<div class="ui-block-b">\n\t\t<div class="ui-bar ui-bar-d" id="gobtn">Go</div>\t\n\t</div>\n\t<div class="ui-block-a"><div class="button ui-bar ui-bar-d">1</div></div>\n\t<div class="ui-block-b"><div class="button ui-bar ui-bar-d">2</div></div>\t \n\t<div class="ui-block-b"><div class="button ui-bar ui-bar-d">3</div></div>  \n\t<div class="ui-block-a"><div class="button ui-bar ui-bar-d">4</div></div>\n\t<div class="ui-block-b"><div class="button ui-bar ui-bar-d">5</div></div>\t \n\t<div class="ui-block-b"><div class="button ui-bar ui-bar-d">6</div></div>  \n\t<div class="ui-block-a"><div class="button ui-bar ui-bar-d">7</div></div>\n\t<div class="ui-block-b"><div class="button ui-bar ui-bar-d">8</div></div>\t \n\t<div class="ui-block-b"><div class="button ui-bar ui-bar-d">9</div></div>  \n\t<div class="ui-block-a"><div class="button ui-bar ui-bar-d">0</div></div>\n\t<div class="ui-block-b" id="clearStyle">\n\t\t<div class="ui-bar ui-bar-d" id="delete">Clear</div>\n\t</div>\n</fieldset>\n';
 }
 return __p;
 }

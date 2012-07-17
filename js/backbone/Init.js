@@ -7,6 +7,8 @@ if (!tap) {
 	tap.currentStop = ''; // id of the current stop
 	tap.currentTour = ''; // id of the current tour
 
+	console.log($('head script').last());	
+
 	_.extend(tap, Backbone.Events);
 	/*
 	 * Takes care of storing/loading data in local storage and initializing
@@ -16,7 +18,7 @@ if (!tap) {
 	 */
 	tap.initApp = function(url, config) {
 
-		tap.url = url;		
+		tap.url = url;
 
 		if (config === undefined) config = {};
 		tap.config = _.defaults(config, {
