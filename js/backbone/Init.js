@@ -12,10 +12,19 @@ if (!tap) {
 	 * Takes care of storing/loading data in local storage and initializing
 	 * the tour collection.
 	 * @param url The url to the TourML document
+	 * @param config Optional configuration object
 	 */
-	tap.initApp = function(url) {
+	tap.initApp = function(url, config) {
 
-		tap.url = url;
+		tap.url = url;		
+
+		if (config === undefined) config = {};
+		tap.config = _.defaults(config, {
+			default_index: 'tourstoplist',
+			StopListView: {
+				codes_only: true
+			}
+		});
 
 		// trigger tap init start event
 		tap.trigger('tap.init.start');
@@ -49,7 +58,7 @@ if (!tap) {
 		tap.trigger('tap.init.end');
 
 		// initialize router
-		tap.router = new AppRouter();		
+		tap.router = new AppRouter();
 		
 	};
     

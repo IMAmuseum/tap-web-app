@@ -19,6 +19,7 @@ jQuery(function() {
 					{ label: 'Keypad', prefix: 'tourkeypad' },
 					{ label: 'Map', prefix: 'tourmap'}
 				],
+				active_index: null,
 				header_nav: true
 			});
 
@@ -44,6 +45,7 @@ jQuery(function() {
 				back_label: this.options.back_label,
 				header_nav: this.options.header_nav,
 				nav_menu: this.options.nav_menu,
+				active_index: this.options.active_index,
 				tour_id: tap.currentTour
 			}));
 			this.renderContent();

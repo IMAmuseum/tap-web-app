@@ -15,6 +15,10 @@ jQuery(function() {
 			'tap #delete' : 'clearkeycode'
 		},
 
+		onInit: function() {
+			this.options.active_index = 'tourkeypad';
+		},
+
 		renderContent: function() {
 			var content_template = TapAPI.templateManager.get('keypad');
 

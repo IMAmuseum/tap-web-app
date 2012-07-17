@@ -47,9 +47,27 @@ var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='<div data-role="header">\n\t<a id=\'back-button\' data-rel="back">'+
 ( back_label )+
-'</a>\n\t<h1 id="page-title">'+
+'</a>\n\t';
+ if (header_nav) { 
+;__p+='\n\t<div id=\'index-selector\' class=\'ui-title\' data-role="controlgroup" data-type="horizontal" data-mini="true">\n\t\t';
+ _.each(nav_menu, function(item) { 
+;__p+='\n\t\t<a data-role="button" '+
+( (active_index == item.prefix) ? 'data-theme="b"' : "" )+
+' href=\'#'+
+( item.prefix )+
+'/'+
+( tour_id )+
+'\'>'+
+( item.label )+
+'</a>\n\t\t';
+ }); 
+;__p+='\n\t</div>\n\t';
+ } else { 
+;__p+='\n\t<h1 id="page-title">'+
 ( title )+
-'</h1>\n</div>\n<div data-role="content">\n</div>\n<!--\n<div data-role="footer">\n</div>\n-->';
+'</h1>\n\t';
+ } 
+;__p+='\n</div>\n<div data-role="content">\n</div>\n<!--\n<div data-role="footer">\n</div>\n-->';
 }
 return __p;
 }
@@ -91,7 +109,9 @@ return __p;
 TapAPI.templates['tour-details'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div class="">\t\t\t\n\t<a href="#tourkeypad/'+
+__p+='<div class="">\t\t\t\n\t<a href="#'+
+( tour_index )+
+'/'+
 ( tour_id )+
 '" id="start-tour" data-role="button" data-theme="b">Start Tour</a>\n</div>\n<div class=\'tour-details\'>\n\t'+
 ( description )+
