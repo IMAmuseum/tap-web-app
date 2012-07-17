@@ -17,6 +17,8 @@ jQuery(function() {
 		onInit: function() {
 			console.log('MapView.initialize');
 
+			this.options.active_index = 'tourmap';
+
 			this.tile_layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 				attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery &copy; <a href="http://cloudmade.com">CloudMade</a>',
 				maxZoom: 18
@@ -33,6 +35,13 @@ jQuery(function() {
 				iconSize: new L.Point(24, 24),
 				iconAnchor: new L.Point(12, 12)
 			});
+			this.MarkerIcon = L.Icon.extend({
+				iconUrl: 'assets/images/marker.png',
+				shadowUrl: 'assets/images/marker-shadow.png',
+				iconSize: new L.Point(25,41),
+				iconAnchor: new L.Point(12,41)
+			});
+			this.marker_icon = new this.MarkerIcon();
 
 			_.defaults(this.options, {
 				'init-lat': 39.829104,
@@ -127,7 +136,7 @@ jQuery(function() {
 			if (data.type == 'Point') {
 
 				var marker_location = new L.LatLng(data.coordinates[1], data.coordinates[0]);
-				var marker = new L.Marker(marker_location);
+				var marker = new L.Marker(marker_location, { icon: this.map_view.marker_icon });
 				var template = TapAPI.templateManager.get('tour-map-marker-bubble');
 
 				var popup = new L.Popup();

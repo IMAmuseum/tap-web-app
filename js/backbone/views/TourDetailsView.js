@@ -11,12 +11,14 @@ jQuery(function() {
 
 		onInit: function() {
 			this.options.page_title = this.model.get('title')[0].value;
+			this.options.header_nav = false;
 		},
 
 		renderContent: function() {
 			var content_template = TapAPI.templateManager.get('tour-details');
 
 			$(":jqmData(role='content')", this.$el).append(content_template({
+				tour_index: tap.config.default_index,
 				tour_id: this.model.id,
 				publishDate: this.model.get('publishDate') ? this.model.get('publishDate')[0].value : undefined,
 				description: this.model.get('description') ? this.model.get('description')[0].value : undefined,

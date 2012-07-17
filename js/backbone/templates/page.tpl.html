@@ -1,6 +1,14 @@
 <div data-role="header">
 	<a id='back-button' data-rel="back"><%= back_label %></a>
+	<% if (header_nav) { %>
+	<div id='index-selector' class='ui-title' data-role="controlgroup" data-type="horizontal" data-mini="true">
+		<% _.each(nav_menu, function(item) { %>
+		<a data-role="button" <%= (active_index == item.prefix) ? 'data-theme="b"' : "" %> href='#<%= item.prefix %>/<%= tour_id %>'><%= item.label %></a>
+		<% }); %>
+	</div>
+	<% } else { %>
 	<h1 id="page-title"><%= title %></h1>
+	<% } %>
 </div>
 <div data-role="content">
 </div>
