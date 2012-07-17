@@ -11,7 +11,7 @@ jQuery(function() {
 
 		events: {
 			'tap #gobtn' : 'submit',
-			'tap #keypad div button' : 'writekeycode',
+			'tap #keypad div .button' : 'writekeycode',
 			'tap #delete' : 'clearkeycode'
 		},
 
