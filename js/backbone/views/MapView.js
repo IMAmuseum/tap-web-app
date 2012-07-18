@@ -30,14 +30,14 @@ jQuery(function() {
 			this.position_marker = null;
 			this.view_initialized = false;
 			this.LocationIcon = L.Icon.extend({
-				iconUrl: 'assets/images/icon-locate.png',
+				iconUrl: tap.base_path + 'images/icon-locate.png',
 				shadowUrl: null,
 				iconSize: new L.Point(24, 24),
 				iconAnchor: new L.Point(12, 12)
 			});
 			this.MarkerIcon = L.Icon.extend({
-				iconUrl: 'assets/images/marker.png',
-				shadowUrl: 'assets/images/marker-shadow.png',
+				iconUrl: tap.base_path + 'images/marker.png',
+				shadowUrl: tap.base_path + 'images/marker-shadow.png',
 				iconSize: new L.Point(25,41),
 				iconAnchor: new L.Point(12,41)
 			});

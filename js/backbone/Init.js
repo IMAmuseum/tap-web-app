@@ -7,7 +7,15 @@ if (!tap) {
 	tap.currentStop = ''; // id of the current stop
 	tap.currentTour = ''; // id of the current tour
 
-	console.log($('head script').last());	
+	// Determine the base path so that complete paths can be defined where needed
+	var script_src = $('head script').last().attr('src');
+	if (script_src.indexOf('Init.js') >= 0) {
+		tap.base_path = '';
+	} else {
+		// In deployment
+		tap.base_path = script_src.substring(0, script_src.lastIndexOf('/')) + '/';
+		console.log('TAP.js base path: ' + tap.base_path);
+	}
 
 	_.extend(tap, Backbone.Events);
 	/*
