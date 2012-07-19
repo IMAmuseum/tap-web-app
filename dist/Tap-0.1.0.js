@@ -245,18 +245,29 @@ TapAPI.models.Stop = Backbone.Model.extend({
 			case 'description':
 			case 'title':
 				if (this.attributes[attr].length === 0) return undefined;
+				
 				var value, property;
+
 				property = _.find(this.attributes[attr], function(item) {
 					return item.lang === tap.language;
 				});
-				if (!property) {
+
+				if (!property && tap.language !== tap.defaultLanguage) {
 					property = _.find(this.attributes[attr], function(item) {
 						return item.lang === tap.defaultLanguage;
 					});
 				}
+
+				if (!property) {
+					property = _.find(this.attributes[attr], function(item) {
+						return item.lang === undefined || item.lang === "";
+					});
+				}
+
 				if (property) {
 					value = property.value;
 				}
+
 				return value;
 			default:
 				return this.attributes[attr];
@@ -321,18 +332,29 @@ TapAPI.models.Tour = Backbone.Model.extend({
 			case 'description':
 			case 'title':
 				if (this.attributes[attr].length === 0) return undefined;
+
 				var value, property;
+
 				property = _.find(this.attributes[attr], function(item) {
 					return item.lang === tap.language;
 				});
-				if (!property) {
+
+				if (!property && tap.language !== tap.defaultLanguage) {
 					property = _.find(this.attributes[attr], function(item) {
 						return item.lang === tap.defaultLanguage;
 					});
 				}
+
+				if (!property) {
+					property = _.find(this.attributes[attr], function(item) {
+						return item.lang === undefined || item.lang === "";
+					});
+				}
+
 				if (property) {
 					value = property.value;
 				}
+				
 				return value;
 			default:
 				return this.attributes[attr];
@@ -547,7 +569,7 @@ jQuery(function() {
 			var contentContainer = this.$el.find(":jqmData(role='content')");
 
 			contentContainer.append(content_template({
-				tourStopTitle: this.model.get('title')[0].value
+				tourStopTitle: this.model.get('title')
 			}));
 
 			var assets = this.model.getAssets();
@@ -616,8 +638,8 @@ jQuery(function() {
 			var content_template = TapAPI.templateManager.get('stop');
 
 			this.$el.find(":jqmData(role='content')").append(content_template({
-				tourStopTitle : this.model.get("title") ? this.model.get("title")[0].value : undefined,
-				tourStopDescription : this.model.get('description') ? this.model.get('description')[0].value : undefined
+				tourStopTitle : this.model.get("title") ? this.model.get("title") : undefined,
+				tourStopDescription : this.model.get('description') ? this.model.get('description') : undefined
 			}));
 			return this;
 
@@ -888,7 +910,7 @@ jQuery(function() {
 				}
 
 				popup.setContent(template({
-					'title': this.stop.get('title')[0].value,
+					'title': this.stop.get('title'),
 					'tour_id': tap.currentTour,
 					'stop_id': this.stop.id,
 					'distance': d_content
@@ -913,7 +935,7 @@ jQuery(function() {
 				}
 
 				this.stop_popups[stop.id].setContent(template({
-					'title': stop.get('title')[0].value,
+					'title': stop.get('title'),
 					'tour_id': tap.currentTour,
 					'stop_id': stop.get('id'),
 					'distance': d_content
@@ -1026,12 +1048,12 @@ jQuery(function() {
 		renderContent: function() {
 			var content_template = TapAPI.templateManager.get('stop-group');
 			var template_args = {
-				tourStopTitle : this.model.get('title')[0].value
+				tourStopTitle : this.model.get('title')
 			};
 
 			var description = this.model.get("description");
 			if (description !== undefined) {
-				template_args['description'] = description[0].value;
+				template_args['description'] = description;
 			} else {
 				template_args['description'] = '';
 			}
@@ -1059,7 +1081,7 @@ jQuery(function() {
 		template: TapAPI.templateManager.get('stop-group-list-item'),
 		render: function() {
 			this.$el.html(this.template({
-				title: this.model.get('title') ? this.model.get('title')[0].value : undefined,
+				title: this.model.get('title') ? this.model.get('title') : undefined,
 				id: this.model.get('id'),
 				tourId: tap.currentTour
 			}));
@@ -1116,10 +1138,9 @@ jQuery(function() {
 
 		tagName: 'li',
 		template: TapAPI.templateManager.get('tour-stop-list-item'),
-
 		render: function() {
 			$(this.el).html(this.template({
-				title: this.model.get('title') ? this.model.get('title')[0].value : undefined,
+				title: this.model.get('title') ? this.model.get('title') : undefined,
 				stop_id: this.model.get('id'),
 				tour_id: tap.currentTour
 			}));
@@ -1141,7 +1162,7 @@ jQuery(function() {
 	TapAPI.views.TourDetails = TapAPI.views.Page.extend({
 
 		onInit: function() {
-			this.options.page_title = this.model.get('title')[0].value;
+			this.options.page_title = this.model.get('title');
 			this.options.header_nav = false;
 		},
 
@@ -1151,8 +1172,8 @@ jQuery(function() {
 			this.$el.find(":jqmData(role='content')").append(content_template({
 				tour_index: tap.config.default_index,
 				tour_id: this.model.id,
-				publishDate: this.model.get('publishDate') ? this.model.get('publishDate')[0].value : undefined,
-				description: this.model.get('description') ? this.model.get('description')[0].value : undefined,
+				publishDate: this.model.get('publishDate') ? this.model.get('publishDate') : undefined,
+				description: this.model.get('description') ? this.model.get('description') : undefined,
 				stopCount: tap.tourStops.length,
 				assetCount: tap.tourAssets.length
 			}));
@@ -1201,7 +1222,7 @@ jQuery(function() {
 		template: TapAPI.templateManager.get('tour-list-item'),
 		render: function() {
 			this.$el.html(this.template({
-				title: this.model.get('title') ? this.model.get('title')[0].value : undefined,
+				title: this.model.get('title') ? this.model.get('title') : undefined,
 				id: this.model.get('id')
 			}));
 			return this;
@@ -1231,7 +1252,7 @@ jQuery(function() {
 			var content_template = TapAPI.templateManager.get('video-stop');
 
 			this.$el.find(":jqmData(role='content')").append(content_template({
-				tourStopTitle: this.model.get('title')[0].value
+				tourStopTitle: this.model.get('title')
 			}));
 
 			var assets = this.model.getAssets();
