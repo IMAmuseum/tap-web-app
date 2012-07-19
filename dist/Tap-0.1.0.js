@@ -20,24 +20,6 @@ String.prototype.toCamel = function(){
 };
 
 /*
- * Retrieve attribute based on language
- */
-function getAttributeByLanguage(attr) {
-	var items = [];
-	for(var i = 0; i < attr.length; i++) {
-		// get language specific and language neutral
-		if(!attr[i].lang || (attr[i].lang && attr[i].lang == tap.language)) {
-			items.push(attr[i]);
-		}
-	}
-	// return all items if no language matched
-	if(items.length === 0) {
-		items = attr;
-	}
-	return items;
-}
-
-/*
  * Load xml document
  */
 function loadXMLDoc(url) {
@@ -130,9 +112,60 @@ TapAPI.models.Asset = Backbone.Model.extend({
 		}
 
 		return response;
+	},
+	getSourcesByPart: function(part) {
+		if (_.isUndefined(this.get('source'))) return undefined;
+
+		var sources, models;
+		sources = this.get('source').where({"part": part, "lang": tap.language});
+		if (sources.length === 0) {
+			sources = this.get('source').where({"part": part});
+		}
+		if (sources.length) {
+			models = sources;
+		}
+		return models;
+	},
+	getContentsByPart: function(part) {
+		if (_.isUndefined(this.get('content'))) return undefined;
+
+		var contents, models;
+		contents = this.get('content').where({"part": part, "lang": tap.language});
+		if (contents.length === 0) {
+			contents = this.get('content').where({"part": part});
+		}
+		if (contents.length) {
+			models = contents;
+		}
+		return models;
+	},
+	getSourcesByFormat: function(format) {
+		if (_.isUndefined(this.get('source'))) return undefined;
+
+		var sources, models;
+		sources = this.get('source').where({"format": format, "lang": tap.language});
+		if (sources.length === 0) {
+			sources = this.get('source').where({"format": format});
+		}
+		if (sources.length) {
+			models = sources;
+		}
+		return models;
+	},
+	getContentsByFormat: function(format) {
+		if (_.isUndefined(this.get('content'))) return undefined;
+
+		var contents, models;
+		contents = this.get('content').where({"format": format, "lang": tap.language});
+		if (contents.length === 0) {
+			contents = this.get('content').where({"format": format});
+		}
+		if (contents.length) {
+			models = contents;
+		}
+		return models;
 	}
 });
-
 // TapAPI Namespace Initialization //
 if (typeof TapAPI === 'undefined'){TapAPI = {};}
 if (typeof TapAPI.models === 'undefined'){TapAPI.models = {};}
@@ -211,7 +244,20 @@ TapAPI.models.Stop = Backbone.Model.extend({
 		switch(attr) {  // retrieve attribute based on language
 			case 'description':
 			case 'title':
-				return getAttributeByLanguage(this.attributes[attr]);
+				if (this.attributes[attr].length === 0) return undefined;
+				var value, property;
+				property = _.find(this.attributes[attr], function(item) {
+					return item.lang === tap.language;
+				});
+				if (!property) {
+					property = _.find(this.attributes[attr], function(item) {
+						return item.lang === tap.defaultLanguage;
+					});
+				}
+				if (property) {
+					value = property.value;
+				}
+				return value;
 			default:
 				return this.attributes[attr];
 		}
@@ -223,7 +269,7 @@ TapAPI.models.Stop = Backbone.Model.extend({
 		);
 
 		return response;
-	}, 
+	},
 	/**
 	* Retrieves all asset models for a stop
 	* @return array An array of asset models
@@ -274,13 +320,25 @@ TapAPI.models.Tour = Backbone.Model.extend({
 		switch(attr) {  // retrieve attribute based on language
 			case 'description':
 			case 'title':
-				return getAttributeByLanguage(this.attributes[attr]);
+				if (this.attributes[attr].length === 0) return undefined;
+				var value, property;
+				property = _.find(this.attributes[attr], function(item) {
+					return item.lang === tap.language;
+				});
+				if (!property) {
+					property = _.find(this.attributes[attr], function(item) {
+						return item.lang === tap.defaultLanguage;
+					});
+				}
+				if (property) {
+					value = property.value;
+				}
+				return value;
 			default:
 				return this.attributes[attr];
 		}
 	},
 	parse: function(response) {
-
 		response.propertySet = new TapAPI.collections.PropertySet(
 			response.propertySet,
 			this.id
@@ -289,7 +347,6 @@ TapAPI.models.Tour = Backbone.Model.extend({
 		return response;
 	}
 });
-
 // TapAPI Namespace Initialization //
 if (typeof TapAPI === 'undefined'){TapAPI = {};}
 if (typeof TapAPI.collections === 'undefined'){TapAPI.collections = {};}
@@ -723,8 +780,7 @@ jQuery(function() {
 			_.defaults(this.options, {
 				'init-lat': 39.829104,
 				'init-lon': -86.189504,
-				'init-zoom': 2,
-				'units': 'si'
+				'init-zoom': 2
 			});
 		},
 
@@ -742,9 +798,11 @@ jQuery(function() {
 				if (e.data.map_view.map === null) {
 					e.data.map_view.initMap();
 				}
+				setTimeout(e.data.map_view.resizeContentArea, 2000);
 			});
 
 			$(window).bind('orientationchange resize', this.resizeContentArea);
+			//$(":jqmData(role='page')").bind('updatelayout', function() { alert('x'); });
 
 		},
 
@@ -904,12 +962,22 @@ jQuery(function() {
 
 		formatStopDistance: function(d) {
 
-			if (this.options.units == 'si') {
+			if (tap.config.units == 'si') {
 
 				if (d < 1000) {
 					return d.toFixed(2) + ' m';
 				} else {
 					return (d/1000).toFixed(2) + ' km';
+				}
+
+			} else {
+				
+				// Assume it's English
+				var feet = 3.28084 * d;
+				if (feet > 528) { // .1 miles
+					return (feet/5280).toFixed(2) + ' mi';
+				} else {
+					return feet + ' ft';
 				}
 
 			}
@@ -1384,9 +1452,14 @@ if (!tap) {
 	tap.tours = {};
 	tap.tourAssets = {};
 	tap.tourStops = {}; // initialize tour stop
-	tap.language = 'en'; // set default language
+	tap.language = 'en'; // set default user language
+	tap.defaultLanguage = 'en'; // the default language to fallback to
 	tap.currentStop = ''; // id of the current stop
 	tap.currentTour = ''; // id of the current tour
+
+	//get the users language
+	var userLang = (navigator.language) ? navigator.language : navigator.userLanguage;
+	tap.language = userLang.split("-")[0];
 
 	// Determine the base path so that complete paths can be defined where needed
 	var script_src = $('head script').last().attr('src');
@@ -1412,6 +1485,7 @@ if (!tap) {
 		if (config === undefined) config = {};
 		tap.config = _.defaults(config, {
 			default_index: 'tourstoplist',
+			units: 'si',
 			StopListView: {
 				codes_only: true
 			}
@@ -1508,8 +1582,8 @@ if (!tap) {
 		var numAssets = data.asset.length;
 		for (i = 0; i < numAssets; i++) {
 			// modifiy source propertySet child to match similar elements
-			if(data.asset[i].source && data.asset[i].source) {
-				var propertySet = [];
+			if(data.asset[i].source) {
+				data.asset[i].source = objectToArray(data.asset[i].source);
 				var numSources = data.asset[i].source.length;
 				for (j = 0; j < numSources; j++) {
 					if(data.asset[i].source[j].propertySet) {
@@ -1517,12 +1591,21 @@ if (!tap) {
 					}
 				}
 			}
+			if(data.asset[i].content) {
+				data.asset[i].content = objectToArray(data.asset[i].content);
+				var numContent = data.asset[i].content.length;
+				for (j = 0; j < numContent; j++) {
+					if(data.asset[i].content[j].propertySet) {
+						data.asset[i].content[j].propertySet = objectToArray(data.asset[i].content[j].propertySet.property);
+					}
+				}
+			}
 
 			assets.create({
 				assetRights: objectToArray(data.asset[i].assetRights),
-				content: objectToArray(data.asset[i].content),
+				content: data.asset[i].content,
 				id: data.asset[i].id,
-				source: objectToArray(data.asset[i].source),
+				source: data.asset[i].source,
 				propertySet: data.asset[i].propertySet ? objectToArray(data.asset[i].propertySet.property) : undefined
 			});
 		}
@@ -1697,11 +1780,11 @@ return __p;
 TapAPI.templates['page'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div data-role="header" data-position="fixed">\n\t<a id=\'back-button\' data-rel="back">'+
+__p+='<div data-role="header" data-position="fixed">\n\t<a id=\'back-button\' data-rel="back" data-mini="true">'+
 ( back_label )+
 '</a>\n\t';
  if (header_nav) { 
-;__p+='\n\t<div id=\'index-selector\' class=\'ui-title\' data-role="controlgroup" data-type="horizontal" data-mini="true">\n\t\t';
+;__p+='\n\t<div id=\'index-selector\' data-role="controlgroup" data-type="horizontal" data-mini="true">\n\t\t';
  _.each(nav_menu, function(item) { 
 ;__p+='\n\t\t<a data-role="button" '+
 ( (active_index == item.prefix) ? 'data-theme="b"' : "" )+

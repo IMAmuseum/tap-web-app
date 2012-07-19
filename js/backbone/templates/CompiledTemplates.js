@@ -45,11 +45,11 @@ return __p;
 TapAPI.templates['page'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div data-role="header" data-position="fixed">\n\t<a id=\'back-button\' data-rel="back">'+
+__p+='<div data-role="header" data-position="fixed">\n\t<a id=\'back-button\' data-rel="back" data-mini="true">'+
 ( back_label )+
 '</a>\n\t';
  if (header_nav) { 
-;__p+='\n\t<div id=\'index-selector\' class=\'ui-title\' data-role="controlgroup" data-type="horizontal" data-mini="true">\n\t\t';
+;__p+='\n\t<div id=\'index-selector\' data-role="controlgroup" data-type="horizontal" data-mini="true">\n\t\t';
  _.each(nav_menu, function(item) { 
 ;__p+='\n\t\t<a data-role="button" '+
 ( (active_index == item.prefix) ? 'data-theme="b"' : "" )+
