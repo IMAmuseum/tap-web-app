@@ -5,28 +5,28 @@ if (typeof TapAPI.models === 'undefined'){TapAPI.models = {};}
 
 // define asset model
 TapAPI.models.Asset = Backbone.Model.extend({
-	get: function(attr) { // override get method
-		if(!this.attributes[attr]) return this.attributes[attr];
-		switch(attr) { // retrieve attribute based on language
-			case 'tourMetadata':
-			case 'propertySet':
-			case 'source':
-			case 'content':
-				return getAttributeByLanguage(objectToArray(this.attributes[attr]));
-			default:
-				return this.attributes[attr];
+	parse: function(response) {
+		if (response.propertySet) {
+			response.propertySet = new TapAPI.collections.PropertySet(
+				response.propertySet,
+				response.id
+			);
 		}
-	},
-	/**
-	* Retrieves the property value of a given property name
-	* @param  string key The propety name
-	* @return string The property value
-	*/
-	getPropertyByName: function(name) {
-		if(_.isUndefined(this.get('propertySet'))) return false;
-		var property = _.find(this.get('propertySet'), function(item) {
-			return item['name'] === key;
-		});
-		return _.isUndefined(property) ? false : property.value;
+
+		if (response.source) {
+			response.source = new TapAPI.collections.Sources(
+				response.source,
+				response.id
+			);
+		}
+
+		if (response.content) {
+			response.content = new TapAPI.collections.Content(
+				response.content,
+				response.id
+			);
+		}
+
+		return response;
 	}
 });

@@ -8,8 +8,6 @@ TapAPI.models.Stop = Backbone.Model.extend({
 	get: function(attr) { // override get method
 		if(!this.attributes[attr]) return this.attributes[attr];
 		switch(attr) {  // retrieve attribute based on language
-			case 'tourMetadata':
-			case 'propertySet':
 			case 'description':
 			case 'title':
 				return getAttributeByLanguage(this.attributes[attr]);
@@ -17,17 +15,15 @@ TapAPI.models.Stop = Backbone.Model.extend({
 				return this.attributes[attr];
 		}
 	},
-	/**
-	* Retrieves the property value of a given property name
-	* @param  string name The propety name
-	* @return string The property value
-	*/
-	getPropertyByName: function(name) {
-		if(_.isUndefined(this.get('propertySet'))) return false;
-		var property = _.find(this.get('propertySet'), function(item) {
-			return item['name'] === name;
-		});
-		return _.isUndefined(property) ? false : property.value;
+	parse: function(response) {
+		if (response.propertySet) {
+			response.propertySet = new TapAPI.collections.PropertySet(
+				response.propertySet,
+				response.id
+			);
+		}
+
+		return response;
 	},
 	/**
 	* Retrieves all asset models for a stop

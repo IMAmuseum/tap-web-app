@@ -26,7 +26,7 @@ TapAPI.collections.Tours = Backbone.Collection.extend({
 		}
 
 		// load data from local storage
-		tap.tourAssets.fetch();		
+		tap.tourAssets.fetch();
 		tap.tourStops.fetch();
 
 	}

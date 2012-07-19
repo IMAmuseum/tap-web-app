@@ -104,6 +104,7 @@ if (!tap) {
 					}
 				}
 			}
+
 			stops.create({
 				id: data.stop[i].id,
 				connection: connections,
@@ -126,10 +127,11 @@ if (!tap) {
 				var numSources = data.asset[i].source.length;
 				for (j = 0; j < numSources; j++) {
 					if(data.asset[i].source[j].propertySet) {
-						data.asset[i].source[j].propertySet = data.asset[i].source[j].propertySet.property;
+						data.asset[i].source[j].propertySet = objectToArray(data.asset[i].source[j].propertySet.property);
 					}
 				}
 			}
+
 			assets.create({
 				assetRights: objectToArray(data.asset[i].assetRights),
 				content: objectToArray(data.asset[i].content),

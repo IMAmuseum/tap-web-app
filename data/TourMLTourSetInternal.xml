@@ -67,7 +67,7 @@
 
 		<tourml:Asset tourml:id="caption-1">
 			<tourml:Content xml:lang="en" tourml:lastModified="2011-09-29T12:01:32">
-				<tourml:Data>This is a caption</tourml:Data>
+				<tourml:Data><![CDATA[This is a caption]]></tourml:Data>
 			</tourml:Content>
 			<tourml:Content xml:lang="es" tourml:lastModified="2011-09-29T12:01:32">
 				<tourml:Data>Se trata de un titulo</tourml:Data>
