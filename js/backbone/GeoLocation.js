@@ -45,7 +45,7 @@ jQuery(function() {
 						// Parse the contents of the asset
 						var content = geo_assets[0].get('content');
 						if (content === undefined) return;
-						var data = content.at(0).get('data');
+						var data = $.parseJSON(content.at(0).get('data'));
 
 						if (data.type == 'Point') {
 							stop.set('location', new L.LatLng(data.coordinates[1], data.coordinates[0]));

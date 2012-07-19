@@ -7,6 +7,10 @@ if (!tap) {
 	tap.currentStop = ''; // id of the current stop
 	tap.currentTour = ''; // id of the current tour
 
+	//get the users language
+	var userLang = (navigator.language) ? navigator.language : navigator.userLanguage;
+	tap.language = userLang.split("-")[0];
+
 	// Determine the base path so that complete paths can be defined where needed
 	var script_src = $('head script').last().attr('src');
 	if (script_src.indexOf('Init.js') >= 0) {
