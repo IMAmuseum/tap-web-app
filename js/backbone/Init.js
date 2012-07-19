@@ -36,6 +36,7 @@ if (!tap) {
 		if (config === undefined) config = {};
 		tap.config = _.defaults(config, {
 			default_index: 'tourstoplist',
+			units: 'si',
 			StopListView: {
 				codes_only: true
 			}

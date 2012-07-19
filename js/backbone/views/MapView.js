@@ -46,8 +46,7 @@ jQuery(function() {
 			_.defaults(this.options, {
 				'init-lat': 39.829104,
 				'init-lon': -86.189504,
-				'init-zoom': 2,
-				'units': 'si'
+				'init-zoom': 2
 			});
 		},
 
@@ -65,9 +64,11 @@ jQuery(function() {
 				if (e.data.map_view.map === null) {
 					e.data.map_view.initMap();
 				}
+				setTimeout(e.data.map_view.resizeContentArea, 2000);
 			});
 
 			$(window).bind('orientationchange resize', this.resizeContentArea);
+			//$(":jqmData(role='page')").bind('updatelayout', function() { alert('x'); });
 
 		},
 
@@ -227,12 +228,22 @@ jQuery(function() {
 
 		formatStopDistance: function(d) {
 
-			if (this.options.units == 'si') {
+			if (tap.config.units == 'si') {
 
 				if (d < 1000) {
 					return d.toFixed(2) + ' m';
 				} else {
 					return (d/1000).toFixed(2) + ' km';
+				}
+
+			} else {
+				
+				// Assume it's English
+				var feet = 3.28084 * d;
+				if (feet > 528) { // .1 miles
+					return (feet/5280).toFixed(2) + ' mi';
+				} else {
+					return feet + ' ft';
 				}
 
 			}
