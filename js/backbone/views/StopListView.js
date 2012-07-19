@@ -46,10 +46,9 @@ jQuery(function() {
 
 		tagName: 'li',
 		template: TapAPI.templateManager.get('tour-stop-list-item'),
-
 		render: function() {
 			$(this.el).html(this.template({
-				title: this.model.get('title') ? this.model.get('title')[0].value : undefined,
+				title: this.model.get('title') ? this.model.get('title') : undefined,
 				stop_id: this.model.get('id'),
 				tour_id: tap.currentTour
 			}));

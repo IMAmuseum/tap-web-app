@@ -11,18 +11,29 @@ TapAPI.models.Tour = Backbone.Model.extend({
 			case 'description':
 			case 'title':
 				if (this.attributes[attr].length === 0) return undefined;
+
 				var value, property;
+
 				property = _.find(this.attributes[attr], function(item) {
 					return item.lang === tap.language;
 				});
-				if (!property) {
+
+				if (!property && tap.language !== tap.defaultLanguage) {
 					property = _.find(this.attributes[attr], function(item) {
 						return item.lang === tap.defaultLanguage;
 					});
 				}
+
+				if (!property) {
+					property = _.find(this.attributes[attr], function(item) {
+						return item.lang === undefined || item.lang === "";
+					});
+				}
+
 				if (property) {
 					value = property.value;
 				}
+				
 				return value;
 			default:
 				return this.attributes[attr];

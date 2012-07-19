@@ -36,7 +36,7 @@ jQuery(function() {
 		template: TapAPI.templateManager.get('tour-list-item'),
 		render: function() {
 			this.$el.html(this.template({
-				title: this.model.get('title') ? this.model.get('title')[0].value : undefined,
+				title: this.model.get('title') ? this.model.get('title') : undefined,
 				id: this.model.get('id')
 			}));
 			return this;

@@ -10,7 +10,7 @@ jQuery(function() {
 	TapAPI.views.TourDetails = TapAPI.views.Page.extend({
 
 		onInit: function() {
-			this.options.page_title = this.model.get('title')[0].value;
+			this.options.page_title = this.model.get('title');
 			this.options.header_nav = false;
 		},
 
@@ -20,8 +20,8 @@ jQuery(function() {
 			this.$el.find(":jqmData(role='content')").append(content_template({
 				tour_index: tap.config.default_index,
 				tour_id: this.model.id,
-				publishDate: this.model.get('publishDate') ? this.model.get('publishDate')[0].value : undefined,
-				description: this.model.get('description') ? this.model.get('description')[0].value : undefined,
+				publishDate: this.model.get('publishDate') ? this.model.get('publishDate') : undefined,
+				description: this.model.get('description') ? this.model.get('description') : undefined,
 				stopCount: tap.tourStops.length,
 				assetCount: tap.tourAssets.length
 			}));
