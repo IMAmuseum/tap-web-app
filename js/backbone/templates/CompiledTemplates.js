@@ -45,7 +45,7 @@ return __p;
 TapAPI.templates['page'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div data-role="header">\n\t<a id=\'back-button\' data-rel="back">'+
+__p+='<div data-role="header" data-position="fixed">\n\t<a id=\'back-button\' data-rel="back">'+
 ( back_label )+
 '</a>\n\t';
  if (header_nav) { 
