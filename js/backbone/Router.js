@@ -133,7 +133,9 @@ jQuery(function() {
 				if ((resource === undefined) || (resource.usage != 'geo')) return;
 
 				asset = tap.tourAssets.get(resource.id);
-				var data = $.parseJSON(asset.get('content')[0].data.value);
+				var content = asset.get('content');
+				if (content === undefined) return;
+				var data = content.at(0).get('data');
 
 				if (data.type == 'Point') {
 					map_options['init-lon'] = data.coordinates[0];
