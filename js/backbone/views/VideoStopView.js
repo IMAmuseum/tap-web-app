@@ -19,7 +19,7 @@ jQuery(function() {
 			var content_template = TapAPI.templateManager.get('video-stop');
 
 			this.$el.find(":jqmData(role='content')").append(content_template({
-				tourStopTitle: this.model.get('title')[0].value
+				tourStopTitle: this.model.get('title')
 			}));
 
 			var assets = this.model.getAssets();

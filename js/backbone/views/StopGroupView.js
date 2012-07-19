@@ -18,12 +18,12 @@ jQuery(function() {
 		renderContent: function() {
 			var content_template = TapAPI.templateManager.get('stop-group');
 			var template_args = {
-				tourStopTitle : this.model.get('title')[0].value
+				tourStopTitle : this.model.get('title')
 			};
 
 			var description = this.model.get("description");
 			if (description !== undefined) {
-				template_args['description'] = description[0].value;
+				template_args['description'] = description;
 			} else {
 				template_args['description'] = '';
 			}
@@ -51,7 +51,7 @@ jQuery(function() {
 		template: TapAPI.templateManager.get('stop-group-list-item'),
 		render: function() {
 			this.$el.html(this.template({
-				title: this.model.get('title') ? this.model.get('title')[0].value : undefined,
+				title: this.model.get('title') ? this.model.get('title') : undefined,
 				id: this.model.get('id'),
 				tourId: tap.currentTour
 			}));

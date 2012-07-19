@@ -154,7 +154,7 @@ jQuery(function() {
 				}
 
 				popup.setContent(template({
-					'title': this.stop.get('title')[0].value,
+					'title': this.stop.get('title'),
 					'tour_id': tap.currentTour,
 					'stop_id': this.stop.id,
 					'distance': d_content
@@ -179,7 +179,7 @@ jQuery(function() {
 				}
 
 				this.stop_popups[stop.id].setContent(template({
-					'title': stop.get('title')[0].value,
+					'title': stop.get('title'),
 					'tour_id': tap.currentTour,
 					'stop_id': stop.get('id'),
 					'distance': d_content
