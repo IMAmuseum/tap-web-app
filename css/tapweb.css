@@ -13,6 +13,24 @@
 	text-decoration:none;
 }
 
+.ui-header {
+	height: 3em;
+}
+
+.ui-header .ui-title {
+	margin-right: 0px;
+	margin-left: 0px;
+}
+
+h1.ui-title {
+	padding-top: 0.4em !important;	
+}
+
+#back-button {
+	margin-top: .35em;
+	margin-bottom: .35em;
+}
+
 .map-content {
 	margin: 0px;
 	padding: 0px;
