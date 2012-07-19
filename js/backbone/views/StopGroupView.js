@@ -28,7 +28,7 @@ jQuery(function() {
 				template_args['description'] = '';
 			}
 
-			$(":jqmData(role='content')", this.$el).append(content_template(template_args));
+			this.$el.find(":jqmData(role='content')").append(content_template(template_args));
 
 			var connections = this.model.get('connection');
 			var listContainer = this.$el.find("#stop-list");

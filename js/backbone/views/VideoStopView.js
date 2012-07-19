@@ -18,21 +18,20 @@ jQuery(function() {
 		renderContent: function() {
 			var content_template = TapAPI.templateManager.get('video-stop');
 
-			$(":jqmData(role='content')", this.$el).append(content_template({
+			this.$el.find(":jqmData(role='content')").append(content_template({
 				tourStopTitle: this.model.get('title')[0].value
 			}));
 
-			var asset_refs = tap.currentStop.get("assetRef");
-
-			if (asset_refs) {
-				_.each(asset_refs, function(assetRef) {
-					var asset = tap.tourAssets.get(assetRef.id);
-					var assetSources = asset.get("source");
-
-					_.each(assetSources, function(assetSource){
-						$('video', this.$el).append("<source src='" + assetSource.uri + "' type='" + assetSource.format + "' />");
-					}, this);
-				}, this);
+			var assets = this.model.getAssets();
+			if (assets.length) {
+				console.log(assets, "assets");
+				var videoContainer = this.$el.find('video');
+				_.each(assets, function(asset) {
+					var sources = asset.get("source");
+					_.each(sources.models, function(source) {
+						videoContainer.append("<source src='" + source.get('uri') + "' type='" + source.get('format') + "' />");
+					});
+				});
 			}
 
 			return this;

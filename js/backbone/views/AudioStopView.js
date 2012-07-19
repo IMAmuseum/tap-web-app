@@ -15,18 +15,26 @@ jQuery(function() {
 	// Define the AudioStop View
 	TapAPI.views.AudioStop = TapAPI.views.Page.extend({
 
+		onInit: function() {
+			this.mediaElement = null;
+		},
+
 		renderContent: function() {
 
 			var content_template = TapAPI.templateManager.get('audio-stop');
+			var contentContainer = this.$el.find(":jqmData(role='content')");
 
-			$(":jqmData(role='content')", this.$el).append(content_template({
+			contentContainer.append(content_template({
 				tourStopTitle: this.model.get('title')[0].value
 			}));
 
 			var asset_refs = tap.currentStop.get("assetRef");
-			
 
 			if (asset_refs) {
+				var audioPlayer = this.$el.find('#audio-player');
+				var videoPlayer = this.$el.find('#video-player');
+				var videoAspect;
+
 				_.each(asset_refs, function(assetRef) {
 
 					var asset = tap.tourAssets.get(assetRef.id);
@@ -38,10 +46,12 @@ jQuery(function() {
 
 						switch(assetSource.format.substring(0,5)) {
 							case 'audio':
-								$('#audio-player', this.$el).append(source_str);
+								audioPlayer.append(source_str);
 								break;
 							case 'video':
-								$('#video-player', this.$el).append(source_str);
+								console.log(assetSource);
+								videoPlayer.append(source_str);
+								
 								break;
 							default:
 								console.log('Unsupported format for audio asset:', assetSource);
@@ -50,12 +60,24 @@ jQuery(function() {
 					}, this);
 				}, this);
 
+				var mediaOptions = {};
+				var mediaElement = null;
 				// If there are video sources and no audio sources, switch to the video element
-				if ($('#video-player source', this.$el).length && !$('#audio-player source', this.$el).length) {
-					$('#audio-player', this.$el).hide();
-					$('#video-player', this.$el).show();
-				}
+				if (videoPlayer.find('source').length && !audioPlayer.find('source').length) {
+					audioPlayer.remove();
+					videoPlayer.show();
+					mediaOptions.defaultVideoWidth = '100%';
+					// mediaOptions.defaultVideoHeight = 270;
 
+					mediaElement = videoPlayer;
+				} else {
+					videoPlayer.remove();
+					mediaOptions.defaultAudioWidth = '100%';
+					//mediaOptions.defaultAudioHeight = 270;
+
+					mediaElement = audioPlayer;
+				}
+				mediaElement.mediaelementplayer(mediaOptions);
 			}
 
 			return this;

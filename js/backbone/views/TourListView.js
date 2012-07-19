@@ -17,11 +17,12 @@ jQuery(function() {
 		renderContent: function() {
 			var content_template = TapAPI.templateManager.get('tour-list');
 
-			$(":jqmData(role='content')", this.$el).append(content_template);
+			this.$el.find(":jqmData(role='content')").append(content_template);
 
+			var tourList = this.$el.find('#tour-list');
 			// iterate through all of the tour models to setup new views
 			_.each(this.model.models, function(tour) {
-					$('#tour-list', this.$el).append(new TapAPI.views.TourListItem({model: tour}).render().el);
+				tourList.append(new TapAPI.views.TourListItem({model: tour}).render().el);
 			}, this);
 			$('#tour-list').listview('refresh'); // refresh listview since we generated the data dynamically
 
@@ -34,7 +35,7 @@ jQuery(function() {
 		tagName: 'li',
 		template: TapAPI.templateManager.get('tour-list-item'),
 		render: function() {
-			$(this.el).html(this.template({
+			this.$el.html(this.template({
 				title: this.model.get('title') ? this.model.get('title')[0].value : undefined,
 				id: this.model.get('id')
 			}));

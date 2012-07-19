@@ -7,12 +7,10 @@ if (typeof TapAPI.models === 'undefined'){TapAPI.models = {};}
 TapAPI.models.Source = Backbone.Model.extend({
 	initialize: function() {
 		//parse never gets called due to this not being in localstorage as its own record
-		if (this.get('propertySet')) {
-			this.set('propertySet', new TapAPI.collections.PropertySet(
-				this.get('propertySet'),
-				this.id
-			));
-		}
+		this.set('propertySet', new TapAPI.collections.PropertySet(
+			this.get('propertySet'),
+			this.id
+		));
 	},
 	defaults: {
 		'lang': undefined,

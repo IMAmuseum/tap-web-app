@@ -6,12 +6,10 @@ if (typeof TapAPI.models === 'undefined'){TapAPI.models = {};}
 // define asset model
 TapAPI.models.Asset = Backbone.Model.extend({
 	parse: function(response) {
-		if (response.propertySet) {
-			response.propertySet = new TapAPI.collections.PropertySet(
-				response.propertySet,
-				response.id
-			);
-		}
+		response.propertySet = new TapAPI.collections.PropertySet(
+			response.propertySet,
+			response.id
+		);
 
 		if (response.source) {
 			response.source = new TapAPI.collections.Sources(

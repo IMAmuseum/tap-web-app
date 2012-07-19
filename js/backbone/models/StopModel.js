@@ -16,12 +16,10 @@ TapAPI.models.Stop = Backbone.Model.extend({
 		}
 	},
 	parse: function(response) {
-		if (response.propertySet) {
-			response.propertySet = new TapAPI.collections.PropertySet(
-				response.propertySet,
-				response.id
-			);
-		}
+		response.propertySet = new TapAPI.collections.PropertySet(
+			response.propertySet,
+			response.id
+		);
 
 		return response;
 	},

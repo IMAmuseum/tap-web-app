@@ -17,7 +17,7 @@ jQuery(function() {
 		renderContent: function() {
 			var content_template = TapAPI.templateManager.get('tour-details');
 
-			$(":jqmData(role='content')", this.$el).append(content_template({
+			this.$el.find(":jqmData(role='content')").append(content_template({
 				tour_index: tap.config.default_index,
 				tour_id: this.model.id,
 				publishDate: this.model.get('publishDate') ? this.model.get('publishDate')[0].value : undefined,

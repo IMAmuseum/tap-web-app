@@ -17,24 +17,23 @@ jQuery(function() {
 		renderContent: function() {
 			var content_template = TapAPI.templateManager.get('tour-stop-list');
 
-			$(":jqmData(role='content')", this.$el).append(content_template());
+			this.$el.find(":jqmData(role='content')").append(content_template());
 
 			// TODO: figure out a better way to avoid rendering again
 			//if ($('li', this.$el).length == tap.tourStops.models.length) return;
 
+			var listContainer = this.$el.find('#tour-stop-list');
+			
 			_.each(tap.tourStops.models, function(stop) {
 
 				// If in codes-only mode, abort if the stop does not have a code
 				if (tap.config.StopListView.codes_only) {
-					var code = undefined;
-					_.each(stop.get('propertySet'), function(prop) {
-						if (prop.name == 'code') code = prop.value;
-					});
-					if (code === undefined) return;
+					var code = stop.get('propertySet').where({"name":"code"});
+					if (!code.length) return;
 				}
 
 				var item = new TapAPI.views.StopListItem({model: stop});
-				$('#tour-stop-list', this.$el).append(item.render().el);
+				listContainer.append(item.render().el);
 				
 			}, this);
 

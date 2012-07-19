@@ -216,9 +216,6 @@
 		<tourml:Stop tourml:id="stop-7" tourml:view="GeoStop">
 			<tourml:Title xml:lang="en">Geo Stop - See where this textile was produced</tourml:Title>
 			<tourml:AssetRef tourml:id="geo-1" />
-			<tourml:PropertySet>
-				<tourml:Property tourml:name="code">800</tourml:Property>
-			</tourml:PropertySet>
 		</tourml:Stop>
 
 		<!-- List of all tour connections -->
