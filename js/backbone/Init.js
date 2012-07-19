@@ -3,7 +3,8 @@ if (!tap) {
 	tap.tours = {};
 	tap.tourAssets = {};
 	tap.tourStops = {}; // initialize tour stop
-	tap.language = 'en'; // set default language
+	tap.language = 'en'; // set default user language
+	tap.defaultLanguage = 'en'; // the default language to fallback to
 	tap.currentStop = ''; // id of the current stop
 	tap.currentTour = ''; // id of the current tour
 

@@ -13,24 +13,6 @@ String.prototype.toCamel = function(){
 };
 
 /*
- * Retrieve attribute based on language
- */
-function getAttributeByLanguage(attr) {
-	var items = [];
-	for(var i = 0; i < attr.length; i++) {
-		// get language specific and language neutral
-		if(!attr[i].lang || (attr[i].lang && attr[i].lang == tap.language)) {
-			items.push(attr[i]);
-		}
-	}
-	// return all items if no language matched
-	if(items.length === 0) {
-		items = attr;
-	}
-	return items;
-}
-
-/*
  * Load xml document
  */
 function loadXMLDoc(url) {

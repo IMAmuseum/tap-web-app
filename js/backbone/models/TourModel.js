@@ -10,13 +10,25 @@ TapAPI.models.Tour = Backbone.Model.extend({
 		switch(attr) {  // retrieve attribute based on language
 			case 'description':
 			case 'title':
-				return getAttributeByLanguage(this.attributes[attr]);
+				if (this.attributes[attr].length === 0) return undefined;
+				var value, property;
+				property = _.find(this.attributes[attr], function(item) {
+					return item.lang === tap.language;
+				});
+				if (!property) {
+					property = _.find(this.attributes[attr], function(item) {
+						return item.lang === tap.defaultLanguage;
+					});
+				}
+				if (property) {
+					value = property.value;
+				}
+				return value;
 			default:
 				return this.attributes[attr];
 		}
 	},
 	parse: function(response) {
-
 		response.propertySet = new TapAPI.collections.PropertySet(
 			response.propertySet,
 			this.id
