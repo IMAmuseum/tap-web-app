@@ -21,13 +21,10 @@ TapAPI.collections.Tours = Backbone.Collection.extend({
 		// create new instance of AssetCollection
 		tap.tourAssets = new TapAPI.collections.Assets(null, id);
 
-		if (tap.GeoLocation !== null) {
-			tap.tourStops.on('reset', TapAPI.geoLocation.stopsReset);
-		}
-
 		// load data from local storage
 		tap.tourAssets.fetch();
 		tap.tourStops.fetch();
 
+		tap.trigger("tap.tour.selected");
 	}
 });
