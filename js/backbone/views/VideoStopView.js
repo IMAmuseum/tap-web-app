@@ -24,11 +24,10 @@ jQuery(function() {
 
 			var assets = this.model.getAssets();
 			if (assets.length) {
-				console.log(assets, "assets");
 				var videoContainer = this.$el.find('video');
 				_.each(assets, function(asset) {
 					var sources = asset.get("source");
-					_.each(sources.models, function(source) {
+					sources.each(function(source) {
 						videoContainer.append("<source src='" + source.get('uri') + "' type='" + source.get('format') + "' />");
 					});
 				});

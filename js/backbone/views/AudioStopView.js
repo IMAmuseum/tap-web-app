@@ -15,10 +15,6 @@ jQuery(function() {
 	// Define the AudioStop View
 	TapAPI.views.AudioStop = TapAPI.views.Page.extend({
 
-		onInit: function() {
-			this.mediaElement = null;
-		},
-
 		renderContent: function() {
 
 			var content_template = TapAPI.templateManager.get('audio-stop');
@@ -28,37 +24,32 @@ jQuery(function() {
 				tourStopTitle: this.model.get('title')[0].value
 			}));
 
-			var asset_refs = tap.currentStop.get("assetRef");
+			var assets = this.model.getAssets();
 
-			if (asset_refs) {
+			if (assets) {
 				var audioPlayer = this.$el.find('#audio-player');
 				var videoPlayer = this.$el.find('#video-player');
 				var videoAspect;
 
-				_.each(asset_refs, function(assetRef) {
+				_.each(assets, function(asset) {
+					var sources = asset.get('source');
 
-					var asset = tap.tourAssets.get(assetRef.id);
-					var assetSources = asset.get("source");
+					sources.each(function(source){
+						var source_str = "<source src='" + source.get('uri') + "' type='" + source.get('format') + "' />";
 
-					_.each(assetSources, function(assetSource) {
-
-						var source_str = "<source src='" + assetSource.uri + "' type='" + assetSource.format + "' />";
-
-						switch(assetSource.format.substring(0,5)) {
+						switch(source.get('format').substring(0,5)) {
 							case 'audio':
 								audioPlayer.append(source_str);
 								break;
 							case 'video':
-								console.log(assetSource);
 								videoPlayer.append(source_str);
 								
 								break;
 							default:
 								console.log('Unsupported format for audio asset:', assetSource);
 						}
-
-					}, this);
-				}, this);
+					});
+				});
 
 				var mediaOptions = {};
 				var mediaElement = null;
