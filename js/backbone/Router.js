@@ -145,9 +145,9 @@ jQuery(function() {
 			});
 
 			// Look to see if the initial map zoom level is set
-			_.each(tour.get('propertySet'), function(property) {
-				if (property.name == 'initial_map_zoom') {
-					map_options['init-zoom'] = property.value;
+			_.each(tour.get('propertySet').models, function(property) {
+				if (property.get('name') == 'initial_map_zoom') {
+					map_options['init-zoom'] = property.get('value');
 				}
 			});
 

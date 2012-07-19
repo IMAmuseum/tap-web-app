@@ -17,12 +17,10 @@ TapAPI.models.Tour = Backbone.Model.extend({
 	},
 	parse: function(response) {
 
-		if (response.propertySet !== undefined) {
-			response.propertySet = new TapAPI.collections.PropertySet(
-				objectToArray(response.propertySet.property),
-				this.id
-			);
-		}
+		response.propertySet = new TapAPI.collections.PropertySet(
+			response.propertySet,
+			this.id
+		);
 
 		return response;
 	}
