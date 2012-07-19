@@ -13,6 +13,27 @@
 	text-decoration:none;
 }
 
+.ui-header {
+	height: 3em;
+}
+
+.ui-header #index-selector {
+	margin: 0.6em 20% 0.8em;
+	width: 60%;
+	text-align: center;
+}
+
+.ui-header .ui-title {
+	padding-top: 0.4em;	
+	margin-left: 22%;
+	margin-right: 5%;
+}
+
+#back-button {
+	margin-top: .35em;
+	margin-bottom: .35em;
+}
+
 .map-content {
 	margin: 0px;
 	padding: 0px;
