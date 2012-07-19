@@ -36,6 +36,11 @@ if (!tap) {
 			}
 		});
 
+		// configure any events
+		if (TapAPI.geoLocation !== undefined) {
+			tap.on('tap.tour.selected', TapAPI.geoLocation.parseCurrentStopLocations);
+		}
+
 		// trigger tap init start event
 		tap.trigger('tap.init.start');
 

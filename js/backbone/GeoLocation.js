@@ -32,10 +32,8 @@ jQuery(function() {
 			console.log('locationError', error);
 		},
 
-		// When the stop collection is reset, check for geo assets
-		stopsReset: function() {
-
-			if (TapAPI.geoLocation.interval === null) return;
+		// Parse the current stop locations. Should be triggered when a new tour is selected.
+		parseCurrentStopLocations: function() {
 
 			_.each(tap.tourStops.models, function(stop) {
 
