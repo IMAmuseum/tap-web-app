@@ -52,6 +52,9 @@ jQuery(function() {
 		},
 
 		renderContent: function() {
+
+			TapAPI.geoLocation.startLocating();
+
 			var content_template = TapAPI.templateManager.get('tour-map');
 
 			//$(":jqmData(role='page')", this.$el).attr('id', 'tour-map-page');
@@ -131,7 +134,9 @@ jQuery(function() {
 
 			// Parse the contents of the asset
 			asset = tap.tourAssets.get(asset_ref.id);
-			var data = $.parseJSON(asset.get('content')[0].data.value);
+			var content = asset.get('content');
+			if (content === undefined) return;
+			var data = $.parseJSON(content.at(0).get('data'));
 
 			if (data.type == 'Point') {
 
@@ -249,6 +254,7 @@ jQuery(function() {
 
 
 		onClose: function() {
+			TapAPI.geoLocation.stopLocating();
 			$(window).unbind('orientationchange resize', this.resizeContentArea);
 		}
 

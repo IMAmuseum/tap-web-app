@@ -10,6 +10,7 @@ jQuery(function() {
 	TapAPI.geoLocation = {
 
 		latest_location: null,
+		interval: null,
 
 		locate: function() {
 
@@ -33,6 +34,8 @@ jQuery(function() {
 
 		// When the stop collection is reset, check for geo assets
 		stopsReset: function() {
+
+			if (TapAPI.geoLocation.interval === null) return;
 
 			_.each(tap.tourStops.models, function(stop) {
 
@@ -70,13 +73,23 @@ jQuery(function() {
 
 			});
 
+		},
+
+		startLocating: function(delay) {
+
+			if (delay === undefined) delay = 5000;
+			TapAPI.geoLocation.locate();
+			TapAPI.geoLocation.interval = setInterval(TapAPI.geoLocation.locate, 5000);
+
+		},
+
+		stopLocating: function() {
+			clearInterval(TapAPI.geoLocation.interval);
+			TapAPI.geoLocation.interval = null;
 		}
 
 	};
 
 	_.extend(TapAPI.geoLocation, Backbone.Events);
-
-	TapAPI.geoLocation.locate();
-	setInterval(TapAPI.geoLocation.locate, 5000);
 
 });
