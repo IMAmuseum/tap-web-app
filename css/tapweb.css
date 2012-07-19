@@ -17,13 +17,16 @@
 	height: 3em;
 }
 
-.ui-header .ui-title {
-	margin-right: 0px;
-	margin-left: 0px;
+.ui-header #index-selector {
+	margin: 0.6em 20% 0.8em;
+	width: 60%;
+	text-align: center;
 }
 
-h1.ui-title {
-	padding-top: 0.4em !important;	
+.ui-header .ui-title {
+	padding-top: 0.4em;	
+	margin-left: 22%;
+	margin-right: 5%;
 }
 
 #back-button {
