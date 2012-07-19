@@ -22,18 +22,18 @@ TapAPI.models.Stop = Backbone.Model.extend({
 		);
 
 		return response;
-	},
+	}, 
 	/**
 	* Retrieves all asset models for a stop
 	* @return array An array of asset models
 	*/
 	getAssets: function() {
-		if(_.isUndefined(this.get('assetRef'))) return false;
+		if(_.isUndefined(this.get('assetRef'))) return undefined;
 		var assets = [];
 		_.each(this.get('assetRef'), function(item) {
 			assets.push(tap.tourAssets.get(item.id));
 		});
-		return _.isEmpty(assets) ? false : assets;
+		return _.isEmpty(assets) ? undefined : assets;
 	},
 	/**
 	* Retrieves an asset with a given usage
@@ -41,21 +41,21 @@ TapAPI.models.Stop = Backbone.Model.extend({
 	* @return mixed The asset model
 	*/
 	getAssetsByUsage: function(usage) {
-		if(_.isUndefined(this.get('assetRef'))) return false;
+		if(_.isUndefined(this.get('assetRef'))) return undefined;
 		var assets = [];
 		_.each(this.get('assetRef'), function(item) {
 			if(item['usage'] === usage) {
 				assets.push(tap.tourAssets.get(item.id));
 			}
 		});
-		return _.isEmpty(assets) ? false : assets;
+		return _.isEmpty(assets) ? undefined : assets;
 	},
 	/**
 	* Retrieves a sorted array of connections
 	* @return array The connection array ordered by priority in ascending order
 	*/
 	getSortedConnections: function() {
-		if(_.isUndefined(this.get('connections'))) return false;
+		if(_.isUndefined(this.get('connections'))) return undefined;
 		return _.sortBy(this.get('connection'), function(connection) {
 			return parseInt(connection.priority, 10);
 		});

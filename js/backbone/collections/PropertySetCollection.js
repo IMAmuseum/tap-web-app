@@ -9,7 +9,15 @@ TapAPI.collections.PropertySet = Backbone.Collection.extend({
 	initialize: function(models, id) {
 		this.localStorage = new Backbone.LocalStorage(id + '-propertyset');
 	},
-	getByName: function(propertyName) {
-		return this.where({"name": propertyName});
+	getValueByName: function(propertyName) {
+		var property, value; 
+		property = this.where({"name": propertyName, "lang": tap.language});
+		if (property.length === 0) {
+			property = this.where({"name": propertyName});
+		}
+		if (property.length) {
+			value = property[0].get('value');
+		}
+		return value;
 	}
 });

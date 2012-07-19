@@ -17,6 +17,6 @@ TapAPI.collections.Stops = Backbone.Collection.extend({
 				return this.models[i];
 			}
 		}
-		return false;
+		return undefined;
 	}
 });
