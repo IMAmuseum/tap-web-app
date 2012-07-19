@@ -127,8 +127,8 @@ if (!tap) {
 		var numAssets = data.asset.length;
 		for (i = 0; i < numAssets; i++) {
 			// modifiy source propertySet child to match similar elements
-			if(data.asset[i].source && data.asset[i].source) {
-				var propertySet = [];
+			if(data.asset[i].source) {
+				data.asset[i].source = objectToArray(data.asset[i].source);
 				var numSources = data.asset[i].source.length;
 				for (j = 0; j < numSources; j++) {
 					if(data.asset[i].source[j].propertySet) {
@@ -136,12 +136,21 @@ if (!tap) {
 					}
 				}
 			}
+			if(data.asset[i].content) {
+				data.asset[i].content = objectToArray(data.asset[i].content);
+				var numContent = data.asset[i].content.length;
+				for (j = 0; j < numContent; j++) {
+					if(data.asset[i].content[j].propertySet) {
+						data.asset[i].content[j].propertySet = objectToArray(data.asset[i].content[j].propertySet.property);
+					}
+				}
+			}
 
 			assets.create({
 				assetRights: objectToArray(data.asset[i].assetRights),
-				content: objectToArray(data.asset[i].content),
+				content: data.asset[i].content,
 				id: data.asset[i].id,
-				source: objectToArray(data.asset[i].source),
+				source: data.asset[i].source,
 				propertySet: data.asset[i].propertySet ? objectToArray(data.asset[i].propertySet.property) : undefined
 			});
 		}
