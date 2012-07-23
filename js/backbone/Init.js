@@ -89,9 +89,8 @@ if (!tap) {
 	 */
 	tap.initModels = function(data) {
 		// check to see if the tour has been updated
-
-		var tour = tap.tours.get(data.id)
-		if (Date.parse(data.lastModified) <= Date.parse(tour.get('lastModified'))) return;
+		var tour = tap.tours.get(data.id);
+		if (tour && Date.parse(data.lastModified) <= Date.parse(tour.get('lastModified'))) return;
 
 		// create new instance of StopCollection
 		var stops = new TapAPI.collections.Stops(null, data.id);
