@@ -25,8 +25,8 @@
 
 .ui-header .ui-title {
 	padding-top: 0.4em;	
-	margin-left: 22%;
-	margin-right: 5%;
+	margin-right: 10%;
+	margin-left: 10%;
 }
 
 #back-button {
@@ -126,5 +126,16 @@
 /*** Video Stops ***/
 #video-player {
 	width: 100%;
+}
+
+/*** MEDIA QUERIES ***********************************************************/
+
+@media (max-width:500px) {
+
+	.ui-header .ui-title {	
+		margin-left: 70px; /* based on the width of the back button... */
+		margin-right: 5%;
+	}
+
 }
 

@@ -21,7 +21,7 @@ jQuery(function() {
 			var contentContainer = this.$el.find(":jqmData(role='content')");
 
 			contentContainer.append(content_template({
-				tourStopTitle: this.model.get('title')[0].value
+				tourStopTitle: this.model.get('title')
 			}));
 
 			var assets = this.model.getAssets();

@@ -22,7 +22,9 @@ module.exports = function(grunt) {
 				src: [
 					'<banner:meta.banner>',
 					'js/backbone/helper.js',
+					'js/backbone/models/**/(PropertyModel|SourceModel|ContentModel).js',
 					'js/backbone/models/**/*.js',
+					'js/backbone/collections/**/(PropertySetCollection|SourceCollection|ContentCollection).js',
 					'js/backbone/collections/**/*.js',
 					'js/backbone/views/HelperView.js',
 					'js/backbone/views/PageView.js',
@@ -46,8 +48,9 @@ module.exports = function(grunt) {
 					'js/external/backbone-0.9.2.js',
 					'js/external/backbone.localStorage-min.js',
 					'js/external/klass.js',
-					'external/photoswipe/code.photoswipe.jquery-3.0.4.js',
-					'external/leaflet/leaflet.js'
+					'external/leaflet/leaflet.js',
+					'external/mediaelement/mediaelement-and-player.js',
+					'external/photoswipe/code.photoswipe.jquery-3.0.4.js'
 				],
 				dest: 'dist/Tap-<%= meta.version %>-dependencies.js'
 			},
@@ -56,8 +59,9 @@ module.exports = function(grunt) {
 					'<banner:meta.banner>',
 					'external/jqmobile/jquery.mobile-1.1.0.css',
 					'external/leaflet/leaflet.css',
+					'external/mediaelement/mediaelementplayer.css',
 					'external/photoswipe/photoswipe.css',
-					'css/tapweb.css',
+					'css/tapweb.css'
 				],
 				dest: 'dist/Tap-<%= meta.version %>.css'
 			}

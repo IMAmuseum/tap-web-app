@@ -12,8 +12,8 @@ jQuery(function() {
 			var content_template = TapAPI.templateManager.get('stop');
 
 			this.$el.find(":jqmData(role='content')").append(content_template({
-				tourStopTitle : this.model.get("title") ? this.model.get("title")[0].value : undefined,
-				tourStopDescription : this.model.get('description') ? this.model.get('description')[0].value : undefined
+				tourStopTitle : this.model.get("title") ? this.model.get("title") : undefined,
+				tourStopDescription : this.model.get('description') ? this.model.get('description') : undefined
 			}));
 			return this;
 

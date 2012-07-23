@@ -154,7 +154,7 @@ jQuery(function() {
 				}
 
 				popup.setContent(template({
-					'title': this.stop.get('title')[0].value,
+					'title': this.stop.get('title'),
 					'tour_id': tap.currentTour,
 					'stop_id': this.stop.id,
 					'distance': d_content
@@ -179,7 +179,7 @@ jQuery(function() {
 				}
 
 				this.stop_popups[stop.id].setContent(template({
-					'title': stop.get('title')[0].value,
+					'title': stop.get('title'),
 					'tour_id': tap.currentTour,
 					'stop_id': stop.get('id'),
 					'distance': d_content
@@ -230,20 +230,24 @@ jQuery(function() {
 
 			if (tap.config.units == 'si') {
 
-				if (d < 1000) {
-					return d.toFixed(2) + ' m';
-				} else {
+				if (d < 100) {
+					return parseInt(d) + ' m';
+				} else if (d < 10000) {
 					return (d/1000).toFixed(2) + ' km';
+				} else {
+					return parseInt(d/1000) + ' km';
 				}
 
 			} else {
 				
 				// Assume it's English
 				var feet = 3.28084 * d;
-				if (feet > 528) { // .1 miles
+				if (feet > 52800) { // > 10 miles
+					return parseInt(feet/5280) + ' mi';
+				} if (feet > 528) { // > .1 miles
 					return (feet/5280).toFixed(2) + ' mi';
 				} else {
-					return feet + ' ft';
+					return parseInt(feet) + ' ft';
 				}
 
 			}
