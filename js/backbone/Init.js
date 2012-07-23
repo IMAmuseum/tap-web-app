@@ -55,24 +55,21 @@ if (!tap) {
 
 		tap.tours.fetch();
 
-		// populate local storage if this is a first run
-		if(!tap.tours.length) {
-			// load tourML
-			var tourML = xmlToJson(loadXMLDoc(tap.url));
-			var i, len;
-			if(tourML.tour) { // Single tour
-				tap.initModels(tourML.tour);
-			} else if(tourML.tourSet && tourML.tourSet.tourRef) { // TourSet w/ external tours
-				len = tourML.tourSet.tourRef.length;
-				for(i = 0; i < len; i++) {
-					var data = xmlToJson(loadXMLDoc(tourML.tourSet.tourRef[i].uri));
-					tap.initModels(data.tour);
-				}
-			} else if(tourML.tourSet && tourML.tourSet.tour) { // TourSet w/ tours as children elements
-				len = tourML.tourSet.tour.length;
-				for(i = 0; i < len; i++) {
-					tap.initModels(tourML.tourSet.tour[i]);
-				}
+		// load tourML
+		var tourML = xmlToJson(loadXMLDoc(tap.url));
+		var i, len;
+		if(tourML.tour) { // Single tour
+			tap.initModels(tourML.tour);
+		} else if(tourML.tourSet && tourML.tourSet.tourRef) { // TourSet w/ external tours
+			len = tourML.tourSet.tourRef.length;
+			for(i = 0; i < len; i++) {
+				var data = xmlToJson(loadXMLDoc(tourML.tourSet.tourRef[i].uri));
+				tap.initModels(data.tour);
+			}
+		} else if(tourML.tourSet && tourML.tourSet.tour) { // TourSet w/ tours as children elements
+			len = tourML.tourSet.tour.length;
+			for(i = 0; i < len; i++) {
+				tap.initModels(tourML.tourSet.tour[i]);
 			}
 		}
 		// trigger tap init end event
@@ -80,13 +77,35 @@ if (!tap) {
 
 		// initialize router
 		tap.router = new AppRouter();
-		
 	};
-    
+
 	/*
 	 * Initialize models with data
 	 */
 	tap.initModels = function(data) {
+		// check to see if the tour has been updated
+		if (Date.parse(data.lastModified) <= Date.parse(tap.tours.get(data.id).get('lastModified'))) return;
+
+		// create new instance of StopCollection
+		var stops = new TapAPI.collections.Stops(null, data.id);
+		// create new instance of AssetCollection
+		var assets = new TapAPI.collections.Assets(null, data.id);
+
+		// remove existing models for this tour
+		if (tap.tours.get(data.id)) {
+			tap.tours.get(data.id).destroy();
+			stops.fetch();
+			stops.each(function(stop) {
+				stop.destroy();
+			});
+			assets.fetch();
+			assets.each(function(asset) {
+				asset.destroy();
+			});
+		}
+
+		tap.trigger('tap.init.create-tour', {id: data.id});
+
 		// create new tour
 		tap.tours.create({
 			id: data.id,
@@ -102,8 +121,6 @@ if (!tap) {
 		});
 
 		var i, j;
-		// create new instance of StopCollection
-		var stops = new TapAPI.collections.Stops(null, data.id);
 		// load tour models
 		var numStops = data.stop.length;
 		for (i = 0; i < numStops; i++) {
@@ -127,8 +144,6 @@ if (!tap) {
 			});
 		}
 
-		// create new instance of AssetCollection
-		var assets = new TapAPI.collections.Assets(null, data.id);
 		// load asset models
 		var numAssets = data.asset.length;
 		for (i = 0; i < numAssets; i++) {

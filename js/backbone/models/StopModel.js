@@ -11,7 +11,7 @@ TapAPI.models.Stop = Backbone.Model.extend({
 			case 'description':
 			case 'title':
 				if (this.attributes[attr].length === 0) return undefined;
-				
+
 				var value, property;
 
 				property = _.find(this.attributes[attr], function(item) {
