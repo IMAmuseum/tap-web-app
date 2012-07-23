@@ -22,7 +22,7 @@ jQuery(function() {
 				tourStopTitle: this.model.get('title')
 			}));
 
-			var assets = this.model.getAssets();
+			var assets = this.model.getAssetsByType("tour_video");
 			if (assets.length) {
 				var videoContainer = this.$el.find('video');
 				_.each(assets, function(asset) {

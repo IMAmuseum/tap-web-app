@@ -74,6 +74,20 @@ TapAPI.models.Stop = Backbone.Model.extend({
 		});
 		return _.isEmpty(assets) ? undefined : assets;
 	},
+	getAssetsByType: function(type) {
+		if(_.isUndefined(this.get('assetRef'))) return undefined;
+		if (!_.isArray(type)) {
+			type = [type];
+		}
+		var assets = [];
+		_.each(this.get('assetRef'), function(item) {
+			var asset = tap.tourAssets.get(item.id);
+			if (_.indexOf(type, asset.get('type')) > -1) {
+				assets.push(asset);
+			}
+		});
+		return _.isEmpty(assets) ? undefined : assets;
+	},
 	/**
 	* Retrieves a sorted array of connections
 	* @return array The connection array ordered by priority in ascending order

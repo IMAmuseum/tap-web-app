@@ -24,7 +24,7 @@ jQuery(function() {
 				tourStopTitle: this.model.get('title')
 			}));
 
-			var assets = this.model.getAssets();
+			var assets = this.model.getAssetsByType(["tour_audio", "tour_video"]);
 
 			if (assets) {
 				var audioPlayer = this.$el.find('#audio-player');

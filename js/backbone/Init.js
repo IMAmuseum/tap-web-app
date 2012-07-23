@@ -178,7 +178,8 @@ if (!tap) {
 				content: data.asset[i].content,
 				id: data.asset[i].id,
 				source: data.asset[i].source,
-				propertySet: data.asset[i].propertySet ? objectToArray(data.asset[i].propertySet.property) : undefined
+				propertySet: data.asset[i].propertySet ? objectToArray(data.asset[i].propertySet.property) : undefined,
+				type: data.asset[i].type
 			});
 		}
 		// clear out the temporary models
