@@ -22,16 +22,25 @@ __p+='<div data-role="dialog" id="'+
 }
 return __p;
 }
+TapAPI.templates['image-stop-item'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<li>\n\t<a href="'+
+( fullImageUri )+
+'"><img src="'+
+( thumbUri )+
+'" alt="'+
+( title )+
+'" title="'+
+( title )+
+'" /></a>\n</li>';
+}
+return __p;
+}
 TapAPI.templates['image-stop'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div id="soloImage">\n\t<a href="'+
-( tourImageUri )+
-'"><img src="'+
-( tourImageUri )+
-'" alt="Image 01" class="primaryImg" /></a>\n\t<div class=\'title\'>'+
-( tourStopTitle )+
-'</div>\n</div>';
+__p+='<ul id="gallery">\n</ul>';
 }
 return __p;
 }

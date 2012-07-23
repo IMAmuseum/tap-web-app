@@ -308,6 +308,20 @@ TapAPI.models.Stop = Backbone.Model.extend({
 		});
 		return _.isEmpty(assets) ? undefined : assets;
 	},
+	getAssetsByType: function(type) {
+		if(_.isUndefined(this.get('assetRef'))) return undefined;
+		if (!_.isArray(type)) {
+			type = [type];
+		}
+		var assets = [];
+		_.each(this.get('assetRef'), function(item) {
+			var asset = tap.tourAssets.get(item.id);
+			if (_.indexOf(type, asset.get('type')) > -1) {
+				assets.push(asset);
+			}
+		});
+		return _.isEmpty(assets) ? undefined : assets;
+	},
 	/**
 	* Retrieves a sorted array of connections
 	* @return array The connection array ordered by priority in ascending order
@@ -498,11 +512,11 @@ jQuery(function() {
 			// TODO: check for an index menu setting in the current tour
 
 			// Check for a default app index menu setting
-			var index_menu = null;
-			if (tap.config.index_menu !== undefined) {
-				index_menu = tap.config.index_menu;
+			var navbar_items = null;
+			if (tap.config.navbar_items !== undefined) {
+				navbar_items = tap.config.navbar_items;
 			} else {
-				index_menu = [
+				navbar_items = [
 					{ label: 'Menu', prefix: 'tourstoplist' },
 					{ label: 'Keypad', prefix: 'tourkeypad' },
 					{ label: 'Map', prefix: 'tourmap'}
@@ -512,7 +526,7 @@ jQuery(function() {
 			_.defaults(this.options, {
 				page_title: '',
 				back_label: 'Back',
-				nav_menu: index_menu,
+				nav_menu: navbar_items,
 				active_index: null,
 				header_nav: true
 			});
@@ -582,7 +596,7 @@ jQuery(function() {
 				tourStopTitle: this.model.get('title')
 			}));
 
-			var assets = this.model.getAssets();
+			var assets = this.model.getAssetsByType(["tour_audio", "tour_video"]);
 
 			if (assets) {
 				var audioPlayer = this.$el.find('#audio-player');
@@ -676,39 +690,62 @@ jQuery(function() {
 
 		renderContent: function() {
 
-			var imageUri, iconUri;
 			var asset_refs = tap.currentStop.get("assetRef");
 			var content_template = TapAPI.templateManager.get('image-stop');
+			var imageTemplate = TapAPI.templateManager.get('image-stop-item');
 
 			if (asset_refs) {
-				$.each(asset_refs, function() {
-					$assetItem = tap.tourAssets.models;
-					for(var i=0;i<$assetItem.length;i++) {
-						if(($assetItem[i].get('id') == this['id']) && (this['usage'] == "primary" || this['usage'] == "tour_image")){
-							imageUri = $assetItem[i].get('source')[0].uri;
-						}
-						if(($assetItem[i].get('id') == this['id']) && (this['usage']=="icon")){
-							iconUri = $assetItem[i].get('source')[0].uri;
-						}
+				this.$el.find(":jqmData(role='content')").append(content_template());
+
+				var gallery = this.$el.find("#gallery");
+
+				$.each(asset_refs, function(assetRef) {
+					var asset = tap.tourAssets.get(this.id);
+
+					if (this.usage === "image_asset") {
+						var templateData = {};
+						var sources = asset.get('source');
+						sources.each(function(source) {
+							switch (source.get('format').substring(0,5)) {
+								case "image":
+									templateData.fullImageUri = source.get("uri");
+									templateData.thumbUri = source.get("uri");
+									break;
+								//TODO: this needs to be figured out how it will get passed in
+								case "thumbnail":
+									templateData.thumbUri = source.get("uri");
+									break;
+							}
+						});
+
+						var content = asset.get('content');
+						content.each(function(contentItem) {
+							console.log(contentItem);
+							switch(contentItem.get("part")) {
+								case "title":
+									templateData.title = contentItem.get("data");
+									break;
+								case "caption":
+									templateData.caption = contentItem.get("caption");
+									break;
+							}
+						});
+
+						gallery.append(imageTemplate(templateData));
 					}
 				});
-			}
 
-			$(":jqmData(role='content')", this.$el).append(content_template({
-				tourImageUri : imageUri,
-				tourIconUri : iconUri,
-				tourStopTitle : tap.currentStop.get("title")[0].value
-			}));
-			
-			var soloPhotoSwipe = $("#soloImage a", this.$el).photoSwipe({
-				enableMouseWheel: false,
-				enableKeyboard: true,
-				doubleTapZoomLevel : 0,
-				captionAndToolbarOpacity : 0.8,
-				minUserZoom : 0.0,
-				preventSlideshow : true,
-				jQueryMobile : true
-			});
+
+				var photoSwipe = gallery.photoSwipe({
+					enableMouseWheel: false,
+					enableKeyboard: true,
+					doubleTapZoomLevel : 0,
+					captionAndToolbarOpacity : 0.8,
+					minUserZoom : 0.0,
+					preventSlideshow : true,
+					jQueryMobile : true
+				});
+			}
 			
 			return this;
 		}
@@ -1269,7 +1306,7 @@ jQuery(function() {
 				tourStopTitle: this.model.get('title')
 			}));
 
-			var assets = this.model.getAssets();
+			var assets = this.model.getAssetsByType("tour_video");
 			if (assets.length) {
 				var videoContainer = this.$el.find('video');
 				_.each(assets, function(asset) {
@@ -1519,7 +1556,7 @@ if (!tap) {
 
 		if (config === undefined) config = {};
 		tap.config = _.defaults(config, {
-			index_menu: [
+			navbar_items: [
 				{ label: 'Menu', prefix: 'tourstoplist' },
 				{ label: 'Keypad', prefix: 'tourkeypad' },
 				{ label: 'Map', prefix: 'tourmap'}
@@ -1662,7 +1699,8 @@ if (!tap) {
 				content: data.asset[i].content,
 				id: data.asset[i].id,
 				source: data.asset[i].source,
-				propertySet: data.asset[i].propertySet ? objectToArray(data.asset[i].propertySet.property) : undefined
+				propertySet: data.asset[i].propertySet ? objectToArray(data.asset[i].propertySet.property) : undefined,
+				type: data.asset[i].type
 			});
 		}
 		// clear out the temporary models
@@ -1813,16 +1851,25 @@ __p+='<div data-role="dialog" id="'+
 }
 return __p;
 }
+TapAPI.templates['image-stop-item'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<li>\n\t<a href="'+
+( fullImageUri )+
+'"><img src="'+
+( thumbUri )+
+'" alt="'+
+( title )+
+'" title="'+
+( title )+
+'" /></a>\n</li>';
+}
+return __p;
+}
 TapAPI.templates['image-stop'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div id="soloImage">\n\t<a href="'+
-( tourImageUri )+
-'"><img src="'+
-( tourImageUri )+
-'" alt="Image 01" class="primaryImg" /></a>\n\t<div class=\'title\'>'+
-( tourStopTitle )+
-'</div>\n</div>';
+__p+='<ul id="gallery">\n</ul>';
 }
 return __p;
 }
