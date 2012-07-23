@@ -35,6 +35,11 @@ if (!tap) {
 
 		if (config === undefined) config = {};
 		tap.config = _.defaults(config, {
+			index_menu: [
+				{ label: 'Menu', prefix: 'tourstoplist' },
+				{ label: 'Keypad', prefix: 'tourkeypad' },
+				{ label: 'Map', prefix: 'tourmap'}
+			],
 			default_index: 'tourstoplist',
 			units: 'si',
 			StopListView: {
@@ -84,7 +89,9 @@ if (!tap) {
 	 */
 	tap.initModels = function(data) {
 		// check to see if the tour has been updated
-		if (Date.parse(data.lastModified) <= Date.parse(tap.tours.get(data.id).get('lastModified'))) return;
+
+		var tour = tap.tours.get(data.id)
+		if (Date.parse(data.lastModified) <= Date.parse(tour.get('lastModified'))) return;
 
 		// create new instance of StopCollection
 		var stops = new TapAPI.collections.Stops(null, data.id);
