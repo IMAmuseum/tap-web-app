@@ -1,5 +1,5 @@
 /*
- * TAP - v0.1.0 - 2012-07-19
+ * TAP - v0.1.0 - 2012-07-23
  * http://tapintomuseums.org/
  * Copyright (c) 2011-2012 Indianapolis Museum of Art
  * GPLv3
@@ -3389,8 +3389,8 @@ div.ps-toolbar-play div.ps-toolbar-content
 
 .ui-header .ui-title {
 	padding-top: 0.4em;	
-	margin-left: 22%;
-	margin-right: 5%;
+	margin-right: 10%;
+	margin-left: 10%;
 }
 
 #back-button {
@@ -3490,5 +3490,16 @@ div.ps-toolbar-play div.ps-toolbar-content
 /*** Video Stops ***/
 #video-player {
 	width: 100%;
+}
+
+/*** MEDIA QUERIES ***********************************************************/
+
+@media (max-width:500px) {
+
+	.ui-header .ui-title {	
+		margin-left: 70px; /* based on the width of the back button... */
+		margin-right: 5%;
+	}
+
 }
 

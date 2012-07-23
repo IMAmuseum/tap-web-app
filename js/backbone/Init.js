@@ -35,7 +35,7 @@ if (!tap) {
 
 		if (config === undefined) config = {};
 		tap.config = _.defaults(config, {
-			index_menu: [
+			navbar_items: [
 				{ label: 'Menu', prefix: 'tourstoplist' },
 				{ label: 'Keypad', prefix: 'tourkeypad' },
 				{ label: 'Map', prefix: 'tourmap'}

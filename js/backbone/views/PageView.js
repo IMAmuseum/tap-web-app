@@ -14,11 +14,11 @@ jQuery(function() {
 			// TODO: check for an index menu setting in the current tour
 
 			// Check for a default app index menu setting
-			var index_menu = null;
-			if (tap.config.index_menu !== undefined) {
-				index_menu = tap.config.index_menu;
+			var navbar_items = null;
+			if (tap.config.navbar_items !== undefined) {
+				navbar_items = tap.config.navbar_items;
 			} else {
-				index_menu = [
+				navbar_items = [
 					{ label: 'Menu', prefix: 'tourstoplist' },
 					{ label: 'Keypad', prefix: 'tourkeypad' },
 					{ label: 'Map', prefix: 'tourmap'}
@@ -28,7 +28,7 @@ jQuery(function() {
 			_.defaults(this.options, {
 				page_title: '',
 				back_label: 'Back',
-				nav_menu: index_menu,
+				nav_menu: navbar_items,
 				active_index: null,
 				header_nav: true
 			});

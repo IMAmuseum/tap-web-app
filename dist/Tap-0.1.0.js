@@ -1,5 +1,5 @@
 /*
- * TAP - v0.1.0 - 2012-07-19
+ * TAP - v0.1.0 - 2012-07-23
  * http://tapintomuseums.org/
  * Copyright (c) 2011-2012 Indianapolis Museum of Art
  * GPLv3
@@ -245,7 +245,7 @@ TapAPI.models.Stop = Backbone.Model.extend({
 			case 'description':
 			case 'title':
 				if (this.attributes[attr].length === 0) return undefined;
-				
+
 				var value, property;
 
 				property = _.find(this.attributes[attr], function(item) {
@@ -495,14 +495,24 @@ jQuery(function() {
 
 		initialize: function(args) {
 
-			_.defaults(this.options, {
-				page_title: '',
-				back_label: 'Back',
-				nav_menu: [
+			// TODO: check for an index menu setting in the current tour
+
+			// Check for a default app index menu setting
+			var index_menu = null;
+			if (tap.config.index_menu !== undefined) {
+				index_menu = tap.config.index_menu;
+			} else {
+				index_menu = [
 					{ label: 'Menu', prefix: 'tourstoplist' },
 					{ label: 'Keypad', prefix: 'tourkeypad' },
 					{ label: 'Map', prefix: 'tourmap'}
-				],
+				];
+			}
+
+			_.defaults(this.options, {
+				page_title: '',
+				back_label: 'Back',
+				nav_menu: index_menu,
 				active_index: null,
 				header_nav: true
 			});
@@ -986,20 +996,24 @@ jQuery(function() {
 
 			if (tap.config.units == 'si') {
 
-				if (d < 1000) {
-					return d.toFixed(2) + ' m';
-				} else {
+				if (d < 100) {
+					return parseInt(d) + ' m';
+				} else if (d < 10000) {
 					return (d/1000).toFixed(2) + ' km';
+				} else {
+					return parseInt(d/1000) + ' km';
 				}
 
 			} else {
 				
 				// Assume it's English
 				var feet = 3.28084 * d;
-				if (feet > 528) { // .1 miles
+				if (feet > 52800) { // > 10 miles
+					return parseInt(feet/5280) + ' mi';
+				} if (feet > 528) { // > .1 miles
 					return (feet/5280).toFixed(2) + ' mi';
 				} else {
-					return feet + ' ft';
+					return parseInt(feet) + ' ft';
 				}
 
 			}
@@ -1505,6 +1519,11 @@ if (!tap) {
 
 		if (config === undefined) config = {};
 		tap.config = _.defaults(config, {
+			index_menu: [
+				{ label: 'Menu', prefix: 'tourstoplist' },
+				{ label: 'Keypad', prefix: 'tourkeypad' },
+				{ label: 'Map', prefix: 'tourmap'}
+			],
 			default_index: 'tourstoplist',
 			units: 'si',
 			StopListView: {
@@ -1525,24 +1544,21 @@ if (!tap) {
 
 		tap.tours.fetch();
 
-		// populate local storage if this is a first run
-		if(!tap.tours.length) {
-			// load tourML
-			var tourML = xmlToJson(loadXMLDoc(tap.url));
-			var i, len;
-			if(tourML.tour) { // Single tour
-				tap.initModels(tourML.tour);
-			} else if(tourML.tourSet && tourML.tourSet.tourRef) { // TourSet w/ external tours
-				len = tourML.tourSet.tourRef.length;
-				for(i = 0; i < len; i++) {
-					var data = xmlToJson(loadXMLDoc(tourML.tourSet.tourRef[i].uri));
-					tap.initModels(data.tour);
-				}
-			} else if(tourML.tourSet && tourML.tourSet.tour) { // TourSet w/ tours as children elements
-				len = tourML.tourSet.tour.length;
-				for(i = 0; i < len; i++) {
-					tap.initModels(tourML.tourSet.tour[i]);
-				}
+		// load tourML
+		var tourML = xmlToJson(loadXMLDoc(tap.url));
+		var i, len;
+		if(tourML.tour) { // Single tour
+			tap.initModels(tourML.tour);
+		} else if(tourML.tourSet && tourML.tourSet.tourRef) { // TourSet w/ external tours
+			len = tourML.tourSet.tourRef.length;
+			for(i = 0; i < len; i++) {
+				var data = xmlToJson(loadXMLDoc(tourML.tourSet.tourRef[i].uri));
+				tap.initModels(data.tour);
+			}
+		} else if(tourML.tourSet && tourML.tourSet.tour) { // TourSet w/ tours as children elements
+			len = tourML.tourSet.tour.length;
+			for(i = 0; i < len; i++) {
+				tap.initModels(tourML.tourSet.tour[i]);
 			}
 		}
 		// trigger tap init end event
@@ -1550,13 +1566,36 @@ if (!tap) {
 
 		// initialize router
 		tap.router = new AppRouter();
-		
 	};
-    
+
 	/*
 	 * Initialize models with data
 	 */
 	tap.initModels = function(data) {
+		// check to see if the tour has been updated
+		var tour = tap.tours.get(data.id);
+		if (tour && Date.parse(data.lastModified) <= Date.parse(tour.get('lastModified'))) return;
+
+		// create new instance of StopCollection
+		var stops = new TapAPI.collections.Stops(null, data.id);
+		// create new instance of AssetCollection
+		var assets = new TapAPI.collections.Assets(null, data.id);
+
+		// remove existing models for this tour
+		if (tap.tours.get(data.id)) {
+			tap.tours.get(data.id).destroy();
+			stops.fetch();
+			stops.each(function(stop) {
+				stop.destroy();
+			});
+			assets.fetch();
+			assets.each(function(asset) {
+				asset.destroy();
+			});
+		}
+
+		tap.trigger('tap.init.create-tour', {id: data.id});
+
 		// create new tour
 		tap.tours.create({
 			id: data.id,
@@ -1572,8 +1611,6 @@ if (!tap) {
 		});
 
 		var i, j;
-		// create new instance of StopCollection
-		var stops = new TapAPI.collections.Stops(null, data.id);
 		// load tour models
 		var numStops = data.stop.length;
 		for (i = 0; i < numStops; i++) {
@@ -1597,8 +1634,6 @@ if (!tap) {
 			});
 		}
 
-		// create new instance of AssetCollection
-		var assets = new TapAPI.collections.Assets(null, data.id);
 		// load asset models
 		var numAssets = data.asset.length;
 		for (i = 0; i < numAssets; i++) {
