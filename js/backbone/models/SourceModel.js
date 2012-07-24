@@ -12,6 +12,12 @@ TapAPI.models.Source = Backbone.Model.extend({
 			this.id
 		));
 	},
+	getAsset: function() {
+		return this.collection.asset;
+	},
+	save: function() {
+		this.collection.asset.save();
+	},
 	defaults: {
 		'lang': undefined,
 		'propertySet': undefined,

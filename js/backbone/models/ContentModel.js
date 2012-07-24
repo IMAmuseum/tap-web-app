@@ -16,6 +16,12 @@ TapAPI.models.Content = Backbone.Model.extend({
 			this.set('data', this.get('data').value);
 		}
 	},
+	getAsset: function() {
+		return this.collection.asset;
+	},
+	save: function() {
+		this.collection.asset.save();
+	},
 	defaults: {
 		'lang': undefined,
 		'propertySet': undefined,

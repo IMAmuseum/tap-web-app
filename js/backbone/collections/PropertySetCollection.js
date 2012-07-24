@@ -6,11 +6,11 @@ if (typeof TapAPI.collections === 'undefined'){TapAPI.collections = {};}
 // define assett collection
 TapAPI.collections.PropertySet = Backbone.Collection.extend({
 	model: TapAPI.models.Property,
-	initialize: function(models, id) {
-		this.localStorage = new Backbone.LocalStorage(id + '-propertyset');
+	initialize: function(models, options) {
+		this.localStorage = new Backbone.LocalStorage(options.id + '-propertyset');
 	},
 	getValueByName: function(propertyName) {
-		var property, value; 
+		var property, value;
 		property = this.where({"name": propertyName, "lang": tap.language});
 		if (property.length === 0) {
 			property = this.where({"name": propertyName});

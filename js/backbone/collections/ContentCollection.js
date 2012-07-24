@@ -6,7 +6,8 @@ if (typeof TapAPI.collections === 'undefined'){TapAPI.collections = {};}
 // define sources collection
 TapAPI.collections.Content = Backbone.Collection.extend({
 	model: TapAPI.models.Content,
-	initialize: function(models, id) {
-		this.localStorage = new Backbone.LocalStorage(id + '-source');
+	initialize: function(models, options) {
+		this.localStorage = new Backbone.LocalStorage(options.id + '-source');
+		this.asset = options.asset;
 	}
 });
