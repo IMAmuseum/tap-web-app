@@ -157,7 +157,9 @@ jQuery(function() {
 					'title': this.stop.get('title'),
 					'tour_id': tap.currentTour,
 					'stop_id': this.stop.id,
-					'distance': d_content
+					'distance': d_content,
+					'stop_lat': data.coordinates[1],
+					'stop_lon': data.coordinates[0]
 				}));
 
 				this.map_view.stop_popups[this.stop.id] = popup;
@@ -182,9 +184,10 @@ jQuery(function() {
 					'title': stop.get('title'),
 					'tour_id': tap.currentTour,
 					'stop_id': stop.get('id'),
-					'distance': d_content
+					'distance': d_content,
+					'stop_lat': stop.get('location').lat,
+					'stop_lon': stop.get('location').lng
 				}));
-
 
 			}, this.map_view);
 
