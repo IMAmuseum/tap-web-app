@@ -40,6 +40,7 @@ if (!tap) {
 				{ label: 'Keypad', prefix: 'tourkeypad' },
 				{ label: 'Map', prefix: 'tourmap'}
 			],
+			header_nav: true,
 			default_index: 'tourstoplist',
 			units: 'si',
 			StopListView: {

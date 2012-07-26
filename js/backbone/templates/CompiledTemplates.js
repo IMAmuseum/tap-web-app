@@ -54,7 +54,7 @@ return __p;
 TapAPI.templates['page'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<div data-role="header" data-position="fixed">\n\t<a id=\'back-button\' data-rel="back" data-mini="true">'+
+__p+='<div data-role="header" data-id="tap-header" data-position="fixed">\n\t<a id=\'back-button\' data-rel="back" data-mini="true">'+
 ( back_label )+
 '</a>\n\t';
  if (header_nav) { 
@@ -76,7 +76,23 @@ __p+='<div data-role="header" data-position="fixed">\n\t<a id=\'back-button\' da
 ( title )+
 '</h1>\n\t';
  } 
-;__p+='\n</div>\n<div data-role="content">\n</div>\n<!--\n<div data-role="footer">\n</div>\n-->';
+;__p+='\n</div>\n<div data-role="content">\n</div>\n';
+ if (!header_nav) { 
+;__p+='\n<div data-role="footer" data-id="tap-footer" data-position="fixed">\n\t<div data-role="navbar">\n\t\t<ul>\n\t\t\t';
+ _.each(nav_menu, function(item) { 
+;__p+='\n\t\t\t<li><a '+
+( (active_index == item.prefix) ? 'data-theme="b"' : "" )+
+' href=\'#'+
+( item.prefix )+
+'/'+
+( tour_id )+
+'\'>'+
+( item.label )+
+'</a></li>\n\t\t\t';
+ }); 
+;__p+='\n\t\t</ul>\n\t</div>\n</div>\n';
+ } 
+;__p+='';
 }
 return __p;
 }
@@ -157,7 +173,11 @@ __p+='<div class=\'marker-bubble-content\'>\n\t<div class=\'title\'>'+
 ( tour_id )+
 '/'+
 ( stop_id )+
-'\'>View stop</a></div>\n\t<div class=\'directions\'>Get Directions</div>\n</div>';
+'\'>View stop</a></div>\n\t<div class=\'directions\'>\n\t\t<a href=\'http://maps.google.com/maps?saddr=Current%20Location&daddr='+
+( stop_lat )+
+','+
+( stop_lon )+
+'\'>Get Directions</a>\n\t</div>\n</div>';
 }
 return __p;
 }

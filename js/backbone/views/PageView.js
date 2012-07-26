@@ -30,7 +30,7 @@ jQuery(function() {
 				back_label: 'Back',
 				nav_menu: navbar_items,
 				active_index: null,
-				header_nav: true
+				header_nav: (tap.config.header_nav !== undefined) ? tap.config.header_nav : true
 			});
 
 			if (this.onInit) {

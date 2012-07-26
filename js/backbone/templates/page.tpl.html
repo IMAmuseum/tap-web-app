@@ -1,4 +1,4 @@
-<div data-role="header" data-position="fixed">
+<div data-role="header" data-id="tap-header" data-position="fixed">
 	<a id='back-button' data-rel="back" data-mini="true"><%= back_label %></a>
 	<% if (header_nav) { %>
 	<div id='index-selector' data-role="controlgroup" data-type="horizontal" data-mini="true">
@@ -12,7 +12,14 @@
 </div>
 <div data-role="content">
 </div>
-<!--
-<div data-role="footer">
+<% if (!header_nav) { %>
+<div data-role="footer" data-id="tap-footer" data-position="fixed">
+	<div data-role="navbar">
+		<ul>
+			<% _.each(nav_menu, function(item) { %>
+			<li><a <%= (active_index == item.prefix) ? 'data-theme="b"' : "" %> href='#<%= item.prefix %>/<%= tour_id %>'><%= item.label %></a></li>
+			<% }); %>
+		</ul>
+	</div>
 </div>
--->
+<% } %>
