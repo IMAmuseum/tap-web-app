@@ -20,9 +20,25 @@ jQuery(function() {
 			var content_template = TapAPI.templateManager.get('audio-stop');
 			var contentContainer = this.$el.find(":jqmData(role='content')");
 
+			var assets = this.model.getAssetsByUsage("transcription");
+			var transcription = null;
+			if (assets.length) {
+				transcription = assets[0].get('content').at(0).get('data');
+			}
+
 			contentContainer.append(content_template({
-				tourStopTitle: this.model.get('title')
+				tourStopTitle: this.model.get('title'),
+				transcription: transcription
 			}));
+
+			this.$el.find('#trans-button').click(function() {
+				var t = $('.transcription').toggleClass('hidden');
+				if (t.hasClass('hidden')) {
+					$('.ui-btn-text', this).text('Show Transcription');
+				} else {
+					$('.ui-btn-text', this).text('Hide Transcription');
+				}
+			});
 
 			var assets = this.model.getAssetsByType(["tour_audio", "tour_video"]);
 

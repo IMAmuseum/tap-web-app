@@ -128,6 +128,14 @@
 	width: 100%;
 }
 
+#trans-button {
+	width: 50%;
+}
+
+.transcription.hidden {
+	display: none;
+}
+
 /*** MEDIA QUERIES ***********************************************************/
 
 @media (max-width:500px) {

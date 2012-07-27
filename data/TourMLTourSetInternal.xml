@@ -44,6 +44,7 @@
 	    <tourml:Description xml:lang="en"><![CDATA[Donec eget iaculis lacus. Nam erat urna, pretium a pellentesque sit amet, auctor id lacus. Mauris eleifend diam massa. In non augue a mi bibendum scelerisque iaculis at augue. Quisque aliquam malesuada purus, sagittis blandit sem accumsan non. Vestibulum vehicula augue eu diam laoreet sit amet malesuada orci ornare. Donec porttitor, velit eu sodales euismod, ligula nisl ullamcorper massa, in elementum mauris magna a quam. Praesent ut ante nulla, eu rhoncus magna.]]></tourml:Description>
 	    <tourml:AssetRef tourml:id="asset-tour_video-59" tourml:usage="tour_video"/>
 	    <tourml:AssetRef tourml:id="asset-image-60" tourml:usage="image"/>
+		<tourml:AssetRef tourml:id="asset-transcription-4-0" tourml:usage="transcription"/>	    
 	    <tourml:PropertySet>
 	      <tourml:Property tourml:name="code">500</tourml:Property>
 	    </tourml:PropertySet>
@@ -61,6 +62,7 @@
 	    <tourml:Description xml:lang="en"><![CDATA[Donec eget iaculis lacus. Nam erat urna, pretium a pellentesque sit amet, auctor id lacus. Mauris eleifend diam massa. In non augue a mi bibendum scelerisque iaculis at augue. Quisque aliquam malesuada purus, sagittis blandit sem accumsan non. Vestibulum vehicula augue eu diam laoreet sit amet malesuada orci ornare. Donec porttitor, velit eu sodales euismod, ligula nisl ullamcorper massa, in elementum mauris magna a quam. Praesent ut ante nulla, eu rhoncus magna.]]></tourml:Description>
 	    <tourml:AssetRef tourml:id="asset-tour_audio-61" tourml:usage="tour_audio"/>
 	    <tourml:AssetRef tourml:id="asset-image-62" tourml:usage="image"/>
+		<tourml:AssetRef tourml:id="asset-transcription-4-0" tourml:usage="transcription"/>	    	    
 	    <tourml:PropertySet>
 	      <tourml:Property tourml:name="code">600</tourml:Property>
 	    </tourml:PropertySet>
@@ -194,6 +196,13 @@
 	      <tourml:Data><![CDATA[Nam erat urna]]></tourml:Data>
 	    </tourml:Content>
 	  </tourml:Asset>
+
+	  <tourml:Asset tourml:id="asset-transcription-4-0" tourml:type="transcription">
+	    <tourml:Content>
+	      <tourml:Data><![CDATA[The age and size of the Cosmos are beyond ordinary human understanding. Lost somewhere between immensity and eternity is our tiny planetary home. In a cosmos perspective, most human concerns seem insignificant, even petty. And yet our species is young an curious and brave and shows much promise. In the last few millennia we have made the most astonishing and unexpected discoveries about the Cosmos and our place within it, explorations that are exhilarating to consider. They remind us that humans have evolved to wonder, that understanding is a joy, that knowledge is prerequisite to survival. I believe our future depends powerfully on how well we understand this Cosmos in which we float like a mote of dust in the morning sky.]]></tourml:Data>
+	    </tourml:Content>
+	  </tourml:Asset>
+
 	  <tourml:Connection tourml:srcId="stop-55" tourml:destId="stop-52" tourml:priority="1"/>
 	  <tourml:Connection tourml:srcId="stop-55" tourml:destId="stop-53" tourml:priority="2"/>
 	  <tourml:Connection tourml:srcId="stop-55" tourml:destId="stop-56" tourml:priority="3"/>

@@ -6,4 +6,8 @@
 	<video id="video-player" autoplay controls="controls" style='display:none;'>
 		<p>Your browser does not support the video element.</p>
 	</video>
+	<% if (transcription !== null) { %>
+		<div id='trans-button' data-role='button' class='ui-mini'>Show Transcription</div>
+		<div class='transcription hidden'><p><%= transcription %></p></div>
+	<% } %>	
 </div>

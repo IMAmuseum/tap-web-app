@@ -3,4 +3,8 @@
 	<video id="video-player" poster="assets/images/tapPoster.png" controls="controls" autoplay="autoplay">
 		<p>Your browser does not support the video tag.</p>
 	</video>
+	<% if (transcription !== null) { %>
+		<div id='trans-button' data-role='button' class='ui-mini'>Show Transcription</div>
+		<div class='transcription hidden'><p><%= transcription %></p></div>
+	<% } %>
 </div>

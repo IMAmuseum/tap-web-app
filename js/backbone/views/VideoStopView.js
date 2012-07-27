@@ -18,11 +18,27 @@ jQuery(function() {
 		renderContent: function() {
 			var content_template = TapAPI.templateManager.get('video-stop');
 
+			var assets = this.model.getAssetsByUsage("transcription");
+			var transcription = null;
+			if (assets.length) {
+				transcription = assets[0].get('content').at(0).get('data');
+			}
+
 			this.$el.find(":jqmData(role='content')").append(content_template({
-				tourStopTitle: this.model.get('title')
+				tourStopTitle: this.model.get('title'),
+				transcription: transcription
 			}));
 
-			var assets = this.model.getAssetsByType("tour_video");
+			this.$el.find('#trans-button').click(function() {
+				var t = $('.transcription').toggleClass('hidden');
+				if (t.hasClass('hidden')) {
+					$('.ui-btn-text', this).text('Show Transcription');
+				} else {
+					$('.ui-btn-text', this).text('Hide Transcription');
+				}
+			});
+
+			assets = this.model.getAssetsByType("tour_video");
 			if (assets.length) {
 				var videoContainer = this.$el.find('video');
 				_.each(assets, function(asset) {
@@ -32,6 +48,7 @@ jQuery(function() {
 					});
 				});
 			}
+
 
 			return this;
 		}
