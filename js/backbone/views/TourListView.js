@@ -12,6 +12,7 @@ jQuery(function() {
 		onInit: function() {
 			this.options.page_title = 'Tour List';
 			this.options.header_nav = false;
+			this.options.footer_nav = false;
 		},
 
 		renderContent: function() {

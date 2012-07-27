@@ -3,7 +3,7 @@
 	<% if (header_nav) { %>
 	<div id='index-selector' data-role="controlgroup" data-type="horizontal" data-mini="true">
 		<% _.each(nav_menu, function(item) { %>
-		<a data-role="button" <%= (active_index == item.prefix) ? 'data-theme="b"' : "" %> href='#<%= item.prefix %>/<%= tour_id %>'><%= item.label %></a>
+		<a data-role="button" <%= (active_index == item.endpoint) ? 'data-theme="b"' : "" %> href='#<%= item.endpoint %>/<%= tour_id %>'><%= item.label %></a>
 		<% }); %>
 	</div>
 	<% } else { %>
@@ -12,12 +12,12 @@
 </div>
 <div data-role="content">
 </div>
-<% if (!header_nav) { %>
+<% if (footer_nav) { %>
 <div data-role="footer" data-id="tap-footer" data-position="fixed">
 	<div data-role="navbar">
 		<ul>
 			<% _.each(nav_menu, function(item) { %>
-			<li><a <%= (active_index == item.prefix) ? 'data-theme="b"' : "" %> href='#<%= item.prefix %>/<%= tour_id %>'><%= item.label %></a></li>
+			<li><a <%= (active_index == item.endpoint) ? 'data-theme="b"' : "" %> href='#<%= item.endpoint %>/<%= tour_id %>'><%= item.label %></a></li>
 			<% }); %>
 		</ul>
 	</div>

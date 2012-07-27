@@ -61,9 +61,9 @@ __p+='<div data-role="header" data-id="tap-header" data-position="fixed">\n\t<a 
 ;__p+='\n\t<div id=\'index-selector\' data-role="controlgroup" data-type="horizontal" data-mini="true">\n\t\t';
  _.each(nav_menu, function(item) { 
 ;__p+='\n\t\t<a data-role="button" '+
-( (active_index == item.prefix) ? 'data-theme="b"' : "" )+
+( (active_index == item.endpoint) ? 'data-theme="b"' : "" )+
 ' href=\'#'+
-( item.prefix )+
+( item.endpoint )+
 '/'+
 ( tour_id )+
 '\'>'+
@@ -77,13 +77,13 @@ __p+='<div data-role="header" data-id="tap-header" data-position="fixed">\n\t<a 
 '</h1>\n\t';
  } 
 ;__p+='\n</div>\n<div data-role="content">\n</div>\n';
- if (!header_nav) { 
+ if (footer_nav) { 
 ;__p+='\n<div data-role="footer" data-id="tap-footer" data-position="fixed">\n\t<div data-role="navbar">\n\t\t<ul>\n\t\t\t';
  _.each(nav_menu, function(item) { 
 ;__p+='\n\t\t\t<li><a '+
-( (active_index == item.prefix) ? 'data-theme="b"' : "" )+
+( (active_index == item.endpoint) ? 'data-theme="b"' : "" )+
 ' href=\'#'+
-( item.prefix )+
+( item.endpoint )+
 '/'+
 ( tour_id )+
 '\'>'+

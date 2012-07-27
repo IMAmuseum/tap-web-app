@@ -19,10 +19,19 @@ jQuery(function() {
 				navbar_items = tap.config.navbar_items;
 			} else {
 				navbar_items = [
-					{ label: 'Menu', prefix: 'tourstoplist' },
-					{ label: 'Keypad', prefix: 'tourkeypad' },
-					{ label: 'Map', prefix: 'tourmap'}
+					{ label: 'Menu', endpoint: 'tourstoplist' },
+					{ label: 'Keypad', endpoint: 'tourkeypad' },
+					{ label: 'Map', endpoint: 'tourmap'}
 				];
+			}
+
+			var header_nav_default = true;
+			var footer_nav_default = false;
+			if (tap.config.navbar_location !== undefined) {
+				if (tap.config.navbar_location == 'footer') {
+					header_nav_default = false;
+					footer_nav_default = true;
+				}
 			}
 
 			_.defaults(this.options, {
@@ -30,7 +39,8 @@ jQuery(function() {
 				back_label: 'Back',
 				nav_menu: navbar_items,
 				active_index: null,
-				header_nav: (tap.config.header_nav !== undefined) ? tap.config.header_nav : true
+				header_nav: header_nav_default,
+				footer_nav: footer_nav_default
 			});
 
 			if (this.onInit) {
@@ -54,6 +64,7 @@ jQuery(function() {
 				title: this.options.page_title,
 				back_label: this.options.back_label,
 				header_nav: this.options.header_nav,
+				footer_nav: this.options.footer_nav,
 				nav_menu: this.options.nav_menu,
 				active_index: this.options.active_index,
 				tour_id: tap.currentTour

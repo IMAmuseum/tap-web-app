@@ -34,14 +34,19 @@ if (!tap) {
 		tap.url = url;
 
 		if (config === undefined) config = {};
+
+		/*
+		 * When editing the default configuration, the documentation should be updated.
+		 * https://github.com/IMAmuseum/tap-web-app/wiki/Configuring-the-web-app
+		 */
 		tap.config = _.defaults(config, {
 			navbar_items: [
-				{ label: 'Menu', prefix: 'tourstoplist' },
-				{ label: 'Keypad', prefix: 'tourkeypad' },
-				{ label: 'Map', prefix: 'tourmap'}
+				{ label: 'Menu', endpoint: 'tourstoplist' },
+				{ label: 'Keypad', endpoint: 'tourkeypad' },
+				{ label: 'Map', endpoint: 'tourmap'}
 			],
-			header_nav: true,
-			default_index: 'tourstoplist',
+			navbar_location: 'header',
+			default_nav_item: 'tourstoplist',
 			units: 'si',
 			StopListView: {
 				codes_only: true
