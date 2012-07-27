@@ -118,6 +118,18 @@
 	        <tourml:Property tourml:name="height">250</tourml:Property>
 	      </tourml:PropertySet>
 	    </tourml:Source>
+	    <tourml:Source tourml:format="image/jpeg" tourml:lastModified="2012-07-23T14:42:30-04:00" xml:lang="en" tourml:uri="assets/images/001.jpg" tourml:part="thumbnail">
+	      <tourml:PropertySet>
+	        <tourml:Property tourml:name="width">290</tourml:Property>
+	        <tourml:Property tourml:name="height">250</tourml:Property>
+	      </tourml:PropertySet>
+	    </tourml:Source>
+	    <tourml:Source tourml:format="image/jpeg" tourml:lastModified="2012-07-23T14:44:30-04:00" xml:lang="en" tourml:uri="assets/images/001_thumb.jpg" tourml:part="thumbnail">
+	      <tourml:PropertySet>
+	        <tourml:Property tourml:name="width">100</tourml:Property>
+	        <tourml:Property tourml:name="height">100</tourml:Property>
+	      </tourml:PropertySet>
+	    </tourml:Source>
 	    <tourml:Content tourml:part="title">
 	      <tourml:Data><![CDATA[Lorem ipsum dolor sit amet]]></tourml:Data>
 	    </tourml:Content>
@@ -130,6 +142,12 @@
 	      <tourml:PropertySet>
 	        <tourml:Property tourml:name="width">290</tourml:Property>
 	        <tourml:Property tourml:name="height">250</tourml:Property>
+	      </tourml:PropertySet>
+	    </tourml:Source>
+	    <tourml:Source tourml:format="image/jpeg" tourml:lastModified="2012-07-23T14:44:30-04:00" xml:lang="en" tourml:uri="assets/images/003_thumb.jpg" tourml:part="thumbnail">
+	      <tourml:PropertySet>
+	        <tourml:Property tourml:name="width">100</tourml:Property>
+	        <tourml:Property tourml:name="height">100</tourml:Property>
 	      </tourml:PropertySet>
 	    </tourml:Source>
 	    <tourml:Content tourml:part="title">
@@ -146,6 +164,12 @@
 	        <tourml:Property tourml:name="height">250</tourml:Property>
 	      </tourml:PropertySet>
 	    </tourml:Source>
+	    <tourml:Source tourml:format="image/jpeg" tourml:lastModified="2012-07-23T14:44:30-04:00" xml:lang="en" tourml:uri="assets/images/004_thumb.jpg" tourml:part="thumbnail">
+	      <tourml:PropertySet>
+	        <tourml:Property tourml:name="width">100</tourml:Property>
+	        <tourml:Property tourml:name="height">100</tourml:Property>
+	      </tourml:PropertySet>
+	    </tourml:Source>
 	    <tourml:Content tourml:part="title">
 	      <tourml:Data><![CDATA[Donec eget iaculis lacus]]></tourml:Data>
 	    </tourml:Content>
@@ -158,6 +182,12 @@
 	      <tourml:PropertySet>
 	        <tourml:Property tourml:name="width">290</tourml:Property>
 	        <tourml:Property tourml:name="height">250</tourml:Property>
+	      </tourml:PropertySet>
+	    </tourml:Source>
+	    <tourml:Source tourml:format="image/jpeg" tourml:lastModified="2012-07-23T14:44:30-04:00" xml:lang="en" tourml:uri="assets/images/005_thumb.jpg" tourml:part="thumbnail">
+	      <tourml:PropertySet>
+	        <tourml:Property tourml:name="width">100</tourml:Property>
+	        <tourml:Property tourml:name="height">100</tourml:Property>
 	      </tourml:PropertySet>
 	    </tourml:Source>
 	    <tourml:Content tourml:part="title">
