@@ -1213,11 +1213,10 @@ jQuery(function() {
 				listContainer.append(item.render().el);
 				if (this.options.enable_proximity_order) {
 					stop.on("change:distance", this.onStopDistanceChanged, item);
+					stop.on("change:nearest", this.onNearestStopChanged, item);
 				}
 
 			}, this);
-
-			console.log(this.options);
 
 			if (this.options.enable_proximity_order) {
 				TapAPI.geoLocation.startLocating();
@@ -1239,12 +1238,21 @@ jQuery(function() {
 		},
 
 
+		onNearestStopChanged: function(stop) {
+
+			if (stop.get('nearest')) {
+				this.$el.addClass('nearest');
+			} else {
+				this.$el.removeClass('nearest');
+			}
+
+		},
+
+
 		onLocationFound: function(position) {
 
 			console.log('onLocationFound', position);
 			var latlng = new L.LatLng(position.coords.latitude, position.coords.longitude);
-
-
 
 		},
 
@@ -1824,6 +1832,7 @@ jQuery(function() {
 
 		latest_location: null,
 		interval: null,
+		nearest_stop: null,
 
 		locate: function() {
 
@@ -1876,15 +1885,30 @@ jQuery(function() {
 
 			var latlon = new L.LatLng(position.coords.latitude, position.coords.longitude);
 
+
+			var nearest = null;
 			_.each(tap.tourStops.models, function(stop) {
 
 				var stop_location = stop.get('location');
 				if (stop_location !== undefined) {
 					var d = latlon.distanceTo(stop_location);
 					stop.set('distance', d);
+					if ((nearest === null) || (d < nearest.get('distance'))) {
+						nearest = stop;
+					}
 				}
 
 			});
+
+			if (nearest !== null) {
+				if (this.nearest_stop === null) {
+					this.nearest_stop = nearest;
+				} else if (this.nearest_stop != nearest) {
+					// update
+					this.nearest_stop.set('nearest', false);
+				}
+				nearest.set('nearest', true);
+			}
 
 		},
 
@@ -1899,6 +1923,10 @@ jQuery(function() {
 		stopLocating: function() {
 			clearInterval(TapAPI.geoLocation.interval);
 			TapAPI.geoLocation.interval = null;
+			if (this.nearest_stop !== null) {
+				this.nearest_stop.set('nearest', false);
+				this.nearest_stop = null;
+			}
 		},
 
 

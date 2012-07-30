@@ -3471,10 +3471,17 @@ div.ps-toolbar-play div.ps-toolbar-content
 
 #tour-stop-list span.distance {
 	float: right;
-	padding-right: 1em;
+	margin-right: 1em;
+	padding: 0.3em;
 	font-size: 0.8em;
 }
 
+#tour-stop-list li.nearest span.distance {
+	background-color: #7FBCE5;
+	border-radius:.3em;
+	-moz-border-radius:.3em;
+	-webkit-border-radius:.3em;	
+}
 
 /*** Tour Stops ***/
 

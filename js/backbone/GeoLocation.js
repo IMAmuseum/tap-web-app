@@ -11,6 +11,7 @@ jQuery(function() {
 
 		latest_location: null,
 		interval: null,
+		nearest_stop: null,
 
 		locate: function() {
 
@@ -63,15 +64,30 @@ jQuery(function() {
 
 			var latlon = new L.LatLng(position.coords.latitude, position.coords.longitude);
 
+
+			var nearest = null;
 			_.each(tap.tourStops.models, function(stop) {
 
 				var stop_location = stop.get('location');
 				if (stop_location !== undefined) {
 					var d = latlon.distanceTo(stop_location);
 					stop.set('distance', d);
+					if ((nearest === null) || (d < nearest.get('distance'))) {
+						nearest = stop;
+					}
 				}
 
 			});
+
+			if (nearest !== null) {
+				if (this.nearest_stop === null) {
+					this.nearest_stop = nearest;
+				} else if (this.nearest_stop != nearest) {
+					// update
+					this.nearest_stop.set('nearest', false);
+				}
+				nearest.set('nearest', true);
+			}
 
 		},
 
@@ -86,6 +102,10 @@ jQuery(function() {
 		stopLocating: function() {
 			clearInterval(TapAPI.geoLocation.interval);
 			TapAPI.geoLocation.interval = null;
+			if (this.nearest_stop !== null) {
+				this.nearest_stop.set('nearest', false);
+				this.nearest_stop = null;
+			}
 		},
 
 
