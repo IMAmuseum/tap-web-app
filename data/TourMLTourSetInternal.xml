@@ -222,17 +222,29 @@
   <tourml:Stop tourml:id="stop-81" tourml:view="tour_stop_group">
     <tourml:Title xml:lang="en"><![CDATA[Free Basket by Los Carpinteros]]></tourml:Title>
     <tourml:AssetRef tourml:id="asset-field_geo_location-1" tourml:usage="geo"/>
+    <tourml:PropertySet>
+      <tourml:Property tourml:name="code">400</tourml:Property>
+    </tourml:PropertySet>    
   </tourml:Stop>
   <tourml:Stop tourml:id="stop-82" tourml:view="tour_stop_group">
     <tourml:Title xml:lang="en"><![CDATA[Park of the Laments by Alfredo Jaar]]></tourml:Title>
     <tourml:AssetRef tourml:id="asset-field_geo_location-2" tourml:usage="geo"/>
+    <tourml:PropertySet>
+      <tourml:Property tourml:name="code">300</tourml:Property>
+    </tourml:PropertySet>        
   </tourml:Stop>
   <tourml:Stop tourml:id="stop-89" tourml:view="tour_stop_group">
     <tourml:Title xml:lang="en"><![CDATA[The Ruth Lilly Visitor's Pavilion]]></tourml:Title>
     <tourml:AssetRef tourml:id="asset-field_geo_location-3" tourml:usage="geo"/>
+    <tourml:PropertySet>
+      <tourml:Property tourml:name="code">200</tourml:Property>
+    </tourml:PropertySet>        
   </tourml:Stop>
   <tourml:Stop tourml:id="stop-90" tourml:view="tour_stop_group">
     <tourml:Title xml:lang="en"><![CDATA[Welcome to 100 Acres]]></tourml:Title>
+    <tourml:PropertySet>
+      <tourml:Property tourml:name="code">100</tourml:Property>
+    </tourml:PropertySet>        
   </tourml:Stop>
 	  <tourml:Asset tourml:id="asset-field_geo_location-0">
 	    <tourml:Content>

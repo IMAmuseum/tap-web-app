@@ -102,6 +102,16 @@
 #Gallery li img { display: block; width: 100%; height: auto; }
 #Gallery1 .ui-content, #Gallery2 .ui-content { overflow: hidden; }
 
+
+/*** Stop List View ***/
+
+#tour-stop-list span.distance {
+	float: right;
+	padding-right: 1em;
+	font-size: 0.8em;
+}
+
+
 /*** Tour Stops ***/
 
 .tour-stop .title {

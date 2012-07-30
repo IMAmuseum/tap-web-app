@@ -210,7 +210,11 @@ return __p;
 TapAPI.templates['tour-stop-list'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<ul id="tour-stop-list" class="ui-listview" data-inset="true" data-role="listview"></ul>';
+__p+='<ul id="tour-stop-list" class="ui-listview" data-inset="true" data-role="listview"></ul>\n';
+ if (enable_proximity_order) { 
+;__p+='\n<div id=\'proximity-toggle\' data-role=\'button\'>Order by distance</div>\n';
+}
+;__p+='';
 }
 return __p;
 }

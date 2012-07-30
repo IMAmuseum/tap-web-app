@@ -47,10 +47,7 @@ if (!tap) {
 			],
 			navbar_location: 'header',
 			default_nav_item: 'tourstoplist',
-			units: 'si',
-			StopListView: {
-				codes_only: true
-			}
+			units: 'si'
 		});
 
 		// configure any events

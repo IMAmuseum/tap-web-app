@@ -86,6 +86,35 @@ jQuery(function() {
 		stopLocating: function() {
 			clearInterval(TapAPI.geoLocation.interval);
 			TapAPI.geoLocation.interval = null;
+		},
+
+
+		formatDistance: function(d) {
+
+			if (tap.config.units == 'si') {
+
+				if (d < 100) {
+					return parseInt(d) + ' m';
+				} else if (d < 10000) {
+					return (d/1000).toFixed(2) + ' km';
+				} else {
+					return parseInt(d/1000) + ' km';
+				}
+
+			} else {
+				
+				// Assume it's English
+				var feet = 3.28084 * d;
+				if (feet > 52800) { // > 10 miles
+					return parseInt(feet/5280) + ' mi';
+				} if (feet > 528) { // > .1 miles
+					return (feet/5280).toFixed(2) + ' mi';
+				} else {
+					return parseInt(feet) + ' ft';
+				}
+
+			}
+
 		}
 
 	};

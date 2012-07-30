@@ -106,7 +106,13 @@ jQuery(function() {
 
 			// set the selected tour
 			tap.tours.selectTour(id);
-			this.changePage(new TapAPI.views.StopList({model: tap.tours.get(tap.currentTour)}));
+			var options = {
+				model: tap.tours.get(tap.currentTour)
+			};
+			if (tap.config.StopListView !== undefined) {
+				options = _.extend(options, tap.config.StopListView);
+			}
+			this.changePage(new TapAPI.views.StopList(options));
 
 		},
 
