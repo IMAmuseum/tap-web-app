@@ -1,5 +1,5 @@
 /*
- * TAP - v0.1.0 - 2012-07-30
+ * TAP - v0.1.0 - 2012-08-02
  * http://tapintomuseums.org/
  * Copyright (c) 2011-2012 Indianapolis Museum of Art
  * GPLv3
@@ -880,19 +880,20 @@ jQuery(function() {
 			this.stop_bounds = null;
 			this.position_marker = null;
 			this.view_initialized = false;
-			this.LocationIcon = L.Icon.extend({
+
+			this.location_icon = L.icon({
 				iconUrl: tap.base_path + 'images/icon-locate.png',
 				shadowUrl: null,
-				iconSize: new L.Point(24, 24),
-				iconAnchor: new L.Point(12, 12)
+				iconSize: [24, 24],
+				iconAnchor: [12, 12]
 			});
-			this.MarkerIcon = L.Icon.extend({
+
+			this.marker_icon = L.icon({
 				iconUrl: tap.base_path + 'images/marker.png',
 				shadowUrl: tap.base_path + 'images/marker-shadow.png',
-				iconSize: new L.Point(25,41),
-				iconAnchor: new L.Point(12,41)
+				iconSize: [25, 41],
+				iconAnchor: [12, 41]
 			});
-			this.marker_icon = new this.MarkerIcon();
 
 			_.defaults(this.options, {
 				'init-lat': null,
@@ -1058,7 +1059,7 @@ jQuery(function() {
 
 			if (this.position_marker === null) {
 
-				this.position_marker = new L.Marker(latlng, {icon: new this.LocationIcon()});
+				this.position_marker = new L.Marker(latlng, {icon: this.location_icon});
 				this.position_marker.bindPopup('You are here');
 				this.map.addLayer(this.position_marker);
 
