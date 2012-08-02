@@ -56,6 +56,21 @@
 	margin-top: -41px !important;
 }
 
+#tour-map .distance-label-container {
+	font-size: 12px;
+	margin-top: -15px;
+	width: 60px;
+	margin-left: -18px;
+	text-align: center;
+}
+
+#tour-map .distance-label {
+	background-color: #ccc;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;	
+}
+
 #tour-map .location-icon {
 	background-image: url('../images/icon-locate.png') !important;
 	width: 24px !important;

@@ -26,6 +26,7 @@ jQuery(function() {
 
 			this.map = null;
 			this.stop_markers = {};
+			this.stop_icons = {};
 			this.stop_popups = {};
 			this.stop_bounds = null;
 			this.position_marker = null;
@@ -136,23 +137,27 @@ jQuery(function() {
 
 			if (data.type == 'Point') {
 
+				var stop_icon = L.divIcon({
+					className: 'stop-icon ' + this.stop.id
+				});
+
 				var marker_location = new L.LatLng(data.coordinates[1], data.coordinates[0]);
-				var marker = new L.Marker(marker_location, { icon: this.map_view.stop_icon });
+				var marker = new L.Marker(marker_location, { icon: stop_icon });
 				var template = TapAPI.templateManager.get('tour-map-marker-bubble');
 
 				var popup = new L.Popup();
 				popup.setLatLng(marker_location);
 
-				var d_content = '';
+				var formatted_distance = null;
 				if (this.stop.get('distance')) {
-					d_content = 'Distance: ' + TapAPI.geoLocation.formatDistance(this.stop.get('distance'));
+					formatted_distance = TapAPI.geoLocation.formatDistance(this.stop.get('distance'));
 				}
 
 				popup.setContent(template({
 					'title': this.stop.get('title'),
 					'tour_id': tap.currentTour,
 					'stop_id': this.stop.id,
-					'distance': d_content,
+					'distance': (formatted_distance === null) ? '' : 'Distance: ' + formatted_distance,
 					'stop_lat': data.coordinates[1],
 					'stop_lon': data.coordinates[0]
 				}));
@@ -162,6 +167,7 @@ jQuery(function() {
 				marker.stop_id = this.stop.id;
 				marker.addEventListener('click', this.map_view.onMarkerSelected, this.map_view);
 
+				this.map_view.stop_icons[this.stop.id] = stop_icon;
 				this.map_view.stop_markers[this.stop.id] = marker;
 				this.map_view.map.addLayer(marker);
 
@@ -170,19 +176,33 @@ jQuery(function() {
 			// Update the marker bubble when the distance to a stop changes
 			this.stop.on('change:distance', function(stop) {
 
-				var d_content = '';
+				var formatted_distance = null;
 				if (stop.get('distance')) {
-					d_content = 'Distance: ' + TapAPI.geoLocation.formatDistance(stop.get('distance'));
+					formatted_distance = TapAPI.geoLocation.formatDistance(stop.get('distance'));
 				}
 
+				var template = TapAPI.templateManager.get('tour-map-marker-bubble');
 				this.stop_popups[stop.id].setContent(template({
 					'title': stop.get('title'),
 					'tour_id': tap.currentTour,
 					'stop_id': stop.get('id'),
-					'distance': d_content,
+					'distance': (formatted_distance === null) ? '' : 'Distance: ' + formatted_distance,
 					'stop_lat': stop.get('location').lat,
 					'stop_lon': stop.get('location').lng
 				}));
+
+				// Update the stop icon
+				var distance_label = $('.stop-icon.' + stop.id + ' .distance-label');
+
+				if (distance_label.length === 0) {
+					template = TapAPI.templateManager.get('tour-map-distance-label');
+					$('.stop-icon.' + stop.id).append(template({
+						distance: formatted_distance
+					}));
+				} else {
+					distance_label.html(formatted_distance);
+				}
+
 
 			}, this.map_view);
 
