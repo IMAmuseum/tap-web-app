@@ -31,18 +31,12 @@ jQuery(function() {
 			this.position_marker = null;
 			this.view_initialized = false;
 
-			this.location_icon = L.icon({
-				iconUrl: tap.base_path + 'images/icon-locate.png',
-				shadowUrl: null,
-				iconSize: [24, 24],
-				iconAnchor: [12, 12]
+			this.location_icon = L.divIcon({
+				className: 'location-icon'
 			});
 
-			this.marker_icon = L.icon({
-				iconUrl: tap.base_path + 'images/marker.png',
-				shadowUrl: tap.base_path + 'images/marker-shadow.png',
-				iconSize: [25, 41],
-				iconAnchor: [12, 41]
+			this.stop_icon = L.divIcon({
+				className: 'stop-icon'
 			});
 
 			_.defaults(this.options, {
@@ -143,7 +137,7 @@ jQuery(function() {
 			if (data.type == 'Point') {
 
 				var marker_location = new L.LatLng(data.coordinates[1], data.coordinates[0]);
-				var marker = new L.Marker(marker_location, { icon: this.map_view.marker_icon });
+				var marker = new L.Marker(marker_location, { icon: this.map_view.stop_icon });
 				var template = TapAPI.templateManager.get('tour-map-marker-bubble');
 
 				var popup = new L.Popup();
