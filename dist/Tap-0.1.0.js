@@ -1199,9 +1199,20 @@ jQuery(function() {
 			this.options = _.defaults(this.options, {
 				active_index: 'tourstoplist',
 				codes_only: true,
-				enable_proximity_order: false,
+				enable_proximity_order: true,
 				sort: 'default'
 			});
+
+			// Turn off proximity ordering if the tour has no geolocated stops
+			var geo = false;
+			_.each(tap.tourStops.models, function(stop) {
+				if (stop.getAssetsByUsage('geo') !== undefined) {
+					geo = true;
+				}
+			});
+			if (geo === false) {
+				this.options.enable_proximity_order = false;
+			}
 
 			if (this.options.enable_proximity_order) {
 				TapAPI.geoLocation.on("gotlocation", this.onLocationFound, this);
