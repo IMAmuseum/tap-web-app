@@ -168,6 +168,15 @@ __p+='<ul id="tour-list" class="ui-listview" data-inset="true" data-role="listvi
 }
 return __p;
 }
+TapAPI.templates['tour-map-distance-label'] = function(obj){
+var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
+with(obj||{}){
+__p+='<div class=\'distance-label-container\'>\n<div class=\'distance-label\'>'+
+( distance )+
+'</div>\n</div>';
+}
+return __p;
+}
 TapAPI.templates['tour-map-marker-bubble'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
@@ -203,7 +212,13 @@ __p+='<a href=\'#tourstop/'+
 ( stop_id )+
 '\'>'+
 ( title )+
-'</a>';
+'\n';
+ if (distance !== '') { 
+;__p+='\n<span class=\'distance\'>'+
+( distance )+
+'</span>\n';
+ } 
+;__p+='\n</a>';
 }
 return __p;
 }
@@ -212,7 +227,7 @@ var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='<ul id="tour-stop-list" class="ui-listview" data-inset="true" data-role="listview"></ul>\n';
  if (enable_proximity_order) { 
-;__p+='\n<div id=\'proximity-toggle\' data-role=\'button\'>Order by distance</div>\n';
+;__p+='\n<div data-role="fieldcontain" id=\'proximity-container\'>\n<label for="proximity-toggle">Distance ordering:</label>\n<select name="proximity-toggle" id="proximity-toggle" data-role="slider">\n\t<option value="off">Off</option>\n\t<option value="on">On</option>\n</select> \n</div>\n';
 }
 ;__p+='';
 }
