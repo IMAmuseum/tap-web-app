@@ -59,7 +59,7 @@
 }
 
 #tour-map .stop-icon {
-	background-image: url('../images/marker.png') !important;
+	background-image: url('images/marker.png') !important;
 	width: 25px !important;
 	height: 41px !important;
 	margin-left: -12px !important;
@@ -82,7 +82,7 @@
 }
 
 #tour-map .location-icon {
-	background-image: url('../images/icon-locate.png') !important;
+	background-image: url('images/icon-locate.png') !important;
 	width: 24px !important;
 	height: 24px !important;
 	margin-left: -12px !important;
