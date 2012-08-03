@@ -10,17 +10,27 @@ jQuery(function() {
 	// Define the stop list view
 	TapAPI.views.StopList = TapAPI.views.Page.extend({
 
+		events: {
+			'change #proximity-toggle': 'onToggleProximity'
+		},
+
 		onInit: function() {
 
 			this.options = _.defaults(this.options, {
 				active_index: 'tourstoplist',
 				codes_only: true,
-				enable_proximity_order: false
+				enable_proximity_order: false,
+				sort: 'default'
 			});
 
 			if (this.options.enable_proximity_order) {
 				TapAPI.geoLocation.on("gotlocation", this.onLocationFound, this);
 			}
+
+			this.stoplistitems = {};
+
+			tap.tourStops.comparator = this.sortByCode;
+			tap.tourStops.sort();
 
 		},
 
@@ -36,6 +46,17 @@ jQuery(function() {
 
 			var listContainer = this.$el.find('#tour-stop-list');
 			
+			this.addStopsToList(listContainer);
+
+			if (this.options.enable_proximity_order) {
+				TapAPI.geoLocation.startLocating();
+			}
+
+		},
+
+
+		addStopsToList: function(listContainer) {
+
 			_.each(tap.tourStops.models, function(stop) {
 
 				// If in codes-only mode, abort if the stop does not have a code
@@ -44,21 +65,65 @@ jQuery(function() {
 					if (!code.length) return;
 				}
 
-				var item = new TapAPI.views.StopListItem({model: stop});
-				listContainer.append(item.render().el);
-				if (this.options.enable_proximity_order) {
-					stop.on("change:distance", this.onStopDistanceChanged, item);
-					stop.on("change:nearest", this.onNearestStopChanged, item);
-				}
+				var item = this.stoplistitems[stop.id];
+				if (item === undefined) {
+					item = new TapAPI.views.StopListItem({model: stop});
+					this.stoplistitems[stop.id] = item;
+					listContainer.append(item.render().el);
 
+					if (stop.get('nearest')) {
+						item.$el.addClass('nearest');
+					}
+
+					if (this.options.enable_proximity_order) {
+						stop.on("change:distance", this.onStopDistanceChanged, item);
+						stop.on("change:nearest", this.onNearestStopChanged, item);
+					}
+
+				} else {
+					listContainer.append(item.render().el);
+				}
+	
 			}, this);
 
-			if (this.options.enable_proximity_order) {
-				TapAPI.geoLocation.startLocating();
-			}
+			$('#tour-stop-list').listview('refresh');
 
 		},
 
+
+		sortByCode: function(stop) {
+			var code = stop.get('propertySet').where({"name":"code"});
+			if (!code.length) return 10000;
+			return code[0].get('value');
+		},
+
+		sortByDistance: function(stop) {
+			var d = stop.get('distance');
+			return (d === undefined) ? -1 : d;
+		},
+
+		onToggleProximity: function() {
+
+			if (this.options.sort == 'default') {
+				this.options.sort = 'proximity';
+				tap.tourStops.comparator = this.sortByDistance;
+				tap.tourStops.sort();
+			} else {
+				this.options.sort = 'default';
+				tap.tourStops.comparator = this.sortByCode;
+				tap.tourStops.sort();
+			}
+
+			var listContainer = this.$el.find('#tour-stop-list');
+			for (var view in this.stoplistitems) {
+				this.stoplistitems[view].remove();
+				delete this.stoplistitems[view]; // Force recreation
+				this.stoplistitems[view] = undefined;
+			}
+
+			this.addStopsToList(listContainer);
+
+		},
 
 		onStopDistanceChanged: function(stop, distance) {
 
@@ -86,7 +151,7 @@ jQuery(function() {
 
 		onLocationFound: function(position) {
 
-			console.log('onLocationFound', position);
+			//console.log('onLocationFound', position);
 			var latlng = new L.LatLng(position.coords.latitude, position.coords.longitude);
 
 		},
@@ -104,12 +169,12 @@ jQuery(function() {
 		tagName: 'li',
 		template: TapAPI.templateManager.get('tour-stop-list-item'),
 		render: function() {
-			$(this.el).attr('id', 'stoplistitem-' + this.model.get('id'));
-			console.log('StopListItem.render', this);
-			$(this.el).html(this.template({
+			this.$el.attr('id', 'stoplistitem-' + this.model.get('id'));
+			this.$el.html(this.template({
 				title: this.model.get('title') ? this.model.get('title') : undefined,
 				stop_id: this.model.get('id'),
-				tour_id: tap.currentTour
+				tour_id: tap.currentTour,
+				distance: TapAPI.geoLocation.formatDistance(this.model.get('distance'))
 			}));
 			$('#tour-stop-list').listview('refresh');
 			return this;

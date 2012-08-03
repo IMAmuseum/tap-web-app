@@ -34,6 +34,16 @@
 	margin-bottom: .35em;
 }
 
+#proximity-toggle-label {
+	margin-top: 0.5em;
+	font-size: 110%;
+	margin-left: 20px;
+}
+
+#proximity-container .ui-slider-switch {
+	float: right;
+}
+
 .map-content {
 	margin: 0px;
 	padding: 0px;

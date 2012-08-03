@@ -64,7 +64,11 @@
 			$(document).ready(function() {
 				
 				// initialize app
-				tap.initApp('data/TourMLTourSetInternal.xml');
+				tap.initApp('data/TourMLTourSetInternal.xml', {
+					StopListView: {
+						enable_proximity_order: true
+					}
+				});
 
 				// start backbone history collection
 				Backbone.history.start();

@@ -111,6 +111,8 @@ jQuery(function() {
 
 		formatDistance: function(d) {
 
+			if (d === undefined) return '';
+
 			if (tap.config.units == 'si') {
 
 				if (d < 100) {

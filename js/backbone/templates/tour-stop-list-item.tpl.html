@@ -1,1 +1,5 @@
-<a href='#tourstop/<%= tour_id %>/<%= stop_id %>'><%= title %></a>
+<a href='#tourstop/<%= tour_id %>/<%= stop_id %>'><%= title %>
+<% if (distance !== '') { %>
+<span class='distance'><%= distance %></span>
+<% } %>
+</a>
