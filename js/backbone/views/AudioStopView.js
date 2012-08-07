@@ -22,7 +22,7 @@ jQuery(function() {
 
 			var assets = this.model.getAssetsByUsage("transcription");
 			var transcription = null;
-			if (assets.length) {
+			if (assets !== undefined) {
 				transcription = assets[0].get('content').at(0).get('data');
 			}
 
