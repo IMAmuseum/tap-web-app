@@ -180,6 +180,10 @@
 	height: 20px;
 }
 
+.tour-stop.audio .poster-image {
+	width: 100%;
+}
+
 /*** Video Stops ***/
 #video-player {
 	width: 100%;

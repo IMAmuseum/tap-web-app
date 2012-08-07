@@ -20,17 +20,28 @@ jQuery(function() {
 			var content_template = TapAPI.templateManager.get('audio-stop');
 			var contentContainer = this.$el.find(":jqmData(role='content')");
 
+			// Find the transcription if one exists
 			var assets = this.model.getAssetsByUsage("transcription");
 			var transcription = null;
 			if (assets !== undefined) {
 				transcription = assets[0].get('content').at(0).get('data');
 			}
 
+			// Find the poster image if one exists
+			var poster_image_path = null;
+			assets = this.model.getAssetsByUsage("image");
+			if (assets !== undefined) {
+				poster_image_path = assets[0].get('source').at(0).get('uri');
+			}
+
+			// Render from the template
 			contentContainer.append(content_template({
-				tourStopTitle: this.model.get('title'),
-				transcription: transcription
+				tour_stop_title: this.model.get('title'),
+				transcription: transcription,
+				poster_image_path: poster_image_path
 			}));
 
+			// Add click handler on the transcription toggle button
 			this.$el.find('#trans-button').click(function() {
 				var t = $('.transcription').toggleClass('hidden');
 				if (t.hasClass('hidden')) {
@@ -40,9 +51,10 @@ jQuery(function() {
 				}
 			});
 
-			var assets = this.model.getAssetsByType(["tour_audio", "tour_video"]);
+			assets = this.model.getAssetsByType(["tour_audio", "tour_video"]);
 
 			if (assets) {
+
 				var audioPlayer = this.$el.find('#audio-player');
 				var videoPlayer = this.$el.find('#video-player');
 				var videoAspect;
@@ -50,6 +62,7 @@ jQuery(function() {
 				_.each(assets, function(asset) {
 					var sources = asset.get('source');
 
+					// Add sources to the media elements
 					sources.each(function(source){
 						var source_str = "<source src='" + source.get('uri') + "' type='" + source.get('format') + "' />";
 
@@ -69,21 +82,28 @@ jQuery(function() {
 
 				var mediaOptions = {};
 				var mediaElement = null;
+
 				// If there are video sources and no audio sources, switch to the video element
 				if (videoPlayer.find('source').length && !audioPlayer.find('source').length) {
+
 					audioPlayer.remove();
+					this.$el.find('.poster-image').remove();
 					videoPlayer.show();
 					mediaOptions.defaultVideoWidth = '100%';
-					// mediaOptions.defaultVideoHeight = 270;
+					mediaOptions.defaultVideoHeight = 270;
 
 					mediaElement = videoPlayer;
+
 				} else {
+
 					videoPlayer.remove();
 					mediaOptions.defaultAudioWidth = '100%';
 					//mediaOptions.defaultAudioHeight = 270;
 
 					mediaElement = audioPlayer;
+
 				}
+
 				mediaElement.mediaelementplayer(mediaOptions);
 			}
 

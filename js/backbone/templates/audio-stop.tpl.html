@@ -1,11 +1,18 @@
 <div class='tour-stop audio'>
-	<div class='title'><%= tourStopTitle %></div>
+	<div class='title'><%= tour_stop_title %></div>
 	<audio id="audio-player" autoplay controls="controls">
 		<p>Your browser does not support the audio element.</p>
 	</audio>	
-	<video id="video-player" autoplay controls="controls" style='display:none;'>
+	<video id="video-player" autoplay controls="controls" style='display:none;'
+	<% if (poster_image_path !== null) { %>
+		poster='<%= poster_image_path %>'
+	<% } %>
+	>
 		<p>Your browser does not support the video element.</p>
 	</video>
+	<% if (poster_image_path !== null) { %>
+		<img class="poster-image" src="<%= poster_image_path %>" />
+	<% } %>
 	<% if (transcription !== null) { %>
 		<div id='trans-button' data-role='button' class='ui-mini'>Show Transcription</div>
 		<div class='transcription hidden'><p><%= transcription %></p></div>

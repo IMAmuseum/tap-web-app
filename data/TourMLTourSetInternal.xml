@@ -99,7 +99,7 @@
 	    </tourml:Source>
 	  </tourml:Asset>
 	  <tourml:Asset tourml:id="asset-tour_audio-61" tourml:type="tour_audio">
-	    <tourml:Source tourml:format="video/mp4" tourml:lastModified="2012-07-23T14:45:28-04:00" xml:lang="en" tourml:uri="assets/video/tap_ima_help_vid_0.mp4">
+	    <tourml:Source tourml:format="video/mp4" tourml:lastModified="2012-07-23T14:45:28-04:00" xml:lang="en" tourml:uri="assets/video/tap_ima_help_vid.mp4">
 	                                        </tourml:Source>
 	  </tourml:Asset>
 	  <tourml:Asset tourml:id="asset-image-62" tourml:type="image">
