@@ -103,7 +103,7 @@
 	                                        </tourml:Source>
 	  </tourml:Asset>
 	  <tourml:Asset tourml:id="asset-image-62" tourml:type="image">
-	    <tourml:Source tourml:format="image/jpeg" tourml:lastModified="2012-07-23T14:45:38-04:00" xml:lang="en" tourml:uri="hassets/images/009.jpg">
+	    <tourml:Source tourml:format="image/jpeg" tourml:lastModified="2012-07-23T14:45:38-04:00" xml:lang="en" tourml:uri="assets/images/009.jpg">
 	      <tourml:PropertySet>
 	        <tourml:Property tourml:name="width">290</tourml:Property>
 	        <tourml:Property tourml:name="height">250</tourml:Property>
