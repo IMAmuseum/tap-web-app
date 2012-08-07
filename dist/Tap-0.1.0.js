@@ -1,5 +1,5 @@
 /*
- * TAP - v0.1.0 - 2012-08-03
+ * TAP - v0.1.0 - 2012-08-07
  * http://tapintomuseums.org/
  * Copyright (c) 2011-2012 Indianapolis Museum of Art
  * GPLv3
@@ -623,17 +623,28 @@ jQuery(function() {
 			var content_template = TapAPI.templateManager.get('audio-stop');
 			var contentContainer = this.$el.find(":jqmData(role='content')");
 
+			// Find the transcription if one exists
 			var assets = this.model.getAssetsByUsage("transcription");
 			var transcription = null;
-			if (assets.length) {
+			if (assets !== undefined) {
 				transcription = assets[0].get('content').at(0).get('data');
 			}
 
+			// Find the poster image if one exists
+			var poster_image_path = null;
+			assets = this.model.getAssetsByUsage("image");
+			if (assets !== undefined) {
+				poster_image_path = assets[0].get('source').at(0).get('uri');
+			}
+
+			// Render from the template
 			contentContainer.append(content_template({
-				tourStopTitle: this.model.get('title'),
-				transcription: transcription
+				tour_stop_title: this.model.get('title'),
+				transcription: transcription,
+				poster_image_path: poster_image_path
 			}));
 
+			// Add click handler on the transcription toggle button
 			this.$el.find('#trans-button').click(function() {
 				var t = $('.transcription').toggleClass('hidden');
 				if (t.hasClass('hidden')) {
@@ -643,9 +654,10 @@ jQuery(function() {
 				}
 			});
 
-			var assets = this.model.getAssetsByType(["tour_audio", "tour_video"]);
+			assets = this.model.getAssetsByType(["tour_audio", "tour_video"]);
 
 			if (assets) {
+
 				var audioPlayer = this.$el.find('#audio-player');
 				var videoPlayer = this.$el.find('#video-player');
 				var videoAspect;
@@ -653,6 +665,7 @@ jQuery(function() {
 				_.each(assets, function(asset) {
 					var sources = asset.get('source');
 
+					// Add sources to the media elements
 					sources.each(function(source){
 						var source_str = "<source src='" + source.get('uri') + "' type='" + source.get('format') + "' />";
 
@@ -672,21 +685,28 @@ jQuery(function() {
 
 				var mediaOptions = {};
 				var mediaElement = null;
+
 				// If there are video sources and no audio sources, switch to the video element
 				if (videoPlayer.find('source').length && !audioPlayer.find('source').length) {
+
 					audioPlayer.remove();
+					this.$el.find('.poster-image').remove();
 					videoPlayer.show();
 					mediaOptions.defaultVideoWidth = '100%';
-					// mediaOptions.defaultVideoHeight = 270;
+					mediaOptions.defaultVideoHeight = 270;
 
 					mediaElement = videoPlayer;
+
 				} else {
+
 					videoPlayer.remove();
 					mediaOptions.defaultAudioWidth = '100%';
 					//mediaOptions.defaultAudioHeight = 270;
 
 					mediaElement = audioPlayer;
+
 				}
+
 				mediaElement.mediaelementplayer(mediaOptions);
 			}
 
@@ -1475,19 +1495,31 @@ jQuery(function() {
 	TapAPI.views.VideoStop = TapAPI.views.Page.extend({
 
 		renderContent: function() {
+
 			var content_template = TapAPI.templateManager.get('video-stop');
 
+			// Find the transcription if one exists
 			var assets = this.model.getAssetsByUsage("transcription");
 			var transcription = null;
-			if (assets.length) {
+			if (assets !== undefined) {
 				transcription = assets[0].get('content').at(0).get('data');
 			}
 
+			// Find the poster image if one exists
+			var poster_image_path = tap.config['default_video_poster'];
+			assets = this.model.getAssetsByUsage("image");
+			if (assets !== undefined) {
+				poster_image_path = assets[0].get('source').at(0).get('uri');
+			}
+
+			// Render from the template
 			this.$el.find(":jqmData(role='content')").append(content_template({
 				tourStopTitle: this.model.get('title'),
-				transcription: transcription
+				transcription: transcription,
+				poster_image_path: poster_image_path
 			}));
 
+			// Add click handler on the transcription toggle button
 			this.$el.find('#trans-button').click(function() {
 				var t = $('.transcription').toggleClass('hidden');
 				if (t.hasClass('hidden')) {
@@ -1766,6 +1798,7 @@ if (!tap) {
 			],
 			navbar_location: 'header',
 			default_nav_item: 'tourstoplist',
+			default_video_poster: 'assets/images/tapPoster.png',
 			units: 'si'
 		});
 
@@ -2087,8 +2120,20 @@ TapAPI.templates['audio-stop'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='<div class=\'tour-stop audio\'>\n\t<div class=\'title\'>'+
-( tourStopTitle )+
-'</div>\n\t<audio id="audio-player" autoplay controls="controls">\n\t\t<p>Your browser does not support the audio element.</p>\n\t</audio>\t\n\t<video id="video-player" autoplay controls="controls" style=\'display:none;\'>\n\t\t<p>Your browser does not support the video element.</p>\n\t</video>\n\t';
+( tour_stop_title )+
+'</div>\n\t<audio id="audio-player" autoplay controls="controls">\n\t\t<p>Your browser does not support the audio element.</p>\n\t</audio>\t\n\t<video id="video-player" autoplay controls="controls" style=\'display:none;\'\n\t';
+ if (poster_image_path !== null) { 
+;__p+='\n\t\tposter=\''+
+( poster_image_path )+
+'\'\n\t';
+ } 
+;__p+='\n\t>\n\t\t<p>Your browser does not support the video element.</p>\n\t</video>\n\t';
+ if (poster_image_path !== null) { 
+;__p+='\n\t\t<img class="poster-image" src="'+
+( poster_image_path )+
+'" />\n\t';
+ } 
+;__p+='\n\t';
  if (transcription !== null) { 
 ;__p+='\n\t\t<div id=\'trans-button\' data-role=\'button\' class=\'ui-mini\'>Show Transcription</div>\n\t\t<div class=\'transcription hidden\'><p>'+
 ( transcription )+
@@ -2319,7 +2364,13 @@ var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='<div class=\'tour-stop video\'>\n\t<div class=\'title\'>'+
 ( tourStopTitle )+
-'</div>\n\t<video id="video-player" poster="assets/images/tapPoster.png" controls="controls" autoplay="autoplay">\n\t\t<p>Your browser does not support the video tag.</p>\n\t</video>\n\t';
+'</div>\n\t<video id="video-player" controls="controls" autoplay="autoplay"\n\t';
+ if (poster_image_path !== null) { 
+;__p+='\n\t\tposter=\''+
+( poster_image_path )+
+'\'\n\t';
+ } 
+;__p+='\n\t>\n\t\t<p>Your browser does not support the video tag.</p>\n\t</video>\n\t';
  if (transcription !== null) { 
 ;__p+='\n\t\t<div id=\'trans-button\' data-role=\'button\' class=\'ui-mini\'>Show Transcription</div>\n\t\t<div class=\'transcription hidden\'><p>'+
 ( transcription )+

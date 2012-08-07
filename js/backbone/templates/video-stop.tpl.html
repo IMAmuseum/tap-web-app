@@ -1,6 +1,10 @@
 <div class='tour-stop video'>
 	<div class='title'><%= tourStopTitle %></div>
-	<video id="video-player" poster="assets/images/tapPoster.png" controls="controls" autoplay="autoplay">
+	<video id="video-player" controls="controls" autoplay="autoplay"
+	<% if (poster_image_path !== null) { %>
+		poster='<%= poster_image_path %>'
+	<% } %>
+	>
 		<p>Your browser does not support the video tag.</p>
 	</video>
 	<% if (transcription !== null) { %>

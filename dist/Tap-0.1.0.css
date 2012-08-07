@@ -1,5 +1,5 @@
 /*
- * TAP - v0.1.0 - 2012-08-03
+ * TAP - v0.1.0 - 2012-08-07
  * http://tapintomuseums.org/
  * Copyright (c) 2011-2012 Indianapolis Museum of Art
  * GPLv3
@@ -3598,6 +3598,10 @@ div.ps-toolbar-play div.ps-toolbar-content
 
 #audio-player.audio-only {
 	height: 20px;
+}
+
+.tour-stop.audio .poster-image {
+	width: 100%;
 }
 
 /*** Video Stops ***/

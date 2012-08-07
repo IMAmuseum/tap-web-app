@@ -47,6 +47,7 @@ if (!tap) {
 			],
 			navbar_location: 'header',
 			default_nav_item: 'tourstoplist',
+			default_video_poster: 'assets/images/tapPoster.png',
 			units: 'si'
 		});
 
