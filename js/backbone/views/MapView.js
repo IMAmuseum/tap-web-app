@@ -108,7 +108,11 @@ jQuery(function() {
 
 			// Set the viewport based on settings
 			if ((this.options['init-lat'] === null) || (this.options['init-lon'] === null)) {
-				this.map.fitBounds(this.stop_bounds);
+				if (this.stop_bounds !== null) {
+					this.map.fitBounds(this.stop_bounds);
+				} else {
+					this.map.setView(L.latLng(0,0), this.options['init-zoom']);
+				}
 			} else {
 				this.map.setView(
 					new L.LatLng(this.options['init-lat'], this.options['init-lon']),
