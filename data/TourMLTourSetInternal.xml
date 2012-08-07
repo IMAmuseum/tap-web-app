@@ -284,5 +284,78 @@
 	  </tourml:Asset> 
 </tourml:Tour>
 
+	<tourml:Tour tourml:id="tour-79-2">
+  <tourml:TourMetadata>
+    <tourml:Title xml:lang="en"><![CDATA[Geolocation Test Tour #2]]></tourml:Title>
+    <tourml:Description xml:lang="en"><![CDATA[For now, this is a tour for use in testing the geolocation capabilities of the new map client.]]></tourml:Description>
+    <tourml:AppResource tourml:id="asset-field_geo_location-0-2" tourml:usage="geo"/>
+    <tourml:PropertySet>
+  	  <tourml:Property tourml:name="initial_map_zoom">16</tourml:Property>
+    </tourml:PropertySet>    
+  </tourml:TourMetadata>
+  <tourml:Stop tourml:id="stop-81-2" tourml:view="tour_stop_group">
+    <tourml:Title xml:lang="en"><![CDATA[Free Basket by Los Carpinteros]]></tourml:Title>
+    <tourml:AssetRef tourml:id="asset-field_geo_location-1-2" tourml:usage="geo"/>
+    <tourml:PropertySet>
+      <tourml:Property tourml:name="code">400</tourml:Property>
+    </tourml:PropertySet>    
+  </tourml:Stop>
+  <tourml:Stop tourml:id="stop-82-2" tourml:view="tour_stop_group">
+    <tourml:Title xml:lang="en"><![CDATA[Park of the Laments by Alfredo Jaar]]></tourml:Title>
+    <tourml:AssetRef tourml:id="asset-field_geo_location-2-2" tourml:usage="geo"/>
+    <tourml:PropertySet>
+      <tourml:Property tourml:name="code">300</tourml:Property>
+    </tourml:PropertySet>        
+  </tourml:Stop>
+  <tourml:Stop tourml:id="stop-89-2" tourml:view="tour_stop_group">
+    <tourml:Title xml:lang="en"><![CDATA[The Ruth Lilly Visitor's Pavilion]]></tourml:Title>
+    <tourml:AssetRef tourml:id="asset-field_geo_location-3-2" tourml:usage="geo"/>
+    <tourml:PropertySet>
+      <tourml:Property tourml:name="code">200</tourml:Property>
+    </tourml:PropertySet>        
+  </tourml:Stop>
+  <tourml:Stop tourml:id="stop-90-2" tourml:view="tour_stop_group">
+    <tourml:Title xml:lang="en"><![CDATA[Welcome to 100 Acres]]></tourml:Title>
+    <tourml:PropertySet>
+      <tourml:Property tourml:name="code">100</tourml:Property>
+    </tourml:PropertySet>        
+  </tourml:Stop>
+	  <tourml:Asset tourml:id="asset-field_geo_location-0-2">
+	    <tourml:Content>
+	      <tourml:Data>{"type":"Point","coordinates":[-86.189504,39.839104]}</tourml:Data>
+	      <tourml:PropertySet>
+	        <tourml:Property tourml:name="centroid">39.839104,-86.189504</tourml:Property>
+	        <tourml:Property tourml:name="bbox">-86.189504,-86.189504,39.839104,39.839104</tourml:Property>
+	      </tourml:PropertySet>
+	    </tourml:Content>
+	  </tourml:Asset>    
+	  <tourml:Asset tourml:id="asset-field_geo_location-1-2">
+	    <tourml:Content>
+	      <tourml:Data>{"type":"Point","coordinates":[-86.1888,39.8355]}</tourml:Data>
+	      <tourml:PropertySet>
+	        <tourml:Property tourml:name="centroid">39.8355,-86.1888</tourml:Property>
+	        <tourml:Property tourml:name="bbox">-86.1888,-86.1888,39.8355,39.8355</tourml:Property>
+	      </tourml:PropertySet>
+	    </tourml:Content>
+	  </tourml:Asset>  
+	  <tourml:Asset tourml:id="asset-field_geo_location-2-2">
+	    <tourml:Content>
+	      <tourml:Data>{"type":"Point","coordinates":[-86.1883,39.8371]}</tourml:Data>
+	      <tourml:PropertySet>
+	        <tourml:Property tourml:name="centroid">39.8371,-86.1883</tourml:Property>
+	        <tourml:Property tourml:name="bbox">-86.1883,-86.1883,39.8371,39.8371</tourml:Property>
+	      </tourml:PropertySet>
+	    </tourml:Content>
+	  </tourml:Asset>  
+	  <tourml:Asset tourml:id="asset-field_geo_location-3-2">
+	    <tourml:Content>
+	      <tourml:Data>{"type":"Point","coordinates":[-86.1862,39.8402]}</tourml:Data>
+	      <tourml:PropertySet>
+	        <tourml:Property tourml:name="centroid">39.8402,-86.1862</tourml:Property>
+	        <tourml:Property tourml:name="bbox">-86.1862,-86.1862,39.8402,39.8402</tourml:Property>
+	      </tourml:PropertySet>
+	    </tourml:Content>
+	  </tourml:Asset> 
+</tourml:Tour>
 
 </tourml:TourSet>

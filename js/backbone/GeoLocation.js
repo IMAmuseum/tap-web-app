@@ -12,6 +12,7 @@ jQuery(function() {
 		latest_location: null,
 		interval: null,
 		nearest_stop: null,
+		active_stop_collection: null,
 
 		locate: function() {
 
@@ -66,7 +67,12 @@ jQuery(function() {
 
 
 			var nearest = null;
-			_.each(tap.tourStops.models, function(stop) {
+			var stops = tap.tourStops;
+			if (this.active_stop_collection !== null) {
+				stops = this.active_stop_collection;
+			}
+
+			_.each(stops.models, function(stop) {
 
 				var stop_location = stop.get('location');
 				if (stop_location !== undefined) {

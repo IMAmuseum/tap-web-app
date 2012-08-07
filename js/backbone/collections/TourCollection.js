@@ -8,6 +8,9 @@ TapAPI.collections.Tours = Backbone.Collection.extend({
 	model: TapAPI.models.Tour,
 	localStorage: new Backbone.LocalStorage('tours'),
 	selectTour: function(id) { // load data for the selected tour
+
+		if (tap.currentTour == id) return;
+
 		// set the current tour
 		tap.currentTour = id;
 

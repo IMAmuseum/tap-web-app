@@ -4,6 +4,7 @@ jQuery(function() {
 		views: {},
 		routes: {
 			'': 'list',
+			'map': 'map',
 			'tour/:tour_id': 'tourDetails',
 			'tourkeypad/:tour_id': 'tourKeypad',
 			'tourstop/:tour_id/:stop_id': 'tourStopById',
@@ -24,11 +25,44 @@ jQuery(function() {
 			this.firstPage = true;
 		},
 
+
+		/**
+		 * Route to the tour listing
+		 */
 		list: function() {
 
 			this.changePage(new TapAPI.views.TourList({model: tap.tours}));
 
 		},
+
+
+		/**
+		 * Route to the overall map view
+		 */
+		map: function() {
+
+			var map_options = {
+				stops: new TapAPI.collections.Stops()
+			};
+
+			// Find all of the geolocated stops in the tour set
+			_.each(tap.tours.models, function(tour) {
+				tap.tours.selectTour(tour.id);
+				_.each(tap.tourStops.models, function(stop) {
+					var assets = stop.getAssetsByUsage('geo');
+					if (assets !== undefined) {
+						map_options['stops'].add(stop);
+					}
+				});
+			});
+
+			// Set the current view
+			this.changePage(new TapAPI.views.Map(map_options));
+
+			$('#index-selector').replaceWith("<h1 id='page-title' class='ui-title'>Map</h2>");
+
+		},
+
 
 		/**
 		 * Route to the tour details
@@ -123,7 +157,6 @@ jQuery(function() {
 		 * plotting markers for several tours on the same map
 		 */
 		tourMap: function(id) {
-
 
 			// Determine which stops to display
 			tap.tours.selectTour(id);
