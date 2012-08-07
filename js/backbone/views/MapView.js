@@ -15,7 +15,6 @@ jQuery(function() {
 	TapAPI.views.Map = TapAPI.views.Page.extend({
 
 		onInit: function() {
-			console.log('MapView.initialize');
 
 			this.options.active_index = 'tourmap';
 
@@ -159,7 +158,7 @@ jQuery(function() {
 
 				popup.setContent(template({
 					'title': this.stop.get('title'),
-					'tour_id': tap.currentTour,
+					'tour_id': this.stop.get('tour'),
 					'stop_id': this.stop.id,
 					'distance': (formatted_distance === null) ? '' : 'Distance: ' + formatted_distance,
 					'stop_lat': data.coordinates[1],
@@ -188,7 +187,7 @@ jQuery(function() {
 				var template = TapAPI.templateManager.get('tour-map-marker-bubble');
 				this.stop_popups[stop.id].setContent(template({
 					'title': stop.get('title'),
-					'tour_id': tap.currentTour,
+					'tour_id': stop.get('tour'),
 					'stop_id': stop.get('id'),
 					'distance': (formatted_distance === null) ? '' : 'Distance: ' + formatted_distance,
 					'stop_lat': stop.get('location').lat,

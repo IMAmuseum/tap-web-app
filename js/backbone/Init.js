@@ -150,7 +150,8 @@ if (!tap) {
 				description: objectToArray(data.stop[i].description),
 				propertySet: data.stop[i].propertySet ? objectToArray(data.stop[i].propertySet.property) : undefined,
 				assetRef: objectToArray(data.stop[i].assetRef),
-				title: objectToArray(data.stop[i].title)
+				title: objectToArray(data.stop[i].title),
+				tour: data.id
 			});
 		}
 
