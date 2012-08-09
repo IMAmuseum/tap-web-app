@@ -767,7 +767,7 @@ jQuery(function() {
 			if (asset_refs) {
 				this.$el.find(":jqmData(role='content')").append(content_template());
 
-				var gallery = this.$el.find("#gallery");
+				var gallery = this.$el.find("#Gallery");
 
 				$.each(asset_refs, function(assetRef) {
 					var asset = tap.tourAssets.get(this.id);
@@ -775,20 +775,18 @@ jQuery(function() {
 					if (this.usage === "image_asset") {
 						var templateData = {};
 						var sources = asset.get('source');
+						var content = asset.get('content');
 						sources.each(function(source) {
-							switch (source.get('format').substring(0,5)) {
-								case "image":
+							switch (source.get('part')) {
+								case "image_asset_image":
 									templateData.fullImageUri = source.get("uri");
-									templateData.thumbUri = source.get("uri");
 									break;
-								//TODO: this needs to be figured out how it will get passed in
 								case "thumbnail":
+									//templateData.fullImageUri = "somewhere.jpg";
 									templateData.thumbUri = source.get("uri");
 									break;
 							}
 						});
-
-						var content = asset.get('content');
 						content.each(function(contentItem) {
 							console.log(contentItem);
 							switch(contentItem.get("part")) {
@@ -805,8 +803,7 @@ jQuery(function() {
 					}
 				});
 
-
-				var photoSwipe = gallery.photoSwipe({
+				var photoSwipe = this.$el.find('#Gallery a').photoSwipe({
 					enableMouseWheel: false,
 					enableKeyboard: true,
 					doubleTapZoomLevel : 0,
@@ -821,6 +818,7 @@ jQuery(function() {
 		}
 	});
 });
+
 // TapAPI Namespace Initialization //
 if (typeof TapAPI === 'undefined'){TapAPI = {};}
 if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
@@ -1758,9 +1756,9 @@ jQuery(function() {
 
 			tap.currentView = page;
 
-			$(page.el).attr('data-role', 'page');
+			page.$el.attr('data-role', 'page');
 			page.render();
-			$('body').append($(page.el));
+			$('body').append(page.$el);
 			var transition = $.mobile.defaultPageTransition;
 
 			// We don't want to slide the first page
@@ -1768,7 +1766,7 @@ jQuery(function() {
 				transition = 'none';
 				this.firstPage = false;
 			}
-			$.mobile.changePage($(page.el), {changeHash:false, transition: transition});
+			$.mobile.changePage(page.$el, {changeHash:false, transition: transition});
 
 			// The old page is removed from the DOM by an event handler in jqm-config.js
 
@@ -2203,7 +2201,7 @@ return __p;
 TapAPI.templates['image-stop-item'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<li>\n\t<a href="'+
+__p+='\t<li>\n\t\t<a href="'+
 ( fullImageUri )+
 '"><img src="'+
 ( thumbUri )+
@@ -2211,14 +2209,16 @@ __p+='<li>\n\t<a href="'+
 ( title )+
 '" title="'+
 ( title )+
-'" /></a>\n</li>';
+'" /></a>\n\t\t<div>'+
+( title )+
+'</div>\n\t</li>\n';
 }
 return __p;
 }
 TapAPI.templates['image-stop'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<ul id="gallery">\n</ul>';
+__p+='<ul id="Gallery" class="ui-grid-b">\n</ul>\n';
 }
 return __p;
 }
