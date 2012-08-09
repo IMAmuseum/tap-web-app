@@ -138,8 +138,8 @@
 #Gallery { list-style: none; padding: 0; margin: 0; }
 #Gallery:after { clear: both; content: "."; display: block; height: 0; visibility: hidden; }
 #Gallery li { float: left; width: 33.33333333%; }
-#Gallery li a { display: block; margin: 5px; border: 1px solid #3c3c3c; }
-#Gallery li img { display: block; width: 100%; height: auto; }
+/* #Gallery li a { display: block; margin: 5px; border: 1px solid #3c3c3c; } */
+#Gallery li img { display: block; height: auto; margin:auto;} 
 #Gallery1 .ui-content, #Gallery2 .ui-content { overflow: hidden; }
 
 
@@ -208,3 +208,6 @@
 
 }
 
+.tap_backend_li{
+	list-style:none;	
+}

@@ -80,7 +80,7 @@
 	  </tourml:Asset>
 	  <tourml:Asset tourml:id="asset-tour_video-59" tourml:type="tour_video">
 	    <tourml:Source tourml:format="video/mp4" tourml:lastModified="2012-07-23T14:44:54-04:00" xml:lang="en" tourml:uri="assets/video/tap_ima_help_vid.mp4">
-	                                        </tourml:Source>
+	    </tourml:Source>
 	  </tourml:Asset>
 	  <tourml:Asset tourml:id="asset-image-60" tourml:type="image">
 	    <tourml:Source tourml:format="image/jpeg" tourml:lastModified="2012-07-23T14:45:07-04:00" xml:lang="en" tourml:uri="assets/images/010.jpg">
