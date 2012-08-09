@@ -1,5 +1,5 @@
 /*
- * TAP - v0.1.0 - 2012-08-07
+ * TAP - v0.1.0 - 2012-08-09
  * http://tapintomuseums.org/
  * Copyright (c) 2011-2012 Indianapolis Museum of Art
  * GPLv3
@@ -978,6 +978,17 @@ jQuery(function() {
 				);
 			}
 
+			// At this point the stop markers should be added to the map
+			// We can augment them with the distance labels
+			_.each(this.options['stops'].models, function(stop) {
+				tap.tours.selectTour(stop.get('tour'));
+				if (stop.getAssetsByUsage('geo') === undefined) return;
+				this.updateStopMarker(stop);
+			}, this);
+
+			if (TapAPI.geoLocation.latest_location !== null) {
+				this.onLocationFound(TapAPI.geoLocation.latest_location);
+			}
 			TapAPI.geoLocation.on("gotlocation", this.onLocationFound, this);
 
 			return this;
@@ -1045,29 +1056,31 @@ jQuery(function() {
 			}
 
 			// Update the marker bubble when the distance to a stop changes
-			stop.on('change:distance', function(stop) {
+			stop.on('change:distance', this.updateStopMarker, this);
 
-				var formatted_distance = undefined;
-				if (stop.get('distance')) {
-					formatted_distance = TapAPI.geoLocation.formatDistance(stop.get('distance'));
-				}
-
-				this.stop_popups[stop.id].setContent(this.generateBubbleContent(stop), formatted_distance);
-
-				// Update the stop icon
-				var distance_label = $('.stop-icon.' + stop.id + ' .distance-label');
-
-				if (distance_label.length === 0) {
-					template = TapAPI.templateManager.get('tour-map-distance-label');
-					$('.stop-icon.' + stop.id).append(template({
-						distance: formatted_distance
-					}));
-				} else {
-					distance_label.html(formatted_distance);
-				}
+		},
 
 
-			}, this);
+		updateStopMarker: function(stop) {
+
+			var formatted_distance = undefined;
+			if (stop.get('distance')) {
+				formatted_distance = TapAPI.geoLocation.formatDistance(stop.get('distance'));
+			}
+
+			this.stop_popups[stop.id].setContent(this.generateBubbleContent(stop), formatted_distance);
+
+			// Update the stop icon
+			var distance_label = $('.stop-icon.' + stop.id + ' .distance-label');
+
+			if (distance_label.length === 0) {
+				template = TapAPI.templateManager.get('tour-map-distance-label');
+				$('.stop-icon.' + stop.id).append(template({
+					distance: formatted_distance
+				}));
+			} else {
+				distance_label.html(formatted_distance);
+			}
 
 		},
 
