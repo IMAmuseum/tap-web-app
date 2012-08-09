@@ -204,9 +204,9 @@ jQuery(function() {
 
 			tap.currentView = page;
 
-			$(page.el).attr('data-role', 'page');
+			page.$el.attr('data-role', 'page');
 			page.render();
-			$('body').append($(page.el));
+			$('body').append(page.$el);
 			var transition = $.mobile.defaultPageTransition;
 
 			// We don't want to slide the first page
@@ -214,7 +214,7 @@ jQuery(function() {
 				transition = 'none';
 				this.firstPage = false;
 			}
-			$.mobile.changePage($(page.el), {changeHash:false, transition: transition});
+			$.mobile.changePage(page.$el, {changeHash:false, transition: transition});
 
 			// The old page is removed from the DOM by an event handler in jqm-config.js
 
