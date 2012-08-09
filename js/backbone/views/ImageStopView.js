@@ -60,6 +60,15 @@ jQuery(function() {
 					}
 				});
 
+				var photoSwipe = this.$el.find('#Gallery a').photoSwipe({
+					enableMouseWheel: false,
+					enableKeyboard: true,
+					doubleTapZoomLevel : 0,
+					captionAndToolbarOpacity : 0.8,
+					minUserZoom : 0.0,
+					preventSlideshow : true,
+					jQueryMobile : true
+				});
 			}
 			
 			return this;
