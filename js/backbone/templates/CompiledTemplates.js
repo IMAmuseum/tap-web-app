@@ -43,7 +43,7 @@ return __p;
 TapAPI.templates['image-stop-item'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<li>\n\t<a href="'+
+__p+='\t<li>\n\t\t<a href="'+
 ( fullImageUri )+
 '"><img src="'+
 ( thumbUri )+
@@ -51,14 +51,16 @@ __p+='<li>\n\t<a href="'+
 ( title )+
 '" title="'+
 ( title )+
-'" /></a>\n</li>';
+'" /></a>\n\t\t<div>'+
+( title )+
+'</div>\n\t</li>\n';
 }
 return __p;
 }
 TapAPI.templates['image-stop'] = function(obj){
 var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
-__p+='<ul id="gallery">\n</ul>';
+__p+='<ul id="Gallery" class="ui-grid-b">\n</ul>\n';
 }
 return __p;
 }
