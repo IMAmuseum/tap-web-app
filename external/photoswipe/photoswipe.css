@@ -53,12 +53,12 @@ div.ps-zoom-pan-rotate *  { display: block; }
 /* Carousel */
 div.ps-carousel-item-loading 
 { 
-	background: url(../assets/images/loader.gif) no-repeat center center; 
+	background: url(loader.gif) no-repeat center center; 
 }
 
 div.ps-carousel-item-error 
 { 
-	background: url(../assets/images/error.gif) no-repeat center center; 
+	background: url(error.gif) no-repeat center center; 
 }
 
 
@@ -126,7 +126,7 @@ div.ps-toolbar div div.ps-toolbar-content
 	width: 44px;
 	height: 44px;
 	margin: 0 auto 0;
-	background-image: url(../assets/images/icons.png);
+	background-image: url(icons.png);
 	background-repeat: no-repeat;
 }
 
@@ -162,7 +162,7 @@ div.ps-toolbar-play div.ps-toolbar-content
 
 /* Hi-res display */
 @media only screen and (-webkit-min-device-pixel-ratio: 1.5),
-       only screen and (min--moz-device-pixel-ratio: 1.5),
+       only screen and (-moz-min-device-pixel-ratio: 1.5),
        only screen and (min-resolution: 240dpi)
 {
 	div.ps-toolbar div div.ps-toolbar-content
@@ -171,6 +171,6 @@ div.ps-toolbar-play div.ps-toolbar-content
 		-o-background-size: 176px 88px;
 		-webkit-background-size: 176px 88px;
 		background-size: 176px 88px;
-		background-image: url(../assets/images/icons2x.png);
+		background-image: url(icons@2x.png);
 	}
 }
