@@ -42,7 +42,7 @@ TapAPI.models.Stop = Backbone.Model.extend({
 	parse: function(response) {
 		response.propertySet = new TapAPI.collections.PropertySet(
 			response.propertySet,
-			response.id
+			{id: response.id}
 		);
 
 		return response;
