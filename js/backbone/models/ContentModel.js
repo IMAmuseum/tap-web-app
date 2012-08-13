@@ -9,7 +9,7 @@ TapAPI.models.Content = Backbone.Model.extend({
 		//parse never gets called due to this not being in localstorage as its own record
 		this.set('propertySet', new TapAPI.collections.PropertySet(
 			this.get('propertySet'),
-			this.id
+			{id: this.id}
 		));
 
 		if (this.get('data').value) {

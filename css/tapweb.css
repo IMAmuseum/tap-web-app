@@ -35,9 +35,14 @@
 }
 
 #proximity-toggle-label {
+	float: left;
 	margin-top: 0.5em;
 	font-size: 110%;
-	margin-left: 20px;
+	margin-left: 5px;
+}
+
+#proximity-container {
+	border-bottom: none;	
 }
 
 #proximity-container .ui-slider-switch {
