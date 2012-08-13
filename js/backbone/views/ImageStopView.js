@@ -36,11 +36,10 @@ jQuery(function() {
 						sources.each(function(source) {
 							switch (source.get('part')) {
 								case "image_asset_image":
-									templateData.fullImageUri = source.get("uri");
+									templateData.fullImageUri = source.get("uri") ? source.get("uri") : '';
 									break;
 								case "thumbnail":
-									//templateData.fullImageUri = "somewhere.jpg";
-									templateData.thumbUri = source.get("uri");
+									templateData.thumbUri = source.get("uri") ? source.get("uri") : '';
 									break;
 							}
 						});
