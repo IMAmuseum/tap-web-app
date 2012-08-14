@@ -214,6 +214,13 @@ jQuery(function() {
 				transition = 'none';
 				this.firstPage = false;
 			}
+
+			// Track the page view with Google Analytics
+			if (tap.config.analytics_id !== null) {
+				var url = Backbone.history.getFragment();
+				_gaq.push(['_trackPageview', "/#"+url]);
+			}
+
 			$.mobile.changePage(page.$el, {changeHash:false, transition: transition});
 
 			// The old page is removed from the DOM by an event handler in jqm-config.js

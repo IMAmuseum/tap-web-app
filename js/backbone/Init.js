@@ -8,6 +8,8 @@ if (!tap) {
 	tap.currentStop = ''; // id of the current stop
 	tap.currentTour = ''; // id of the current tour
 
+	var _gaq = _gaq || []; // Google Analytics queue
+
 	//get the users language
 	var userLang = (navigator.language) ? navigator.language : navigator.userLanguage;
 	tap.language = userLang.split("-")[0];
@@ -23,6 +25,7 @@ if (!tap) {
 	}
 
 	_.extend(tap, Backbone.Events);
+
 	/*
 	 * Takes care of storing/loading data in local storage and initializing
 	 * the tour collection.
@@ -48,8 +51,11 @@ if (!tap) {
 			navbar_location: 'header',
 			default_nav_item: 'tourstoplist',
 			default_video_poster: 'assets/images/tapPoster.png',
-			units: 'si'
+			units: 'si',
+			analytics_id: null
 		});
+
+		tap.initAnalytics();
 
 		// configure any events
 		if (TapAPI.geoLocation !== undefined) {
@@ -191,4 +197,25 @@ if (!tap) {
 		stops.reset();
 		assets.reset();
 	};
+
+	/**
+	 * Initializes Google Analytics
+	 */
+	tap.initAnalytics = function() {
+
+		if (tap.config.analytics_id === null) return;
+
+		_gaq.push(["_setAccount",tap.config.analytics_id]);
+
+		(function(d,t){
+			var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+			g.async=1;
+			g.src=("https:"==location.protocol?"//ssl":"//www")+".google-analytics.com/ga.js";
+			s.parentNode.insertBefore(g,s);
+		}(document,"script"));
+
+	};
+
 }
+
+
