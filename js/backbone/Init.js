@@ -48,6 +48,9 @@ if (!tap) {
 				{ label: 'Keypad', endpoint: 'tourkeypad' },
 				{ label: 'Map', endpoint: 'tourmap'}
 			],
+			geolocation: {
+				enableHighAccuracy: true
+			},
 			navbar_location: 'header',
 			default_nav_item: 'tourstoplist',
 			default_video_poster: 'assets/images/tapPoster.png',
