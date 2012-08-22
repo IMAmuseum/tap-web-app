@@ -216,3 +216,9 @@
 .tap_backend_li{
 	list-style:none;	
 }
+
+
+/* Hide weird characters that appear after grunt contatenation */
+.ui-icon.ui-icon-arrow-r.ui-icon-shadow {
+	text-indent: -9999px;	
+}
