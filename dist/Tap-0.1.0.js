@@ -1,5 +1,5 @@
 /*
- * TAP - v0.1.0 - 2012-08-22
+ * TAP - v0.1.0 - 2012-08-23
  * http://tapintomuseums.org/
  * Copyright (c) 2011-2012 Indianapolis Museum of Art
  * GPLv3
@@ -652,8 +652,10 @@ jQuery(function() {
 				var t = $('.transcription').toggleClass('hidden');
 				if (t.hasClass('hidden')) {
 					$('.ui-btn-text', this).text('Show Transcription');
+					_gaq.push(['_trackEvent', 'AudioStop', 'hide_transcription']);
 				} else {
 					$('.ui-btn-text', this).text('Hide Transcription');
+					_gaq.push(['_trackEvent', 'AudioStop', 'show_transcription']);
 				}
 			});
 
@@ -711,6 +713,19 @@ jQuery(function() {
 				}
 
 				mediaElement.mediaelementplayer(mediaOptions);
+
+				mediaElement[0].addEventListener('play', function() {
+					_gaq.push(['_trackEvent', 'AudioStop', 'media_started']);
+				});
+
+				mediaElement[0].addEventListener('pause', function() {
+					_gaq.push(['_trackEvent', 'AudioStop', 'media_paused']);
+				});
+
+				mediaElement[0].addEventListener('ended', function() {
+					_gaq.push(['_trackEvent', 'AudioStop', 'media_ended']);
+				});
+
 			}
 
 			return this;
@@ -1085,7 +1100,15 @@ jQuery(function() {
 		// When a marker is selected, show the popup
 		// Assumes that the context is set to (MapView)
 		onMarkerSelected: function(e) {
+
+			_gaq.push(['_trackEvent', 'Map', 'marker_clicked', e.target.stop_id]);
+
 			this.map.openPopup(this.stop_popups[e.target.stop_id]);
+
+			$('.marker-bubble-content .directions a').on('click', function() {
+				_gaq.push(['_trackEvent', 'Map', 'get_directions', e.target.stop_id]);
+			});
+
 		},
 
 
@@ -1099,6 +1122,10 @@ jQuery(function() {
 				this.position_marker = new L.Marker(latlng, {icon: this.location_icon});
 				this.position_marker.bindPopup('You are here');
 				this.map.addLayer(this.position_marker);
+
+				this.position_marker.addEventListener('click', function() {
+					_gaq.push(['_trackEvent', 'Map', 'you_are_here_clicked']);
+				});
 
 			} else {
 
@@ -1527,13 +1554,17 @@ jQuery(function() {
 				var t = $('.transcription').toggleClass('hidden');
 				if (t.hasClass('hidden')) {
 					$('.ui-btn-text', this).text('Show Transcription');
+					_gaq.push(['_trackEvent', 'VideoStop', 'hide_transcription']);
 				} else {
 					$('.ui-btn-text', this).text('Hide Transcription');
+					_gaq.push(['_trackEvent', 'VideoStop', 'show_transcription']);
 				}
 			});
 
 			assets = this.model.getAssetsByType("tour_video");
+			
 			if (assets.length) {
+
 				var videoContainer = this.$el.find('video');
 				_.each(assets, function(asset) {
 					var sources = asset.get("source");
@@ -1541,8 +1572,21 @@ jQuery(function() {
 						videoContainer.append("<source src='" + source.get('uri') + "' type='" + source.get('format') + "' />");
 					});
 				});
-			}
 
+				videoContainer[0].addEventListener('play', function() {
+					_gaq.push(['_trackEvent', 'VideoStop', 'media_started']);
+				});
+
+				videoContainer[0].addEventListener('pause', function() {
+					_gaq.push(['_trackEvent', 'VideoStop', 'media_paused']);
+				});
+
+				videoContainer[0].addEventListener('ended', function() {
+					console.log('ended');
+					_gaq.push(['_trackEvent', 'VideoStop', 'playback_ended']);
+				});
+
+			}
 
 			return this;
 		}
