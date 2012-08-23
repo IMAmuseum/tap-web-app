@@ -53,7 +53,9 @@ jQuery(function() {
 			});
 
 			assets = this.model.getAssetsByType("tour_video");
+			
 			if (assets.length) {
+
 				var videoContainer = this.$el.find('video');
 				_.each(assets, function(asset) {
 					var sources = asset.get("source");
@@ -61,20 +63,21 @@ jQuery(function() {
 						videoContainer.append("<source src='" + source.get('uri') + "' type='" + source.get('format') + "' />");
 					});
 				});
+
+				videoContainer[0].addEventListener('play', function() {
+					_gaq.push(['_trackEvent', 'VideoStop', 'media_started']);
+				});
+
+				videoContainer[0].addEventListener('pause', function() {
+					_gaq.push(['_trackEvent', 'VideoStop', 'media_paused']);
+				});
+
+				videoContainer[0].addEventListener('ended', function() {
+					console.log('ended');
+					_gaq.push(['_trackEvent', 'VideoStop', 'playback_ended']);
+				});
+
 			}
-
-			mediaElement[0].addEventListener('play', function() {
-				_gaq.push(['_trackEvent', 'VideoStop', 'media_started']);
-			});
-
-			mediaElement[0].addEventListener('pause', function() {
-				_gaq.push(['_trackEvent', 'VideoStop', 'media_paused']);
-			});
-
-			mediaElement[0].addEventListener('ended', function() {
-				console.log('ended');
-				_gaq.push(['_trackEvent', 'VideoStop', 'playback_ended']);
-			});
 
 			return this;
 		}
