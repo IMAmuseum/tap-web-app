@@ -64,7 +64,9 @@
 			$(document).ready(function() {
 				
 				// initialize app
-				tap.initApp('data/TourMLTourSetInternal.xml');
+				tap.initApp('data/TourMLTourSetInternal.xml', {
+					'analytics_id': 'UA-XXXXXX-X'
+				});
 
 				// start backbone history collection
 				Backbone.history.start();

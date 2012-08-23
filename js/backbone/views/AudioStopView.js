@@ -46,8 +46,10 @@ jQuery(function() {
 				var t = $('.transcription').toggleClass('hidden');
 				if (t.hasClass('hidden')) {
 					$('.ui-btn-text', this).text('Show Transcription');
+					_gaq.push(['_trackEvent', 'AudioStop', 'hide_transcription']);
 				} else {
 					$('.ui-btn-text', this).text('Hide Transcription');
+					_gaq.push(['_trackEvent', 'AudioStop', 'show_transcription']);
 				}
 			});
 
@@ -105,6 +107,19 @@ jQuery(function() {
 				}
 
 				mediaElement.mediaelementplayer(mediaOptions);
+
+				mediaElement[0].addEventListener('play', function() {
+					_gaq.push(['_trackEvent', 'AudioStop', 'media_started']);
+				});
+
+				mediaElement[0].addEventListener('pause', function() {
+					_gaq.push(['_trackEvent', 'AudioStop', 'media_paused']);
+				});
+
+				mediaElement[0].addEventListener('ended', function() {
+					_gaq.push(['_trackEvent', 'AudioStop', 'media_ended']);
+				});
+
 			}
 
 			return this;
