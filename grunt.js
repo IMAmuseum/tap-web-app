@@ -21,6 +21,7 @@ module.exports = function(grunt) {
 			dist: {
 				src: [
 					'<banner:meta.banner>',
+					'js/AnalyticsTimer.js',
 					'js/backbone/helper.js',
 					'js/backbone/models/**/(PropertyModel|SourceModel|ContentModel).js',
 					'js/backbone/models/**/*.js',

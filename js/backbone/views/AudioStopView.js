@@ -15,6 +15,16 @@ jQuery(function() {
 	// Define the AudioStop View
 	TapAPI.views.AudioStop = TapAPI.views.Page.extend({
 
+		onInit: function() {
+
+			if (tap.audio_timer === undefined) {
+				tap.audio_timer = new AnalyticsTimer('AudioStop', 'played_for', tap.currentStop.id);
+			}
+			tap.audio_timer.reset();
+			console.log('init');
+
+		},
+
 		renderContent: function() {
 
 			var content_template = TapAPI.templateManager.get('audio-stop');
@@ -108,12 +118,18 @@ jQuery(function() {
 
 				mediaElement.mediaelementplayer(mediaOptions);
 
+				mediaElement[0].addEventListener('loadedmetadata', function() {
+					tap.audio_timer.max_threshold = mediaElement[0].duration * 1000;
+				});
+
 				mediaElement[0].addEventListener('play', function() {
 					_gaq.push(['_trackEvent', 'AudioStop', 'media_started']);
+					tap.audio_timer.start();
 				});
 
 				mediaElement[0].addEventListener('pause', function() {
 					_gaq.push(['_trackEvent', 'AudioStop', 'media_paused']);
+					tap.audio_timer.stop();
 				});
 
 				mediaElement[0].addEventListener('ended', function() {
@@ -123,6 +139,14 @@ jQuery(function() {
 			}
 
 			return this;
+		},
+
+		onClose: function() {
+
+			// Send information about playback duration when the view closes
+			tap.audio_timer.send();
+
 		}
+
 	});
 });

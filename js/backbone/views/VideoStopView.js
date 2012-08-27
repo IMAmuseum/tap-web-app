@@ -15,6 +15,15 @@ jQuery(function() {
 	// Define the VideoStop View
 	TapAPI.views.VideoStop = TapAPI.views.Page.extend({
 
+		onInit: function() {
+
+			if (tap.video_timer === undefined) {
+				tap.video_timer = new AnalyticsTimer('VideoStop', 'played_for', tap.currentStop.id);
+			}
+			tap.video_timer.reset();
+
+		},
+
 		renderContent: function() {
 
 			var content_template = TapAPI.templateManager.get('video-stop');
@@ -64,22 +73,35 @@ jQuery(function() {
 					});
 				});
 
+				videoContainer[0].addEventListener('loadedmetadata', function() {
+					tap.video_timer.max_threshold = videoContainer[0].duration * 1000;
+				});
+
 				videoContainer[0].addEventListener('play', function() {
 					_gaq.push(['_trackEvent', 'VideoStop', 'media_started']);
-				});
+					tap.video_timer.start();
+				}, this);
 
 				videoContainer[0].addEventListener('pause', function() {
 					_gaq.push(['_trackEvent', 'VideoStop', 'media_paused']);
+					tap.video_timer.stop();
 				});
 
 				videoContainer[0].addEventListener('ended', function() {
-					console.log('ended');
 					_gaq.push(['_trackEvent', 'VideoStop', 'playback_ended']);
 				});
 
 			}
 
 			return this;
+		},
+
+		onClose: function() {
+
+			// Send information about playback duration when the view closes
+			tap.video_timer.send();
+
 		}
+
 	});
 });
