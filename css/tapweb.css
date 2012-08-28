@@ -20,7 +20,10 @@
 .ui-header #index-selector {
 	margin: 0.6em 20% 0.8em;
 	width: 60%;
-	text-align: center;
+}
+
+.ui-header #index-selector .ui-controlgroup-controls {
+	margin: auto;
 }
 
 .ui-header .ui-title {
