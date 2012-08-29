@@ -70,6 +70,16 @@ jQuery(function() {
 				tour_id: tap.currentTour
 			}));
 			this.renderContent();
+
+			// Set width on the index selector control group so that it can center
+			$(document).live('pageshow', function() {
+				var w = 0;
+				$items = $('#index-selector a').each(function() {
+					w += $(this).outerWidth();
+				});
+				$('#index-selector .ui-controlgroup-controls').width(w);
+			});
+
 			return this;
 
 		},

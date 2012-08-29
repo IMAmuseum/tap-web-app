@@ -15,6 +15,15 @@ jQuery(function() {
 	// Define the VideoStop View
 	TapAPI.views.VideoStop = TapAPI.views.Page.extend({
 
+		onInit: function() {
+
+			if (tap.video_timer === undefined) {
+				tap.video_timer = new AnalyticsTimer('VideoStop', 'played_for', tap.currentStop.id);
+			}
+			tap.video_timer.reset();
+
+		},
+
 		renderContent: function() {
 
 			var content_template = TapAPI.templateManager.get('video-stop');
@@ -45,13 +54,17 @@ jQuery(function() {
 				var t = $('.transcription').toggleClass('hidden');
 				if (t.hasClass('hidden')) {
 					$('.ui-btn-text', this).text('Show Transcription');
+					_gaq.push(['_trackEvent', 'VideoStop', 'hide_transcription']);
 				} else {
 					$('.ui-btn-text', this).text('Hide Transcription');
+					_gaq.push(['_trackEvent', 'VideoStop', 'show_transcription']);
 				}
 			});
 
 			assets = this.model.getAssetsByType("tour_video");
+			
 			if (assets.length) {
+
 				var videoContainer = this.$el.find('video');
 				_.each(assets, function(asset) {
 					var sources = asset.get("source");
@@ -59,10 +72,36 @@ jQuery(function() {
 						videoContainer.append("<source src='" + source.get('uri') + "' type='" + source.get('format') + "' />");
 					});
 				});
+
+				videoContainer[0].addEventListener('loadedmetadata', function() {
+					tap.video_timer.max_threshold = videoContainer[0].duration * 1000;
+				});
+
+				videoContainer[0].addEventListener('play', function() {
+					_gaq.push(['_trackEvent', 'VideoStop', 'media_started']);
+					tap.video_timer.start();
+				}, this);
+
+				videoContainer[0].addEventListener('pause', function() {
+					_gaq.push(['_trackEvent', 'VideoStop', 'media_paused']);
+					tap.video_timer.stop();
+				});
+
+				videoContainer[0].addEventListener('ended', function() {
+					_gaq.push(['_trackEvent', 'VideoStop', 'playback_ended']);
+				});
+
 			}
 
-
 			return this;
+		},
+
+		onClose: function() {
+
+			// Send information about playback duration when the view closes
+			tap.video_timer.send();
+
 		}
+
 	});
 });

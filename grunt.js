@@ -21,6 +21,7 @@ module.exports = function(grunt) {
 			dist: {
 				src: [
 					'<banner:meta.banner>',
+					'js/AnalyticsTimer.js',
 					'js/backbone/helper.js',
 					'js/backbone/models/**/(PropertyModel|SourceModel|ContentModel).js',
 					'js/backbone/models/**/*.js',
@@ -40,14 +41,14 @@ module.exports = function(grunt) {
 			},
 			dependencies: {
 				src: [
-					'js/external/json2.js',
-					'js/external/jquery-1.7.2.js',
+					'external/json2.js',
+					'external/jquery-1.7.2.js',
 					'js/backbone/jqm-config.js',
-					'js/external/underscore-1.3.3.js',
-					'external/jqmobile/jquery.mobile-1.1.0.js',
-					'js/external/backbone-0.9.2.js',
-					'js/external/backbone.localStorage-min.js',
-					'js/external/klass.js',
+					'external/underscore-1.3.3.js',
+					'external/jqmobile/jquery.mobile-1.1.1.js',
+					'external/backbone-0.9.2.js',
+					'external/backbone.localStorage-min.js',
+					'external/klass.js',
 					'external/leaflet/leaflet.js',
 					'external/mediaelement/mediaelement-and-player.js',
 					'external/photoswipe/code.photoswipe.jquery-3.0.4.js'
@@ -57,7 +58,7 @@ module.exports = function(grunt) {
 			css: {
 				src: [
 					'<banner:meta.banner>',
-					'external/jqmobile/jquery.mobile-1.1.0.css',
+					'external/jqmobile/jquery.mobile-1.1.1.css',
 					'external/leaflet/leaflet.css',
 					'external/mediaelement/mediaelementplayer.css',
 					'external/photoswipe/photoswipe.css',
@@ -87,10 +88,10 @@ module.exports = function(grunt) {
 			tasks: 'concat min'
 		},
 		precompileTemplates: {
-		 	dist : {
-		 		src: ['js/backbone/templates/*.tpl.html'],
-		 		dest: 'js/backbone/templates/CompiledTemplates.js'
-		 	}
+			dist : {
+				src: ['js/backbone/templates/*.tpl.html'],
+				dest: 'js/backbone/templates/CompiledTemplates.js'
+			}
 		},
 		jshint: {
 			options: {

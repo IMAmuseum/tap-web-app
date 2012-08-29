@@ -215,7 +215,15 @@ jQuery(function() {
 		// When a marker is selected, show the popup
 		// Assumes that the context is set to (MapView)
 		onMarkerSelected: function(e) {
+
+			_gaq.push(['_trackEvent', 'Map', 'marker_clicked', e.target.stop_id]);
+
 			this.map.openPopup(this.stop_popups[e.target.stop_id]);
+
+			$('.marker-bubble-content .directions a').on('click', function() {
+				_gaq.push(['_trackEvent', 'Map', 'get_directions', e.target.stop_id]);
+			});
+
 		},
 
 
@@ -229,6 +237,10 @@ jQuery(function() {
 				this.position_marker = new L.Marker(latlng, {icon: this.location_icon});
 				this.position_marker.bindPopup('You are here');
 				this.map.addLayer(this.position_marker);
+
+				this.position_marker.addEventListener('click', function() {
+					_gaq.push(['_trackEvent', 'Map', 'you_are_here_clicked']);
+				});
 
 			} else {
 

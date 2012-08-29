@@ -10,7 +10,7 @@ jQuery(function() {
 	TapAPI.geoLocation = {
 
 		latest_location: null,
-		interval: null,
+		watch: null,
 		nearest_stop: null,
 		active_stop_collection: null,
 
@@ -18,7 +18,10 @@ jQuery(function() {
 
 			navigator.geolocation.getCurrentPosition(
 				TapAPI.geoLocation.locationReceived,
-				TapAPI.geoLocation.locationError
+				TapAPI.geoLocation.locationError,
+				{
+					enableHighAccuracy: tap.config.geolocation.enableHighAccuracy
+				}
 			);
 
 		},
@@ -99,15 +102,20 @@ jQuery(function() {
 
 		startLocating: function(delay) {
 
-			if (delay === undefined) delay = 5000;
-			TapAPI.geoLocation.locate();
-			TapAPI.geoLocation.interval = setInterval(TapAPI.geoLocation.locate, 5000);
+			this.watch = navigator.geolocation.watchPosition(
+				TapAPI.geoLocation.locationReceived,
+				TapAPI.geoLocation.locationError,
+				{
+					enableHighAccuracy: tap.config.geolocation.enableHighAccuracy
+				}
+			);
 
 		},
 
 		stopLocating: function() {
-			clearInterval(TapAPI.geoLocation.interval);
-			TapAPI.geoLocation.interval = null;
+
+			navigator.geolocation.clearWatch(this.watch);
+
 			if (this.nearest_stop !== null) {
 				this.nearest_stop.set('nearest', false);
 				this.nearest_stop = null;
@@ -122,11 +130,11 @@ jQuery(function() {
 			if (tap.config.units == 'si') {
 
 				if (d < 100) {
-					return parseInt(d) + ' m';
+					return parseInt(d, 10) + ' m';
 				} else if (d < 10000) {
 					return (d/1000).toFixed(2) + ' km';
 				} else {
-					return parseInt(d/1000) + ' km';
+					return parseInt(d/1000, 10) + ' km';
 				}
 
 			} else {
@@ -134,11 +142,11 @@ jQuery(function() {
 				// Assume it's English
 				var feet = 3.28084 * d;
 				if (feet > 52800) { // > 10 miles
-					return parseInt(feet/5280) + ' mi';
+					return parseInt(feet/5280, 10) + ' mi';
 				} if (feet > 528) { // > .1 miles
 					return (feet/5280).toFixed(2) + ' mi';
 				} else {
-					return parseInt(feet) + ' ft';
+					return parseInt(feet, 10) + ' ft';
 				}
 
 			}

@@ -1,10 +1,64 @@
 /*
- * TAP - v0.1.0 - 2012-08-10
+ * TAP - v0.1.0 - 2012-08-29
  * http://tapintomuseums.org/
  * Copyright (c) 2011-2012 Indianapolis Museum of Art
  * GPLv3
  */
 
+function AnalyticsTimer(category, variable, opt_label) {
+  this.category = category;
+  this.variable = variable;
+  this.label = opt_label ? opt_label : undefined;
+  this.start_time = null;
+  this.elapsed = 0;
+  this.min_threshold = null;
+  this.max_threshold = null;
+  this.min_clamp = false;
+  this.max_clamp = true;
+  return this;
+}
+
+AnalyticsTimer.prototype.start = function() {
+  this.start_time = new Date().getTime();
+  return this;
+};
+
+AnalyticsTimer.prototype.stop = function() {
+  if (this.start_time !== null) {
+    this.elapsed = this.elapsed + (new Date().getTime()) - this.start_time;
+    this.start_time = null;
+  }
+  return this;
+};
+
+AnalyticsTimer.prototype.reset = function() {
+  this.elapsed = 0;
+  return this;
+};
+
+AnalyticsTimer.prototype.send = function() {
+
+  this.stop(); // update the timer
+
+  // If threshold criteria are not met, do not send
+  if (
+    ((this.min_threshold === null) || this.min_clamp || (this.elapsed >= this.min_threshold)) &&
+    ((this.max_threshold === null) || this.max_clamp || (this.elapsed <= this.max_threshold))
+  ) {
+
+    // At this point, we should clamp
+    if ((this.min_threshold !== null) && (this.elapsed < this.min_threshold)) this.elapsed = this.min_threshold;
+    if ((this.max_threshold !== null) && (this.elapsed > this.max_threshold)) this.elapsed = this.max_threshold;
+
+    window._gaq.push(['_trackTiming', this.category, this.variable, this.elapsed, this.label]);
+
+  }
+
+  this.start(); // keep the timer running
+
+  return this;
+
+};
 String.prototype.replaceArray = function(find, replace) {
 	var replaceString = this;
 	for (var i = 0; i < find.length; i++) {
@@ -183,7 +237,7 @@ TapAPI.models.Content = Backbone.Model.extend({
 		//parse never gets called due to this not being in localstorage as its own record
 		this.set('propertySet', new TapAPI.collections.PropertySet(
 			this.get('propertySet'),
-			this.id
+			{id: this.id}
 		));
 
 		if (this.get('data').value) {
@@ -231,7 +285,7 @@ TapAPI.models.Source = Backbone.Model.extend({
 		//parse never gets called due to this not being in localstorage as its own record
 		this.set('propertySet', new TapAPI.collections.PropertySet(
 			this.get('propertySet'),
-			this.id
+			{id: this.id}
 		));
 	},
 	getAsset: function() {
@@ -294,7 +348,7 @@ TapAPI.models.Stop = Backbone.Model.extend({
 	parse: function(response) {
 		response.propertySet = new TapAPI.collections.PropertySet(
 			response.propertySet,
-			response.id
+			{id: response.id}
 		);
 
 		return response;
@@ -395,7 +449,7 @@ TapAPI.models.Tour = Backbone.Model.extend({
 	parse: function(response) {
 		response.propertySet = new TapAPI.collections.PropertySet(
 			response.propertySet,
-			this.id
+			{id: response.id}
 		);
 
 		return response;
@@ -591,6 +645,16 @@ jQuery(function() {
 				tour_id: tap.currentTour
 			}));
 			this.renderContent();
+
+			// Set width on the index selector control group so that it can center
+			$(document).live('pageshow', function() {
+				var w = 0;
+				$items = $('#index-selector a').each(function() {
+					w += $(this).outerWidth();
+				});
+				$('#index-selector .ui-controlgroup-controls').width(w);
+			});
+
 			return this;
 
 		},
@@ -620,6 +684,16 @@ jQuery(function() {
 
 	// Define the AudioStop View
 	TapAPI.views.AudioStop = TapAPI.views.Page.extend({
+
+		onInit: function() {
+
+			if (tap.audio_timer === undefined) {
+				tap.audio_timer = new AnalyticsTimer('AudioStop', 'played_for', tap.currentStop.id);
+			}
+			tap.audio_timer.reset();
+			console.log('init');
+
+		},
 
 		renderContent: function() {
 
@@ -652,8 +726,10 @@ jQuery(function() {
 				var t = $('.transcription').toggleClass('hidden');
 				if (t.hasClass('hidden')) {
 					$('.ui-btn-text', this).text('Show Transcription');
+					_gaq.push(['_trackEvent', 'AudioStop', 'hide_transcription']);
 				} else {
 					$('.ui-btn-text', this).text('Hide Transcription');
+					_gaq.push(['_trackEvent', 'AudioStop', 'show_transcription']);
 				}
 			});
 
@@ -711,10 +787,37 @@ jQuery(function() {
 				}
 
 				mediaElement.mediaelementplayer(mediaOptions);
+
+				mediaElement[0].addEventListener('loadedmetadata', function() {
+					tap.audio_timer.max_threshold = mediaElement[0].duration * 1000;
+				});
+
+				mediaElement[0].addEventListener('play', function() {
+					_gaq.push(['_trackEvent', 'AudioStop', 'media_started']);
+					tap.audio_timer.start();
+				});
+
+				mediaElement[0].addEventListener('pause', function() {
+					_gaq.push(['_trackEvent', 'AudioStop', 'media_paused']);
+					tap.audio_timer.stop();
+				});
+
+				mediaElement[0].addEventListener('ended', function() {
+					_gaq.push(['_trackEvent', 'AudioStop', 'media_ended']);
+				});
+
 			}
 
 			return this;
+		},
+
+		onClose: function() {
+
+			// Send information about playback duration when the view closes
+			tap.audio_timer.send();
+
 		}
+
 	});
 });
 
@@ -779,11 +882,10 @@ jQuery(function() {
 						sources.each(function(source) {
 							switch (source.get('part')) {
 								case "image_asset_image":
-									templateData.fullImageUri = source.get("uri");
+									templateData.fullImageUri = source.get("uri") ? source.get("uri") : '';
 									break;
 								case "thumbnail":
-									//templateData.fullImageUri = "somewhere.jpg";
-									templateData.thumbUri = source.get("uri");
+									templateData.thumbUri = source.get("uri") ? source.get("uri") : '';
 									break;
 							}
 						});
@@ -1086,7 +1188,15 @@ jQuery(function() {
 		// When a marker is selected, show the popup
 		// Assumes that the context is set to (MapView)
 		onMarkerSelected: function(e) {
+
+			_gaq.push(['_trackEvent', 'Map', 'marker_clicked', e.target.stop_id]);
+
 			this.map.openPopup(this.stop_popups[e.target.stop_id]);
+
+			$('.marker-bubble-content .directions a').on('click', function() {
+				_gaq.push(['_trackEvent', 'Map', 'get_directions', e.target.stop_id]);
+			});
+
 		},
 
 
@@ -1100,6 +1210,10 @@ jQuery(function() {
 				this.position_marker = new L.Marker(latlng, {icon: this.location_icon});
 				this.position_marker.bindPopup('You are here');
 				this.map.addLayer(this.position_marker);
+
+				this.position_marker.addEventListener('click', function() {
+					_gaq.push(['_trackEvent', 'Map', 'you_are_here_clicked']);
+				});
 
 			} else {
 
@@ -1498,6 +1612,15 @@ jQuery(function() {
 	// Define the VideoStop View
 	TapAPI.views.VideoStop = TapAPI.views.Page.extend({
 
+		onInit: function() {
+
+			if (tap.video_timer === undefined) {
+				tap.video_timer = new AnalyticsTimer('VideoStop', 'played_for', tap.currentStop.id);
+			}
+			tap.video_timer.reset();
+
+		},
+
 		renderContent: function() {
 
 			var content_template = TapAPI.templateManager.get('video-stop');
@@ -1528,13 +1651,17 @@ jQuery(function() {
 				var t = $('.transcription').toggleClass('hidden');
 				if (t.hasClass('hidden')) {
 					$('.ui-btn-text', this).text('Show Transcription');
+					_gaq.push(['_trackEvent', 'VideoStop', 'hide_transcription']);
 				} else {
 					$('.ui-btn-text', this).text('Hide Transcription');
+					_gaq.push(['_trackEvent', 'VideoStop', 'show_transcription']);
 				}
 			});
 
 			assets = this.model.getAssetsByType("tour_video");
+			
 			if (assets.length) {
+
 				var videoContainer = this.$el.find('video');
 				_.each(assets, function(asset) {
 					var sources = asset.get("source");
@@ -1542,11 +1669,37 @@ jQuery(function() {
 						videoContainer.append("<source src='" + source.get('uri') + "' type='" + source.get('format') + "' />");
 					});
 				});
+
+				videoContainer[0].addEventListener('loadedmetadata', function() {
+					tap.video_timer.max_threshold = videoContainer[0].duration * 1000;
+				});
+
+				videoContainer[0].addEventListener('play', function() {
+					_gaq.push(['_trackEvent', 'VideoStop', 'media_started']);
+					tap.video_timer.start();
+				}, this);
+
+				videoContainer[0].addEventListener('pause', function() {
+					_gaq.push(['_trackEvent', 'VideoStop', 'media_paused']);
+					tap.video_timer.stop();
+				});
+
+				videoContainer[0].addEventListener('ended', function() {
+					_gaq.push(['_trackEvent', 'VideoStop', 'playback_ended']);
+				});
+
 			}
 
-
 			return this;
+		},
+
+		onClose: function() {
+
+			// Send information about playback duration when the view closes
+			tap.video_timer.send();
+
 		}
+
 	});
 });
 
@@ -1766,6 +1919,13 @@ jQuery(function() {
 				transition = 'none';
 				this.firstPage = false;
 			}
+
+			// Track the page view with Google Analytics
+			if (tap.config.analytics_id !== null) {
+				var url = Backbone.history.getFragment();
+				_gaq.push(['_trackPageview', "/#"+url]);
+			}
+
 			$.mobile.changePage(page.$el, {changeHash:false, transition: transition});
 
 			// The old page is removed from the DOM by an event handler in jqm-config.js
@@ -1796,6 +1956,8 @@ if (!tap) {
 	tap.currentStop = ''; // id of the current stop
 	tap.currentTour = ''; // id of the current tour
 
+	var _gaq = _gaq || []; // Google Analytics queue
+
 	//get the users language
 	var userLang = (navigator.language) ? navigator.language : navigator.userLanguage;
 	tap.language = userLang.split("-")[0];
@@ -1811,6 +1973,7 @@ if (!tap) {
 	}
 
 	_.extend(tap, Backbone.Events);
+
 	/*
 	 * Takes care of storing/loading data in local storage and initializing
 	 * the tour collection.
@@ -1833,11 +1996,17 @@ if (!tap) {
 				{ label: 'Keypad', endpoint: 'tourkeypad' },
 				{ label: 'Map', endpoint: 'tourmap'}
 			],
+			geolocation: {
+				enableHighAccuracy: true
+			},
 			navbar_location: 'header',
 			default_nav_item: 'tourstoplist',
 			default_video_poster: 'assets/images/tapPoster.png',
-			units: 'si'
+			units: 'si',
+			analytics_id: null
 		});
+
+		tap.initAnalytics();
 
 		// configure any events
 		if (TapAPI.geoLocation !== undefined) {
@@ -1979,7 +2148,28 @@ if (!tap) {
 		stops.reset();
 		assets.reset();
 	};
+
+	/**
+	 * Initializes Google Analytics
+	 */
+	tap.initAnalytics = function() {
+
+		if (tap.config.analytics_id === null) return;
+
+		_gaq.push(["_setAccount",tap.config.analytics_id]);
+
+		(function(d,t){
+			var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+			g.async=1;
+			g.src=("https:"==location.protocol?"//ssl":"//www")+".google-analytics.com/ga.js";
+			s.parentNode.insertBefore(g,s);
+		}(document,"script"));
+
+	};
+
 }
+
+
 
 // TapAPI Namespace Initialization //
 if (typeof TapAPI === 'undefined'){TapAPI = {};}
@@ -1993,7 +2183,7 @@ jQuery(function() {
 	TapAPI.geoLocation = {
 
 		latest_location: null,
-		interval: null,
+		watch: null,
 		nearest_stop: null,
 		active_stop_collection: null,
 
@@ -2001,7 +2191,10 @@ jQuery(function() {
 
 			navigator.geolocation.getCurrentPosition(
 				TapAPI.geoLocation.locationReceived,
-				TapAPI.geoLocation.locationError
+				TapAPI.geoLocation.locationError,
+				{
+					enableHighAccuracy: tap.config.geolocation.enableHighAccuracy
+				}
 			);
 
 		},
@@ -2082,15 +2275,20 @@ jQuery(function() {
 
 		startLocating: function(delay) {
 
-			if (delay === undefined) delay = 5000;
-			TapAPI.geoLocation.locate();
-			TapAPI.geoLocation.interval = setInterval(TapAPI.geoLocation.locate, 5000);
+			this.watch = navigator.geolocation.watchPosition(
+				TapAPI.geoLocation.locationReceived,
+				TapAPI.geoLocation.locationError,
+				{
+					enableHighAccuracy: tap.config.geolocation.enableHighAccuracy
+				}
+			);
 
 		},
 
 		stopLocating: function() {
-			clearInterval(TapAPI.geoLocation.interval);
-			TapAPI.geoLocation.interval = null;
+
+			navigator.geolocation.clearWatch(this.watch);
+
 			if (this.nearest_stop !== null) {
 				this.nearest_stop.set('nearest', false);
 				this.nearest_stop = null;
@@ -2105,11 +2303,11 @@ jQuery(function() {
 			if (tap.config.units == 'si') {
 
 				if (d < 100) {
-					return parseInt(d) + ' m';
+					return parseInt(d, 10) + ' m';
 				} else if (d < 10000) {
 					return (d/1000).toFixed(2) + ' km';
 				} else {
-					return parseInt(d/1000) + ' km';
+					return parseInt(d/1000, 10) + ' km';
 				}
 
 			} else {
@@ -2117,11 +2315,11 @@ jQuery(function() {
 				// Assume it's English
 				var feet = 3.28084 * d;
 				if (feet > 52800) { // > 10 miles
-					return parseInt(feet/5280) + ' mi';
+					return parseInt(feet/5280, 10) + ' mi';
 				} if (feet > 528) { // > .1 miles
 					return (feet/5280).toFixed(2) + ' mi';
 				} else {
-					return parseInt(feet) + ' ft';
+					return parseInt(feet, 10) + ' ft';
 				}
 
 			}
@@ -2203,7 +2401,7 @@ var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='\t<li>\n\t\t<a href="'+
 ( fullImageUri )+
-'"><img src="'+
+'" rel="external"><img src="'+
 ( thumbUri )+
 '" alt="'+
 ( title )+

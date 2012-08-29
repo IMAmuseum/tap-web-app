@@ -45,7 +45,7 @@ var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='\t<li>\n\t\t<a href="'+
 ( fullImageUri )+
-'"><img src="'+
+'" rel="external"><img src="'+
 ( thumbUri )+
 '" alt="'+
 ( title )+
