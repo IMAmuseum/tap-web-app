@@ -1,5 +1,5 @@
 /*
- * TAP - v0.1.0 - 2012-08-29
+ * TAP - v0.1.0 - 2012-10-11
  * http://tapintomuseums.org/
  * Copyright (c) 2011-2012 Indianapolis Museum of Art
  * GPLv3
@@ -137,6 +137,18 @@ function xmlToJson(xml, namespace) {
 		}
 	}
 	return(result);
+}
+
+
+/**
+ * Returns the base path
+ */
+function tapBasePath() {
+	if (script_src.indexOf('Init.js') >= 0) {
+		return '';
+	} else {
+		return 'dist/';
+	}
 }
 // TapAPI Namespace Initialization //
 if (typeof TapAPI === 'undefined'){TapAPI = {};}
@@ -762,7 +774,11 @@ jQuery(function() {
 					});
 				});
 
-				var mediaOptions = {};
+				var mediaOptions = {
+					flashName: tapBasePath() + mejs.MediaElementDefaults.flashName,
+					silverlightName: tapBasePath() + mejs.MediaElementDefaults.flashName
+				};
+
 				var mediaElement = null;
 
 				// If there are video sources and no audio sources, switch to the video element
@@ -2407,9 +2423,7 @@ __p+='\t<li>\n\t\t<a href="'+
 ( title )+
 '" title="'+
 ( title )+
-'" /></a>\n\t\t<div>'+
-( title )+
-'</div>\n\t</li>\n';
+'" /></a>\n\t</li>\n';
 }
 return __p;
 }

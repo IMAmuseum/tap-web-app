@@ -77,3 +77,15 @@ function xmlToJson(xml, namespace) {
 	}
 	return(result);
 }
+
+
+/**
+ * Returns the base path
+ */
+function tapBasePath() {
+	if (script_src.indexOf('Init.js') >= 0) {
+		return '';
+	} else {
+		return 'dist/';
+	}
+}

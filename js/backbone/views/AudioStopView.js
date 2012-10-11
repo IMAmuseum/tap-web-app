@@ -92,7 +92,11 @@ jQuery(function() {
 					});
 				});
 
-				var mediaOptions = {};
+				var mediaOptions = {
+					flashName: tapBasePath() + mejs.MediaElementDefaults.flashName,
+					silverlightName: tapBasePath() + mejs.MediaElementDefaults.flashName
+				};
+
 				var mediaElement = null;
 
 				// If there are video sources and no audio sources, switch to the video element

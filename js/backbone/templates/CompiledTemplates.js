@@ -51,9 +51,7 @@ __p+='\t<li>\n\t\t<a href="'+
 ( title )+
 '" title="'+
 ( title )+
-'" /></a>\n\t\t<div>'+
-( title )+
-'</div>\n\t</li>\n';
+'" /></a>\n\t</li>\n';
 }
 return __p;
 }
