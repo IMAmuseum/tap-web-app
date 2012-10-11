@@ -149,6 +149,7 @@ jQuery(function() {
 
 			// Send information about playback duration when the view closes
 			tap.audio_timer.send();
+			$('.me-plugin').remove();
 
 		}
 
