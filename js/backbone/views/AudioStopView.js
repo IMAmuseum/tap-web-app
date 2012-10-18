@@ -84,7 +84,7 @@ jQuery(function() {
 								break;
 							case 'video':
 								videoPlayer.append(source_str);
-								
+
 								break;
 							default:
 								console.log('Unsupported format for audio asset:', assetSource);
@@ -120,7 +120,7 @@ jQuery(function() {
 
 				}
 
-				mediaElement.mediaelementplayer(mediaOptions);
+				var player = new MediaElementPlayer(mediaElement, mediaOptions);
 
 				mediaElement[0].addEventListener('loadedmetadata', function() {
 					tap.audio_timer.max_threshold = mediaElement[0].duration * 1000;
@@ -140,6 +140,7 @@ jQuery(function() {
 					_gaq.push(['_trackEvent', 'AudioStop', 'media_ended']);
 				});
 
+				player.play();
 			}
 
 			return this;

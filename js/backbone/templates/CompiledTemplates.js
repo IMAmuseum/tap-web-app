@@ -7,7 +7,7 @@ var __p='';var print=function(){__p+=Array.prototype.join.call(arguments, '')};
 with(obj||{}){
 __p+='<div class=\'tour-stop audio\'>\n\t<div class=\'title\'>'+
 ( tour_stop_title )+
-'</div>\n\t<audio id="audio-player" autoplay controls="controls">\n\t\t<p>Your browser does not support the audio element.</p>\n\t</audio>\t\n\t<video id="video-player" autoplay controls="controls" style=\'display:none;\'\n\t';
+'</div>\n\t<audio id="audio-player" controls="controls">\n\t\t<p>Your browser does not support the audio element.</p>\n\t</audio>\n\t<video id="video-player" autoplay controls="controls" style=\'display:none;\'\n\t';
  if (poster_image_path !== null) { 
 ;__p+='\n\t\tposter=\''+
 ( poster_image_path )+
@@ -25,7 +25,7 @@ __p+='<div class=\'tour-stop audio\'>\n\t<div class=\'title\'>'+
 ( transcription )+
 '</p></div>\n\t';
  } 
-;__p+='\t\n</div>';
+;__p+='\n</div>';
 }
 return __p;
 }
