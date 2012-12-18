@@ -1,8 +1,8 @@
-/*global module:false*/
 module.exports = function(grunt) {
 
 	// Project configuration.
 	grunt.initConfig({
+		pkg: grunt.file.readJSON('package.json'),
 		meta: {
 			name: 'TAP',
 			version: '0.1.0',
@@ -154,7 +154,8 @@ module.exports = function(grunt) {
 		return output;
 	});
 
-	grunt.loadNpmTasks('grunt-css');
+	//grunt.loadNpmTasks('/usr/local/lib/node_modules/grunt/node_modules/grunt-css');
+	grunt.loadNpmTasks('/usr/local/lib/node_modules/grunt-css');
 
 	// Default task.
 	grunt.registerTask('default', 'precompileTemplates concat min cssmin');
