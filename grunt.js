@@ -140,13 +140,6 @@ module.exports = function(grunt) {
 					fileParts = filepath.split("\/"),
 					fileName = fileParts[fileParts.length - 1];
 
-				grunt.log.writeln('template:');
-				grunt.log.write(templateHtml);
-				grunt.log.writeln('templated:');
-				//grunt.log.write(grunt.utils._.template(templateHtml));
-				grunt.log.writeln('source:');
-				grunt.log.write(templateSrc);
-
 				return "TapAPI.templates['" + fileName.substr(0,fileName.indexOf('.tpl.html')) + "'] = " + templateSrc;
 			}).join('\n');
 		}
