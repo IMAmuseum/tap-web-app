@@ -47,6 +47,7 @@ module.exports = function(grunt) {
 					'external/underscore-1.3.3.js',
 					'external/jqmobile/jquery.mobile-1.1.1.js',
 					'external/backbone-0.9.2.js',
+					'external/backbone-super.js',
 					'external/backbone.localStorage-min.js',
 					'external/klass.js',
 					'external/leaflet/leaflet.js',

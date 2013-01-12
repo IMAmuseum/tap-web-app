@@ -44,7 +44,6 @@ jQuery(function() {
 							}
 						});
 						content.each(function(contentItem) {
-							console.log(contentItem);
 							switch(contentItem.get("part")) {
 								case "title":
 									templateData.title = contentItem.get("data");

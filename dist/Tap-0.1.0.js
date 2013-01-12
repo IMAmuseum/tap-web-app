@@ -1,7 +1,7 @@
 /*
- * TAP - v0.1.0 - 2012-12-18
+ * TAP - v0.1.0 - 2013-01-12
  * http://tapintomuseums.org/
- * Copyright (c) 2011-2012 Indianapolis Museum of Art
+ * Copyright (c) 2011-2013 Indianapolis Museum of Art
  * GPLv3
  */
 
@@ -703,8 +703,6 @@ jQuery(function() {
 				tap.audio_timer = new AnalyticsTimer('AudioStop', 'played_for', tap.currentStop.id);
 			}
 			tap.audio_timer.reset();
-			console.log('init');
-
 		},
 
 		renderContent: function() {
@@ -908,7 +906,6 @@ jQuery(function() {
 							}
 						});
 						content.each(function(contentItem) {
-							console.log(contentItem);
 							switch(contentItem.get("part")) {
 								case "title":
 									templateData.title = contentItem.get("data");
@@ -1497,10 +1494,7 @@ jQuery(function() {
 
 
 		onLocationFound: function(position) {
-
-			//console.log('onLocationFound', position);
 			var latlng = new L.LatLng(position.coords.latitude, position.coords.longitude);
-
 		},
 
 

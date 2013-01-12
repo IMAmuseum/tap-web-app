@@ -161,10 +161,7 @@ jQuery(function() {
 
 
 		onLocationFound: function(position) {
-
-			//console.log('onLocationFound', position);
 			var latlng = new L.LatLng(position.coords.latitude, position.coords.longitude);
-
 		},
 
 

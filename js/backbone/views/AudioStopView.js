@@ -21,8 +21,6 @@ jQuery(function() {
 				tap.audio_timer = new AnalyticsTimer('AudioStop', 'played_for', tap.currentStop.id);
 			}
 			tap.audio_timer.reset();
-			console.log('init');
-
 		},
 
 		renderContent: function() {
