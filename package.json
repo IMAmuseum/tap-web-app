@@ -1,8 +1,8 @@
 {
-  "name": "TAP Web App",
+  "name": "TAP-Web-App",
   "version": "0.1.0",
   "devDependencies": {
     "grunt": "~0.3.17",
-    "grunt-css": "~0.3.2",
+    "grunt-css": "~0.3.2"
   }
 }
