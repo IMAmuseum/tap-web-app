@@ -17,7 +17,7 @@ jQuery(function() {
 
 		initialize:function () {
 			//console.log('AppRouter::initialize');
-			$('#back-button').live('click', function(e) {
+			$('#back-button').on('click', function(e) {
 				e.preventDefault();
 				window.history.back();
 				return false;

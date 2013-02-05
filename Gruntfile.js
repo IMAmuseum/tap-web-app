@@ -28,7 +28,8 @@ module.exports = function(grunt) {
 					'js/backbone/collections/**/(PropertySetCollection|SourceCollection|ContentCollection).js',
 					'js/backbone/collections/**/*.js',
 					'js/backbone/views/HelperView.js',
-					'js/backbone/views/PageView.js',
+					'js/backbone/views/BaseView.js',
+					'js/backbone/views/StopView.js',
 					'js/backbone/views/**/!(GalleryView|GeoStop|ObjectStop|WebStop)*.js',
 					'js/backbone/Router.js',
 					'js/backbone/Init.js',
@@ -42,10 +43,10 @@ module.exports = function(grunt) {
 			dependencies: {
 				src: [
 					'external/json2.js',
-					'external/jquery-1.7.2.js',
+					'external/jquery-1.8.3.js',
 					'js/backbone/jqm-config.js',
 					'external/underscore-1.4.3.js',
-					'external/jqmobile/jquery.mobile-1.1.1.js',
+					'external/jqmobile/jquery.mobile-1.2.0.js',
 					'external/backbone-0.9.9.js',
 					'external/backbone-super.js',
 					'external/backbone.localStorage-min.js',
@@ -59,7 +60,7 @@ module.exports = function(grunt) {
 			css: {
 				src: [
 					'<banner:meta.banner>',
-					'external/jqmobile/jquery.mobile-1.1.1.css',
+					'external/jqmobile/jquery.mobile-1.2.0.css',
 					'external/leaflet/leaflet.css',
 					'external/mediaelement/mediaelementplayer.css',
 					'external/photoswipe/photoswipe.css',

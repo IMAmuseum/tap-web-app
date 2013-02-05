@@ -585,1136 +585,980 @@ TapAPI.collections.Tours = Backbone.Collection.extend({
 	}
 });
 
-// TapAPI Namespace Initialization //
-if (typeof TapAPI === 'undefined'){TapAPI = {};}
-if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
-if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
-// TapAPI Namespace Initialization //
+TapAPI.views.BaseView = Backbone.View.extend({
+	initialize: function(args) {
 
-jQuery(function() {
+		// TODO: check for an index menu setting in the current tour
 
-	// Defines the base view for a page
-	TapAPI.views.Page = Backbone.View.extend({
+		// Check for a default app index menu setting
+		var navbar_items = null;
+		if (tap.config.navbar_items !== undefined) {
+			navbar_items = tap.config.navbar_items;
+		} else {
+			navbar_items = [
+				{ label: 'Menu', endpoint: 'tourstoplist' },
+				{ label: 'Keypad', endpoint: 'tourkeypad' },
+				{ label: 'Map', endpoint: 'tourmap'}
+			];
+		}
 
-		initialize: function(args) {
+		var header_nav_default = true;
+		var footer_nav_default = false;
+		if (tap.config.navbar_location !== undefined) {
+			if (tap.config.navbar_location == 'footer') {
+				header_nav_default = false;
+				footer_nav_default = true;
+			}
+		}
 
-			// TODO: check for an index menu setting in the current tour
+		_.defaults(this.options, {
+			page_title: '',
+			back_label: 'Back',
+			nav_menu: navbar_items,
+			active_index: null,
+			header_nav: header_nav_default,
+			footer_nav: footer_nav_default
+		});
 
-			// Check for a default app index menu setting
-			var navbar_items = null;
-			if (tap.config.navbar_items !== undefined) {
-				navbar_items = tap.config.navbar_items;
+		if (this.onInit) {
+			this.onInit();
+		}
+	},
+
+	close: function() {
+		this.$el.empty().undelegate();
+		this.off();
+		this.undelegateEvents();
+		if (this.onClose){
+			this.onClose();
+		}
+	},
+
+	render: function(event) {
+
+		this.$el.empty();
+		this.$el.html(TapAPI.templateManager.get('page')({
+			title: this.options.page_title,
+			back_label: this.options.back_label,
+			header_nav: this.options.header_nav,
+			footer_nav: this.options.footer_nav,
+			nav_menu: this.options.nav_menu,
+			active_index: this.options.active_index,
+			tour_id: tap.currentTour
+		}));
+		this.renderContent();
+
+		// Set width on the index selector control group so that it can center
+		$(document).on('pageshow', function() {
+			var w = 0;
+			$items = $('#index-selector a').each(function() {
+				w += $(this).outerWidth();
+			});
+			$('#index-selector .ui-controlgroup-controls').width(w);
+		});
+
+		return this;
+
+	},
+
+	// Sub-classes should override this function
+	renderContent: function() {
+		console.log('Warning: abstract TapApi.views.Page::renderContent');
+	}
+
+});
+TapAPI.views.StopView = TapAPI.views.BaseView.extend({
+	renderContent: function() {
+		var content_template = TapAPI.templateManager.get('stop');
+
+		this.$el.find(":jqmData(role='content')").append(content_template({
+			tourStopTitle : this.model.get("title") ? this.model.get("title") : undefined,
+			tourStopDescription : this.model.get('description') ? this.model.get('description') : undefined
+		}));
+		return this;
+	}
+});
+// Define the AudioStop View
+TapAPI.views.AudioStop = TapAPI.views.StopView.extend({
+	onInit: function() {
+
+		if (tap.audio_timer === undefined) {
+			tap.audio_timer = new AnalyticsTimer('AudioStop', 'played_for', tap.currentStop.id);
+		}
+		tap.audio_timer.reset();
+	},
+	renderContent: function() {
+
+		var content_template = TapAPI.templateManager.get('audio-stop');
+		var contentContainer = this.$el.find(":jqmData(role='content')");
+
+		// Find the transcription if one exists
+		var assets = this.model.getAssetsByUsage("transcription");
+		var transcription = null;
+		if (assets !== undefined) {
+			transcription = assets[0].get('content').at(0).get('data');
+		}
+
+		// Find the poster image if one exists
+		var poster_image_path = null;
+		assets = this.model.getAssetsByUsage("image");
+		if (assets !== undefined) {
+			poster_image_path = assets[0].get('source').at(0).get('uri');
+		}
+
+		// Render from the template
+		contentContainer.append(content_template({
+			tour_stop_title: this.model.get('title'),
+			transcription: transcription,
+			poster_image_path: poster_image_path
+		}));
+
+		// Add click handler on the transcription toggle button
+		this.$el.find('#trans-button').click(function() {
+			var t = $('.transcription').toggleClass('hidden');
+			if (t.hasClass('hidden')) {
+				$('.ui-btn-text', this).text('Show Transcription');
+				_gaq.push(['_trackEvent', 'AudioStop', 'hide_transcription']);
 			} else {
-				navbar_items = [
-					{ label: 'Menu', endpoint: 'tourstoplist' },
-					{ label: 'Keypad', endpoint: 'tourkeypad' },
-					{ label: 'Map', endpoint: 'tourmap'}
-				];
+				$('.ui-btn-text', this).text('Hide Transcription');
+				_gaq.push(['_trackEvent', 'AudioStop', 'show_transcription']);
 			}
+		});
 
-			var header_nav_default = true;
-			var footer_nav_default = false;
-			if (tap.config.navbar_location !== undefined) {
-				if (tap.config.navbar_location == 'footer') {
-					header_nav_default = false;
-					footer_nav_default = true;
-				}
-			}
+		assets = this.model.getAssetsByType(["tour_audio", "tour_video"]);
 
-			_.defaults(this.options, {
-				page_title: '',
-				back_label: 'Back',
-				nav_menu: navbar_items,
-				active_index: null,
-				header_nav: header_nav_default,
-				footer_nav: footer_nav_default
-			});
+		if (assets) {
 
-			if (this.onInit) {
-				this.onInit();
-			}
-		},
+			var audioPlayer = this.$el.find('#audio-player');
+			var videoPlayer = this.$el.find('#video-player');
+			var videoAspect;
 
-		close: function() {
-			this.$el.empty().undelegate();
-			this.unbind();
-			this.undelegateEvents();
-			if (this.onClose){
-				this.onClose();
-			}
-		},
+			_.each(assets, function(asset) {
+				var sources = asset.get('source');
 
-		render: function(event) {
+				// Add sources to the media elements
+				sources.each(function(source){
+					var source_str = "<source src='" + source.get('uri') + "' type='" + source.get('format') + "' />";
 
-			this.$el.empty();
-			this.$el.html(TapAPI.templateManager.get('page')({
-				title: this.options.page_title,
-				back_label: this.options.back_label,
-				header_nav: this.options.header_nav,
-				footer_nav: this.options.footer_nav,
-				nav_menu: this.options.nav_menu,
-				active_index: this.options.active_index,
-				tour_id: tap.currentTour
-			}));
-			this.renderContent();
+					switch(source.get('format').substring(0,5)) {
+						case 'audio':
+							audioPlayer.append(source_str);
+							break;
+						case 'video':
+							videoPlayer.append(source_str);
 
-			// Set width on the index selector control group so that it can center
-			$(document).live('pageshow', function() {
-				var w = 0;
-				$items = $('#index-selector a').each(function() {
-					w += $(this).outerWidth();
-				});
-				$('#index-selector .ui-controlgroup-controls').width(w);
-			});
-
-			return this;
-
-		},
-
-		// Sub-classes should override this function
-		renderContent: function() {
-			console.log('Warning: abstract TapApi.views.Page::renderContent');
-		}
-
-	});
-	
-});
-
-// TapAPI Namespace Initialization //
-if (typeof TapAPI === 'undefined'){TapAPI = {};}
-if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
-if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
-// TapAPI Namespace Initialization //
-
-// Add this view to the registry
-TapAPI.views.registry['tour_audio_stop'] = 'AudioStop';
-
-// TODO: remove this deprecated mapping
-TapAPI.views.registry['AudioStop'] = 'AudioStop';
-
-jQuery(function() {
-
-	// Define the AudioStop View
-	TapAPI.views.AudioStop = TapAPI.views.Page.extend({
-
-		onInit: function() {
-
-			if (tap.audio_timer === undefined) {
-				tap.audio_timer = new AnalyticsTimer('AudioStop', 'played_for', tap.currentStop.id);
-			}
-			tap.audio_timer.reset();
-		},
-
-		renderContent: function() {
-
-			var content_template = TapAPI.templateManager.get('audio-stop');
-			var contentContainer = this.$el.find(":jqmData(role='content')");
-
-			// Find the transcription if one exists
-			var assets = this.model.getAssetsByUsage("transcription");
-			var transcription = null;
-			if (assets !== undefined) {
-				transcription = assets[0].get('content').at(0).get('data');
-			}
-
-			// Find the poster image if one exists
-			var poster_image_path = null;
-			assets = this.model.getAssetsByUsage("image");
-			if (assets !== undefined) {
-				poster_image_path = assets[0].get('source').at(0).get('uri');
-			}
-
-			// Render from the template
-			contentContainer.append(content_template({
-				tour_stop_title: this.model.get('title'),
-				transcription: transcription,
-				poster_image_path: poster_image_path
-			}));
-
-			// Add click handler on the transcription toggle button
-			this.$el.find('#trans-button').click(function() {
-				var t = $('.transcription').toggleClass('hidden');
-				if (t.hasClass('hidden')) {
-					$('.ui-btn-text', this).text('Show Transcription');
-					_gaq.push(['_trackEvent', 'AudioStop', 'hide_transcription']);
-				} else {
-					$('.ui-btn-text', this).text('Hide Transcription');
-					_gaq.push(['_trackEvent', 'AudioStop', 'show_transcription']);
-				}
-			});
-
-			assets = this.model.getAssetsByType(["tour_audio", "tour_video"]);
-
-			if (assets) {
-
-				var audioPlayer = this.$el.find('#audio-player');
-				var videoPlayer = this.$el.find('#video-player');
-				var videoAspect;
-
-				_.each(assets, function(asset) {
-					var sources = asset.get('source');
-
-					// Add sources to the media elements
-					sources.each(function(source){
-						var source_str = "<source src='" + source.get('uri') + "' type='" + source.get('format') + "' />";
-
-						switch(source.get('format').substring(0,5)) {
-							case 'audio':
-								audioPlayer.append(source_str);
-								break;
-							case 'video':
-								videoPlayer.append(source_str);
-
-								break;
-							default:
-								console.log('Unsupported format for audio asset:', assetSource);
-						}
-					});
-				});
-
-				var mediaOptions = {
-					flashName: tapBasePath() + mejs.MediaElementDefaults.flashName,
-					silverlightName: tapBasePath() + mejs.MediaElementDefaults.flashName
-				};
-
-				var mediaElement = null;
-
-				// If there are video sources and no audio sources, switch to the video element
-				if (videoPlayer.find('source').length && !audioPlayer.find('source').length) {
-
-					audioPlayer.remove();
-					this.$el.find('.poster-image').remove();
-					videoPlayer.show();
-					mediaOptions.defaultVideoWidth = '100%';
-					mediaOptions.defaultVideoHeight = 270;
-
-					mediaElement = videoPlayer;
-
-				} else {
-
-					videoPlayer.remove();
-					mediaOptions.defaultAudioWidth = '100%';
-					//mediaOptions.defaultAudioHeight = 270;
-
-					mediaElement = audioPlayer;
-
-				}
-
-				var player = new MediaElementPlayer(mediaElement, mediaOptions);
-
-				mediaElement[0].addEventListener('loadedmetadata', function() {
-					tap.audio_timer.max_threshold = mediaElement[0].duration * 1000;
-				});
-
-				mediaElement[0].addEventListener('play', function() {
-					_gaq.push(['_trackEvent', 'AudioStop', 'media_started']);
-					tap.audio_timer.start();
-				});
-
-				mediaElement[0].addEventListener('pause', function() {
-					_gaq.push(['_trackEvent', 'AudioStop', 'media_paused']);
-					tap.audio_timer.stop();
-				});
-
-				mediaElement[0].addEventListener('ended', function() {
-					_gaq.push(['_trackEvent', 'AudioStop', 'media_ended']);
-				});
-
-				player.play();
-			}
-
-			return this;
-		},
-
-		onClose: function() {
-
-			// Send information about playback duration when the view closes
-			tap.audio_timer.send();
-			$('.me-plugin').remove();
-
-		}
-
-	});
-});
-
-// TapAPI Namespace Initialization //
-if (typeof TapAPI === 'undefined'){TapAPI = {};}
-if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
-if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
-// TapAPI Namespace Initialization //
-
-jQuery(function() {
-
-	// Defines the default stop view
-	TapAPI.views.Stop = TapAPI.views.Page.extend({
-		renderContent: function() {
-			var content_template = TapAPI.templateManager.get('stop');
-
-			this.$el.find(":jqmData(role='content')").append(content_template({
-				tourStopTitle : this.model.get("title") ? this.model.get("title") : undefined,
-				tourStopDescription : this.model.get('description') ? this.model.get('description') : undefined
-			}));
-			return this;
-
-		}
-	});
-});
-
-// TapAPI Namespace Initialization //
-if (typeof TapAPI === 'undefined'){TapAPI = {};}
-if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
-if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
-// TapAPI Namespace Initialization //
-
-// Add this view to the registry
-TapAPI.views.registry['tour_image_stop'] = 'ImageStop';
-
-// TODO: remove this deprecated mapping
-TapAPI.views.registry['ImageStop'] = 'ImageStop';
-
-jQuery(function() {
-
-	// Define the ImageStop View
-	TapAPI.views.ImageStop = TapAPI.views.Page.extend({
-
-		renderContent: function() {
-
-			var asset_refs = tap.currentStop.get("assetRef");
-			var content_template = TapAPI.templateManager.get('image-stop');
-			var imageTemplate = TapAPI.templateManager.get('image-stop-item');
-
-			if (asset_refs) {
-				this.$el.find(":jqmData(role='content')").append(content_template());
-
-				var gallery = this.$el.find("#Gallery");
-
-				$.each(asset_refs, function(assetRef) {
-					var asset = tap.tourAssets.get(this.id);
-
-					if (this.usage === "image_asset") {
-						var templateData = {};
-						var sources = asset.get('source');
-						var content = asset.get('content');
-						sources.each(function(source) {
-							switch (source.get('part')) {
-								case "image_asset_image":
-									templateData.fullImageUri = source.get("uri") ? source.get("uri") : '';
-									break;
-								case "thumbnail":
-									templateData.thumbUri = source.get("uri") ? source.get("uri") : '';
-									break;
-							}
-						});
-						content.each(function(contentItem) {
-							switch(contentItem.get("part")) {
-								case "title":
-									templateData.title = contentItem.get("data");
-									break;
-								case "caption":
-									templateData.caption = contentItem.get("caption");
-									break;
-							}
-						});
-
-						gallery.append(imageTemplate(templateData));
+							break;
+						default:
+							console.log('Unsupported format for audio asset:', assetSource);
 					}
 				});
-
-				var photoSwipe = this.$el.find('#Gallery a').photoSwipe({
-					enableMouseWheel: false,
-					enableKeyboard: true,
-					doubleTapZoomLevel : 0,
-					captionAndToolbarOpacity : 0.8,
-					minUserZoom : 0.0,
-					preventSlideshow : true,
-					jQueryMobile : true
-				});
-			}
-			
-			return this;
-		}
-	});
-});
-
-// TapAPI Namespace Initialization //
-if (typeof TapAPI === 'undefined'){TapAPI = {};}
-if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
-if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
-// TapAPI Namespace Initialization //
-
-jQuery(function() {
-
-	// Define the Keypad View
-	TapAPI.views.Keypad = TapAPI.views.Page.extend({
-
-		events: {
-			'tap #gobtn' : 'submit',
-			'tap #keypad div .button' : 'writekeycode',
-			'tap #delete' : 'clearkeycode'
-		},
-
-		onInit: function() {
-			this.options.active_index = 'tourkeypad';
-		},
-
-		renderContent: function() {
-			var content_template = TapAPI.templateManager.get('keypad');
-
-			$(":jqmData(role='content')", this.$el).append(content_template());
-
-		},
-
-		submit: function() {
-			// validate tour stop code
-			if(!$('#write').html()) return;
-			if(!tap.tourStops.getStopByKeycode($('#write').html())){
-				tap.router.showDialog('error', 'This is an invalid code. Please enter another.');
-				$('#write').html("");
-				return;
-			}
-			$destUrl = "#tourstop/"+tap.currentTour+"/code/"+$('#write').html();
-			Backbone.history.navigate($destUrl, true);
-		},
-		writekeycode: function(e) {
-			$('#write').html($('#write').html() + $(e.currentTarget).html());
-		},
-		clearkeycode: function(e) {
-			$('#write').html("");
-		},
-		close: function() {
-			// Override base close function so that events are not unbound
-		}
-	});
-});
-// TapAPI Namespace Initialization //
-if (typeof TapAPI === 'undefined'){TapAPI = {};}
-if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
-if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
-// TapAPI Namespace Initialization //
-
-
-/**
- * The MapView supports the display of multiple tours or a single tour
- */
-
-jQuery(function() {
-
-	// Define the Map View
-	TapAPI.views.Map = TapAPI.views.Page.extend({
-
-		onInit: function() {
-
-			this.options.active_index = 'tourmap';
-
-			this.tile_layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-				attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery &copy; <a href="http://cloudmade.com">CloudMade</a>',
-				maxZoom: 18
 			});
 
-			this.map = null;
-			this.stop_markers = {};
-			this.stop_icons = {};
-			this.stop_popups = {};
-			this.stop_bounds = null;
-			this.position_marker = null;
-			this.view_initialized = false;
+			var mediaOptions = {
+				flashName: tapBasePath() + mejs.MediaElementDefaults.flashName,
+				silverlightName: tapBasePath() + mejs.MediaElementDefaults.flashName
+			};
 
-			this.location_icon = L.divIcon({
-				className: 'location-icon'
-			});
+			var mediaElement = null;
 
-			this.stop_icon = L.divIcon({
-				className: 'stop-icon'
-			});
+			// If there are video sources and no audio sources, switch to the video element
+			if (videoPlayer.find('source').length && !audioPlayer.find('source').length) {
 
-			_.defaults(this.options, {
-				'init-lat': null,
-				'init-lon': null,
-				'init-zoom': 2
-			});
+				audioPlayer.remove();
+				this.$el.find('.poster-image').remove();
+				videoPlayer.show();
+				mediaOptions.defaultVideoWidth = '100%';
+				mediaOptions.defaultVideoHeight = 270;
 
-		},
+				mediaElement = videoPlayer;
 
-		renderContent: function() {
-
-			TapAPI.geoLocation.startLocating();
-
-			var content_template = TapAPI.templateManager.get('tour-map');
-
-			//$(":jqmData(role='page')", this.$el).attr('id', 'tour-map-page');
-			$(":jqmData(role='content')", this.$el).addClass('map-content').append(content_template());
-
-			$(":jqmData(role='page')").live('pageshow', {map_view: this}, function(e) {
-				e.data.map_view.resizeContentArea();
-				if (e.data.map_view.map === null) {
-					e.data.map_view.initMap();
-				}
-				setTimeout(e.data.map_view.resizeContentArea, 2000);
-			});
-
-			$(window).bind('orientationchange resize', this.resizeContentArea);
-
-		},
-
-
-		initMap: function() {
-
-			this.map = new L.Map('tour-map');
-
-			this.map.addLayer(this.tile_layer);
-
-			// Add the stop markers
-			_.each(this.options['stops'].models, this.plotTourStopMarker, this);
-			TapAPI.geoLocation.active_stop_collection = this.options['stops'];
-
-			// Determine the bounding region
-			_.each(this.stop_markers, function(marker) {
-
-				var l = marker.getLatLng();
-				if (this.stop_bounds === null) {
-					this.stop_bounds = new L.LatLngBounds(l,l);
-				} else {
-					this.stop_bounds.extend(l);
-				}
-
-			}, this);
-
-			// Set the viewport based on settings
-			if ((this.options['init-lat'] === null) || (this.options['init-lon'] === null)) {
-				if (this.stop_bounds !== null) {
-					this.map.fitBounds(this.stop_bounds);
-				} else {
-					this.map.setView(L.latLng(0,0), this.options['init-zoom']);
-				}
 			} else {
-				this.map.setView(
-					new L.LatLng(this.options['init-lat'], this.options['init-lon']),
-					this.options['init-zoom']
-				);
+
+				videoPlayer.remove();
+				mediaOptions.defaultAudioWidth = '100%';
+				//mediaOptions.defaultAudioHeight = 270;
+
+				mediaElement = audioPlayer;
+
 			}
 
-			// At this point the stop markers should be added to the map
-			// We can augment them with the distance labels
-			_.each(this.options['stops'].models, function(stop) {
-				tap.tours.selectTour(stop.get('tour'));
-				if (stop.getAssetsByUsage('geo') === undefined) return;
-				this.updateStopMarker(stop);
-			}, this);
+			var player = new MediaElementPlayer(mediaElement, mediaOptions);
 
-			if (TapAPI.geoLocation.latest_location !== null) {
-				this.onLocationFound(TapAPI.geoLocation.latest_location);
-			}
-			TapAPI.geoLocation.on("gotlocation", this.onLocationFound, this);
-
-			return this;
-		},
-
-
-		generateBubbleContent: function(stop, formatted_distance) {
-
-			if (formatted_distance === undefined) {
-				if (stop.get('distance')) {
-					formatted_distance = TapAPI.geoLocation.formatDistance(stop.get('distance'));
-				}
-			}
-
-			var template = TapAPI.templateManager.get('tour-map-marker-bubble');
-			return template({
-				'title': stop.get('title'),
-				'tour_id': stop.get('tour'),
-				'stop_id': stop.get('id'),
-				'distance': (formatted_distance === undefined) ? '' : 'Distance: ' + formatted_distance,
-				'stop_lat': stop.get('location').lat,
-				'stop_lon': stop.get('location').lng
+			mediaElement[0].addEventListener('loadedmetadata', function() {
+				tap.audio_timer.max_threshold = mediaElement[0].duration * 1000;
 			});
 
-		},
+			mediaElement[0].addEventListener('play', function() {
+				_gaq.push(['_trackEvent', 'AudioStop', 'media_started']);
+				tap.audio_timer.start();
+			});
+
+			mediaElement[0].addEventListener('pause', function() {
+				_gaq.push(['_trackEvent', 'AudioStop', 'media_paused']);
+				tap.audio_timer.stop();
+			});
+
+			mediaElement[0].addEventListener('ended', function() {
+				_gaq.push(['_trackEvent', 'AudioStop', 'media_ended']);
+			});
+
+			player.play();
+		}
+
+		return this;
+	},
+
+	onClose: function() {
+
+		// Send information about playback duration when the view closes
+		tap.audio_timer.send();
+		$('.me-plugin').remove();
+
+	}
+
+});
+
+TapAPI.views.ImageStop = TapAPI.views.StopView.extend({
+
+	renderContent: function() {
+
+		var asset_refs = tap.currentStop.get("assetRef");
+		var content_template = TapAPI.templateManager.get('image-stop');
+		var imageTemplate = TapAPI.templateManager.get('image-stop-item');
+
+		if (asset_refs) {
+			this.$el.find(":jqmData(role='content')").append(content_template());
+
+			var gallery = this.$el.find("#Gallery");
+
+			$.each(asset_refs, function(assetRef) {
+				var asset = tap.tourAssets.get(this.id);
+
+				if (this.usage === "image_asset") {
+					var templateData = {};
+					var sources = asset.get('source');
+					var content = asset.get('content');
+					sources.each(function(source) {
+						switch (source.get('part')) {
+							case "image_asset_image":
+								templateData.fullImageUri = source.get("uri") ? source.get("uri") : '';
+								break;
+							case "thumbnail":
+								templateData.thumbUri = source.get("uri") ? source.get("uri") : '';
+								break;
+						}
+					});
+					content.each(function(contentItem) {
+						switch(contentItem.get("part")) {
+							case "title":
+								templateData.title = contentItem.get("data");
+								break;
+							case "caption":
+								templateData.caption = contentItem.get("caption");
+								break;
+						}
+					});
+
+					gallery.append(imageTemplate(templateData));
+				}
+			});
+
+			var photoSwipe = this.$el.find('#Gallery a').photoSwipe({
+				enableMouseWheel: false,
+				enableKeyboard: true,
+				doubleTapZoomLevel : 0,
+				captionAndToolbarOpacity : 0.8,
+				minUserZoom : 0.0,
+				preventSlideshow : true,
+				jQueryMobile : true
+			});
+		}
+		
+		return this;
+	}
+});
+TapAPI.views.Keypad = TapAPI.views.BaseView.extend({
+
+	events: {
+		'tap #gobtn' : 'submit',
+		'tap #keypad div .button' : 'writekeycode',
+		'tap #delete' : 'clearkeycode'
+	},
+
+	onInit: function() {
+		this.options.active_index = 'tourkeypad';
+	},
+
+	renderContent: function() {
+		var content_template = TapAPI.templateManager.get('keypad');
+
+		$(":jqmData(role='content')", this.$el).append(content_template());
+
+	},
+
+	submit: function() {
+		// validate tour stop code
+		if(!$('#write').html()) return;
+		if(!tap.tourStops.getStopByKeycode($('#write').html())){
+			tap.router.showDialog('error', 'This is an invalid code. Please enter another.');
+			$('#write').html("");
+			return;
+		}
+		$destUrl = "#tourstop/"+tap.currentTour+"/code/"+$('#write').html();
+		Backbone.history.navigate($destUrl, true);
+	},
+	writekeycode: function(e) {
+		$('#write').html($('#write').html() + $(e.currentTarget).html());
+	},
+	clearkeycode: function(e) {
+		$('#write').html("");
+	},
+	close: function() {
+		// Override base close function so that events are not unbound
+	}
+});
+TapAPI.views.Map = TapAPI.views.BaseView.extend({
+
+	onInit: function() {
+
+		this.options.active_index = 'tourmap';
+
+		this.tile_layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery &copy; <a href="http://cloudmade.com">CloudMade</a>',
+			maxZoom: 18
+		});
+
+		this.map = null;
+		this.stop_markers = {};
+		this.stop_icons = {};
+		this.stop_popups = {};
+		this.stop_bounds = null;
+		this.position_marker = null;
+		this.view_initialized = false;
+
+		this.location_icon = L.divIcon({
+			className: 'location-icon'
+		});
+
+		this.stop_icon = L.divIcon({
+			className: 'stop-icon'
+		});
+
+		_.defaults(this.options, {
+			'init-lat': null,
+			'init-lon': null,
+			'init-zoom': 2
+		});
+
+	},
+
+	renderContent: function() {
+
+		TapAPI.geoLocation.startLocating();
+
+		var content_template = TapAPI.templateManager.get('tour-map');
+
+		//$(":jqmData(role='page')", this.$el).attr('id', 'tour-map-page');
+		$(":jqmData(role='content')", this.$el).addClass('map-content').append(content_template());
+
+		$(":jqmData(role='page')").live('pageshow', {map_view: this}, function(e) {
+			e.data.map_view.resizeContentArea();
+			if (e.data.map_view.map === null) {
+				e.data.map_view.initMap();
+			}
+			setTimeout(e.data.map_view.resizeContentArea, 2000);
+		});
+
+		$(window).bind('orientationchange resize', this.resizeContentArea);
+
+	},
 
 
-		// Plot a single tour stop marker on the map
-		// @note Assumes that the context is set to { stop: (StopModel), map_view: (MapView) }
-		plotTourStopMarker: function(stop) {
+	initMap: function() {
 
-			// Make sure the proper tour is active
-			tap.tours.selectTour(stop.get('tour'));
+		this.map = new L.Map('tour-map');
 
-			// Find the geo assets for this stop
-			var geo_assets = stop.getAssetsByUsage('geo');
-			if (geo_assets === undefined) return;
+		this.map.addLayer(this.tile_layer);
 
-			// Parse the contents of the first geo asset
-			var content = geo_assets[0].get('content');
-			if (content === undefined) return;
-			var data = $.parseJSON(content.at(0).get('data'));
+		// Add the stop markers
+		_.each(this.options['stops'].models, this.plotTourStopMarker, this);
+		TapAPI.geoLocation.active_stop_collection = this.options['stops'];
 
-			if (data.type == 'Point') {
+		// Determine the bounding region
+		_.each(this.stop_markers, function(marker) {
 
-				var stop_icon = L.divIcon({
-					className: 'stop-icon ' + stop.id
-				});
-
-				var marker_location = new L.LatLng(data.coordinates[1], data.coordinates[0]);
-				var marker = new L.Marker(marker_location, { icon: stop_icon });
-
-				var popup = new L.Popup();
-				popup.setLatLng(marker_location);
-				popup.setContent(this.generateBubbleContent(stop));
-				this.stop_popups[stop.id] = popup;
-
-				marker.stop_id = stop.id;
-				marker.addEventListener('click', this.onMarkerSelected, this);
-
-				this.stop_icons[stop.id] = stop_icon;
-				this.stop_markers[stop.id] = marker;
-				this.map.addLayer(marker);
-
+			var l = marker.getLatLng();
+			if (this.stop_bounds === null) {
+				this.stop_bounds = new L.LatLngBounds(l,l);
+			} else {
+				this.stop_bounds.extend(l);
 			}
 
-			// Update the marker bubble when the distance to a stop changes
-			stop.on('change:distance', this.updateStopMarker, this);
+		}, this);
 
-		},
+		// Set the viewport based on settings
+		if ((this.options['init-lat'] === null) || (this.options['init-lon'] === null)) {
+			if (this.stop_bounds !== null) {
+				this.map.fitBounds(this.stop_bounds);
+			} else {
+				this.map.setView(L.latLng(0,0), this.options['init-zoom']);
+			}
+		} else {
+			this.map.setView(
+				new L.LatLng(this.options['init-lat'], this.options['init-lon']),
+				this.options['init-zoom']
+			);
+		}
+
+		// At this point the stop markers should be added to the map
+		// We can augment them with the distance labels
+		_.each(this.options['stops'].models, function(stop) {
+			tap.tours.selectTour(stop.get('tour'));
+			if (stop.getAssetsByUsage('geo') === undefined) return;
+			this.updateStopMarker(stop);
+		}, this);
+
+		if (TapAPI.geoLocation.latest_location !== null) {
+			this.onLocationFound(TapAPI.geoLocation.latest_location);
+		}
+		TapAPI.geoLocation.on("gotlocation", this.onLocationFound, this);
+
+		return this;
+	},
 
 
-		updateStopMarker: function(stop) {
+	generateBubbleContent: function(stop, formatted_distance) {
 
-			var formatted_distance = undefined;
+		if (formatted_distance === undefined) {
 			if (stop.get('distance')) {
 				formatted_distance = TapAPI.geoLocation.formatDistance(stop.get('distance'));
 			}
-
-			this.stop_popups[stop.id].setContent(this.generateBubbleContent(stop), formatted_distance);
-
-			// Update the stop icon
-			var distance_label = $('.stop-icon.' + stop.id + ' .distance-label');
-
-			if (distance_label.length === 0) {
-				template = TapAPI.templateManager.get('tour-map-distance-label');
-				$('.stop-icon.' + stop.id).append(template({
-					distance: formatted_distance
-				}));
-			} else {
-				distance_label.html(formatted_distance);
-			}
-
-		},
-
-
-		// When a marker is selected, show the popup
-		// Assumes that the context is set to (MapView)
-		onMarkerSelected: function(e) {
-
-			_gaq.push(['_trackEvent', 'Map', 'marker_clicked', e.target.stop_id]);
-
-			this.map.openPopup(this.stop_popups[e.target.stop_id]);
-
-			$('.marker-bubble-content .directions a').on('click', function() {
-				_gaq.push(['_trackEvent', 'Map', 'get_directions', e.target.stop_id]);
-			});
-
-		},
-
-
-		onLocationFound: function(position) {
-
-			//console.log('onLocationFound', position);
-			var latlng = new L.LatLng(position.coords.latitude, position.coords.longitude);
-
-			if (this.position_marker === null) {
-
-				this.position_marker = new L.Marker(latlng, {icon: this.location_icon});
-				this.position_marker.bindPopup('You are here');
-				this.map.addLayer(this.position_marker);
-
-				this.position_marker.addEventListener('click', function() {
-					_gaq.push(['_trackEvent', 'Map', 'you_are_here_clicked']);
-				});
-
-			} else {
-
-				this.position_marker.setLatLng(latlng);
-
-			}
-
-		},
-
-
-		onLocationError: function(e) {
-
-			console.log('onLocationError', e);
-
-			// TODO: hide the position marker?
-
-		},
-
-
-		resizeContentArea: function() {
-			var content, contentHeight, footer, header, viewportHeight;
-			window.scroll(0, 0);
-			var tour_map_page = $(":jqmData(role='page')");
-			header = tour_map_page.find(":jqmData(role='header'):visible");
-			footer = tour_map_page.find(":jqmData(role='footer'):visible");
-			content = tour_map_page.find(":jqmData(role='content'):visible");
-			viewportHeight = $(window).height();
-			contentHeight = viewportHeight - header.outerHeight() - footer.outerHeight();
-			tour_map_page.find(":jqmData(role='content')").first().height(contentHeight);
-		},
-
-
-		onClose: function() {
-			TapAPI.geoLocation.stopLocating();
-			$(window).unbind('orientationchange resize', this.resizeContentArea);
 		}
 
-	});
+		var template = TapAPI.templateManager.get('tour-map-marker-bubble');
+		return template({
+			'title': stop.get('title'),
+			'tour_id': stop.get('tour'),
+			'stop_id': stop.get('id'),
+			'distance': (formatted_distance === undefined) ? '' : 'Distance: ' + formatted_distance,
+			'stop_lat': stop.get('location').lat,
+			'stop_lon': stop.get('location').lng
+		});
 
-});
-// TapAPI Namespace Initialization //
-if (typeof TapAPI === 'undefined'){TapAPI = {};}
-if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
-if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
-// TapAPI Namespace Initialization //
+	},
 
-// Add this view to the registry
-TapAPI.views.registry['tour_stop_group'] = 'StopGroup';
 
-// TODO: remove this deprecated mapping
-TapAPI.views.registry['StopGroup'] = 'StopGroup';
+	// Plot a single tour stop marker on the map
+	// @note Assumes that the context is set to { stop: (StopModel), map_view: (MapView) }
+	plotTourStopMarker: function(stop) {
 
-jQuery(function() {
+		// Make sure the proper tour is active
+		tap.tours.selectTour(stop.get('tour'));
 
-	// Define the StopGroup view
-	TapAPI.views.StopGroup = TapAPI.views.Page.extend({
+		// Find the geo assets for this stop
+		var geo_assets = stop.getAssetsByUsage('geo');
+		if (geo_assets === undefined) return;
 
-		renderContent: function() {
-			var content_template = TapAPI.templateManager.get('stop-group');
-			var template_args = {
-				tourStopTitle : this.model.get('title')
-			};
+		// Parse the contents of the first geo asset
+		var content = geo_assets[0].get('content');
+		if (content === undefined) return;
+		var data = $.parseJSON(content.at(0).get('data'));
 
-			var description = this.model.get("description");
-			if (description !== undefined) {
-				template_args['description'] = description;
-			} else {
-				template_args['description'] = '';
-			}
+		if (data.type == 'Point') {
 
-			this.$el.find(":jqmData(role='content')").append(content_template(template_args));
-
-			var connections = this.model.get('connection');
-			var listContainer = this.$el.find("#stop-list");
-			_.each(connections, function(connection) {
-				var stop = tap.tourStops.get(connection.destId);
-				if (stop) {
-					var stopView = new TapAPI.views.StopGroupListItem({
-						model: stop
-					});
-					listContainer.append(stopView.render().$el);
-				}
+			var stop_icon = L.divIcon({
+				className: 'stop-icon ' + stop.id
 			});
 
-		}
-	});
+			var marker_location = new L.LatLng(data.coordinates[1], data.coordinates[0]);
+			var marker = new L.Marker(marker_location, { icon: stop_icon });
 
-	// setup an individual view of a tour
-	TapAPI.views.StopGroupListItem = Backbone.View.extend({
-		tagName: 'li',
-		template: TapAPI.templateManager.get('stop-group-list-item'),
-		render: function() {
-			this.$el.html(this.template({
-				title: this.model.get('title') ? this.model.get('title') : undefined,
-				id: this.model.get('id'),
-				tourId: tap.currentTour
+			var popup = new L.Popup();
+			popup.setLatLng(marker_location);
+			popup.setContent(this.generateBubbleContent(stop));
+			this.stop_popups[stop.id] = popup;
+
+			marker.stop_id = stop.id;
+			marker.addEventListener('click', this.onMarkerSelected, this);
+
+			this.stop_icons[stop.id] = stop_icon;
+			this.stop_markers[stop.id] = marker;
+			this.map.addLayer(marker);
+
+		}
+
+		// Update the marker bubble when the distance to a stop changes
+		stop.on('change:distance', this.updateStopMarker, this);
+
+	},
+
+
+	updateStopMarker: function(stop) {
+
+		var formatted_distance = undefined;
+		if (stop.get('distance')) {
+			formatted_distance = TapAPI.geoLocation.formatDistance(stop.get('distance'));
+		}
+
+		this.stop_popups[stop.id].setContent(this.generateBubbleContent(stop), formatted_distance);
+
+		// Update the stop icon
+		var distance_label = $('.stop-icon.' + stop.id + ' .distance-label');
+
+		if (distance_label.length === 0) {
+			template = TapAPI.templateManager.get('tour-map-distance-label');
+			$('.stop-icon.' + stop.id).append(template({
+				distance: formatted_distance
 			}));
-			return this;
+		} else {
+			distance_label.html(formatted_distance);
 		}
-	});
+
+	},
+
+
+	// When a marker is selected, show the popup
+	// Assumes that the context is set to (MapView)
+	onMarkerSelected: function(e) {
+
+		_gaq.push(['_trackEvent', 'Map', 'marker_clicked', e.target.stop_id]);
+
+		this.map.openPopup(this.stop_popups[e.target.stop_id]);
+
+		$('.marker-bubble-content .directions a').on('click', function() {
+			_gaq.push(['_trackEvent', 'Map', 'get_directions', e.target.stop_id]);
+		});
+
+	},
+
+
+	onLocationFound: function(position) {
+
+		//console.log('onLocationFound', position);
+		var latlng = new L.LatLng(position.coords.latitude, position.coords.longitude);
+
+		if (this.position_marker === null) {
+
+			this.position_marker = new L.Marker(latlng, {icon: this.location_icon});
+			this.position_marker.bindPopup('You are here');
+			this.map.addLayer(this.position_marker);
+
+			this.position_marker.addEventListener('click', function() {
+				_gaq.push(['_trackEvent', 'Map', 'you_are_here_clicked']);
+			});
+
+		} else {
+
+			this.position_marker.setLatLng(latlng);
+
+		}
+
+	},
+
+
+	onLocationError: function(e) {
+
+		console.log('onLocationError', e);
+
+		// TODO: hide the position marker?
+
+	},
+
+
+	resizeContentArea: function() {
+		var content, contentHeight, footer, header, viewportHeight;
+		window.scroll(0, 0);
+		var tour_map_page = $(":jqmData(role='page')");
+		header = tour_map_page.find(":jqmData(role='header'):visible");
+		footer = tour_map_page.find(":jqmData(role='footer'):visible");
+		content = tour_map_page.find(":jqmData(role='content'):visible");
+		viewportHeight = $(window).height();
+		contentHeight = viewportHeight - header.outerHeight() - footer.outerHeight();
+		tour_map_page.find(":jqmData(role='content')").first().height(contentHeight);
+	},
+
+
+	onClose: function() {
+		TapAPI.geoLocation.stopLocating();
+		$(window).unbind('orientationchange resize', this.resizeContentArea);
+	}
+
+});
+TapAPI.views.StopGroup = TapAPI.views.BaseView.extend({
+
+	renderContent: function() {
+		var content_template = TapAPI.templateManager.get('stop-group');
+		var template_args = {
+			tourStopTitle : this.model.get('title')
+		};
+
+		var description = this.model.get("description");
+		if (description !== undefined) {
+			template_args['description'] = description;
+		} else {
+			template_args['description'] = '';
+		}
+
+		this.$el.find(":jqmData(role='content')").append(content_template(template_args));
+
+		var connections = this.model.get('connection');
+		var listContainer = this.$el.find("#stop-list");
+		_.each(connections, function(connection) {
+			var stop = tap.tourStops.get(connection.destId);
+			if (stop) {
+				var stopView = new TapAPI.views.StopGroupListItem({
+					model: stop
+				});
+				listContainer.append(stopView.render().$el);
+			}
+		});
+
+	}
 });
 
-// TapAPI Namespace Initialization //
-if (typeof TapAPI === 'undefined'){TapAPI = {};}
-if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
-if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
-// TapAPI Namespace Initialization //
+// setup an individual view of a tour
+TapAPI.views.StopGroupListItem = Backbone.View.extend({
+	tagName: 'li',
+	template: TapAPI.templateManager.get('stop-group-list-item'),
+	render: function() {
+		this.$el.html(this.template({
+			title: this.model.get('title') ? this.model.get('title') : undefined,
+			id: this.model.get('id'),
+			tourId: tap.currentTour
+		}));
+		return this;
+	}
+});
+TapAPI.views.StopList = TapAPI.views.Page.extend({
+
+	events: {
+		'change #proximity-toggle': 'onToggleProximity'
+	},
+
+	onInit: function() {
+
+		this.options = _.defaults(this.options, {
+			active_index: 'tourstoplist',
+			codes_only: true,
+			enable_proximity_order: true,
+			sort: 'default'
+		});
+
+		// Turn off proximity ordering if the tour has no geolocated stops
+		var geo = false;
+		_.each(tap.tourStops.models, function(stop) {
+			if (stop.getAssetsByUsage('geo') !== undefined) {
+				geo = true;
+			}
+		});
+		if (geo === false) {
+			this.options.enable_proximity_order = false;
+		}
+
+		if (this.options.enable_proximity_order) {
+			TapAPI.geoLocation.on("gotlocation", this.onLocationFound, this);
+		}
+
+		this.stoplistitems = {};
+
+		tap.tourStops.comparator = this.sortByCode;
+		tap.tourStops.sort();
+
+	},
+
+	renderContent: function() {
+		var content_template = TapAPI.templateManager.get('tour-stop-list');
+
+		this.$el.find(":jqmData(role='content')").append(content_template({
+			enable_proximity_order: this.options.enable_proximity_order
+		}));
+
+		// TODO: figure out a better way to avoid rendering again
+		//if ($('li', this.$el).length == tap.tourStops.models.length) return;
+
+		var listContainer = this.$el.find('#tour-stop-list');
+		
+		this.addStopsToList(listContainer);
+
+		if (this.options.enable_proximity_order) {
+			TapAPI.geoLocation.startLocating();
+		}
+
+	},
 
 
-jQuery(function() {
+	addStopsToList: function(listContainer) {
 
-	// Define the stop list view
-	TapAPI.views.StopList = TapAPI.views.Page.extend({
+		_.each(tap.tourStops.models, function(stop) {
 
-		events: {
-			'change #proximity-toggle': 'onToggleProximity'
-		},
+			// If in codes-only mode, abort if the stop does not have a code
+			if (this.options.codes_only) {
+				var code = stop.get('propertySet').where({"name":"code"});
+				if (!code.length) return;
+			}
 
-		onInit: function() {
+			var item = this.stoplistitems[stop.id];
+			if (item === undefined) {
+				item = new TapAPI.views.StopListItem({model: stop});
+				this.stoplistitems[stop.id] = item;
+				listContainer.append(item.render().el);
 
-			this.options = _.defaults(this.options, {
-				active_index: 'tourstoplist',
-				codes_only: true,
-				enable_proximity_order: true,
-				sort: 'default'
-			});
-
-			// Turn off proximity ordering if the tour has no geolocated stops
-			var geo = false;
-			_.each(tap.tourStops.models, function(stop) {
-				if (stop.getAssetsByUsage('geo') !== undefined) {
-					geo = true;
+				if (stop.get('nearest')) {
+					item.$el.addClass('nearest');
 				}
-			});
-			if (geo === false) {
-				this.options.enable_proximity_order = false;
+
+				if (this.options.enable_proximity_order) {
+					stop.on("change:distance", this.onStopDistanceChanged, item);
+					stop.on("change:nearest", this.onNearestStopChanged, item);
+				}
+
+			} else {
+				listContainer.append(item.render().el);
 			}
 
-			if (this.options.enable_proximity_order) {
-				TapAPI.geoLocation.on("gotlocation", this.onLocationFound, this);
-			}
+		}, this);
 
-			this.stoplistitems = {};
+		$('#tour-stop-list').listview('refresh');
 
+	},
+
+
+	sortByCode: function(stop) {
+		var code = stop.get('propertySet').where({"name":"code"});
+		if (!code.length) return 10000;
+		return code[0].get('value');
+	},
+
+	sortByDistance: function(stop) {
+		var d = stop.get('distance');
+		return (d === undefined) ? -1 : d;
+	},
+
+	onToggleProximity: function() {
+
+		if (this.options.sort == 'default') {
+			this.options.sort = 'proximity';
+			tap.tourStops.comparator = this.sortByDistance;
+			tap.tourStops.sort();
+		} else {
+			this.options.sort = 'default';
 			tap.tourStops.comparator = this.sortByCode;
 			tap.tourStops.sort();
-
-		},
-
-		renderContent: function() {
-			var content_template = TapAPI.templateManager.get('tour-stop-list');
-
-			this.$el.find(":jqmData(role='content')").append(content_template({
-				enable_proximity_order: this.options.enable_proximity_order
-			}));
-
-			// TODO: figure out a better way to avoid rendering again
-			//if ($('li', this.$el).length == tap.tourStops.models.length) return;
-
-			var listContainer = this.$el.find('#tour-stop-list');
-			
-			this.addStopsToList(listContainer);
-
-			if (this.options.enable_proximity_order) {
-				TapAPI.geoLocation.startLocating();
-			}
-
-		},
-
-
-		addStopsToList: function(listContainer) {
-
-			_.each(tap.tourStops.models, function(stop) {
-
-				// If in codes-only mode, abort if the stop does not have a code
-				if (this.options.codes_only) {
-					var code = stop.get('propertySet').where({"name":"code"});
-					if (!code.length) return;
-				}
-
-				var item = this.stoplistitems[stop.id];
-				if (item === undefined) {
-					item = new TapAPI.views.StopListItem({model: stop});
-					this.stoplistitems[stop.id] = item;
-					listContainer.append(item.render().el);
-
-					if (stop.get('nearest')) {
-						item.$el.addClass('nearest');
-					}
-
-					if (this.options.enable_proximity_order) {
-						stop.on("change:distance", this.onStopDistanceChanged, item);
-						stop.on("change:nearest", this.onNearestStopChanged, item);
-					}
-
-				} else {
-					listContainer.append(item.render().el);
-				}
-	
-			}, this);
-
-			$('#tour-stop-list').listview('refresh');
-
-		},
-
-
-		sortByCode: function(stop) {
-			var code = stop.get('propertySet').where({"name":"code"});
-			if (!code.length) return 10000;
-			return code[0].get('value');
-		},
-
-		sortByDistance: function(stop) {
-			var d = stop.get('distance');
-			return (d === undefined) ? -1 : d;
-		},
-
-		onToggleProximity: function() {
-
-			if (this.options.sort == 'default') {
-				this.options.sort = 'proximity';
-				tap.tourStops.comparator = this.sortByDistance;
-				tap.tourStops.sort();
-			} else {
-				this.options.sort = 'default';
-				tap.tourStops.comparator = this.sortByCode;
-				tap.tourStops.sort();
-			}
-
-			var listContainer = this.$el.find('#tour-stop-list');
-			for (var view in this.stoplistitems) {
-				this.stoplistitems[view].remove();
-				delete this.stoplistitems[view]; // Force recreation
-				this.stoplistitems[view] = undefined;
-			}
-
-			this.addStopsToList(listContainer);
-
-		},
-
-		onStopDistanceChanged: function(stop, distance) {
-
-			var item = $('#stoplistitem-' + stop.get('id') + ' .ui-btn-text a', '#tour-stop-list');
-			var span = $('span.distance', item);
-			if (span.length) {
-				span.html(TapAPI.geoLocation.formatDistance(distance));
-			} else {
-				item.append("<span class='distance'>" + TapAPI.geoLocation.formatDistance(distance) + "</span>");
-			}
-
-		},
-
-
-		onNearestStopChanged: function(stop) {
-
-			if (stop.get('nearest')) {
-				this.$el.addClass('nearest');
-			} else {
-				this.$el.removeClass('nearest');
-			}
-
-		},
-
-
-		onLocationFound: function(position) {
-			var latlng = new L.LatLng(position.coords.latitude, position.coords.longitude);
-		},
-
-
-		onClose: function() {
-			TapAPI.geoLocation.stopLocating();
 		}
 
-	});
-
-	// Define the item view to populate this list
-	TapAPI.views.StopListItem = Backbone.View.extend({
-
-		tagName: 'li',
-		template: TapAPI.templateManager.get('tour-stop-list-item'),
-		render: function() {
-			this.$el.attr('id', 'stoplistitem-' + this.model.get('id'));
-			this.$el.html(this.template({
-				title: this.model.get('title') ? this.model.get('title') : undefined,
-				stop_id: this.model.get('id'),
-				tour_id: tap.currentTour,
-				distance: TapAPI.geoLocation.formatDistance(this.model.get('distance'))
-			}));
-			$('#tour-stop-list').listview('refresh');
-			return this;
+		var listContainer = this.$el.find('#tour-stop-list');
+		for (var view in this.stoplistitems) {
+			this.stoplistitems[view].remove();
+			delete this.stoplistitems[view]; // Force recreation
+			this.stoplistitems[view] = undefined;
 		}
 
-	});
+		this.addStopsToList(listContainer);
 
-});
-// TapAPI Namespace Initialization //
-if (typeof TapAPI === 'undefined'){TapAPI = {};}
-if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
-if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
-// TapAPI Namespace Initialization //
+	},
 
-jQuery(function() {
+	onStopDistanceChanged: function(stop, distance) {
 
-	// Define the TourDetails View
-	TapAPI.views.TourDetails = TapAPI.views.Page.extend({
-
-		onInit: function() {
-			this.options.page_title = this.model.get('title');
-			this.options.header_nav = false;
-			this.options.footer_nav = false;
-		},
-
-		renderContent: function() {
-			var content_template = TapAPI.templateManager.get('tour-details');
-
-			this.$el.find(":jqmData(role='content')").append(content_template({
-				tour_index: tap.config.default_nav_item,
-				tour_id: this.model.id,
-				publishDate: this.model.get('publishDate') ? this.model.get('publishDate') : undefined,
-				description: this.model.get('description') ? this.model.get('description') : undefined,
-				stopCount: tap.tourStops.length,
-				assetCount: tap.tourAssets.length
-			}));
-
+		var item = $('#stoplistitem-' + stop.get('id') + ' .ui-btn-text a', '#tour-stop-list');
+		var span = $('span.distance', item);
+		if (span.length) {
+			span.html(TapAPI.geoLocation.formatDistance(distance));
+		} else {
+			item.append("<span class='distance'>" + TapAPI.geoLocation.formatDistance(distance) + "</span>");
 		}
 
-	});
+	},
+
+
+	onNearestStopChanged: function(stop) {
+
+		if (stop.get('nearest')) {
+			this.$el.addClass('nearest');
+		} else {
+			this.$el.removeClass('nearest');
+		}
+
+	},
+
+
+	onLocationFound: function(position) {
+		var latlng = new L.LatLng(position.coords.latitude, position.coords.longitude);
+	},
+
+
+	onClose: function() {
+		TapAPI.geoLocation.stopLocating();
+	}
 
 });
 
-// TapAPI Namespace Initialization //
-if (typeof TapAPI === 'undefined'){TapAPI = {};}
-if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
-if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
-// TapAPI Namespace Initialization //
+// Define the item view to populate this list
+TapAPI.views.StopListItem = Backbone.View.extend({
 
-jQuery(function() {
+	tagName: 'li',
+	template: TapAPI.templateManager.get('tour-stop-list-item'),
+	render: function() {
+		this.$el.attr('id', 'stoplistitem-' + this.model.get('id'));
+		this.$el.html(this.template({
+			title: this.model.get('title') ? this.model.get('title') : undefined,
+			stop_id: this.model.get('id'),
+			tour_id: tap.currentTour,
+			distance: TapAPI.geoLocation.formatDistance(this.model.get('distance'))
+		}));
+		$('#tour-stop-list').listview('refresh');
+		return this;
+	}
 
-	// The tour list view displays a list of all tours
-	TapAPI.views.TourList = TapAPI.views.Page.extend({
+});
+TapAPI.views.TourDetails = TapAPI.views.BaseView.extend({
+	onInit: function() {
+		this.options.page_title = this.model.get('title');
+		this.options.header_nav = false;
+		this.options.footer_nav = false;
+	},
+	renderContent: function() {
+		var content_template = TapAPI.templateManager.get('tour-details');
 
-		onInit: function() {
-			this.options.page_title = 'Tour List';
-			this.options.header_nav = false;
-			this.options.footer_nav = false;
-		},
+		this.$el.find(":jqmData(role='content')").append(content_template({
+			tour_index: tap.config.default_nav_item,
+			tour_id: this.model.id,
+			publishDate: this.model.get('publishDate') ? this.model.get('publishDate') : undefined,
+			description: this.model.get('description') ? this.model.get('description') : undefined,
+			stopCount: tap.tourStops.length,
+			assetCount: tap.tourAssets.length
+		}));
 
-		renderContent: function() {
-			var content_template = TapAPI.templateManager.get('tour-list');
-
-			this.$el.find(":jqmData(role='content')").append(content_template);
-
-			var tourList = this.$el.find('#tour-list');
-			// iterate through all of the tour models to setup new views
-			_.each(this.model.models, function(tour) {
-				tourList.append(new TapAPI.views.TourListItem({model: tour}).render().el);
-			}, this);
-			$('#tour-list').listview('refresh'); // refresh listview since we generated the data dynamically
-
-		}
-
-	});
-
-	// setup an individual view of a tour
-	TapAPI.views.TourListItem = Backbone.View.extend({
-		tagName: 'li',
-		template: TapAPI.templateManager.get('tour-list-item'),
-		render: function() {
-			this.$el.html(this.template({
-				title: this.model.get('title') ? this.model.get('title') : undefined,
-				id: this.model.get('id')
-			}));
-			return this;
-		}
-	});
+	}
 
 });
 
-// TapAPI Namespace Initialization //
-if (typeof TapAPI === 'undefined'){TapAPI = {};}
-if (typeof TapAPI.views === 'undefined'){TapAPI.views = {};}
-if (typeof TapAPI.views.registry === 'undefined'){TapAPI.views.registry = {};}
-// TapAPI Namespace Initialization //
+TapAPI.views.TourList = TapAPI.views.Page.extend({
 
-// Add this view to the registry
-TapAPI.views.registry['tour_video_stop'] = 'VideoStop';
+	onInit: function() {
+		this.options.page_title = 'Tour List';
+		this.options.header_nav = false;
+		this.options.footer_nav = false;
+	},
 
-// TODO: remove this deprecated mapping
-TapAPI.views.registry['VideoStop'] = 'VideoStop';
+	renderContent: function() {
+		var content_template = TapAPI.templateManager.get('tour-list');
 
-jQuery(function() {
+		this.$el.find(":jqmData(role='content')").append(content_template);
 
-	// Define the VideoStop View
-	TapAPI.views.VideoStop = TapAPI.views.Page.extend({
+		var tourList = this.$el.find('#tour-list');
+		// iterate through all of the tour models to setup new views
+		_.each(this.model.models, function(tour) {
+			tourList.append(new TapAPI.views.TourListItem({model: tour}).render().el);
+		}, this);
+		$('#tour-list').listview('refresh'); // refresh listview since we generated the data dynamically
 
-		onInit: function() {
+	}
 
-			if (tap.video_timer === undefined) {
-				tap.video_timer = new AnalyticsTimer('VideoStop', 'played_for', tap.currentStop.id);
+});
+
+// setup an individual view of a tour
+TapAPI.views.TourListItem = Backbone.View.extend({
+	tagName: 'li',
+	template: TapAPI.templateManager.get('tour-list-item'),
+	render: function() {
+		this.$el.html(this.template({
+			title: this.model.get('title') ? this.model.get('title') : undefined,
+			id: this.model.get('id')
+		}));
+		return this;
+	}
+});
+TapAPI.views.VideoStop = TapAPI.views.StopView.extend({
+
+	onInit: function() {
+
+		if (tap.video_timer === undefined) {
+			tap.video_timer = new AnalyticsTimer('VideoStop', 'played_for', tap.currentStop.id);
+		}
+		tap.video_timer.reset();
+
+	},
+
+	renderContent: function() {
+
+		var content_template = TapAPI.templateManager.get('video-stop');
+
+		// Find the transcription if one exists
+		var assets = this.model.getAssetsByUsage("transcription");
+		var transcription = null;
+		if (assets !== undefined) {
+			transcription = assets[0].get('content').at(0).get('data');
+		}
+
+		// Find the poster image if one exists
+		var poster_image_path = tap.config['default_video_poster'];
+		assets = this.model.getAssetsByUsage("image");
+		if (assets !== undefined) {
+			poster_image_path = assets[0].get('source').at(0).get('uri');
+		}
+
+		// Render from the template
+		this.$el.find(":jqmData(role='content')").append(content_template({
+			tourStopTitle: this.model.get('title'),
+			transcription: transcription,
+			poster_image_path: poster_image_path
+		}));
+
+		// Add click handler on the transcription toggle button
+		this.$el.find('#trans-button').click(function() {
+			var t = $('.transcription').toggleClass('hidden');
+			if (t.hasClass('hidden')) {
+				$('.ui-btn-text', this).text('Show Transcription');
+				_gaq.push(['_trackEvent', 'VideoStop', 'hide_transcription']);
+			} else {
+				$('.ui-btn-text', this).text('Hide Transcription');
+				_gaq.push(['_trackEvent', 'VideoStop', 'show_transcription']);
 			}
-			tap.video_timer.reset();
+		});
 
-		},
+		assets = this.model.getAssetsByType("tour_video");
+		
+		if (assets.length) {
 
-		renderContent: function() {
-
-			var content_template = TapAPI.templateManager.get('video-stop');
-
-			// Find the transcription if one exists
-			var assets = this.model.getAssetsByUsage("transcription");
-			var transcription = null;
-			if (assets !== undefined) {
-				transcription = assets[0].get('content').at(0).get('data');
-			}
-
-			// Find the poster image if one exists
-			var poster_image_path = tap.config['default_video_poster'];
-			assets = this.model.getAssetsByUsage("image");
-			if (assets !== undefined) {
-				poster_image_path = assets[0].get('source').at(0).get('uri');
-			}
-
-			// Render from the template
-			this.$el.find(":jqmData(role='content')").append(content_template({
-				tourStopTitle: this.model.get('title'),
-				transcription: transcription,
-				poster_image_path: poster_image_path
-			}));
-
-			// Add click handler on the transcription toggle button
-			this.$el.find('#trans-button').click(function() {
-				var t = $('.transcription').toggleClass('hidden');
-				if (t.hasClass('hidden')) {
-					$('.ui-btn-text', this).text('Show Transcription');
-					_gaq.push(['_trackEvent', 'VideoStop', 'hide_transcription']);
-				} else {
-					$('.ui-btn-text', this).text('Hide Transcription');
-					_gaq.push(['_trackEvent', 'VideoStop', 'show_transcription']);
-				}
+			var videoContainer = this.$el.find('video');
+			_.each(assets, function(asset) {
+				var sources = asset.get("source");
+				sources.each(function(source) {
+					videoContainer.append("<source src='" + source.get('uri') + "' type='" + source.get('format') + "' />");
+				});
 			});
 
-			assets = this.model.getAssetsByType("tour_video");
-			
-			if (assets.length) {
+			videoContainer[0].addEventListener('loadedmetadata', function() {
+				tap.video_timer.max_threshold = videoContainer[0].duration * 1000;
+			});
 
-				var videoContainer = this.$el.find('video');
-				_.each(assets, function(asset) {
-					var sources = asset.get("source");
-					sources.each(function(source) {
-						videoContainer.append("<source src='" + source.get('uri') + "' type='" + source.get('format') + "' />");
-					});
-				});
+			videoContainer[0].addEventListener('play', function() {
+				_gaq.push(['_trackEvent', 'VideoStop', 'media_started']);
+				tap.video_timer.start();
+			}, this);
 
-				videoContainer[0].addEventListener('loadedmetadata', function() {
-					tap.video_timer.max_threshold = videoContainer[0].duration * 1000;
-				});
+			videoContainer[0].addEventListener('pause', function() {
+				_gaq.push(['_trackEvent', 'VideoStop', 'media_paused']);
+				tap.video_timer.stop();
+			});
 
-				videoContainer[0].addEventListener('play', function() {
-					_gaq.push(['_trackEvent', 'VideoStop', 'media_started']);
-					tap.video_timer.start();
-				}, this);
-
-				videoContainer[0].addEventListener('pause', function() {
-					_gaq.push(['_trackEvent', 'VideoStop', 'media_paused']);
-					tap.video_timer.stop();
-				});
-
-				videoContainer[0].addEventListener('ended', function() {
-					_gaq.push(['_trackEvent', 'VideoStop', 'playback_ended']);
-				});
-
-			}
-
-			return this;
-		},
-
-		onClose: function() {
-
-			// Send information about playback duration when the view closes
-			tap.video_timer.send();
+			videoContainer[0].addEventListener('ended', function() {
+				_gaq.push(['_trackEvent', 'VideoStop', 'playback_ended']);
+			});
 
 		}
 
-	});
-});
+		return this;
+	},
 
+	onClose: function() {
+
+		// Send information about playback duration when the view closes
+		tap.video_timer.send();
+
+	}
+
+});
 jQuery(function() {
 	AppRouter = Backbone.Router.extend({
 		// define routes
@@ -1734,7 +1578,7 @@ jQuery(function() {
 
 		initialize:function () {
 			//console.log('AppRouter::initialize');
-			$('#back-button').live('click', function(e) {
+			$('#back-button').on('click', function(e) {
 				e.preventDefault();
 				window.history.back();
 				return false;
@@ -2370,267 +2214,21 @@ TapAPI.templateManager = {
 if (typeof TapAPI === "undefined"){TapAPI = {};}
 if (typeof TapAPI.templates === "undefined"){TapAPI.templates = {};}
 // TapAPI Namespace Initialization //
-TapAPI.templates['audio-stop'] = function(obj){
-var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
-with(obj||{}){
-__p+='<div class=\'tour-stop audio\'>\n\t<div class=\'title\'>'+
-((__t=( tour_stop_title ))==null?'':__t)+
-'</div>\n\t<audio id="audio-player" controls="controls">\n\t\t<p>Your browser does not support the audio element.</p>\n\t</audio>\n\t<video id="video-player" autoplay controls="controls" style=\'display:none;\'\n\t';
- if (poster_image_path !== null) { 
-__p+='\n\t\tposter=\''+
-((__t=( poster_image_path ))==null?'':__t)+
-'\'\n\t';
- } 
-__p+='\n\t>\n\t\t<p>Your browser does not support the video element.</p>\n\t</video>\n\t';
- if (poster_image_path !== null) { 
-__p+='\n\t\t<img class="poster-image" src="'+
-((__t=( poster_image_path ))==null?'':__t)+
-'" />\n\t';
- } 
-__p+='\n\t';
- if (transcription !== null) { 
-__p+='\n\t\t<div id=\'trans-button\' data-role=\'button\' class=\'ui-mini\'>Show Transcription</div>\n\t\t<div class=\'transcription hidden\'><p>'+
-((__t=( transcription ))==null?'':__t)+
-'</p></div>\n\t';
- } 
-__p+='\n</div>';
-}
-return __p;
-}
-TapAPI.templates['dialog'] = function(obj){
-var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
-with(obj||{}){
-__p+='<div data-role="dialog" id="'+
-((__t=( id ))==null?'':__t)+
-'">\n\t<div data-role="header" data-theme="d">\n\t\t<h1></h1>\n\t</div>\n\t<div data-role="content" data-theme="c" align="center">\n\t\t'+
-((__t=( content ))==null?'':__t)+
-'\n\t</div>\n</div>';
-}
-return __p;
-}
-TapAPI.templates['image-stop-item'] = function(obj){
-var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
-with(obj||{}){
-__p+='\t<li>\n\t\t<a href="'+
-((__t=( fullImageUri ))==null?'':__t)+
-'" rel="external"><img src="'+
-((__t=( thumbUri ))==null?'':__t)+
-'" alt="'+
-((__t=( title ))==null?'':__t)+
-'" title="'+
-((__t=( title ))==null?'':__t)+
-'" /></a>\n\t</li>\n';
-}
-return __p;
-}
-TapAPI.templates['image-stop'] = function(obj){
-var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
-with(obj||{}){
-__p+='<ul id="Gallery" class="ui-grid-b">\n</ul>\n';
-}
-return __p;
-}
-TapAPI.templates['keypad'] = function(obj){
-var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
-with(obj||{}){
-__p+='<fieldset class="ui-grid-b" id="keypad" data-theme=\'d\'>\n\t<div class="ui-block-a" id="writeStyle">\n\t\t<div class="ui-bar" id="write"></div>\n\t</div>\n\t<div class="ui-block-b">\n\t\t<div class="ui-bar ui-bar-d" id="gobtn">Go</div>\t\n\t</div>\n\t<div class="ui-block-a"><div class="button ui-bar ui-bar-d">1</div></div>\n\t<div class="ui-block-b"><div class="button ui-bar ui-bar-d">2</div></div>\t \n\t<div class="ui-block-b"><div class="button ui-bar ui-bar-d">3</div></div>  \n\t<div class="ui-block-a"><div class="button ui-bar ui-bar-d">4</div></div>\n\t<div class="ui-block-b"><div class="button ui-bar ui-bar-d">5</div></div>\t \n\t<div class="ui-block-b"><div class="button ui-bar ui-bar-d">6</div></div>  \n\t<div class="ui-block-a"><div class="button ui-bar ui-bar-d">7</div></div>\n\t<div class="ui-block-b"><div class="button ui-bar ui-bar-d">8</div></div>\t \n\t<div class="ui-block-b"><div class="button ui-bar ui-bar-d">9</div></div>  \n\t<div class="ui-block-a"><div class="button ui-bar ui-bar-d">0</div></div>\n\t<div class="ui-block-b" id="clearStyle">\n\t\t<div class="ui-bar ui-bar-d" id="delete">Clear</div>\n\t</div>\n</fieldset>\n';
-}
-return __p;
-}
-TapAPI.templates['page'] = function(obj){
-var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
-with(obj||{}){
-__p+='<div data-role="header" data-id="tap-header" data-position="fixed">\n\t<a id=\'back-button\' data-rel="back" data-mini="true">'+
-((__t=( back_label ))==null?'':__t)+
-'</a>\n\t';
- if (header_nav) { 
-__p+='\n\t<div id=\'index-selector\' data-role="controlgroup" data-type="horizontal" data-mini="true">\n\t\t';
- _.each(nav_menu, function(item) { 
-__p+='\n\t\t<a data-role="button" '+
-((__t=( (active_index == item.endpoint) ? 'data-theme="b"' : "" ))==null?'':__t)+
-' href=\'#'+
-((__t=( item.endpoint ))==null?'':__t)+
-'/'+
-((__t=( tour_id ))==null?'':__t)+
-'\'>'+
-((__t=( item.label ))==null?'':__t)+
-'</a>\n\t\t';
- }); 
-__p+='\n\t</div>\n\t';
- } else { 
-__p+='\n\t<h1 id="page-title">'+
-((__t=( title ))==null?'':__t)+
-'</h1>\n\t';
- } 
-__p+='\n</div>\n<div data-role="content">\n</div>\n';
- if (footer_nav) { 
-__p+='\n<div data-role="footer" data-id="tap-footer" data-position="fixed">\n\t<div data-role="navbar">\n\t\t<ul>\n\t\t\t';
- _.each(nav_menu, function(item) { 
-__p+='\n\t\t\t<li><a '+
-((__t=( (active_index == item.endpoint) ? 'data-theme="b"' : "" ))==null?'':__t)+
-' href=\'#'+
-((__t=( item.endpoint ))==null?'':__t)+
-'/'+
-((__t=( tour_id ))==null?'':__t)+
-'\'>'+
-((__t=( item.label ))==null?'':__t)+
-'</a></li>\n\t\t\t';
- }); 
-__p+='\n\t\t</ul>\n\t</div>\n</div>\n';
- } 
-__p+='';
-}
-return __p;
-}
-TapAPI.templates['stop-group-list-item'] = function(obj){
-var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
-with(obj||{}){
-__p+='<a href="#tourstop/'+
-((__t=( tourId ))==null?'':__t)+
-'/'+
-((__t=( id ))==null?'':__t)+
-'">'+
-((__t=( title ))==null?'':__t)+
-'</a>\n';
-}
-return __p;
-}
-TapAPI.templates['stop-group'] = function(obj){
-var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
-with(obj||{}){
-__p+='<div class=\'tour-stop stop-group\' style="width:100%;">\n\t<div class=\'title\'>'+
-((__t=( tourStopTitle ))==null?'':__t)+
-'</div>\n\t<div class=\'description\'>'+
-((__t=( description ))==null?'':__t)+
-'</div>\n\t<ul id="stop-list" class="ui-listview" data-inset="true" data-role="listview"></ul>\n</div>\n';
-}
-return __p;
-}
-TapAPI.templates['stop'] = function(obj){
-var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
-with(obj||{}){
-__p+='<div class=\'stop\' style="width:100%;">\n\t<div class=\'title\'>'+
-((__t=( tourStopTitle ))==null?'':__t)+
-'</div>\n\t<div class=\'description\'>'+
-((__t=( tourStopDescription ))==null?'':__t)+
-'</div>\n</div>\n';
-}
-return __p;
-}
-TapAPI.templates['tour-details'] = function(obj){
-var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
-with(obj||{}){
-__p+='<div class="">\t\t\t\n\t<a href="#'+
-((__t=( tour_index ))==null?'':__t)+
-'/'+
-((__t=( tour_id ))==null?'':__t)+
-'" id="start-tour" data-role="button" data-theme="b">Start Tour</a>\n</div>\n<div class=\'tour-details\'>\n\t'+
-((__t=( description ))==null?'':__t)+
-'\n</div>\n';
-}
-return __p;
-}
-TapAPI.templates['tour-list-item'] = function(obj){
-var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
-with(obj||{}){
-__p+='<a href="#tour/'+
-((__t=( id ))==null?'':__t)+
-'">'+
-((__t=( title ))==null?'':__t)+
-'</a>\n';
-}
-return __p;
-}
-TapAPI.templates['tour-list'] = function(obj){
-var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
-with(obj||{}){
-__p+='<ul id="tour-list" class="ui-listview" data-inset="true" data-role="listview"></ul>';
-}
-return __p;
-}
-TapAPI.templates['tour-map-distance-label'] = function(obj){
-var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
-with(obj||{}){
-__p+='<div class=\'distance-label-container\'>\n<div class=\'distance-label\'>'+
-((__t=( distance ))==null?'':__t)+
-'</div>\n</div>';
-}
-return __p;
-}
-TapAPI.templates['tour-map-marker-bubble'] = function(obj){
-var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
-with(obj||{}){
-__p+='<div class=\'marker-bubble-content\'>\n\t<div class=\'title\'>'+
-((__t=( title ))==null?'':__t)+
-'</div>\n\t<div class=\'distance\'>'+
-((__t=( distance ))==null?'':__t)+
-'</div>\n\t<div class=\'view-button\'><a href=\'#tourstop/'+
-((__t=( tour_id ))==null?'':__t)+
-'/'+
-((__t=( stop_id ))==null?'':__t)+
-'\'>View stop</a></div>\n\t<div class=\'directions\'>\n\t\t<a href=\'http://maps.google.com/maps?saddr=Current%20Location&daddr='+
-((__t=( stop_lat ))==null?'':__t)+
-','+
-((__t=( stop_lon ))==null?'':__t)+
-'\'>Get Directions</a>\n\t</div>\n</div>';
-}
-return __p;
-}
-TapAPI.templates['tour-map'] = function(obj){
-var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
-with(obj||{}){
-__p+='<div id=\'tour-map\'>Unable to display the map</div>';
-}
-return __p;
-}
-TapAPI.templates['tour-stop-list-item'] = function(obj){
-var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
-with(obj||{}){
-__p+='<a href=\'#tourstop/'+
-((__t=( tour_id ))==null?'':__t)+
-'/'+
-((__t=( stop_id ))==null?'':__t)+
-'\'>'+
-((__t=( title ))==null?'':__t)+
-'\n';
- if (distance !== '') { 
-__p+='\n<span class=\'distance\'>'+
-((__t=( distance ))==null?'':__t)+
-'</span>\n';
- } 
-__p+='\n</a>';
-}
-return __p;
-}
-TapAPI.templates['tour-stop-list'] = function(obj){
-var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
-with(obj||{}){
-__p+='<ul id="tour-stop-list" class="ui-listview" data-inset="true" data-role="listview"></ul>\n';
- if (enable_proximity_order) { 
-__p+='\n<div data-role="fieldcontain" id=\'proximity-container\'>\n<label for="proximity-toggle">Distance ordering:</label>\n<select name="proximity-toggle" id="proximity-toggle" data-role="slider">\n\t<option value="off">Off</option>\n\t<option value="on">On</option>\n</select> \n</div>\n';
-}
-__p+='';
-}
-return __p;
-}
-TapAPI.templates['video-stop'] = function(obj){
-var __t,__p='',__j=Array.prototype.join,print=function(){__p+=__j.call(arguments,'');};
-with(obj||{}){
-__p+='<div class=\'tour-stop video\'>\n\t<div class=\'title\'>'+
-((__t=( tourStopTitle ))==null?'':__t)+
-'</div>\n\t<video id="video-player" controls="controls" autoplay="autoplay"\n\t';
- if (poster_image_path !== null) { 
-__p+='\n\t\tposter=\''+
-((__t=( poster_image_path ))==null?'':__t)+
-'\'\n\t';
- } 
-__p+='\n\t>\n\t\t<p>Your browser does not support the video tag.</p>\n\t</video>\n\t';
- if (transcription !== null) { 
-__p+='\n\t\t<div id=\'trans-button\' data-role=\'button\' class=\'ui-mini\'>Show Transcription</div>\n\t\t<div class=\'transcription hidden\'><p>'+
-((__t=( transcription ))==null?'':__t)+
-'</p></div>\n\t';
- } 
-__p+='\n</div>\n';
-}
-return __p;
-}
+TapAPI.templates['audio-stop'] = undefined
+TapAPI.templates['dialog'] = undefined
+TapAPI.templates['image-stop-item'] = undefined
+TapAPI.templates['image-stop'] = undefined
+TapAPI.templates['keypad'] = undefined
+TapAPI.templates['page'] = undefined
+TapAPI.templates['stop-group-list-item'] = undefined
+TapAPI.templates['stop-group'] = undefined
+TapAPI.templates['stop'] = undefined
+TapAPI.templates['tour-details'] = undefined
+TapAPI.templates['tour-list-item'] = undefined
+TapAPI.templates['tour-list'] = undefined
+TapAPI.templates['tour-map-distance-label'] = undefined
+TapAPI.templates['tour-map-marker-bubble'] = undefined
+TapAPI.templates['tour-map'] = undefined
+TapAPI.templates['tour-stop-list-item'] = undefined
+TapAPI.templates['tour-stop-list'] = undefined
+TapAPI.templates['video-stop'] = undefined

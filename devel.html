@@ -7,13 +7,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 	<title>TAP Web</title>
 
-	<link rel="stylesheet" href="external/jqmobile/jquery.mobile-1.1.1.css" />	
+	<link rel="stylesheet" href="external/jqmobile/jquery.mobile-1.2.0.css" />	
 	<link rel="stylesheet" href="external/leaflet/leaflet.css" />
 	<link rel="stylesheet" href="external/photoswipe/photoswipe.css" />
 	<link rel="stylesheet" href="external/mediaelement/mediaelementplayer.css" />
 	<link rel="stylesheet" href="css/tapweb.css" />	
 
-	<script src="external/jquery-1.7.2.js"></script>
+	<script src="external/jquery-1.8.3.js"></script>
 	<script src="js/backbone/jqm-config.js"></script> <!-- must be included before jqMobile -->
 
 	<script src="external/underscore-1.4.3.js"></script>
@@ -22,7 +22,7 @@
 	<script src="external/backbone-super.js"></script>
 	<script src="external/backbone.localStorage-min.js"></script>
 	<script src="external/klass.js"></script>
-	<script src="external/jqmobile/jquery.mobile-1.1.1.js"></script>	
+	<script src="external/jqmobile/jquery.mobile-1.2.0.js"></script>	
 	<script src="external/leaflet/leaflet.js"></script>
 	<script src="external/photoswipe/code.photoswipe.jquery-3.0.4.js"></script>
 	<script src="external/mediaelement/mediaelement-and-player.js"></script>
@@ -48,7 +48,8 @@
 	<script src="js/backbone/collections/StopCollection.js"></script>	
 	<script src="js/backbone/collections/TourCollection.js"></script>
 
-	<script src="js/backbone/views/PageView.js"></script> <!-- must be defined before other pages -->
+	<script src="js/backbone/views/BaseView.js"></script> <!-- must be defined before other pages -->
+	<script src="js/backbone/views/StopView.js"></script>
 	<script src="js/backbone/views/AudioStopView.js"></script>
 	<script src="js/backbone/views/DefaultStopView.js"></script>	
 	<script src="js/backbone/views/KeypadView.js"></script>	
