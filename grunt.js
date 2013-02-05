@@ -46,7 +46,7 @@ module.exports = function(grunt) {
 					'external/jquery-1.8.3.js',
 					'js/backbone/jqm-config.js',
 					'external/underscore-1.4.3.js',
-					'external/jqmobile/jquery.mobile-1.2.0.js',
+					'external/jqmobile/jquery.mobile-1.3.0.js',
 					'external/backbone-0.9.9.js',
 					'external/backbone-super.js',
 					'external/backbone.localStorage-min.js',
@@ -60,7 +60,7 @@ module.exports = function(grunt) {
 			css: {
 				src: [
 					'<banner:meta.banner>',
-					'external/jqmobile/jquery.mobile-1.2.0.css',
+					'external/jqmobile/jquery.mobile-1.3.0.css',
 					'external/leaflet/leaflet.css',
 					'external/mediaelement/mediaelementplayer.css',
 					'external/photoswipe/photoswipe.css',
