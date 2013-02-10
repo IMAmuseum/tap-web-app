@@ -20,6 +20,5 @@ requirejs.config({
 });
 
 require(['jquery', 'tap/app'], function($, App){
-    //App.initialize();
-    console.log($);
+    App.initialize();
 });

@@ -1,7 +1,7 @@
-define(function(){
+define(['jquery'], function($) {
     return {
         initialize: function() {
-            //$('body').html('test');
+            $('body').html('test');
         }
     };
 });
