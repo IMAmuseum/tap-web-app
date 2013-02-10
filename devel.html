@@ -7,14 +7,16 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 	<title>TAP Web</title>
 
-	<link rel="stylesheet" href="external/jqmobile/jquery.mobile-1.3.0.css" />	
-	<link rel="stylesheet" href="external/leaflet/leaflet.css" />
-	<link rel="stylesheet" href="external/photoswipe/photoswipe.css" />
-	<link rel="stylesheet" href="external/mediaelement/mediaelementplayer.css" />
-	<link rel="stylesheet" href="css/tapweb.css" />	
+	<link rel="stylesheet" href="css/main.css" />
+	<link rel="stylesheet" href="js/vendor/jqmobile/jquery.mobile.css" />	
+	<link rel="stylesheet" href="js/vendor/leaflet/leaflet.css" />
+	<link rel="stylesheet" href="js/vendor/photoswipe/photoswipe.css" />
+	<link rel="stylesheet" href="js/vendor/mediaelement/mediaelementplayer.css" />	
 
+	<script data-main="js/main" src="js/vendor/require.js"></script>
+<!--
 	<script src="external/jquery-1.8.3.js"></script>
-	<script src="js/backbone/jqm-config.js"></script> <!-- must be included before jqMobile -->
+	<script src="js/backbone/jqm-config.js"></script>
 
 	<script src="external/underscore-1.4.3.js"></script>
 	<script src="external/json2.js"></script>
@@ -48,7 +50,7 @@
 	<script src="js/backbone/collections/StopCollection.js"></script>	
 	<script src="js/backbone/collections/TourCollection.js"></script>
 
-	<script src="js/backbone/views/BaseView.js"></script> <!-- must be defined before other pages -->
+	<script src="js/backbone/views/BaseView.js"></script>
 	<script src="js/backbone/views/StopView.js"></script>
 	<script src="js/backbone/views/AudioStopView.js"></script>
 	<script src="js/backbone/views/DefaultStopView.js"></script>	
@@ -77,6 +79,7 @@
 			});
 		}(jQuery));
 	</script>
+-->
 </head>
 <body>
 	<!-- Content is injected here by backbone -->
