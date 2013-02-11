@@ -1,9 +1,8 @@
 define([
     'jquery',
     'underscore',
-    'backbone',
-    'tap/app'
-], function($, _, Backbone){
+    'backbone'
+], function($, _, Backbone) {
     var router = Backbone.Router.extend({
         routes: {
             '': 'list',

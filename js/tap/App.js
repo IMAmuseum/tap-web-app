@@ -14,7 +14,7 @@ define([
             currentStop: '',
             currentTour: ''
         },
-        _gaq: _gaq || [],
+        gaq: gaq || [],
         router: undefined,
         initialize: function(config) {
             Backbone.trigger('tap.init.start');
