@@ -1,6 +1,7 @@
 requirejs.config({
     paths: {
         'jquery': 'vendor/jquery',
+        'jquerymobile': 'vendor/jqmobile/jquery.mobile',
         'json2': 'vendor/json2',
         'underscore': 'vendor/underscore',
         'backbone': 'vendor/backbone',
@@ -19,6 +20,19 @@ requirejs.config({
     }
 });
 
-require(['jquery', 'tap/app'], function($, App){
+require([
+    'jquery',
+    'jquerymobile',
+    'backbone',
+    'tap/app'
+], function($, jQMobile, Backbone, App) {
+    $.mobile.ajaxEnabled = false;
+    // Prevents all anchor click handling
+    $.mobile.linkBindingEnabled = false;
+    // Disabling this will prevent jQuery Mobile from handling hash changes
+    $.mobile.hashListeningEnabled = false;
+    $.mobile.pushStateEnabled = false;
+
     App.initialize();
+    blah = App;
 });
