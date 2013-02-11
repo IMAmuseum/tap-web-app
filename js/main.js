@@ -6,12 +6,24 @@ requirejs.config({
         'underscore': 'vendor/underscore',
         'backbone': 'vendor/backbone',
         'localstorage': 'vendor/backbone.localStorage',
-        'backbone-super': 'vendor/backbone-super'
+        'super': 'vendor/backbone-super',
+        'leaflet': 'vendor/leaflet/leaflet',
+        'photoswipe': 'vendor/photoswipe/code.photoswipe.jquery',
+        'mediaelement': 'vendor/mediaelement/mediaelement-and-player'
     },
     shim: {
         'backbone-super': {
             deps: ['backbone'],
-            exports: 'Backbone.Super'
+            exports: 'super'
+        },
+        'leaflet': {
+            exports: 'leaflet'
+        },
+        'photoswipe': {
+            exports: 'photoswipe'
+        },
+        'mediaelement': {
+            exports: 'mediaelement'
         }
     }
 });
