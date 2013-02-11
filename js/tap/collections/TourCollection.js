@@ -22,9 +22,9 @@ define([
 			}
 
 			// create new instance of StopCollection
-			tap.tourStops = new StopCollection(null, id);
+			App.tap.tourStops = new StopCollection(null, id);
 			// create new instance of AssetCollection
-			tap.tourAssets = new AssetCollection(null, id);
+			App.tap.tourAssets = new AssetCollection(null, id);
 
 			// load data from local storage
 			App.tap.tourAssets.fetch();
