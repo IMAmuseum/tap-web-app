@@ -4,7 +4,8 @@ define([
 	'tap/app',
 	'tap/models/TourModel',
 	'tap/collections/StopCollection',
-	'tap/collections/AssetCollection'
+	'tap/collections/AssetCollection',
+	'localstorage'
 ], function(_, Backbone, App, TourModel, StopCollection, AssetCollection) {
 	var tourCollection = Backbone.Collection.extend({
 		model: TourModel,

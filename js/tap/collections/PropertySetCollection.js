@@ -1,7 +1,9 @@
 define([
 	'underscore',
 	'backbone',
-	'tap/models/PropertyModel'
+	'tap/app',
+	'tap/models/PropertyModel',
+	'localstorage'
 ], function(_, Backbone, App, PropertyModel) {
 	var propertySetCollection = Backbone.Collection.extend({
 		model: PropertyModel,
@@ -10,7 +12,7 @@ define([
 		},
 		getValueByName: function(propertyName) {
 			var property, value;
-			property = this.where({"name": propertyName, "lang": tap.language});
+			property = this.where({"name": propertyName, "lang": App.tap.language});
 			if (property.length === 0) {
 				property = this.where({"name": propertyName});
 			}

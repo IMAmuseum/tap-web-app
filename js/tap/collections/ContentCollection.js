@@ -1,7 +1,8 @@
 define([
 	'underscore',
 	'backbone',
-	'tap/models/ContentModel'
+	'tap/models/ContentModel',
+	'localstorage'
 ], function(_, Backbone, ContentModel) {
 	var contentCollection = Backbone.Collection.extend({
 		model: ContentModel,

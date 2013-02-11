@@ -5,14 +5,10 @@ requirejs.config({
         'json2': 'vendor/json2',
         'underscore': 'vendor/underscore',
         'backbone': 'vendor/backbone',
-        'backbone.localStorage': 'vendor/backbone.localStorage',
+        'localstorage': 'vendor/backbone.localStorage',
         'backbone-super': 'vendor/backbone-super'
     },
     shim: {
-        'backbone.localStorage': {
-            deps: ['backbone'],
-            exports: 'Backbone.LocalStorage'
-        },
         'backbone-super': {
             deps: ['backbone'],
             exports: 'Backbone.Super'
