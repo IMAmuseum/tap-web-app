@@ -26,10 +26,9 @@ require([
     'backbone',
     'tap/app'
 ], function($, jQMobile, Backbone, App) {
+    // disable misc jQuery Mobile functionality so that we can handle it ourselves
     $.mobile.ajaxEnabled = false;
-    // Prevents all anchor click handling
     $.mobile.linkBindingEnabled = false;
-    // Disabling this will prevent jQuery Mobile from handling hash changes
     $.mobile.hashListeningEnabled = false;
     $.mobile.pushStateEnabled = false;
 

@@ -1,33 +1,36 @@
-// TapAPI Namespace Initialization //
-if (typeof TapAPI === 'undefined'){TapAPI = {};}
-if (typeof TapAPI.collections === 'undefined'){TapAPI.collections = {};}
-// TapAPI Namespace Initialization //
+define([
+	'underscore',
+	'backbone',
+	'tap/app',
+	'tap/models/TourModel',
+	'tap/collections/StopCollection',
+	'tap/collections/AssetCollection'
+], function(_, Backbone, App, TourModel, StopCollection, AssetCollection) {
+	var tourCollection = Backbone.Collection.extend({
+		model: TourModel,
+		localStorage: new Backbone.LocalStorage('tours'),
+		selectTour: function(id) {
+			if (App.tap.currentTour == id) return;
 
-// define tour collection
-TapAPI.collections.Tours = Backbone.Collection.extend({
-	model: TapAPI.models.Tour,
-	localStorage: new Backbone.LocalStorage('tours'),
-	selectTour: function(id) { // load data for the selected tour
+			// set the current tour
+			App.tap.currentTour = id;
 
-		if (tap.currentTour == id) return;
+			// set root stop as the current stop if specified
+			if(tap.tours.get(id).get('rootStopRef')) {
+				App.tap.currentStop = App.tap.tours.get(id).get('rootStopRef').id;
+			}
 
-		// set the current tour
-		tap.currentTour = id;
+			// create new instance of StopCollection
+			tap.tourStops = new StopCollection(null, id);
+			// create new instance of AssetCollection
+			tap.tourAssets = new AssetCollection(null, id);
 
-		// set root stop as the current stop if specified
-		if(tap.tours.get(id).get('rootStopRef')) {
-			tap.currentStop = tap.tours.get(id).get('rootStopRef').id;
+			// load data from local storage
+			App.tap.tourAssets.fetch();
+			App.tap.tourStops.fetch();
+
+			Backbone.trigger('tap.tour.selected');
 		}
-
-		// create new instance of StopCollection
-		tap.tourStops = new TapAPI.collections.Stops(null, id);
-		// create new instance of AssetCollection
-		tap.tourAssets = new TapAPI.collections.Assets(null, id);
-
-		// load data from local storage
-		tap.tourAssets.fetch();
-		tap.tourStops.fetch();
-
-		tap.trigger("tap.tour.selected");
-	}
+	});
+	return tourCollection;
 });
