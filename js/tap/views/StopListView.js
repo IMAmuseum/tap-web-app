@@ -3,9 +3,10 @@ define([
     'underscore',
     'backbone',
     'tap/views/AppView',
+    'tap/views/BaseView',
     'tap/StopListItemView'
-], function($, _, Backbone, App, StopListItemView) {
-	var stopListView = TapAPI.views.Page.extend({
+], function($, _, Backbone, App, BaseView, StopListItemView) {
+	var stopListView = BaseView.extend({
 		events: {
 			'change #proximity-toggle': 'onToggleProximity'
 		},

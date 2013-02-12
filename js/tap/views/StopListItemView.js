@@ -2,9 +2,10 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'tap/views/AppView'
-], function($, _, Backbone, App) {
-	var stopListItemView = Backbone.View.extend({
+    'tap/views/AppView',
+    'tap/views/BaseView'
+], function($, _, Backbone, App, BaseView) {
+	var stopListItemView = BaseView.extend({
 		tagName: 'li',
 		template: TapAPI.templateManager.get('tour-stop-list-item'),
 		render: function() {

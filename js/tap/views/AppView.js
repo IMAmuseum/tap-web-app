@@ -31,6 +31,9 @@ define([
             this.listenTo(Backbone, 'tap.app.initialized', this.runApp);
             Backbone.trigger('tap.app.initialized');
         },
+        render: function() {
+
+        },
         runApp: function() {
             Backbone.trigger('tap.app.loading');
             // get browser language
@@ -58,6 +61,7 @@ define([
 
             // initialize router
            this.router = new Router();
+           this.render();
         }
     });
     return new appView();

@@ -2,9 +2,10 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'tap/views/AppView'
-], function($, _, Backbone, App) {
-	var keypad = TapAPI.views.BaseView.extend({
+    'tap/views/AppView',
+    'tap/views/BaseView'
+], function($, _, Backbone, App, BaseView) {
+	var keypad = BaseView.extend({
 		events: {
 			'tap #gobtn' : 'submit',
 			'tap #keypad div .button' : 'writekeycode',

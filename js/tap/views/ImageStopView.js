@@ -2,9 +2,10 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'tap/views/AppView'
-], function($, _, Backbone, App) {
-	var imageStopView = TapAPI.views.StopView.extend({
+    'tap/views/AppView',
+    'tap/views/StopView'
+], function($, _, Backbone, App, StopView) {
+	var imageStopView = StopView.extend({
 		renderContent: function() {
 			var asset_refs = App.tap.currentStop.get('assetRef');
 			var content_template = TapAPI.templateManager.get('image-stop');

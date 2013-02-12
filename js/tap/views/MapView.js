@@ -2,9 +2,10 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'tap/views/AppView'
-], function($, _, Backbone, App) {
-	var mapView = TapAPI.views.BaseView.extend({
+    'tap/views/AppView',
+    'tap/views/BaseView'
+], function($, _, Backbone, App, BaseView) {
+	var mapView = BaseView.extend({
 		onInit: function() {
 			this.options.active_index = 'tourmap';
 
