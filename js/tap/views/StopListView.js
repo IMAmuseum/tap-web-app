@@ -2,7 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'tap/app',
+    'tap/views/AppView',
     'tap/StopListItemView'
 ], function($, _, Backbone, App, StopListItemView) {
 	var stopListView = TapAPI.views.Page.extend({
