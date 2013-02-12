@@ -3,7 +3,7 @@ define([
 	'backbone',
 	'tap/models/SourceModel',
 	'localstorage'
-], function(_, Backbone, App, SourceModel) {
+], function(_, Backbone, SourceModel) {
 	var sourceCollection = Backbone.Collection.extend({
 		model: SourceModel,
 		initialize: function(models, options) {

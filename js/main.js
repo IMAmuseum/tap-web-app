@@ -6,7 +6,7 @@ requirejs.config({
         'underscore': 'vendor/underscore',
         'backbone': 'vendor/backbone',
         'localstorage': 'vendor/backbone.localStorage',
-        'super': 'vendor/backbone-super',
+        'backbone-super': 'vendor/backbone-super',
         'leaflet': 'vendor/leaflet/leaflet',
         'photoswipe': 'vendor/photoswipe/code.photoswipe.jquery',
         'mediaelement': 'vendor/mediaelement/mediaelement-and-player'
@@ -31,15 +31,12 @@ requirejs.config({
 require([
     'jquery',
     'jquerymobile',
-    'backbone',
-    'tap/app'
-], function($, jQMobile, Backbone, App) {
+    'tap/app',
+    'tap/views/AppView'
+], function($) {
     // disable misc jQuery Mobile functionality so that we can handle it ourselves
     $.mobile.ajaxEnabled = false;
     $.mobile.linkBindingEnabled = false;
     $.mobile.hashListeningEnabled = false;
     $.mobile.pushStateEnabled = false;
-
-    App.initialize();
-    blah = App;
 });

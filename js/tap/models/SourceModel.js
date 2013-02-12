@@ -2,7 +2,7 @@ define([
 	'underscore',
 	'backbone',
 	'tap/collections/PropertySetCollection'
-], function(_, Backbone, PropertySetCollectionn) {
+], function(_, Backbone, PropertySetCollection) {
 	var sourceModel = Backbone.Model.extend({
 		initialize: function() {
 			//parse never gets called due to this not being in localstorage as its own record
