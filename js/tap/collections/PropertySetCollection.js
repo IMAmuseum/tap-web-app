@@ -1,7 +1,7 @@
 define([
 	'underscore',
 	'backbone',
-	'tap/app',
+	'tap/views/AppView',
 	'tap/models/PropertyModel',
 	'localstorage'
 ], function(_, Backbone, App, PropertyModel) {

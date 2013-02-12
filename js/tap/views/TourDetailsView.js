@@ -2,7 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'tap/app'
+    'tap/views/AppView'
 ], function($, _, Backbone, App) {
 	var tourDetailsView = TapAPI.views.BaseView.extend({
 		onInit: function() {

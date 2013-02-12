@@ -2,7 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'tap/app'
+    'tap/views/AppView'
 ], function($, _, Backbone, App) {
 	var baseView = Backbone.View.extend({
 		initialize: function(args) {

@@ -30,9 +30,8 @@ requirejs.config({
 
 require([
     'jquery',
-    'jquerymobile',
-    'tap/app',
-    'tap/views/AppView'
+    'tap/views/AppView',
+    'jquerymobile'
 ], function($) {
     // disable misc jQuery Mobile functionality so that we can handle it ourselves
     $.mobile.ajaxEnabled = false;

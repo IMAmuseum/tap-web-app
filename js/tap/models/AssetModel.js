@@ -1,7 +1,7 @@
 define([
 	'underscore',
 	'backbone',
-	'tap/app',
+	'tap/views/AppView',
 	'tap/collections/PropertySetCollection',
 	'tap/collections/SourceCollection',
 	'tap/collections/ContentCollection'

@@ -1,7 +1,7 @@
 define([
 	'underscore',
 	'backbone',
-	'tap/app',
+	'tap/views/AppView',
 	'tap/collections/PropertySetCollection'
 ], function(_, Backbone, App, PropertySetCollection) {
 	var tourModel = Backbone.Model.extend({

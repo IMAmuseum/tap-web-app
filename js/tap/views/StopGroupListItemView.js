@@ -2,7 +2,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'tap/App',
+    'tap/views/AppView',
     'tap/StopGroupListItem'
 ], function($, _, Backbone, App) {
 	var stopGroupListItem = Backbone.View.extend({
