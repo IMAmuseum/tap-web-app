@@ -1,9 +1,10 @@
 define([
     'jquery',
     'underscore',
-    'backbone'
+    'backbone',
+    'tap/views/BaseView'
 ], function($, _, Backbone) {
-	var tourListView = TapAPI.views.Page.extend({
+	var tourListView = BaseView.extend({
 
 		onInit: function() {
 			this.options.page_title = 'Tour List';

@@ -2,9 +2,10 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'tap/views/AppView'
-], function($, _, Backbone, App) {
-	var videoStopView = TapAPI.views.StopView.extend({
+    'tap/views/AppView',
+    'tap/views/StopView'
+], function($, _, Backbone, App, StopView) {
+	var videoStopView = StopView.extend({
 		onInit: function() {
 
 			if (App.tap.video_timer === undefined) {

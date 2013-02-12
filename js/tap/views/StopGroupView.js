@@ -3,9 +3,10 @@ define([
     'underscore',
     'backbone',
     'tap/views/AppView',
+    'tap/views/StopView',
     'tap/StopGroupListItem'
-], function($, _, Backbone, App, StopGroupListItem) {
-	stopGroupView = TapAPI.views.BaseView.extend({
+], function($, _, Backbone, App, StopView, StopGroupListItem) {
+	stopGroupView = StopView.extend({
 		renderContent: function() {
 			var content_template = TapAPI.templateManager.get('stop-group');
 			var template_args = {
