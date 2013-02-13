@@ -32,10 +32,15 @@ require([
     'jquery',
     'tap/views/AppView',
     'jquerymobile'
-], function($) {
+], function($, App) {
     // disable misc jQuery Mobile functionality so that we can handle it ourselves
     $.mobile.ajaxEnabled = false;
     $.mobile.linkBindingEnabled = false;
     $.mobile.hashListeningEnabled = false;
     $.mobile.pushStateEnabled = false;
+    console.log(App);
+    App.render();
+    console.log(App);
+    // start backbone history collection
+    Backbone.history.start();
 });

@@ -4,9 +4,11 @@ define([
     'backbone',
     'tap/router',
     'tap/settings',
-    'tap/collections/TourCollection'
-], function($, _, Backbone, Router, Settings, TourCollection) {
+    'tap/collections/TourCollection',
+    'tap/views/HeaderView'
+], function($, _, Backbone, Router, Settings, TourCollection, HeaderView) {
     var appView = Backbone.View.extend({
+        id: 'wrapper',
         initialize: function() {
             this.gaq = [];
             this.router = undefined;
@@ -22,6 +24,7 @@ define([
                 models: {},
                 views: {}
             };
+            this.templates = {};
             this.settings = _.defaults(Settings, {
                 url: '',
                 trackerID: '',
@@ -32,7 +35,14 @@ define([
             Backbone.trigger('tap.app.initialized');
         },
         render: function() {
+            $('body').append(this.el);
+            // add navigation bar
+            var headerView = new HeaderView();
+            this.$el.append(headerView.render().$el);
 
+            // add footer bar
+            //var footerView = new FooterView();
+            //this.$el.append(footerView.render().$el);
         },
         runApp: function() {
             Backbone.trigger('tap.app.loading');
@@ -60,8 +70,7 @@ define([
             Backbone.trigger('tap.app.complete');
 
             // initialize router
-           this.router = new Router();
-           this.render();
+            this.router = new Router();
         }
     });
     return new appView();
