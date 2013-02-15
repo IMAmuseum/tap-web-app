@@ -7,17 +7,6 @@
 	margin: auto;
 }
 
-.ui-header .ui-title {
-	padding-top: 0.4em;	
-	margin-right: 10%;
-	margin-left: 10%;
-}
-
-#back-button {
-	margin-top: .35em;
-	margin-bottom: .35em;
-}
-
 #proximity-toggle-label {
 	float: left;
 	margin-top: 0.5em;
@@ -184,6 +173,30 @@
 
 .transcription.hidden {
 	display: none;
+}
+
+/* Image Stop */
+#gallery {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+#gallery li {
+	float: left;
+	width: 33.33333333%;
+}
+
+#gallery li a {
+	display: block;
+	margin: 5px;
+	border: 1px solid #3c3c3c;
+}
+
+#gallery li a img {
+	display: block;
+	width: 100%;
+	height: auto;
 }
 
 /*** MEDIA QUERIES ***********************************************************/

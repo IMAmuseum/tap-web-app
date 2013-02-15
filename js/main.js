@@ -9,7 +9,8 @@ requirejs.config({
         'localstorage': 'vendor/backbone.localStorage',
         'backbone-super': 'vendor/backbone-super',
         'leaflet': 'vendor/leaflet/leaflet',
-        'photoswipe': 'vendor/photoswipe/code.photoswipe.jquery',
+        'klass': 'vendor/klass',
+        'photoswipe': 'vendor/photoswipe/code.photoswipe',
         'mediaelement': 'vendor/mediaelement/mediaelement-and-player'
     },
     shim: {
@@ -23,6 +24,7 @@ requirejs.config({
             exports: 'leaflet'
         },
         'photoswipe': {
+            deps: ['jquery', 'klass'],
             exports: 'photoswipe'
         },
         'mediaelement': {

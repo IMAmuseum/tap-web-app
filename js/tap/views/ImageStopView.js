@@ -4,67 +4,58 @@ define([
     'backbone',
     'tap/TapAPI',
     'tap/TemplateManager',
-    'tap/views/StopView'
+    'tap/views/StopView',
+    'photoswipe'
 ], function($, _, Backbone, TapAPI, TemplateManager, StopView) {
-	var imageStopView = StopView.extend({
-		template: TemplateManager.get('image-stop'),
-		initialize: function() {
-			this.title = this.model.get('title');
-		},
-		render: function() {
-			var asset_refs = TapAPI.currentStop.get('assetRef');
-			var content_template = TapAPI.templateManager.get('image-stop');
-			var imageTemplate = TapAPI.templateManager.get('image-stop-item');
+    var imageStopView = StopView.extend({
+        tagName: 'ul',
+        id: 'gallery',
+        className: 'ui-grid-b',
+        template: TemplateManager.get('image-stop'),
+        initialize: function() {
+            this._super('initialize');
+            this.title = this.model.get('title');
+        },
+        render: function() {
+            var assetRefs = this.model.get('assetRef');
 
-			if (asset_refs) {
-				this.$el.find(':jqmData(role="content")').append(content_template());
+            if (_.isEmpty(assetRefs)) return this;
 
-				var gallery = this.$el.find('#Gallery');
+            var images = [];
+            _.each(assetRefs, function(assetRef) {
+                var asset = TapAPI.tourAssets.get(assetRef.id);
 
-				$.each(asset_refs, function(assetRef) {
-					var asset = TapAPI.tourAssets.get(this.id);
+                if (assetRef.usage === 'image_asset') {
+                    var thumbnail = asset.getSourcesByPart('thumbnail');
+                    var image = asset.getSourcesByPart('image_asset_image');
+                    var title = asset.getContentsByPart('title');
+                    var caption = asset.getContentsByPart('caption');
 
-					if (this.usage === 'image_asset') {
-						var templateData = {};
-						var sources = asset.get('source');
-						var content = asset.get('content');
-						sources.each(function(source) {
-							switch (source.get('part')) {
-								case 'image_asset_image':
-									templateData.fullImageUri = source.get('uri') ? source.get('uri') : '';
-									break;
-								case 'thumbnail':
-									templateData.thumbUri = source.get('uri') ? source.get('uri') : '';
-									break;
-							}
-						});
-						content.each(function(contentItem) {
-							switch(contentItem.get('part')) {
-								case 'title':
-									templateData.title = contentItem.get('data');
-									break;
-								case 'caption':
-									templateData.caption = contentItem.get('caption');
-									break;
-							}
-						});
+                    var imageAsset = {
+                        thumbnailUri: _.isEmpty(thumbnail) ? '' : thumbnail[0].get('uri'),
+                        originalUri: _.isEmpty(image) ? '' : image[0].get('uri'),
+                        title: _.isEmpty(title) ? '' : title[0].get('data'),
+                        caption: _.isEmpty(caption) ? '' : caption[0].get('data')
+                    };
+                    images.push(imageAsset);
+                }
+            });
 
-						gallery.append(imageTemplate(templateData));
-					}
-				});
+            this.$el.html(this.template({images: images}));
 
-				var photoSwipe = this.$el.find('#gallery a').photoSwipe({
-					enableMouseWheel: false,
-					enableKeyboard: true,
-					doubleTapZoomLevel : 0,
-					captionAndToolbarOpacity : 0.8,
-					minUserZoom : 0.0,
-					preventSlideshow : true,
-					jQueryMobile : true
-				});
-			}
-			return this;
-		}
-	});
-	return imageStopView;
+            this.gallery = this.$el.find('a').photoSwipe({
+                enableMouseWheel: false,
+                enableKeyboard: true,
+                doubleTapZoomLevel : 0,
+                captionAndToolbarFlipPosition: true,
+                captionAndToolbarShowEmptyCaptions: false,
+                captionAndToolbarOpacity : 0.8,
+                minUserZoom : 0.0,
+                preventSlideshow : true,
+                jQueryMobile : true
+            });
+            return this;
+        }
+    });
+    return imageStopView;
 });

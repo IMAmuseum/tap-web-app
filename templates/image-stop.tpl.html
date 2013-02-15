@@ -1,2 +1,7 @@
-<ul id="Gallery" class="ui-grid-b">
-</ul>
+<% _.each(images, function(image) { %>
+	<li>
+		<a href="<%= image.originalUri %>" rel="external">
+			<img src="<%= image.thumbnailUri %>" alt="<%= image.caption %>" title="<%= image.title %>" />
+		</a>
+	</li>
+<% }) %>
