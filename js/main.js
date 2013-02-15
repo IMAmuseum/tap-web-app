@@ -17,8 +17,7 @@ requirejs.config({
             deps: ['jqm-config']
         },
         'backbone-super': {
-            deps: ['backbone'],
-            exports: 'super'
+            deps: ['backbone']
         },
         'leaflet': {
             exports: 'leaflet'

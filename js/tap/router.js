@@ -13,46 +13,18 @@ define([
 ], function($, _, Require, Backbone, TapAPI, ContentView, TourListView, TourDetailsView, KeypadView, StopListView, MapView) {
     var router = Backbone.Router.extend({
         routes: {
-            '': 'list',
-            'map': 'map',
-            'tour/:tour_id': 'tourDetails',
-            'keypad/:tour_id': 'keypad',
-            'tourstop/:tour_id/:stop_id': 'tourStopById',
-            'tourstop/:tour_id/code/:stop_code': 'tourStopByCode',
-            'tourmap/:tour_id': 'tourMap',
-            'tourstoplist/:tour_id': 'tourStopList'
-        },
-        initialize: function() {
-
+            '': 'tourSelection',
+            'tour/:tourID/details': 'tourDetails',
+            'tour/:tourID/keypad': 'keypad',
+            'tour/:tourID/stop-list': 'tourStopList',
+            'tour/:tourID/map': 'map',
+            'tour/:tourID/stop/:stopID': 'tourStop'
         },
         /**
          * Route to the tour listing
          */
-        list: function() {
+        tourSelection: function() {
             this.changePage(new TourListView());
-        },
-        /**
-         * Route to the overall map view
-         */
-        map: function() {
-            var map_options = {
-                stops: new TapAPI.collections.Stops()
-            };
-            // Find all of the geolocated stops in the tour set
-            _.each(TapAPI.tours.models, function(tour) {
-                TapAPI.tours.selectTour(tour.id);
-                _.each(TapAPI.tourStops.models, function(stop) {
-                    var assets = stop.getAssetsByUsage('geo');
-                    if (assets !== undefined) {
-                        map_options['stops'].add(stop);
-                    }
-                });
-            });
-
-            // Set the current view
-            this.changePage(new TapAPI.views.Map(map_options));
-
-            $('#index-selector').replaceWith("<h1 id='page-title' class='ui-title'>Map</h2>");
         },
         /**
          * Route to the tour details
@@ -66,63 +38,24 @@ define([
          * Route to the keypad
          * @param id The id of the tour
          */
-        keypad: function(id) {
+        keypad: function(tourID) {
+            TapAPI.tours.selectTour(tourID);
             this.changePage(new KeypadView());
-        },
-        /**
-         * Route to a stop
-         */
-        tourStop: function() {
-            var viewPath = TapAPI.config.viewRegistry[TapAPI.currentStop.get('view')];
-            var view = Require(viewPath);
-            if (view === undefined) {
-                console.log('View not in registry: ', TapAPI.currentStop.get('view'));
-            }
-
-            this.changePage(new view({
-                model: TapAPI.currentStop,
-                title: TapAPI.tours.get(TapAPI.currentTour).get('title')[0].value
-            }));
-        },
-        /**
-         * Route to a stop by stop ID
-         **/
-        tourStopById: function(tour_id, stop_id) {
-            // set the selected tour
-            TapAPI.tours.selectTour(tour_id);
-            TapAPI.currentStop = TapAPI.tourStops.get(stop_id);
-            this.tourStop();
-        },
-        /**
-         * Route to a stop by stop code
-         */
-        tourStopByCode: function(tour_id, stop_code) {
-            // set the selected tour
-            TapAPI.tours.selectTour(tour_id);
-            TapAPI.currentStop = TapAPI.tourStops.getStopByKeycode(stop_code);
-            this.tourStop();
         },
         /**
          * Route to the tour list
          * @param id The id of the tour
          */
-        tourStopList: function(id) {
-            // set the selected tour
-            TapAPI.tours.selectTour(id);
-            var options = {
-                model: TapAPI.tours.get(TapAPI.currentTour)
-            };
-            if (TapAPI.config.StopListView !== undefined) {
-                options = _.extend(options, TapAPI.config.StopListView);
-            }
-            this.changePage(new TapAPI.views.StopList(options));
+        tourStopList: function(tourID) {
+            TapAPI.tours.selectTour(tourID);
+            this.changePage(new StopListView());
         },
         /**
          * Route to the tour map
          * Certain parameters are determined here in the router to leave open the possibility of
          * plotting markers for several tours on the same map
          */
-        tourMap: function(id) {
+        map: function(tourID) {
             // Determine which stops to display
             TapAPI.tours.selectTour(id);
             var map_options = {
@@ -157,6 +90,22 @@ define([
 
             // Set the current view
             this.changePage(new TapAPI.views.Map(map_options));
+        },
+        /**
+         * Route to a stop
+         */
+        tourStop: function(tourID, stopID) {
+            var that = this;
+
+            TapAPI.tours.selectTour(tourID);
+            TapAPI.currentStop = TapAPI.tourStops.get(stopID);
+
+            var stopType = TapAPI.currentStop.get('view');
+            var viewPath = 'tap/views/' + TapAPI.config.viewRegistry[stopType].view;
+
+            Require([viewPath], function(View) {
+                that.changePage(new View({model: TapAPI.currentStop}));
+            });
         },
         changePage: function(view) {
             Backbone.trigger('tap.router.routed', view);

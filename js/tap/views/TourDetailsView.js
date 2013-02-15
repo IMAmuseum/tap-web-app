@@ -9,14 +9,16 @@ define([
 	var tourDetailsView = BaseView.extend({
 		template: TemplateManager.get('tour-details'),
 		initialize: function() {
+			this._super('initialize');
 
+			this.tour = TapAPI.tours.get(TapAPI.currentTour);
+			this.title = this.tour.get('title');
 		},
 		render: function() {
-			var currentTour = TapAPI.tours.get(TapAPI.currentTour);
 			this.$el.html(this.template({
 				defaultStopSelectionView: 'keypad',
-				tourID: currentTour.get('id'),
-				description: currentTour.get('description') ? currentTour.get('description') : ''
+				tourID: this.tour.get('id'),
+				description: this.tour.get('description') ? this.tour.get('description') : ''
 			}));
 			return this;
 		}

@@ -1,10 +1,11 @@
 define([
-    'jquery',
     'underscore',
+    'jquery',
     'backbone',
+    'tap/TapAPI',
     'tap/views/BaseView',
     'tap/TemplateManager'
-], function($, _, Backbone, BaseView, TemplateManager) {
+], function(_, $, Backbone, TapAPI, BaseView, TemplateManager) {
     var footerView = BaseView.extend({
         attributes: {
             'data-role': 'footer',
@@ -17,7 +18,9 @@ define([
             this.listenTo(Backbone, 'tap.router.routed', this.render);
         },
         render: function() {
-            this.$el.html(this.template());
+            if (_.isEmpty(TapAPI.currentTour)) return;
+
+            this.$el.html(this.template({tourID: TapAPI.currentTour}));
             return this;
         }
     });

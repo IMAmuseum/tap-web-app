@@ -20,13 +20,9 @@ define([
             url: '',
             trackerID: '',
             tourSettings: {},
-            viewRegistry: {
-                'tour_audio_stop': 'AudioStopView',
-                'tour_image_stop': 'ImageStopView',
-                'tour_stop_group': 'StopGroupView',
-                'tour_video_stop': 'VideoStopView'
-            }
+            viewRegistry: {}
         })
     };
+
     return TapAPI;
 });

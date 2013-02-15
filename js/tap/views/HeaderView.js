@@ -16,7 +16,8 @@ define([
             this.listenTo(Backbone, 'tap.router.routed', this.render);
         },
         render: function(view) {
-            this.$el.html(this.template({title: 'blah'}));
+            var title = view && !_.isEmpty(view.title) ? view.title : '';
+            this.$el.html(this.template({title: title}));
             return this;
         }
     });

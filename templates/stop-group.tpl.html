@@ -1,5 +1,10 @@
-<div class='tour-stop stop-group' style="width:100%;">
-	<div class='title'><%= tourStopTitle %></div>
+<div class='tour-stop stop-group'>
 	<div class='description'><%= description %></div>
-	<ul id="stop-list" class="ui-listview" data-inset="true" data-role="listview"></ul>
+	<ul id="stop-list" class="ui-listview" data-inset="true" data-role="listview">
+	<% _.each(stops, function(stop) { %>
+		<li>
+			<a href="#tour/<%= tourID %>/stop/<%= stop.id %>"><%= stop.title %></a>
+		</li>
+	<% }); %>
+	</ul>
 </div>

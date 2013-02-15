@@ -10,7 +10,8 @@ define([
 		id: 'tour-list',
 		template: TemplateManager.get('tour-list'),
 		initialize: function() {
-
+			this._super('initialize');
+			this.title = 'Select a Tour';
 		},
 		render: function() {
 			this.$el.html(this.template({tours: TapAPI.tours.models}));

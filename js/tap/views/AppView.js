@@ -14,14 +14,14 @@ define([
             $('body').append(this.el);
             // add navigation bar
             var headerView = new HeaderView();
-            this.$el.append(headerView.render().$el);
+            this.$el.append(headerView.$el);
 
             var contentView = new ContentView();
-            this.$el.append(contentView.render().$el);
+            this.$el.append(contentView.$el);
 
             // add footer bar
             var footerView = new FooterView();
-            this.$el.append(footerView.render().$el);
+            this.$el.append(footerView.$el);
 
             // trigger jquery mobile to initialize new widgets
             $('body').trigger('pagecreate');

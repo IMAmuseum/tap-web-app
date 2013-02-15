@@ -3,37 +3,36 @@ define([
     'underscore',
     'backbone',
     'tap/TapAPI',
-    'tap/views/StopView',
-    'tap/StopGroupListItem'
-], function($, _, Backbone, TapAPI, StopView, StopGroupListItem) {
-	stopGroupView = StopView.extend({
-		renderContent: function() {
-			var content_template = TapAPI.templateManager.get('stop-group');
-			var template_args = {
-				tourStopTitle : this.model.get('title')
-			};
-
-			var description = this.model.get("description");
-			if (description !== undefined) {
-				template_args['description'] = description;
-			} else {
-				template_args['description'] = '';
-			}
-
-			this.$el.find(":jqmData(role='content')").append(content_template(template_args));
-
-			var connections = this.model.get('connection');
-			var listContainer = this.$el.find("#stop-list");
-			_.each(connections, function(connection) {
-				var stop = tap.tourStops.get(connection.destId);
+    'tap/views/BaseView',
+    'tap/TemplateManager'
+], function($, _, Backbone, TapAPI, BaseView, TemplateManager) {
+	stopGroupView = BaseView.extend({
+		template: TemplateManager.get('stop-group'),
+		initialize: function() {
+			this._super('initialize');
+			this.title = this.model.get('title');
+		},
+		render: function() {
+			var stops = [];
+			_.each(this.model.get('connection'), function(connection) {
+				var stop = TapAPI.tourStops.get(connection.destId);
 				if (stop) {
-					var stopView = new StopGroupListItem({
-						model: stop
+					stops.push({
+						id: stop.get('id'),
+						title: stop.get('title'),
+						icon: TapAPI.config.viewRegistry[stop.get('type')]
 					});
-					listContainer.append(stopView.render().$el);
 				}
 			});
 
+			var description = this.model.get('description');
+			this.$el.html(this.template({
+				tourID: TapAPI.currentTour,
+				description: _.isEmpty(description) ? '' : description,
+				stops: stops
+			}));
+
+			return this;
 		}
 	});
 	return stopGroupView;

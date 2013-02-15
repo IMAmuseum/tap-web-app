@@ -10,7 +10,8 @@ define([
 		id: 'keypad',
 		template: TemplateManager.get('keypad'),
 		initialize: function() {
-
+			this._super('initialize');
+			this.title = 'Enter a Stop Code';
 		},
 		events: {
 			'tap #gobtn' : 'submit',
@@ -22,15 +23,20 @@ define([
 			return this;
 		},
 		submit: function() {
-			// validate tour stop code
-			if(!$('#c').html()) return;
-			if(!TapAPI.tourStops.getStopByKeycode($('#write').html())){
-				TapAPI.router.showDialog('error', 'This is an invalid code. Please enter another.');
+			var code = $('#code').html();
+
+			if (_.isEmpty(code)) {
+				// TODO Display notification
+				return;
+			}
+
+			var stop = TapAPI.tourStops.getStopByKeycode(code);
+			if(_.isEmpty(stop)) {
+				// TODO: Display notification
 				$('#write').html('');
 				return;
 			}
-			$destUrl = '#tourstop/' + TapAPI.currentTour + '/code/' + $('#write').html();
-			Backbone.history.navigate($destUrl, true);
+			Backbone.history.navigate('tour/' + TapAPI.currentTour + '/stop/' + stop.get('id'), true);
 		},
 		inputKeyCode: function(e) {
 			var code = this.$el.find('#code').html() + $(e.currentTarget).html();
