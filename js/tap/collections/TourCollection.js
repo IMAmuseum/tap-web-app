@@ -2,14 +2,14 @@ define([
     'underscore',
     'backbone',
     'tap/helper',
-    'tap/views/AppView',
+    'tap/TapAPI',
     'tap/models/TourModel',
     'tap/models/StopModel',
     'tap/models/AssetModel',
     'tap/collections/StopCollection',
     'tap/collections/AssetCollection',
     'localstorage'
-], function(_, Backbone, Helper, App, TourModel, StopModel, AssetModel, StopCollection, AssetCollection) {
+], function(_, Backbone, Helper, TapAPI, TourModel, StopModel, AssetModel, StopCollection, AssetCollection) {
     var tourCollection = Backbone.Collection.extend({
         model: TourModel,
         localStorage: new Backbone.LocalStorage('tours'),
@@ -144,24 +144,24 @@ define([
             return tour;
         },
         selectTour: function(id) {
-            if (App.tap.currentTour == id) return;
+            if (TapAPI.currentTour == id) return;
 
             // set the current tour
-            App.tap.currentTour = id;
+            TapAPI.currentTour = id;
 
             // set root stop as the current stop if specified
-            if(tap.tours.get(id).get('rootStopRef')) {
-                App.tap.currentStop = App.tap.tours.get(id).get('rootStopRef').id;
+            if(TapAPI.tours.get(id).get('rootStopRef')) {
+                TapAPI.currentStop = TapAPI.tours.get(id).get('rootStopRef').id;
             }
 
             // create new instance of StopCollection
-            App.tap.tourStops = new StopCollection(null, id);
+            TapAPI.tourStops = new StopCollection(null, id);
             // create new instance of AssetCollection
-            App.tap.tourAssets = new AssetCollection(null, id);
+            TapAPI.tourAssets = new AssetCollection(null, id);
 
             // load data from local storage
-            App.tap.tourAssets.fetch();
-            App.tap.tourStops.fetch();
+            TapAPI.tourAssets.fetch();
+            TapAPI.tourStops.fetch();
 
             Backbone.trigger('tap.tour.selected');
         }

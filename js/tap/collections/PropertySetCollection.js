@@ -1,10 +1,10 @@
 define([
 	'underscore',
 	'backbone',
-	'tap/views/AppView',
+	'tap/TapAPI',
 	'tap/models/PropertyModel',
 	'localstorage'
-], function(_, Backbone, App, PropertyModel) {
+], function(_, Backbone, TapAPI, PropertyModel) {
 	var propertySetCollection = Backbone.Collection.extend({
 		model: PropertyModel,
 		initialize: function(models, options) {
@@ -12,7 +12,7 @@ define([
 		},
 		getValueByName: function(propertyName) {
 			var property, value;
-			property = this.where({"name": propertyName, "lang": App.tap.language});
+			property = this.where({"name": propertyName, "lang": TapAPI.language});
 			if (property.length === 0) {
 				property = this.where({"name": propertyName});
 			}

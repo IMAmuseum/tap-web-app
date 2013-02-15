@@ -2,10 +2,11 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'tap/views/AppView',
+    'tap/TapAPI',
+    'tap/templateManager',
     'tap/views/BaseView',
-    'tap/StopListItemView'
-], function($, _, Backbone, App, BaseView, StopListItemView) {
+    'tap/views/StopListItemView'
+], function($, _, Backbone, TapAPI, TemplateManager, BaseView, StopListItemView) {
 	var stopListView = BaseView.extend({
 		events: {
 			'change #proximity-toggle': 'onToggleProximity'
@@ -20,7 +21,7 @@ define([
 
 			// Turn off proximity ordering if the tour has no geolocated stops
 			var geo = false;
-			_.each(App.tap.tourStops.models, function(stop) {
+			_.each(TapAPI.tourStops.models, function(stop) {
 				if (stop.getAssetsByUsage('geo') !== undefined) {
 					geo = true;
 				}
@@ -35,19 +36,19 @@ define([
 
 			this.stoplistitems = {};
 
-			App.tap.tourStops.comparator = this.sortByCode;
-			App.tap.tourStops.sort();
+			TapAPI.tourStops.comparator = this.sortByCode;
+			TapAPI.tourStops.sort();
 
 		},
 		renderContent: function() {
-			var content_template = TapAPI.templateManager.get('tour-stop-list');
+			var content_template = TemplateManager.get('tour-stop-list');
 
 			this.$el.find(':jqmData(role="content")').append(content_template({
 				enable_proximity_order: this.options.enable_proximity_order
 			}));
 
 			// TODO: figure out a better way to avoid rendering again
-			//if ($('li', this.$el).length == App.tap.tourStops.models.length) return;
+			//if ($('li', this.$el).length == TapAPI.tourStops.models.length) return;
 
 			var listContainer = this.$el.find('#tour-stop-list');
 
@@ -59,7 +60,7 @@ define([
 
 		},
 		addStopsToList: function(listContainer) {
-			_.each(App.tap.tourStops.models, function(stop) {
+			_.each(TapAPI.tourStops.models, function(stop) {
 
 				// If in codes-only mode, abort if the stop does not have a code
 				if (this.options.codes_only) {
@@ -104,12 +105,12 @@ define([
 
 			if (this.options.sort == 'default') {
 				this.options.sort = 'proximity';
-				App.tap.tourStops.comparator = this.sortByDistance;
-				App.tap.tourStops.sort();
+				TapAPI.tourStops.comparator = this.sortByDistance;
+				TapAPI.tourStops.sort();
 			} else {
 				this.options.sort = 'default';
-				App.tap.tourStops.comparator = this.sortByCode;
-				App.tap.tourStops.sort();
+				TapAPI.tourStops.comparator = this.sortByCode;
+				TapAPI.tourStops.sort();
 			}
 
 			var listContainer = this.$el.find('#tour-stop-list');

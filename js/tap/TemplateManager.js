@@ -1,21 +1,21 @@
 define([
     'jquery',
     'underscore',
-    'tap/views/AppView'
-], function($, _, App) {
+    'tap/TapAPI'
+], function($, _, TapAPI) {
     var templateManager = {
         get : function(templateName) {
-            if (App.templates[templateName] === undefined) {
+            if (TapAPI.templates[templateName] === undefined) {
                 $.ajax({
                     async : false,
                     dataType : 'html',
                     url : 'templates/' + templateName + '.tpl.html',
                     success : function(data, textStatus, jqXHR) {
-                        App.templates[templateName] = _.template(data);
+                        TapAPI.templates[templateName] = _.template(data);
                     }
                 });
             }
-            return App.templates[templateName];
+            return TapAPI.templates[templateName];
         }
     };
     return templateManager;

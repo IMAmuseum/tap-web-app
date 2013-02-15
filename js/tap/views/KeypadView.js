@@ -2,43 +2,42 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'tap/views/AppView',
+    'tap/TapAPI',
+    'tap/TemplateManager',
     'tap/views/BaseView'
-], function($, _, Backbone, App, BaseView) {
+], function($, _, Backbone, TapAPI, TemplateManager, BaseView) {
 	var keypad = BaseView.extend({
+		id: 'keypad',
+		template: TemplateManager.get('keypad'),
+		initialize: function() {
+
+		},
 		events: {
 			'tap #gobtn' : 'submit',
-			'tap #keypad div .button' : 'writekeycode',
-			'tap #delete' : 'clearkeycode'
+			'tap #keypad .button' : 'inputKeyCode',
+			'tap #delete' : 'clearKeyCode'
 		},
-		onInit: function() {
-			this.options.active_index = 'tourkeypad';
-		},
-		renderContent: function() {
-			var content_template = TapAPI.templateManager.get('keypad');
-
-			$(':jqmData(role="content")', this.$el).append(content_template());
-
+		render: function() {
+			this.$el.html(this.template());
+			return this;
 		},
 		submit: function() {
 			// validate tour stop code
-			if(!$('#write').html()) return;
-			if(!App.tap.tourStops.getStopByKeycode($('#write').html())){
-				App.tap.router.showDialog('error', 'This is an invalid code. Please enter another.');
+			if(!$('#c').html()) return;
+			if(!TapAPI.tourStops.getStopByKeycode($('#write').html())){
+				TapAPI.router.showDialog('error', 'This is an invalid code. Please enter another.');
 				$('#write').html('');
 				return;
 			}
-			$destUrl = '#tourstop/' + App.tap.currentTour + '/code/' + $('#write').html();
+			$destUrl = '#tourstop/' + TapAPI.currentTour + '/code/' + $('#write').html();
 			Backbone.history.navigate($destUrl, true);
 		},
-		writekeycode: function(e) {
-			$('#write').html($('#write').html() + $(e.currentTarget).html());
+		inputKeyCode: function(e) {
+			var code = this.$el.find('#code').html() + $(e.currentTarget).html();
+			$('#code').html(code);
 		},
-		clearkeycode: function(e) {
-			$('#write').html('');
-		},
-		close: function() {
-			// Override base close function so that events are not unbound
+		clearKeyCode: function() {
+			$('#code').html('');
 		}
 	});
 	return keypad;

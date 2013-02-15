@@ -2,26 +2,23 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'tap/views/AppView',
+    'tap/TapAPI',
+    'tap/TemplateManager',
     'tap/views/BaseView'
-], function($, _, Backbone, App, BaseView) {
+], function($, _, Backbone, TapAPI, TemplateManager, BaseView) {
 	var tourDetailsView = BaseView.extend({
-		onInit: function() {
-			this.options.page_title = this.model.get('title');
-			this.options.header_nav = false;
-			this.options.footer_nav = false;
-		},
-		renderContent: function() {
-			var content_template = TapAPI.templateManager.get('tour-details');
+		template: TemplateManager.get('tour-details'),
+		initialize: function() {
 
-			this.$el.find(":jqmData(role='content')").append(content_template({
-				tour_index: App.tap.config.default_nav_item,
-				tour_id: this.model.id,
-				publishDate: this.model.get('publishDate') ? this.model.get('publishDate') : undefined,
-				description: this.model.get('description') ? this.model.get('description') : undefined,
-				stopCount: App.tap.tourStops.length,
-				assetCount: App.tap.tourAssets.length
+		},
+		render: function() {
+			var currentTour = TapAPI.tours.get(TapAPI.currentTour);
+			this.$el.html(this.template({
+				defaultStopSelectionView: 'keypad',
+				tourID: currentTour.get('id'),
+				description: currentTour.get('description') ? currentTour.get('description') : ''
 			}));
+			return this;
 		}
 	});
 	return tourDetailsView;

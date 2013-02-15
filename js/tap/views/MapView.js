@@ -2,9 +2,9 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'tap/views/AppView',
+    'tap/TapAPI',
     'tap/views/BaseView'
-], function($, _, Backbone, App, BaseView) {
+], function($, _, Backbone, TapAPI, BaseView) {
 	var mapView = BaseView.extend({
 		onInit: function() {
 			this.options.active_index = 'tourmap';
@@ -94,7 +94,7 @@ define([
 			// At this point the stop markers should be added to the map
 			// We can augment them with the distance labels
 			_.each(this.options['stops'].models, function(stop) {
-				App.tap.tours.selectTour(stop.get('tour'));
+				TapAPI.tours.selectTour(stop.get('tour'));
 				if (stop.getAssetsByUsage('geo') === undefined) return;
 				this.updateStopMarker(stop);
 			}, this);
@@ -128,7 +128,7 @@ define([
 		// @note Assumes that the context is set to { stop: (StopModel), map_view: (MapView) }
 		plotTourStopMarker: function(stop) {
 			// Make sure the proper tour is active
-			App.tap.tours.selectTour(stop.get('tour'));
+			TapAPI.tours.selectTour(stop.get('tour'));
 
 			// Find the geo assets for this stop
 			var geo_assets = stop.getAssetsByUsage('geo');
@@ -193,12 +193,12 @@ define([
 		// When a marker is selected, show the popup
 		// Assumes that the context is set to (MapView)
 		onMarkerSelected: function(e) {
-			App.gaq.push(['_trackEvent', 'Map', 'marker_clicked', e.target.stop_id]);
+			TapAPI.gaq.push(['_trackEvent', 'Map', 'marker_clicked', e.target.stop_id]);
 
 			this.map.openPopup(this.stop_popups[e.target.stop_id]);
 
 			$('.marker-bubble-content .directions a').on('click', function() {
-				App.gaq.push(['_trackEvent', 'Map', 'get_directions', e.target.stop_id]);
+				TapAPI.gaq.push(['_trackEvent', 'Map', 'get_directions', e.target.stop_id]);
 			});
 
 		},
@@ -213,7 +213,7 @@ define([
 				this.map.addLayer(this.position_marker);
 
 				this.position_marker.addEventListener('click', function() {
-					App.gaq.push(['_trackEvent', 'Map', 'you_are_here_clicked']);
+					TapAPI.gaq.push(['_trackEvent', 'Map', 'you_are_here_clicked']);
 				});
 
 			} else {

@@ -1,9 +1,9 @@
 define([
 	'underscore',
 	'backbone',
-	'tap/views/AppView',
+	'tap/TapAPI',
 	'tap/collections/PropertySetCollection'
-], function(_, Backbone, App, PropertySetCollection) {
+], function(_, Backbone, TapAPI, PropertySetCollection) {
 	var tourModel = Backbone.Model.extend({
 		get: function(attr) { // override get method
 			if(!this.attributes[attr]) return this.attributes[attr];
@@ -15,12 +15,12 @@ define([
 					var value, property;
 
 					property = _.find(this.attributes[attr], function(item) {
-						return item.lang === App.tap.language;
+						return item.lang === TapAPI.language;
 					});
 
-					if (!property && App.tap.language !== App.tap.defaultLanguage) {
+					if (!property && TapAPI.language !== TapAPI.defaultLanguage) {
 						property = _.find(this.attributes[attr], function(item) {
-							return item.lang === App.tap.defaultLanguage;
+							return item.lang === TapAPI.defaultLanguage;
 						});
 					}
 

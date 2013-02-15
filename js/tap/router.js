@@ -1,28 +1,35 @@
 define([
     'jquery',
     'underscore',
+    'require',
     'backbone',
-    'tap/views/AppView'
-], function($, _, Backbone, App) {
+    'tap/TapAPI',
+    'tap/views/ContentView',
+    'tap/views/TourListView',
+    'tap/views/TourDetailsView',
+    'tap/views/KeypadView',
+    'tap/views/StopListView',
+    'tap/views/MapView'
+], function($, _, Require, Backbone, TapAPI, ContentView, TourListView, TourDetailsView, KeypadView, StopListView, MapView) {
     var router = Backbone.Router.extend({
         routes: {
             '': 'list',
             'map': 'map',
             'tour/:tour_id': 'tourDetails',
-            'tourkeypad/:tour_id': 'tourKeypad',
+            'keypad/:tour_id': 'keypad',
             'tourstop/:tour_id/:stop_id': 'tourStopById',
             'tourstop/:tour_id/code/:stop_code': 'tourStopByCode',
             'tourmap/:tour_id': 'tourMap',
             'tourstoplist/:tour_id': 'tourStopList'
         },
         initialize: function() {
-            console.log(App);
+
         },
         /**
          * Route to the tour listing
          */
         list: function() {
-            //this.changePage(new TourList());
+            this.changePage(new TourListView());
         },
         /**
          * Route to the overall map view
@@ -32,9 +39,9 @@ define([
                 stops: new TapAPI.collections.Stops()
             };
             // Find all of the geolocated stops in the tour set
-            _.each(App.tap.tours.models, function(tour) {
-                App.tap.tours.selectTour(tour.id);
-                _.each(App.tap.tourStops.models, function(stop) {
+            _.each(TapAPI.tours.models, function(tour) {
+                TapAPI.tours.selectTour(tour.id);
+                _.each(TapAPI.tourStops.models, function(stop) {
                     var assets = stop.getAssetsByUsage('geo');
                     if (assets !== undefined) {
                         map_options['stops'].add(stop);
@@ -51,35 +58,30 @@ define([
          * Route to the tour details
          * @param id The id of the tour
          */
-        tourDetails: function(id) {
-
-            App.tap.tours.selectTour(id);
-            this.changePage(new TapAPI.views.TourDetails({model: App.tap.tours.get(App.tap.currentTour)}));
+        tourDetails: function(tourID) {
+            TapAPI.tours.selectTour(tourID);
+            this.changePage(new TourDetailsView());
         },
         /**
          * Route to the keypad
          * @param id The id of the tour
          */
-        tourKeypad: function(id) {
-            App.tap.tours.selectTour(id);
-            this.changePage(new TapAPI.views.Keypad({
-                model: App.tap.tours.get(App.tap.currentTour),
-                page_title: "Enter a code"
-            }));
+        keypad: function(id) {
+            this.changePage(new KeypadView());
         },
         /**
          * Route to a stop
          */
         tourStop: function() {
-            var api_class = TapAPI.views.registry[App.tap.currentStop.get('view')];
-            if (api_class === undefined) {
-                console.log('View not in registry: ', App.tap.currentStop.get('view'));
-                api_class = 'Stop';
+            var viewPath = TapAPI.config.viewRegistry[TapAPI.currentStop.get('view')];
+            var view = Require(viewPath);
+            if (view === undefined) {
+                console.log('View not in registry: ', TapAPI.currentStop.get('view'));
             }
 
-            this.changePage(new TapAPI.views[api_class]({
-                model: App.tap.currentStop,
-                page_title: App.tap.tours.get(App.tap.currentTour).get('title')[0].value
+            this.changePage(new view({
+                model: TapAPI.currentStop,
+                title: TapAPI.tours.get(TapAPI.currentTour).get('title')[0].value
             }));
         },
         /**
@@ -87,8 +89,8 @@ define([
          **/
         tourStopById: function(tour_id, stop_id) {
             // set the selected tour
-            App.tap.tours.selectTour(tour_id);
-            App.tap.currentStop = App.tap.tourStops.get(stop_id);
+            TapAPI.tours.selectTour(tour_id);
+            TapAPI.currentStop = TapAPI.tourStops.get(stop_id);
             this.tourStop();
         },
         /**
@@ -96,8 +98,8 @@ define([
          */
         tourStopByCode: function(tour_id, stop_code) {
             // set the selected tour
-            App.tap.tours.selectTour(tour_id);
-            App.tap.currentStop = App.tap.tourStops.getStopByKeycode(stop_code);
+            TapAPI.tours.selectTour(tour_id);
+            TapAPI.currentStop = TapAPI.tourStops.getStopByKeycode(stop_code);
             this.tourStop();
         },
         /**
@@ -106,12 +108,12 @@ define([
          */
         tourStopList: function(id) {
             // set the selected tour
-            App.tap.tours.selectTour(id);
+            TapAPI.tours.selectTour(id);
             var options = {
-                model: App.tap.tours.get(App.tap.currentTour)
+                model: TapAPI.tours.get(TapAPI.currentTour)
             };
-            if (App.tap.config.StopListView !== undefined) {
-                options = _.extend(options, App.tap.config.StopListView);
+            if (TapAPI.config.StopListView !== undefined) {
+                options = _.extend(options, TapAPI.config.StopListView);
             }
             this.changePage(new TapAPI.views.StopList(options));
         },
@@ -122,19 +124,19 @@ define([
          */
         tourMap: function(id) {
             // Determine which stops to display
-            App.tap.tours.selectTour(id);
+            TapAPI.tours.selectTour(id);
             var map_options = {
-                'stops': App.tap.tourStops
+                'stops': TapAPI.tourStops
             };
 
             // Look to see if a location is defined for the tour to use as the initial map center
-            var tour = App.tap.tours.get(App.tap.currentTour);
+            var tour = TapAPI.tours.get(TapAPI.currentTour);
             _.each(tour.get('appResource'), function(resource) {
 
                 // Make sure this is a geo asset reference
                 if ((resource === undefined) || (resource.usage != 'geo')) return;
 
-                asset = App.tap.tourAssets.get(resource.id);
+                asset = TapAPI.tourAssets.get(resource.id);
                 var content = asset.get('content');
                 if (content === undefined) return;
                 var data = $.parseJSON(content.at(0).get('data'));
@@ -156,21 +158,10 @@ define([
             // Set the current view
             this.changePage(new TapAPI.views.Map(map_options));
         },
-        changePage: function(page) {
-            // Close the current view to unbind events, etc.
-            if (App.tap.currentView !== undefined) {
-                App.tap.currentView.close();
-            }
-
-            App.tap.currentView = page;
-
-            page.$el.attr('data-role', 'page');
-            page.render();
-            $('body').append(page.$el);
-            var transition = $.mobile.defaultPageTransition;
-
-            $.mobile.changePage(page.$el, {changeHash:false, transition: transition});
+        changePage: function(view) {
+            Backbone.trigger('tap.router.routed', view);
+            $('body').trigger('pagecreate');
         }
     });
-    return router;
+    return new router();
 });

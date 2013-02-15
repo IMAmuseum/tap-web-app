@@ -1,8 +1,8 @@
 define([
     'jquery',
     'underscore',
-    'tap/views/AppView'
-], function($, _, App) {
+    'tap/TapAPI'
+], function($, _, TapAPI) {
     var analyticsTimer = {
         initialize: function(category, variable, opt_label) {
             this.category = category;
@@ -41,7 +41,7 @@ define([
                 if ((this.min_threshold !== null) && (this.elapsed < this.min_threshold)) this.elapsed = this.min_threshold;
                 if ((this.max_threshold !== null) && (this.elapsed > this.max_threshold)) this.elapsed = this.max_threshold;
 
-                App.gaq.push(['_trackTiming', this.category, this.variable, this.elapsed, this.label]);
+                TapAPI.gaq.push(['_trackTiming', this.category, this.variable, this.elapsed, this.label]);
 
             }
 
