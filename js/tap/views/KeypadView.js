@@ -14,7 +14,7 @@ define([
 			this.title = 'Enter a Stop Code';
 		},
 		events: {
-			'tap #gobtn' : 'submit',
+			'tap #go-btn' : 'submit',
 			'tap #keypad .button' : 'inputKeyCode',
 			'tap #delete' : 'clearKeyCode'
 		},
@@ -23,27 +23,30 @@ define([
 			return this;
 		},
 		submit: function() {
-			var code = $('#code').html();
-
-			if (_.isEmpty(code)) {
-				// TODO Display notification
-				return;
-			}
+			var code = this.$el.find('#code-label').html();
 
 			var stop = TapAPI.tourStops.getStopByKeycode(code);
 			if(_.isEmpty(stop)) {
-				// TODO: Display notification
-				$('#write').html('');
+				Backbone.trigger('tap.dialog.dislay', {
+					title: 'Stop Not Found',
+					message: 'Stop not found for code \'' + code + '\'',
+					cancelButtonTitle: 'OK'
+				});
+				this.$el.find('#code-label').html('');
 				return;
 			}
 			Backbone.history.navigate('tour/' + TapAPI.currentTour + '/stop/' + stop.get('id'), true);
 		},
 		inputKeyCode: function(e) {
-			var code = this.$el.find('#code').html() + $(e.currentTarget).html();
-			$('#code').html(code);
+			var code = this.$el.find('#code-label').html() + $(e.currentTarget).html();
+
+			this.$el.find('#go-btn').removeClass('ui-disabled');
+
+			$('#code-label').html(code);
 		},
 		clearKeyCode: function() {
-			$('#code').html('');
+			this.$el.find('#gobtn').addClass('ui-disabled');
+			this.$el.find('#code-label').html('');
 		}
 	});
 	return keypad;

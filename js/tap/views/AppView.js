@@ -3,11 +3,13 @@ define([
     'underscore',
     'backbone',
     'tap/TapAPI',
+    'tap/TemplateManager',
     'tap/collections/TourCollection',
     'tap/views/HeaderView',
     'tap/views/ContentView',
-    'tap/views/FooterView'
-], function($, _, Backbone, TapAPI, TourCollection, HeaderView, ContentView, FooterView) {
+    'tap/views/FooterView',
+    'tap/views/DialogView'
+], function($, _, Backbone, TapAPI, TemplateManager, TourCollection, HeaderView, ContentView, FooterView, DialogView) {
     var appView = Backbone.View.extend({
         id: 'wrapper',
         render: function() {
@@ -16,12 +18,17 @@ define([
             var headerView = new HeaderView();
             this.$el.append(headerView.$el);
 
+            // add content view
             var contentView = new ContentView();
             this.$el.append(contentView.$el);
 
             // add footer bar
             var footerView = new FooterView();
             this.$el.append(footerView.$el);
+
+            // add dialog view
+            var dialogView = new DialogView();
+            this.$el.append(dialogView.$el);
 
             // trigger jquery mobile to initialize new widgets
             $('body').trigger('pagecreate');

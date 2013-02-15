@@ -1,8 +1,10 @@
-<div data-role="dialog" id="<%= id %>">
-	<div data-role="header" data-theme="d">
-		<h1></h1>
-	</div>
-	<div data-role="content" data-theme="c" align="center">
-		<%= content %>
-	</div>
+<% if (!_.isEmpty(title)) { %>
+<div data-role="header" data-theme="a" role="banner">
+	<h1 role="heading"><%= title %></h1>
+</div>
+<% } %>
+<div data-role="content" data-theme="d" role="main">
+	<p><%= message %></p>
+	<a href="#" id="dialog-cancel" data-role="button" data-rel="back" data-theme="c"
+		data-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span"><%= cancelButtonTitle %></a>
 </div>
