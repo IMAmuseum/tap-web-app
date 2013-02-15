@@ -1,6 +1,6 @@
-// Copyright (c) 2012 by Code Computerlove (http://www.codecomputerlove.com)
+// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 3.0.5
+// version: 3.0.4
 
 (function (window) {
 	
@@ -273,9 +273,9 @@
 	};
 	
 }(window));
-// Copyright (c) 2012 by Code Computerlove (http://www.codecomputerlove.com)
+// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 3.0.5
+// version: 3.0.4
 
 (function(window, Util) {
 	
@@ -374,9 +374,9 @@
 	window.Code.Util
 ))
 ;
-// Copyright (c) 2012 by Code Computerlove (http://www.codecomputerlove.com)
+// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 3.0.5
+// version: 3.0.4
 
 (function (window, $, Util) {
 	
@@ -496,9 +496,9 @@
 	window,
 	window.jQuery,
 	window.Code.Util
-));// Copyright (c) 2012 by Code Computerlove (http://www.codecomputerlove.com)
+));// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 3.0.5
+// version: 3.0.4
 
 (function (window, $, Util) {
 	
@@ -1127,9 +1127,9 @@
 	window.jQuery,
 	window.Code.Util
 ));
-// Copyright (c) 2012 by Code Computerlove (http://www.codecomputerlove.com)
+// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 3.0.5
+// version: 3.0.4
 
 (function (window, Util) {
 	
@@ -1443,9 +1443,9 @@
 	window,
 	window.Code.Util
 ));
-// Copyright (c) 2012 by Code Computerlove (http://www.codecomputerlove.com)
+// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 3.0.5
+// version: 3.0.4
 
 (function(window, klass, Util){
 	
@@ -1484,9 +1484,9 @@
 	window, 
 	window.klass, 
 	window.Code.Util
-));// Copyright (c) 2012 by Code Computerlove (http://www.codecomputerlove.com)
+));// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 3.0.5
+// version: 3.0.4
 
 (function(window, klass, Util){
 	
@@ -2078,9 +2078,9 @@
 	window, 
 	window.klass, 
 	window.Code.Util
-));// Copyright (c) 2012 by Code Computerlove (http://www.codecomputerlove.com)
+));// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 3.0.5
+// version: 3.0.4
 
 (function(window, klass, Util){
 	
@@ -2104,9 +2104,9 @@
 	window, 
 	window.klass, 
 	window.Code.Util
-));// Copyright (c) 2012 by Code Computerlove (http://www.codecomputerlove.com)
+));// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 3.0.5
+// version: 3.0.4
 
 (function(window, klass, Util){
 	
@@ -2279,9 +2279,9 @@
 	window, 
 	window.klass, 
 	window.Code.Util
-));// Copyright (c) 2012 by Code Computerlove (http://www.codecomputerlove.com)
+));// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 3.0.5
+// version: 3.0.4
 
 (function(window, klass, Util){
 	
@@ -2357,9 +2357,9 @@
 	window, 
 	window.klass, 
 	window.Code.Util
-));// Copyright (c) 2012 by Code Computerlove (http://www.codecomputerlove.com)
+));// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 3.0.5
+// version: 3.0.4
 
 (function(window, klass, Util){
 	
@@ -2471,9 +2471,9 @@
 	window.klass, 
 	window.Code.Util,
 	window.Code.PhotoSwipe.Image
-));// Copyright (c) 2012 by Code Computerlove (http://www.codecomputerlove.com)
+));// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 3.0.5
+// version: 3.0.4
 
 (function(window, klass, Util){
 	
@@ -2494,9 +2494,9 @@
 	window, 
 	window.klass, 
 	window.Code.Util
-));// Copyright (c) 2012 by Code Computerlove (http://www.codecomputerlove.com)
+));// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 3.0.5
+// version: 3.0.4
 
 (function(window, klass, Util){
 	
@@ -2641,9 +2641,9 @@
 	window, 
 	window.klass, 
 	window.Code.Util
-));// Copyright (c) 2012 by Code Computerlove (http://www.codecomputerlove.com)
+));// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 3.0.5
+// version: 3.0.4
 
 (function(window, klass, Util){
 	
@@ -2685,9 +2685,9 @@
 	window, 
 	window.klass, 
 	window.Code.Util
-));// Copyright (c) 2012 by Code Computerlove (http://www.codecomputerlove.com)
+));// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 3.0.5
+// version: 3.0.4
 
 (function(window, klass, Util){
 	
@@ -3599,9 +3599,9 @@
 	window, 
 	window.klass, 
 	window.Code.Util
-));// Copyright (c) 2012 by Code Computerlove (http://www.codecomputerlove.com)
+));// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 3.0.5
+// version: 3.0.4
 
 (function(window, klass, Util, TouchElement){
 	
@@ -3730,9 +3730,9 @@
 	window.klass, 
 	window.Code.Util,
 	window.Code.PhotoSwipe.TouchElement
-));// Copyright (c) 2012 by Code Computerlove (http://www.codecomputerlove.com)
+));// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 3.0.5
+// version: 3.0.4
 
 (function(window, klass, Util){
 	
@@ -3789,9 +3789,9 @@
 	window, 
 	window.klass, 
 	window.Code.Util
-));// Copyright (c) 2012 by Code Computerlove (http://www.codecomputerlove.com)
+));// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 3.0.5
+// version: 3.0.4
 
 (function(window, klass, Util){
 	
@@ -4328,9 +4328,9 @@
 	window, 
 	window.klass, 
 	window.Code.Util
-));// Copyright (c) 2012 by Code Computerlove (http://www.codecomputerlove.com)
+));// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 3.0.5
+// version: 3.0.4
 
 (function(window, klass, Util){
 	
@@ -4347,9 +4347,9 @@
 	window, 
 	window.klass, 
 	window.Code.Util
-));// Copyright (c) 2012 by Code Computerlove (http://www.codecomputerlove.com)
+));// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 3.0.5
+// version: 3.0.4
 
 (function(window, klass, Util){
 	
@@ -4501,9 +4501,9 @@
 	window, 
 	window.klass, 
 	window.Code.Util
-));// Copyright (c) 2012 by Code Computerlove (http://www.codecomputerlove.com)
+));// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 3.0.5
+// version: 3.0.4
 
 (function(window, klass, Util){
 	
@@ -4527,9 +4527,9 @@
 	window, 
 	window.klass, 
 	window.Code.Util
-));// Copyright (c) 2012 by Code Computerlove (http://www.codecomputerlove.com)
+));// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 3.0.5
+// version: 3.0.4
 
 (function(window, klass, Util){
 	
@@ -4632,7 +4632,7 @@
 			Util.DOM.insertBefore(this.el, uiLayer.el, parentEl);
 			
 			if (Util.Browser.iOS){
-				this.containerEl = Util.DOM.createElement('div','','');
+				this.containerEl = Util.DOM.createElement('div');
 				Util.DOM.setStyle(this.containerEl, {
 					left: 0,
 					top: 0,
@@ -4850,9 +4850,9 @@
 	window, 
 	window.klass, 
 	window.Code.Util
-));// Copyright (c) 2012 by Code Computerlove (http://www.codecomputerlove.com)
+));// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 3.0.5
+// version: 3.0.4
 
 (function(window, Util){
 	
@@ -5122,9 +5122,9 @@
 (
 	window, 
 	window.Code.Util
-));// Copyright (c) 2012 by Code Computerlove (http://www.codecomputerlove.com)
+));// Copyright (c) 2011 by Code Computerlove (http://www.codecomputerlove.com)
 // Licensed under the MIT license
-// version: 3.0.5
+// version: 3.0.4
 
 (function(window, klass, Util, Cache, DocumentOverlay, Carousel, Toolbar, UILayer, ZoomPanRotate){
 	
@@ -5254,7 +5254,7 @@
 			
 			this.originalImages = images;
 			
-			if (Util.Browser.android && !Util.Browser.firefox){
+			if (Util.Browser.android){
 				if (window.navigator.userAgent.match(/Android (\d+.\d+)/).toString().replace(/^.*\,/, '') >= 2.1){
 					this.isBackEventSupported = true;
 				}

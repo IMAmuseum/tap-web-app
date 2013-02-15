@@ -78,7 +78,6 @@ define([
                     map_options['init-lon'] = data.coordinates[0];
                     map_options['init-lat'] = data.coordinates[1];
                 }
-
             });
 
             // Look to see if the initial map zoom level is set
