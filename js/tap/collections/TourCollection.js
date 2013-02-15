@@ -143,21 +143,26 @@ define([
 
             return tour;
         },
-        selectTour: function(id) {
-            if (TapAPI.currentTour == id) return;
+        selectTour: function(tourID) {
+            if (TapAPI.currentTour == tourID) return;
+
+            if (!TapAPI.tours.get(tourID)) {
+                console.log('Unable to load tour.');
+                return;
+            }
 
             // set the current tour
-            TapAPI.currentTour = id;
+            TapAPI.currentTour = tourID;
 
             // set root stop as the current stop if specified
-            if(TapAPI.tours.get(id).get('rootStopRef')) {
-                TapAPI.currentStop = TapAPI.tours.get(id).get('rootStopRef').id;
+            if(TapAPI.tours.get(tourID).get('rootStopRef')) {
+                TapAPI.currentStop = TapAPI.tours.get(tourID).get('rootStopRef').id;
             }
 
             // create new instance of StopCollection
-            TapAPI.tourStops = new StopCollection(null, id);
+            TapAPI.tourStops = new StopCollection(null, tourID);
             // create new instance of AssetCollection
-            TapAPI.tourAssets = new AssetCollection(null, id);
+            TapAPI.tourAssets = new AssetCollection(null, tourID);
 
             // load data from local storage
             TapAPI.tourAssets.fetch();

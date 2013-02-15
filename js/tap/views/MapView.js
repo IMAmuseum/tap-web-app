@@ -6,6 +6,18 @@ define([
     'tap/views/BaseView'
 ], function($, _, Backbone, TapAPI, BaseView) {
 	var mapView = BaseView.extend({
+		initialize: function() {
+            // Find all of the geolocated stops in the tour set
+            _.each(TapAPI.tours.models, function(tour) {
+                TapAPI.tours.selectTour(tour.id);
+                _.each(TapAPI.tourStops.models, function(stop) {
+                    var assets = stop.getAssetsByUsage('geo');
+                    if (assets !== undefined) {
+                        map_options['stops'].add(stop);
+                    }
+                });
+            });
+		},
 		onInit: function() {
 			this.options.active_index = 'tourmap';
 

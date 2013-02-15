@@ -2,9 +2,15 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'tap/TapAPI'
+    'tap/TapAPI',
+    'backbone-super'
 ], function($, _, Backbone, TapAPI) {
 	var baseView = Backbone.View.extend({
+		initialize: function() {
+			this.title = '';
+			this.displayHeader = true;
+			this.displayFooter = true;
+		},
 		close: function() {
 			this.removeAllChildViews();
 			this.remove();
