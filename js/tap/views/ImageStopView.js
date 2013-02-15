@@ -3,10 +3,15 @@ define([
     'underscore',
     'backbone',
     'tap/TapAPI',
+    'tap/TemplateManager',
     'tap/views/StopView'
-], function($, _, Backbone, TapAPI, StopView) {
+], function($, _, Backbone, TapAPI, TemplateManager, StopView) {
 	var imageStopView = StopView.extend({
-		renderContent: function() {
+		template: TemplateManager.get('image-stop'),
+		initialize: function() {
+			this.title = this.model.get('title');
+		},
+		render: function() {
 			var asset_refs = TapAPI.currentStop.get('assetRef');
 			var content_template = TapAPI.templateManager.get('image-stop');
 			var imageTemplate = TapAPI.templateManager.get('image-stop-item');
@@ -48,7 +53,7 @@ define([
 					}
 				});
 
-				var photoSwipe = this.$el.find('#Gallery a').photoSwipe({
+				var photoSwipe = this.$el.find('#gallery a').photoSwipe({
 					enableMouseWheel: false,
 					enableKeyboard: true,
 					doubleTapZoomLevel : 0,
