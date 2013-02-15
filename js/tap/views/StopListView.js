@@ -12,9 +12,9 @@ define([
 			this._super('initialize');
 			this.title = 'Select a Stop';
 
-			// retrieve all stop groups
+			// retrieve all stops that have a code associated with it
 			this.stops = _.filter(TapAPI.tourStops.models, function(stop) {
-				return stop.get('view') === 'tour_stop_group';
+				return stop.get('propertySet').where({'name': 'code'}) !== undefined;
 			});
 
 			// sort by their key code
