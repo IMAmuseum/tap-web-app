@@ -2,12 +2,12 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'tap/views/AppView',
+    'tap/TapAPI',
     'tap/views/StopView'
-], function($, _, Backbone, App, StopView) {
+], function($, _, Backbone, TapAPI, StopView) {
 	var imageStopView = StopView.extend({
 		renderContent: function() {
-			var asset_refs = App.tap.currentStop.get('assetRef');
+			var asset_refs = TapAPI.currentStop.get('assetRef');
 			var content_template = TapAPI.templateManager.get('image-stop');
 			var imageTemplate = TapAPI.templateManager.get('image-stop-item');
 
@@ -17,7 +17,7 @@ define([
 				var gallery = this.$el.find('#Gallery');
 
 				$.each(asset_refs, function(assetRef) {
-					var asset = App.tap.tourAssets.get(this.id);
+					var asset = TapAPI.tourAssets.get(this.id);
 
 					if (this.usage === 'image_asset') {
 						var templateData = {};

@@ -1,8 +1,8 @@
 define([
     'jquery',
     'underscore',
-    'tap/views/AppView'
-], function($, _, App) {
+    'tap/TapAPI'
+], function($, _, TapAPI) {
 	// Check for geolocation support
 	if (!navigator.geolocation) return;
 

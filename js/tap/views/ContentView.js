@@ -6,19 +6,25 @@ define([
     'tap/views/BaseView',
     'tap/TemplateManager'
 ], function($, _, Backbone, TapAPI, BaseView, TemplateManager) {
-    var headerView = BaseView.extend({
+    var contentView = BaseView.extend({
         attributes: {
-            'data-role': 'header',
-            'data-position': 'fixed'
+            id: 'content-wrapper',
+            'data-role': 'content'
         },
-        template: TemplateManager.get('header'),
         initialize: function() {
             this.listenTo(Backbone, 'tap.router.routed', this.render);
         },
         render: function(view) {
-            this.$el.html(this.template({title: 'blah'}));
+            if (view === undefined) return this;
+
+            if (TapAPI.currentView !== undefined) {
+                TapAPI.currentView.close();
+            }
+            TapAPI.currentView = view;
+
+            this.$el.html(view.render().$el);
             return this;
         }
     });
-    return headerView;
+    return contentView;
 });

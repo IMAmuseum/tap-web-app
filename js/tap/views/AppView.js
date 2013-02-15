@@ -2,57 +2,39 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'tap/router',
-    'tap/settings',
+    'tap/TapAPI',
     'tap/collections/TourCollection',
-    'tap/views/HeaderView'
-], function($, _, Backbone, Router, Settings, TourCollection, HeaderView) {
+    'tap/views/HeaderView',
+    'tap/views/ContentView',
+    'tap/views/FooterView'
+], function($, _, Backbone, TapAPI, TourCollection, HeaderView, ContentView, FooterView) {
     var appView = Backbone.View.extend({
         id: 'wrapper',
-        initialize: function() {
-            this.gaq = [];
-            this.router = undefined;
-            this.tap = {
-                tours: {},
-                tourAssets: {},
-                tourStops: {},
-                language: 'es',
-                defaultLanguage: 'en',
-                currentStop: '',
-                currentTour: '',
-                collections: {},
-                models: {},
-                views: {}
-            };
-            this.templates = {};
-            this.settings = _.defaults(Settings, {
-                url: '',
-                trackerID: '',
-                tourSettings: {}
-            });
-
-            this.listenTo(Backbone, 'tap.app.initialized', this.runApp);
-            Backbone.trigger('tap.app.initialized');
-        },
         render: function() {
             $('body').append(this.el);
             // add navigation bar
             var headerView = new HeaderView();
             this.$el.append(headerView.render().$el);
 
+            var contentView = new ContentView();
+            this.$el.append(contentView.render().$el);
+
             // add footer bar
-            //var footerView = new FooterView();
-            //this.$el.append(footerView.render().$el);
+            var footerView = new FooterView();
+            this.$el.append(footerView.render().$el);
+
+            // trigger jquery mobile to initialize new widgets
+            $('body').trigger('pagecreate');
         },
         runApp: function() {
             Backbone.trigger('tap.app.loading');
             // get browser language
             var browserLanguage = (navigator.language) ? navigator.language : navigator.userLanguage;
-            this.tap.language = browserLanguage.split('-')[0];
+            TapAPI.language = browserLanguage.split('-')[0];
 
             // initialize GA if trackerID is available
-            if (this.settings.trackerID) {
-                this.gaq.push(["_setAccount", this.settings.trackerID]);
+            if (TapAPI.config.trackerID) {
+                TapAPI.gaq.push(["_setAccount", TapAPI.config.trackerID]);
                 (function(d,t){
                     var g = d.createElement(t),
                         s = d.getElementsByTagName(t)[0];
@@ -63,14 +45,16 @@ define([
             }
 
             // create new instance of tour collection
-            this.tap.tours = new TourCollection();
-            this.tap.tours.syncTourML(this.settings.url);
+            TapAPI.tours = new TourCollection();
+            TapAPI.tours.syncTourML(TapAPI.config.url);
 
             // trigger tap init end event
             Backbone.trigger('tap.app.complete');
 
-            // initialize router
-            this.router = new Router();
+            this.render();
+
+            // start backbone history collection
+            Backbone.history.start();
         }
     });
     return new appView();

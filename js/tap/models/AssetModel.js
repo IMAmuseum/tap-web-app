@@ -1,11 +1,11 @@
 define([
 	'underscore',
 	'backbone',
-	'tap/views/AppView',
+	'tap/TapAPI',
 	'tap/collections/PropertySetCollection',
 	'tap/collections/SourceCollection',
 	'tap/collections/ContentCollection'
-], function(_, Backbone, App, PropertySetCollection, SourceCollection, ContentCollection) {
+], function(_, Backbone, TapAPI, PropertySetCollection, SourceCollection, ContentCollection) {
 	var assetModel = Backbone.Model.extend({
 		parse: function(response) {
 			response.propertySet = new PropertySetCollection(
@@ -39,7 +39,7 @@ define([
 			if (_.isUndefined(this.get('source'))) return undefined;
 
 			var sources, models;
-			sources = this.get('source').where({"part": part, "lang": App.tap.language});
+			sources = this.get('source').where({"part": part, "lang": TapAPI.language});
 			if (sources.length === 0) {
 				sources = this.get('source').where({"part": part});
 			}
@@ -52,7 +52,7 @@ define([
 			if (_.isUndefined(this.get('content'))) return undefined;
 
 			var contents, models;
-			contents = this.get('content').where({"part": part, "lang": App.tap.language});
+			contents = this.get('content').where({"part": part, "lang": TapAPI.language});
 			if (contents.length === 0) {
 				contents = this.get('content').where({"part": part});
 			}
@@ -65,7 +65,7 @@ define([
 			if (_.isUndefined(this.get('source'))) return undefined;
 
 			var sources, models;
-			sources = this.get('source').where({"format": format, "lang": App.tap.language});
+			sources = this.get('source').where({"format": format, "lang": TapAPI.language});
 			if (sources.length === 0) {
 				sources = this.get('source').where({"format": format});
 			}
@@ -78,7 +78,7 @@ define([
 			if (_.isUndefined(this.get('content'))) return undefined;
 
 			var contents, models;
-			contents = this.get('content').where({"format": format, "lang": App.tap.language});
+			contents = this.get('content').where({"format": format, "lang": TapAPI.language});
 			if (contents.length === 0) {
 				contents = this.get('content').where({"format": format});
 			}

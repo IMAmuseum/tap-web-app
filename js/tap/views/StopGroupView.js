@@ -2,10 +2,10 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'tap/views/AppView',
+    'tap/TapAPI',
     'tap/views/StopView',
     'tap/StopGroupListItem'
-], function($, _, Backbone, App, StopView, StopGroupListItem) {
+], function($, _, Backbone, TapAPI, StopView, StopGroupListItem) {
 	stopGroupView = StopView.extend({
 		renderContent: function() {
 			var content_template = TapAPI.templateManager.get('stop-group');

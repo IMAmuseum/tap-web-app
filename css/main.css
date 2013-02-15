@@ -1,17 +1,6 @@
 #keypad { 
 	margin: .1em;
 }
-#keypad button { 
-	display: block; 
-	width: 98%; 
-	cursor: pointer; 
-	text-decoration:none;
-}
-#keypad gobtn { 
-	display: block; 
-	cursor: pointer; 
-	text-decoration:none;
-}
 
 .ui-header {
 	height: 3em;

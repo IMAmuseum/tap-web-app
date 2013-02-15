@@ -2,8 +2,8 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'tap/views/AppView'
-], function($, _, Backbone, App) {
+    'tap/TapAPI'
+], function($, _, Backbone, TapAPI) {
 	var baseView = Backbone.View.extend({
 		close: function() {
 			this.removeAllChildViews();

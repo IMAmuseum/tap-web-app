@@ -1,9 +1,9 @@
 define([
 	'underscore',
 	'backbone',
-	'tap/views/AppView',
+	'tap/TapAPI',
 	'tap/collections/PropertySetCollection'
-], function(_, Backbone, App, PropertySetCollection) {
+], function(_, Backbone, TapAPI, PropertySetCollection) {
 	var stopModel = Backbone.Model.extend({
 		get: function(attr) { // override get method
 			if(!this.attributes[attr]) return this.attributes[attr];
@@ -15,12 +15,12 @@ define([
 					var value, property;
 
 					property = _.find(this.attributes[attr], function(item) {
-						return item.lang === App.tap.language;
+						return item.lang === TapAPI.language;
 					});
 
-					if (!property && tap.language !== App.tap.defaultLanguage) {
+					if (!property && tap.language !== TapAPI.defaultLanguage) {
 						property = _.find(this.attributes[attr], function(item) {
-							return item.lang === App.tap.defaultLanguage;
+							return item.lang === TapAPI.defaultLanguage;
 						});
 					}
 
@@ -55,7 +55,7 @@ define([
 			if(_.isUndefined(this.get('assetRef'))) return undefined;
 			var assets = [];
 			_.each(this.get('assetRef'), function(item) {
-				assets.push(App.tap.tourAssets.get(item.id));
+				assets.push(TapAPI.tourAssets.get(item.id));
 			});
 			return _.isEmpty(assets) ? undefined : assets;
 		},
@@ -69,7 +69,7 @@ define([
 			var assets = [];
 			_.each(this.get('assetRef'), function(item) {
 				if(item['usage'] === usage) {
-					assets.push(App.tap.tourAssets.get(item.id));
+					assets.push(TapAPI.tourAssets.get(item.id));
 				}
 			});
 			return _.isEmpty(assets) ? undefined : assets;
@@ -81,7 +81,7 @@ define([
 			}
 			var assets = [];
 			_.each(this.get('assetRef'), function(item) {
-				var asset = App.tap.tourAssets.get(item.id);
+				var asset = TapAPI.tourAssets.get(item.id);
 				if (_.indexOf(type, asset.get('type')) > -1) {
 					assets.push(asset);
 				}
