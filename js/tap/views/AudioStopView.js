@@ -3,40 +3,34 @@ define([
 	'underscore',
 	'backbone',
 	'tap/TapAPI',
-	'tap/views/StopView'
-], function($, _, Backbone, TapAPI, StopView) {
-	var audioStopView = StopView.extend({
-		onInit: function() {
-
-			if (TapAPI.audio_timer === undefined) {
-				TapAPI.audio_timer = new AnalyticsTimer('AudioStop', 'played_for', TapAPI.currentStop.id);
-			}
-			TapAPI.audio_timer.reset();
+	'tap/views/BaseView'
+], function($, _, Backbone, TapAPI, BaseView) {
+	var audioStopView = BaseView.extend({
+		template: TemplateManager.get('audio-stop'),
+		initialize: function() {
+			this.timer = new AnalyticsTimer('AudioStop', 'played_for', TapAPI.currentStop.id);
+			this.timer.reset();
 		},
-		renderContent: function() {
-
-			var content_template = TapAPI.templateManager.get('audio-stop');
-			var contentContainer = this.$el.find(':jqmData(role="content")');
-
+		render: function() {
 			// Find the transcription if one exists
 			var assets = this.model.getAssetsByUsage('transcription');
-			var transcription = null;
+			var transcription = '';
 			if (assets !== undefined) {
 				transcription = assets[0].get('content').at(0).get('data');
 			}
 
 			// Find the poster image if one exists
-			var poster_image_path = null;
+			var posterImagePath = '';
 			assets = this.model.getAssetsByUsage('image');
 			if (assets !== undefined) {
-				poster_image_path = assets[0].get('source').at(0).get('uri');
+				posterImagePath = assets[0].get('source').at(0).get('uri');
 			}
 
 			// Render from the template
-			contentContainer.append(content_template({
-				tour_stop_title: this.model.get('title'),
+			this.$el.html(this.template({
+				title: this.model.get('title'),
 				transcription: transcription,
-				poster_image_path: poster_image_path
+				posterImagePath: posterImagePath
 			}));
 
 			// Add click handler on the transcription toggle button
@@ -54,7 +48,6 @@ define([
 			assets = this.model.getAssetsByType(['tour_audio', 'tour_video']);
 
 			if (assets) {
-
 				var audioPlayer = this.$el.find('#audio-player');
 				var videoPlayer = this.$el.find('#video-player');
 				var videoAspect;
@@ -64,15 +57,14 @@ define([
 
 					// Add sources to the media elements
 					sources.each(function(source){
-						var source_str = '<source src="' + source.get('uri') + '" type="' + source.get('format') + '" />';
+						var mediaSource = '<source src="' + source.get('uri') + '" type="' + source.get('format') + '" />';
 
 						switch(source.get('format').substring(0,5)) {
 							case 'audio':
-								audioPlayer.append(source_str);
+								audioPlayer.append(mediaSource);
 								break;
 							case 'video':
-								videoPlayer.append(source_str);
-
+								videoPlayer.append(mediaSource);
 								break;
 							default:
 								console.log('Unsupported format for audio asset:', assetSource);
@@ -107,35 +99,32 @@ define([
 
 				var player = new MediaElementPlayer(mediaElement, mediaOptions);
 
-				mediaElement[0].addEventListener('loadedmetadata', function() {
-					TapAPI.audio_timer.max_threshold = mediaElement[0].duration * 1000;
-				});
+				// mediaElement[0].addEventListener('loadedmetadata', function() {
+				// 	TapAPI.audio_timer.max_threshold = mediaElement[0].duration * 1000;
+				// });
 
-				mediaElement[0].addEventListener('play', function() {
-					TapAPI.gaq.push(['_trackEvent', 'AudioStop', 'media_started']);
-					TapAPI.audio_timer.start();
-				});
+				// mediaElement[0].addEventListener('play', function() {
+				// 	TapAPI.gaq.push(['_trackEvent', 'AudioStop', 'media_started']);
+				// 	TapAPI.audio_timer.start();
+				// });
 
-				mediaElement[0].addEventListener('pause', function() {
-					TapAPI.gaq.push(['_trackEvent', 'AudioStop', 'media_paused']);
-					TapAPI.audio_timer.stop();
-				});
+				// mediaElement[0].addEventListener('pause', function() {
+				// 	TapAPI.gaq.push(['_trackEvent', 'AudioStop', 'media_paused']);
+				// 	TapAPI.audio_timer.stop();
+				// });
 
-				mediaElement[0].addEventListener('ended', function() {
-					TapAPI.gaq.push(['_trackEvent', 'AudioStop', 'media_ended']);
-				});
+				// mediaElement[0].addEventListener('ended', function() {
+				// 	TapAPI.gaq.push(['_trackEvent', 'AudioStop', 'media_ended']);
+				// });
 
 				player.play();
 			}
-
 			return this;
 		},
-
-		onClose: function() {
+		close: function() {
 			// Send information about playback duration when the view closes
-			TapAPI.audio_timer.send();
-			$('.me-plugin').remove();
-
+			this.timer.send();
+			this.$el.find('.me-plugin').remove();
 		}
 	});
 	return audioStopView;

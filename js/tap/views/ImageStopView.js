@@ -4,10 +4,10 @@ define([
     'backbone',
     'tap/TapAPI',
     'tap/TemplateManager',
-    'tap/views/StopView',
+    'tap/views/BaseView',
     'photoswipe'
-], function($, _, Backbone, TapAPI, TemplateManager, StopView) {
-    var imageStopView = StopView.extend({
+], function($, _, Backbone, TapAPI, TemplateManager, BaseView) {
+    var imageStopView = BaseView.extend({
         tagName: 'ul',
         id: 'gallery',
         className: 'ui-grid-b',
