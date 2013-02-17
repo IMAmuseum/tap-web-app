@@ -4072,7 +4072,6 @@ $.mobile.getMaxScrollForTransition = $.mobile.getMaxScrollForTransition || defau
 			aPageBorderB = parseFloat( aPage.css( "border-bottom-width" ) );
 
 		height = ( typeof height === "number" )? height : getScreenHeight();
-		
 		aPage.css( "min-height", height - aPagePadT - aPagePadB - aPageBorderT - aPageBorderB );
 	};
 

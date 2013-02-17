@@ -1,0 +1,12 @@
+<div class="title"><%= title %></div>
+<video id="video-player" class="player" controls="controls" autoplay="autoplay" poster="<%= imagePath %>">
+	<p>Your browser does not support the HTML5 video</p>
+	<% _.each(sources, function(source) { %>
+	<%= source %>
+	<% }); %>
+</video>
+<% if (!_.isEmpty(transcription)) { %>
+<div id="transcription" data-role="collapsible" data-content-theme="c">
+	<h3>Transcript</h3>
+	<p><%= transcription %></p>
+<% } %>

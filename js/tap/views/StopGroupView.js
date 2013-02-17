@@ -7,6 +7,9 @@ define([
     'tap/TemplateManager'
 ], function($, _, Backbone, TapAPI, BaseView, TemplateManager) {
 	stopGroupView = BaseView.extend({
+        attributes: {
+            'data-role': 'content'
+        },
 		template: TemplateManager.get('stop-group'),
 		initialize: function() {
 			this._super('initialize');

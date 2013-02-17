@@ -24,7 +24,13 @@ define([
          * Route to the tour listing
          */
         tourSelection: function() {
-            this.changePage(new TourListView());
+            // check to see if only one tour exists
+            if (TapAPI.tours.length === 1) {
+                // navigate them directly to that tours details page
+                this.navigate('tour/' + TapAPI.tours.at(0).get('id') + '/details', {trigger: true});
+            } else {
+                this.changePage(new TourListView());
+            }
         },
         /**
          * Route to the tour details
@@ -39,6 +45,7 @@ define([
          * @param id The id of the tour
          */
         keypad: function(tourID) {
+            blah = TapAPI;
             TapAPI.tours.selectTour(tourID);
             this.changePage(new KeypadView());
         },
@@ -52,43 +59,10 @@ define([
         },
         /**
          * Route to the tour map
-         * Certain parameters are determined here in the router to leave open the possibility of
-         * plotting markers for several tours on the same map
          */
         map: function(tourID) {
-            // Determine which stops to display
-            TapAPI.tours.selectTour(id);
-            var map_options = {
-                'stops': TapAPI.tourStops
-            };
-
-            // Look to see if a location is defined for the tour to use as the initial map center
-            var tour = TapAPI.tours.get(TapAPI.currentTour);
-            _.each(tour.get('appResource'), function(resource) {
-
-                // Make sure this is a geo asset reference
-                if ((resource === undefined) || (resource.usage != 'geo')) return;
-
-                asset = TapAPI.tourAssets.get(resource.id);
-                var content = asset.get('content');
-                if (content === undefined) return;
-                var data = $.parseJSON(content.at(0).get('data'));
-
-                if (data.type == 'Point') {
-                    map_options['init-lon'] = data.coordinates[0];
-                    map_options['init-lat'] = data.coordinates[1];
-                }
-            });
-
-            // Look to see if the initial map zoom level is set
-            _.each(tour.get('propertySet').models, function(property) {
-                if (property.get('name') == 'initial_map_zoom') {
-                    map_options['init-zoom'] = property.get('value');
-                }
-            });
-
-            // Set the current view
-            this.changePage(new TapAPI.views.Map(map_options));
+            TapAPI.tours.selectTour(tourID);
+            this.changePage(new MapView());
         },
         /**
          * Route to a stop
@@ -108,7 +82,7 @@ define([
         },
         changePage: function(view) {
             Backbone.trigger('tap.router.routed', view);
-            $('body').trigger('pagecreate');
+            Backbone.trigger('app.widgets.refresh');
         }
     });
     return new router();

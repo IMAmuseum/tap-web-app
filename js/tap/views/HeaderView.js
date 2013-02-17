@@ -7,9 +7,11 @@ define([
     'tap/TemplateManager'
 ], function($, _, Backbone, TapAPI, BaseView, TemplateManager) {
     var headerView = BaseView.extend({
+        id: 'header',
         attributes: {
             'data-role': 'header',
-            'data-position': 'fixed'
+            'data-position': 'fixed',
+            'data-tap-toggle': 'false'
         },
         template: TemplateManager.get('header'),
         initialize: function() {

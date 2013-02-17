@@ -41,7 +41,7 @@ define([
             // render the dialog
             this.render();
             // intitialize jqmobile styles
-            $('body').trigger('pagecreate');
+            Backbone.trigger('app.widgets.refresh');
             // open up dialog
             this.$el.popup('open');
         },

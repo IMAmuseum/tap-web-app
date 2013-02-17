@@ -7,6 +7,9 @@ define([
     'tap/views/BaseView'
 ], function($, _, Backbone, TapAPI, TemplateManager, BaseView) {
 	var stopListView = BaseView.extend({
+        attributes: {
+            'data-role': 'content'
+        },
 		template: TemplateManager.get('stop-list'),
 		initialize: function() {
 			this._super('initialize');

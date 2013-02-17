@@ -11,9 +11,12 @@ define([
     'tap/views/DialogView'
 ], function($, _, Backbone, TapAPI, TemplateManager, TourCollection, HeaderView, ContentView, FooterView, DialogView) {
     var appView = Backbone.View.extend({
-        id: 'wrapper',
+        id: 'page-wrapper',
+        initialize: function() {
+            this.listenTo(Backbone, 'app.widgets.refresh', this.refreshWidgets);
+        },
         render: function() {
-            $('body').append(this.el);
+            $(':jqmData(role="page")').append(this.el);
             // add navigation bar
             var headerView = new HeaderView();
             this.$el.append(headerView.$el);
@@ -31,7 +34,7 @@ define([
             this.$el.append(dialogView.$el);
 
             // trigger jquery mobile to initialize new widgets
-            $('body').trigger('pagecreate');
+            Backbone.trigger('app.widgets.refresh');
         },
         runApp: function() {
             Backbone.trigger('tap.app.loading');
@@ -62,6 +65,10 @@ define([
 
             // start backbone history collection
             Backbone.history.start();
+        },
+        refreshWidgets: function() {
+            $(':jqmData(role="page")').trigger('pagecreate');
+            $.mobile.resetActivePageHeight();
         }
     });
     return new appView();

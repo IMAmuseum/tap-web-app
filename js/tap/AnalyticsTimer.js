@@ -31,7 +31,7 @@ define([
             return this;
         };
 
-        AnalyticsTImer.prototype.send = function() {
+        AnalyticsTimer.prototype.send = function() {
             this.stop(); // update the timer
 
             // If threshold criteria are not met, do not send
