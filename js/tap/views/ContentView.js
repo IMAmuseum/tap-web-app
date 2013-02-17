@@ -7,10 +7,7 @@ define([
     'tap/TemplateManager'
 ], function($, _, Backbone, TapAPI, BaseView, TemplateManager) {
     var contentView = BaseView.extend({
-        attributes: {
-            id: 'content-wrapper',
-            'data-role': 'content'
-        },
+        id: 'content-wrapper',
         initialize: function() {
             this.listenTo(Backbone, 'tap.router.routed', this.render);
         },
@@ -23,6 +20,8 @@ define([
             TapAPI.currentView = view;
 
             this.$el.html(view.render().$el);
+            view.finishedAddingContent();
+
             return this;
         }
     });

@@ -7,6 +7,9 @@ define([
     'tap/views/BaseView'
 ], function($, _, Backbone, TapAPI, TemplateManager, BaseView) {
 	var tourDetailsView = BaseView.extend({
+        attributes: {
+            'data-role': 'content'
+        },
 		template: TemplateManager.get('tour-details'),
 		initialize: function() {
 			this._super('initialize');

@@ -7,9 +7,9 @@ define([
     'tap/TemplateManager'
 ], function(_, $, Backbone, TapAPI, BaseView, TemplateManager) {
     var footerView = BaseView.extend({
+        id: 'footer',
         attributes: {
             'data-role': 'footer',
-            'data-id': 'foo1',
             'data-position': 'fixed',
             'data-tap-toggle': 'false'
         },

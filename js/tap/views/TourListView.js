@@ -8,6 +8,9 @@ define([
 ], function($, _, Backbone, TapAPI, TemplateManager, BaseView) {
 	var tourListView = BaseView.extend({
 		id: 'tour-list',
+        attributes: {
+            'data-role': 'content'
+        },
 		template: TemplateManager.get('tour-list'),
 		initialize: function() {
 			this._super('initialize');

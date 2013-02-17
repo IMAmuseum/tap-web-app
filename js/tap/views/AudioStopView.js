@@ -3,128 +3,116 @@ define([
 	'underscore',
 	'backbone',
 	'tap/TapAPI',
-	'tap/views/BaseView'
-], function($, _, Backbone, TapAPI, BaseView) {
+	'tap/TemplateManager',
+	'tap/views/BaseView',
+	'tap/AnalyticsTimer',
+	'mediaelement'
+], function($, _, Backbone, TapAPI, TemplateManager, BaseView, AnalyticsTimer) {
 	var audioStopView = BaseView.extend({
-		template: TemplateManager.get('audio-stop'),
+		id: 'audio-stop',
+        attributes: {
+            'data-role': 'content'
+        },
 		initialize: function() {
+			this.mediaOptions = {
+				flashName: 'js/vendor/mediaelment/' + mejs.MediaElementDefaults.flashName,
+				silverlightName: 'js/vendor/mediaelment/' + mejs.MediaElementDefaults.flashName
+			};
+
+			// TODO FIX
+			// Add click handler on the transcription toggle button
+			this.$el.find('#transcription').on('click', function(e) {
+				conosle.log(e);
+				if (($(e.a)).hasClass('hidden')) {
+					TapAPI.gaq.push(['_trackEvent', 'AudioStop', 'hide_transcription']);
+				} else {
+					TapAPI.gaq.push(['_trackEvent', 'AudioStop', 'show_transcription']);
+				}
+			});
+
 			this.timer = new AnalyticsTimer('AudioStop', 'played_for', TapAPI.currentStop.id);
 			this.timer.reset();
 		},
 		render: function() {
 			// Find the transcription if one exists
-			var assets = this.model.getAssetsByUsage('transcription');
 			var transcription = '';
-			if (assets !== undefined) {
-				transcription = assets[0].get('content').at(0).get('data');
+			var transcriptAsset = this.model.getAssetsByUsage('transcription');
+			if (!_.isEmpty(transcriptAsset)) {
+				transcription = transcriptAsset[0].get('content').at(0).get('data');
 			}
 
 			// Find the poster image if one exists
 			var posterImagePath = '';
-			assets = this.model.getAssetsByUsage('image');
-			if (assets !== undefined) {
-				posterImagePath = assets[0].get('source').at(0).get('uri');
+			var posterImageAsset = this.model.getAssetsByUsage('image');
+			if (!_.isEmpty(posterImageAsset)) {
+				posterImagePath = posterImageAsset[0].get('source').at(0).get('uri');
 			}
+
+			var mediaAsset = this.model.getAssetsByType(['tour_audio', 'tour_video']);
+
+			if (_.isEmpty(mediaAsset)) {
+				console.log('No media found.');
+				return this;
+			}
+
+			// Get media element sources
+			var sources = [];
+			_.each(mediaAsset[0].get('source').models, function(source) {
+				sources.push('<source src="' + source.get('uri') + '" type="' + source.get('format') + '" />');
+			});
+
+			// get the appropriate template
+			var mediaTemplate = '';
+			if (mediaAsset[0].get('type') === 'tour_audio') {
+				mediaTemplate = 'audio';
+				this.mediaOptions.defaultAudioWidth = '100%';
+			} else {
+				mediaTemplate = 'video';
+				this.mediaOptions.defaultVideoWidth = '100%';
+				this.mediaOptions.defaultVideoHeight = 270;
+			}
+			this.template = TemplateManager.get(mediaTemplate);
 
 			// Render from the template
 			this.$el.html(this.template({
 				title: this.model.get('title'),
 				transcription: transcription,
-				posterImagePath: posterImagePath
+				imagePath: posterImagePath,
+				sources: sources
 			}));
 
-			// Add click handler on the transcription toggle button
-			this.$el.find('#trans-button').click(function() {
-				var t = $('.transcription').toggleClass('hidden');
-				if (t.hasClass('hidden')) {
-					$('.ui-btn-text', this).text('Show Transcription');
-					TapAPI.gaq.push(['_trackEvent', 'AudioStop', 'hide_transcription']);
-				} else {
-					$('.ui-btn-text', this).text('Hide Transcription');
-					TapAPI.gaq.push(['_trackEvent', 'AudioStop', 'show_transcription']);
-				}
+			return this;
+		},
+		finishedAddingContent: function() {
+			var that = this,
+				mediaElement = $('.player');
+
+			// TODO FIX
+			mediaElement[0].addEventListener('loadedmetadata', function() {
+				//tap.audio_timer.max_threshold = mediaElement[0].duration * 1000;
 			});
 
-			assets = this.model.getAssetsByType(['tour_audio', 'tour_video']);
+			mediaElement[0].addEventListener('play', function() {
+				TapAPI.gaq.push(['_trackEvent', 'AudioStop', 'media_started']);
+				this.timer.start();
+			});
 
-			if (assets) {
-				var audioPlayer = this.$el.find('#audio-player');
-				var videoPlayer = this.$el.find('#video-player');
-				var videoAspect;
+			mediaElement[0].addEventListener('pause', function() {
+				TapAPI.gaq.push(['_trackEvent', 'AudioStop', 'media_paused']);
+				this.timer.stop();
+			});
 
-				_.each(assets, function(asset) {
-					var sources = asset.get('source');
+			mediaElement[0].addEventListener('ended', function() {
+				TapAPI.gaq.push(['_trackEvent', 'AudioStop', 'media_ended']);
+			});
 
-					// Add sources to the media elements
-					sources.each(function(source){
-						var mediaSource = '<source src="' + source.get('uri') + '" type="' + source.get('format') + '" />';
 
-						switch(source.get('format').substring(0,5)) {
-							case 'audio':
-								audioPlayer.append(mediaSource);
-								break;
-							case 'video':
-								videoPlayer.append(mediaSource);
-								break;
-							default:
-								console.log('Unsupported format for audio asset:', assetSource);
-						}
-					});
-				});
-
-				var mediaOptions = {
-					flashName: tapBasePath() + mejs.MediaElementDefaults.flashName,
-					silverlightName: tapBasePath() + mejs.MediaElementDefaults.flashName
-				};
-
-				var mediaElement = null;
-
-				// If there are video sources and no audio sources, switch to the video element
-				if (videoPlayer.find('source').length && !audioPlayer.find('source').length) {
-					audioPlayer.remove();
-					this.$el.find('.poster-image').remove();
-					videoPlayer.show();
-					mediaOptions.defaultVideoWidth = '100%';
-					mediaOptions.defaultVideoHeight = 270;
-
-					mediaElement = videoPlayer;
-
-				} else {
-					videoPlayer.remove();
-					mediaOptions.defaultAudioWidth = '100%';
-
-					mediaElement = audioPlayer;
-
-				}
-
-				var player = new MediaElementPlayer(mediaElement, mediaOptions);
-
-				// mediaElement[0].addEventListener('loadedmetadata', function() {
-				// 	TapAPI.audio_timer.max_threshold = mediaElement[0].duration * 1000;
-				// });
-
-				// mediaElement[0].addEventListener('play', function() {
-				// 	TapAPI.gaq.push(['_trackEvent', 'AudioStop', 'media_started']);
-				// 	TapAPI.audio_timer.start();
-				// });
-
-				// mediaElement[0].addEventListener('pause', function() {
-				// 	TapAPI.gaq.push(['_trackEvent', 'AudioStop', 'media_paused']);
-				// 	TapAPI.audio_timer.stop();
-				// });
-
-				// mediaElement[0].addEventListener('ended', function() {
-				// 	TapAPI.gaq.push(['_trackEvent', 'AudioStop', 'media_ended']);
-				// });
-
-				player.play();
-			}
-			return this;
+			this.player = new MediaElementPlayer('.player', this.mediaOptions);
+			this.player.play();
 		},
 		close: function() {
 			// Send information about playback duration when the view closes
 			this.timer.send();
-			this.$el.find('.me-plugin').remove();
 		}
 	});
 	return audioStopView;

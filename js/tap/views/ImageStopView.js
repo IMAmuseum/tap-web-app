@@ -11,6 +11,9 @@ define([
         tagName: 'ul',
         id: 'gallery',
         className: 'ui-grid-b',
+        attributes: {
+            'data-role': 'content'
+        },
         template: TemplateManager.get('image-stop'),
         initialize: function() {
             this._super('initialize');

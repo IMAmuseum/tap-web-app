@@ -11,6 +11,8 @@ define([
 			this.displayHeader = true;
 			this.displayFooter = true;
 		},
+		render: function() {},
+		finishedAddingContent: function() {},
 		close: function() {
 			this.removeAllChildViews();
 			this.remove();
@@ -26,7 +28,6 @@ define([
 					this.childViews[i].close();
 				});
 			}
-
 			return this;
 		}
 	});

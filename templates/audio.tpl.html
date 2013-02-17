@@ -1,0 +1,16 @@
+<div class="title"><%= title %></div>
+<audio id="audio-player" class="player" controls="controls">
+	<p>Your browser does not support HTML 5 audio.</p>
+	<% _.each(sources, function(source) { %>
+	<%= source %>
+	<% }); %>
+</audio>
+<% if (!_.isEmpty(imagePath)) { %>
+	<img class="poster-image" src="<%= imagePath %>" />
+<% } %>
+<% if (!_.isEmpty(transcription)) { %>
+<div id="transcription" data-role="collapsible" data-content-theme="c">
+	<h3>Transcript</h3>
+	<p><%= transcription %></p>
+</div>
+<% } %>

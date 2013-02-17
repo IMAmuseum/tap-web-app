@@ -21,7 +21,6 @@ define([
 			);
 		},
 		locationReceived: function(position) {
-			//console.log('got location', position);
 			TapAPI.geoLocation.latest_location = position;
 			TapAPI.geoLocation.computeStopDistance(position);
 			TapAPI.geoLocation.trigger('gotlocation', position);
