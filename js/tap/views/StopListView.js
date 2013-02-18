@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'tap/TapAPI',
-    'tap/templateManager',
+    'tap/TemplateManager',
     'tap/views/BaseView'
 ], function($, _, Backbone, TapAPI, TemplateManager, BaseView) {
 	var stopListView = BaseView.extend({
