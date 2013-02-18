@@ -76,7 +76,7 @@ define([
 		},
 		finishedAddingContent: function() {
 			var that = this,
-				mediaElement = $('.player').at(0);
+				mediaElement = $('.player')[0];
 
 			// add event handlers for media player events
 			mediaElement.addEventListener('loadedmetadata', function() {
