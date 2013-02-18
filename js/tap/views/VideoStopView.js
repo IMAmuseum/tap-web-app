@@ -3,7 +3,7 @@ define([
     'underscore',
     'backbone',
     'tap/TapAPI',
-    'tap/templateManager',
+    'tap/TemplateManager',
     'tap/views/StopView',
     'tap/AnalyticsTimer',
     'mediaelement'
