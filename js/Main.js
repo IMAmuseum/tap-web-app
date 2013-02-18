@@ -37,7 +37,7 @@ require([
     'jquery',
     'tap/TapAPI',
     'tap/views/AppView',
-    'tap/router',
+    'tap/Router',
     'jquerymobile'
 ], function($, TapAPI, AppView, Router) {
     AppView.runApp();
