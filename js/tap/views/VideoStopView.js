@@ -17,6 +17,7 @@ define([
 		initialize: function() {
 			this._super('initialize');
 
+			this.title = this.model.get('title');
 			this.mediaOptions = {
 				defaultVideoWidth: '100%',
 				defaultVideoHeight: '100%',
@@ -56,7 +57,6 @@ define([
 
 			// Render from the template
 			this.$el.html(this.template({
-				title: this.model.get('title'),
 				transcription: transcription,
 				imagePath: posterImagePath,
 				sources: sources
