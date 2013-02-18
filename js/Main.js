@@ -6,7 +6,7 @@ requirejs.config({
         'json2': 'vendor/json2',
         'underscore': 'vendor/underscore',
         'backbone': 'vendor/backbone',
-        'localstorage': 'vendor/backbone.localStorage',
+        'localStorage': 'vendor/backbone.localStorage',
         'backbone-super': 'vendor/backbone-super',
         'leaflet': 'vendor/leaflet/leaflet',
         'klass': 'vendor/klass',

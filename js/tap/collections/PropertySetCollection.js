@@ -3,7 +3,7 @@ define([
 	'backbone',
 	'tap/TapAPI',
 	'tap/models/PropertyModel',
-	'localstorage'
+	'localStorage'
 ], function(_, Backbone, TapAPI, PropertyModel) {
 	var propertySetCollection = Backbone.Collection.extend({
 		model: PropertyModel,

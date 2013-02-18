@@ -2,7 +2,7 @@ define([
 	'underscore',
 	'backbone',
 	'tap/models/StopModel',
-	'localstorage'
+	'localStorage'
 ], function(_, Backbone, StopModel) {
 	var stopCollection = Backbone.Collection.extend({
 		model: StopModel,
