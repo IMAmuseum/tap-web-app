@@ -2,7 +2,7 @@ define([
 	'underscore',
 	'backbone',
 	'tap/models/AssetModel',
-	'localstorage'
+	'localStorage'
 ], function(_, Backbone, AssetModel) {
 	var assetCollection = Backbone.Collection.extend({
 		model: AssetModel,

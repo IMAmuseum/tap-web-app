@@ -58,6 +58,7 @@ define([
             // create new instance of tour collection
             TapAPI.tours = new TourCollection();
             TapAPI.tours.syncTourML(TapAPI.config.url);
+            blah = TapAPI;
 
             // trigger tap init end event
             Backbone.trigger('tap.app.complete');

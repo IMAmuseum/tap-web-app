@@ -8,7 +8,7 @@ define([
     'tap/models/AssetModel',
     'tap/collections/StopCollection',
     'tap/collections/AssetCollection',
-    'localstorage'
+    'localStorage'
 ], function(_, Backbone, Helper, TapAPI, TourModel, StopModel, AssetModel, StopCollection, AssetCollection) {
     var tourCollection = Backbone.Collection.extend({
         model: TourModel,
@@ -59,6 +59,12 @@ define([
                 rootStopRef: data.tourMetadata && data.tourMetadata.rootStopRef ? data.tourMetadata.rootStopRef : undefined,
                 title: data.tourMetadata && data.tourMetadata.title ? Helper.objectToArray(data.tourMetadata.title) : undefined
             });
+            this.create(tour);
+
+            // create new instance of StopCollection
+            var stopCollection = new StopCollection(null, data.id);
+            // create new instance of AssetCollection
+            var assetCollection = new AssetCollection(null, data.id);
 
             var i, j;
             // load tour models
@@ -85,6 +91,7 @@ define([
                     title: Helper.objectToArray(data.stop[i].title),
                     tour: data.id
                 });
+                stopCollection.create(stop);
                 stops.push(stop);
             }
 
@@ -121,13 +128,13 @@ define([
                     propertySet: data.asset[i].propertySet ? Helper.objectToArray(data.asset[i].propertySet.property) : undefined,
                     type: data.asset[i].type
                 });
+                assetCollection.create(asset);
                 assets.push(asset);
             }
 
-            // create new instance of StopCollection
-            var stopCollection = new StopCollection(null, data.id);
-            // create new instance of AssetCollection
-            var assetCollection = new AssetCollection(null, data.id);
+            // clear out the temporary models
+            stopCollection.reset();
+            assetCollection.reset();
 
             // attempt to fetch existing models.
             stopCollection.fetch();
