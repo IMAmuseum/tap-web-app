@@ -14,21 +14,12 @@ define([
             'data-role': 'content'
         },
 		initialize: function() {
+			this._super('initialize');
+
 			this.mediaOptions = {
 				flashName: 'js/vendor/mediaelment/' + mejs.MediaElementDefaults.flashName,
 				silverlightName: 'js/vendor/mediaelment/' + mejs.MediaElementDefaults.flashName
 			};
-
-			// TODO FIX
-			// Add click handler on the transcription toggle button
-			this.$el.find('#transcription').on('click', function(e) {
-				conosle.log(e);
-				if (($(e.a)).hasClass('hidden')) {
-					TapAPI.gaq.push(['_trackEvent', 'AudioStop', 'hide_transcription']);
-				} else {
-					TapAPI.gaq.push(['_trackEvent', 'AudioStop', 'show_transcription']);
-				}
-			});
 
 			this.timer = new AnalyticsTimer('AudioStop', 'played_for', TapAPI.currentStop.id);
 			this.timer.reset();
@@ -85,27 +76,31 @@ define([
 		},
 		finishedAddingContent: function() {
 			var that = this,
-				mediaElement = $('.player');
+				mediaElement = $('.player').at(0);
 
-			// TODO FIX
-			mediaElement[0].addEventListener('loadedmetadata', function() {
-				//tap.audio_timer.max_threshold = mediaElement[0].duration * 1000;
+			// add event handlers for media player events
+			mediaElement.addEventListener('loadedmetadata', function() {
+				that.timer.maxThreshold = mediaElement.duration * 1000;
 			});
 
-			mediaElement[0].addEventListener('play', function() {
-				TapAPI.gaq.push(['_trackEvent', 'AudioStop', 'media_started']);
-				this.timer.start();
+			mediaElement.addEventListener('play', function() {
+				_gaq.push(['_trackEvent', 'AudioStop', 'media_started']);
+				that.timer.start();
 			});
 
-			mediaElement[0].addEventListener('pause', function() {
-				TapAPI.gaq.push(['_trackEvent', 'AudioStop', 'media_paused']);
-				this.timer.stop();
+			mediaElement.addEventListener('pause', function() {
+				_gaq.push(['_trackEvent', 'AudioStop', 'media_paused']);
+				that.timer.stop();
 			});
 
-			mediaElement[0].addEventListener('ended', function() {
-				TapAPI.gaq.push(['_trackEvent', 'AudioStop', 'media_ended']);
+			mediaElement.addEventListener('ended', function() {
+				_gaq.push(['_trackEvent', 'AudioStop', 'media_ended']);
 			});
 
+			// Add expand handler on the transcription toggle button
+			this.$el.find('#transcription').on('expand', function(e, ui) {
+				_gaq.push(['_trackEvent', 'AudioStop', 'show_transcription']);
+			});
 
 			this.player = new MediaElementPlayer('.player', this.mediaOptions);
 			this.player.play();
