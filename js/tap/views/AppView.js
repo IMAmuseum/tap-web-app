@@ -44,7 +44,8 @@ define([
 
             // initialize GA if trackerID is available
             if (TapAPI.config.trackerID) {
-                TapAPI.gaq.push(["_setAccount", TapAPI.config.trackerID]);
+                window._gaq = window._gaq || [];
+                window._gaq.push(["_setAccount", TapAPI.config.trackerID]);
                 (function(d,t){
                     var g = d.createElement(t),
                         s = d.getElementsByTagName(t)[0];

@@ -3,7 +3,6 @@ define([
     'tap/Config'
 ], function(_, Config) {
     var TapAPI = {
-        gaq: [],
         router: undefined,
         tours: {},
         tourAssets: {},

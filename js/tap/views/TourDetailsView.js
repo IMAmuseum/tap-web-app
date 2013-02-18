@@ -16,6 +16,8 @@ define([
 
 			this.tour = TapAPI.tours.get(TapAPI.currentTour);
 			this.title = this.tour.get('title');
+
+			this.displayFooter = false;
 		},
 		render: function() {
 			this.$el.html(this.template({

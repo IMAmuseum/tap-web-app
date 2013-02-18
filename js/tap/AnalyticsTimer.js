@@ -41,7 +41,7 @@ define([
                 if ((this.minThreshold !== null) && (this.elapsed < this.minThreshold)) this.elapsed = this.minThreshold;
                 if ((this.maxThreshold !== null) && (this.elapsed > this.maxThreshold)) this.elapsed = this.maxThreshold;
 
-                TapAPI.gaq.push(['_trackTiming', this.category, this.variable, this.elapsed, this.label]);
+                _gaq.push(['_trackTiming', this.category, this.variable, this.elapsed, this.label]);
 
             }
 

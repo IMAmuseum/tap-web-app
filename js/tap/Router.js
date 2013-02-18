@@ -45,7 +45,6 @@ define([
          * @param id The id of the tour
          */
         keypad: function(tourID) {
-            blah = TapAPI;
             TapAPI.tours.selectTour(tourID);
             this.changePage(new KeypadView());
         },
@@ -81,6 +80,8 @@ define([
             });
         },
         changePage: function(view) {
+            _gaq.push(['_trackPageview', '/#' + Backbone.history.getFragment()]);
+
             Backbone.trigger('tap.router.routed', view);
             Backbone.trigger('app.widgets.refresh');
         }

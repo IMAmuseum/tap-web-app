@@ -17,10 +17,13 @@ define([
         initialize: function() {
             this.listenTo(Backbone, 'tap.router.routed', this.render);
         },
-        render: function() {
-            if (_.isEmpty(TapAPI.currentTour)) return;
-
-            this.$el.html(this.template({tourID: TapAPI.currentTour}));
+        render: function(view) {
+            if (!_.isUndefined(TapAPI.currentTour) && view.displayFooter) {
+                this.$el.show();
+                this.$el.html(this.template({tourID: TapAPI.currentTour}));
+            } else {
+                this.$el.hide();
+            }
             return this;
         }
     });
