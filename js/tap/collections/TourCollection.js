@@ -1,7 +1,7 @@
 define([
     'underscore',
     'backbone',
-    'tap/helper',
+    'tap/Helper',
     'tap/TapAPI',
     'tap/models/TourModel',
     'tap/models/StopModel',
