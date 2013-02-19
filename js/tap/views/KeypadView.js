@@ -33,9 +33,10 @@ define([
 					cancelButtonTitle: 'OK'
 				});
 				this.$el.find('#code-label').html('');
-				return;
+				return false;
+			} else {
+				Backbone.history.navigate('tour/' + TapAPI.currentTour + '/stop/' + stop.get('id'), true);
 			}
-			Backbone.history.navigate('tour/' + TapAPI.currentTour + '/stop/' + stop.get('id'), true);
 		},
 		inputKeyCode: function(e) {
 			var code = this.$el.find('#code-label').html() + $(e.currentTarget).html();
