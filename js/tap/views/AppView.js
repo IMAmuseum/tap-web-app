@@ -69,7 +69,7 @@ define([
             Backbone.history.start();
         },
         refreshWidgets: function() {
-            $(':jqmData(role="page")').trigger('pagecreate');
+            $(':jqmData(role="page")').page('destroy').page();
             $.mobile.resetActivePageHeight();
         }
     });

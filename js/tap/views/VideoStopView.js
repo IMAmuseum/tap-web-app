@@ -10,9 +10,6 @@ define([
 ], function($, _, Backbone, TapAPI, TemplateManager, StopView, AnalyticsTimer) {
 	var videoStopView = StopView.extend({
 		id: 'video-stop',
-        attributes: {
-            'data-role': 'content'
-        },
         template: TemplateManager.get('video'),
 		initialize: function() {
 			this._super('initialize');

@@ -228,6 +228,9 @@ define([
             var footer, header, viewport;
             window.scroll(0, 0);
 
+
+            $('#content-wrapper').css('padding', 0);
+
             viewport = $(window).height();
             header = $('#header').outerHeight();
             footer = $('#footer').outerHeight();
@@ -239,7 +242,10 @@ define([
             this.geoLocation.stopLocating();
 
             // set the default height back
-            $('#content-wrapper').height('auto');
+            $('#content-wrapper').css({
+                padding: '',
+                height: 'auto'
+            });
             // remove event handler
             $(window).off('orientationchange resize', this.resizeMapViewport);
         }
