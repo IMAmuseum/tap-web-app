@@ -10,9 +10,6 @@ define([
 ], function($, _, Backbone, TapAPI, TemplateManager, BaseView, AnalyticsTimer) {
 	var audioStopView = BaseView.extend({
 		id: 'audio-stop',
-        attributes: {
-            'data-role': 'content'
-        },
 		initialize: function() {
 			this._super('initialize');
 

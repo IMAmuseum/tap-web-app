@@ -8,9 +8,6 @@ define([
 ], function($, _, Backbone, TapAPI, TemplateManager, BaseView) {
 	var keypad = BaseView.extend({
 		id: 'keypad',
-        attributes: {
-            'data-role': 'content'
-        },
 		template: TemplateManager.get('keypad'),
 		initialize: function() {
 			this._super('initialize');

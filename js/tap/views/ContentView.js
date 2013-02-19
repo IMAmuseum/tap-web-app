@@ -8,6 +8,9 @@ define([
 ], function($, _, Backbone, TapAPI, BaseView, TemplateManager) {
     var contentView = BaseView.extend({
         id: 'content-wrapper',
+        attributes: {
+            'data-role': 'content'
+        },
         initialize: function() {
             this.listenTo(Backbone, 'tap.router.routed', this.render);
         },
