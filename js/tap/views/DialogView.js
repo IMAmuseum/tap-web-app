@@ -44,6 +44,7 @@ define([
             Backbone.trigger('app.widgets.refresh');
             // open up dialog
             this.$el.popup('open');
+            return false;
         },
         closeDialog: function() {
             this.title = '';
