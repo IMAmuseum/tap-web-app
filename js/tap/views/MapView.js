@@ -30,7 +30,7 @@ define([
             var tour = TapAPI.tours.get(TapAPI.currentTour);
             _.each(tour.get('appResource'), function(resource) {
                 // Make sure this is a geo asset reference
-                if (!_.isUndefined(resource) && resource.usage !== 'geo') {
+                if (!_.isUndefined(resource) && resource.usage === 'geo') {
                     var asset = TapAPI.tourAssets.get(resource.id);
                     var content = asset.get('content');
                     if (!_.isUndefined(content)) {
