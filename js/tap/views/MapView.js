@@ -53,12 +53,8 @@ define([
                 }
             }, this);
 
-            $(':jqmData(role="page")').on('pageinit', function() {
-                that.resizeMapViewport(that);
-            });
-            $(window).on('orientationchange resize', function() {
-                that.resizeMapViewport(that);
-            });
+            $(':jqmData(role="page")').on('pageinit', {context: this}, this.resizeMapViewport);
+            $(window).on('orientationchange resize', {context: this}, this.resizeMapViewport);
         },
         render: function() {
             return this;
@@ -232,7 +228,7 @@ define([
         onLocationError: function(e) {
             console.log('onLocationError', e);
         },
-        resizeMapViewport: function(that) {
+        resizeMapViewport: function(e) {
             var footer, header, viewport;
 
             viewport = $('html').height();
@@ -241,8 +237,8 @@ define([
 
             $('#content-wrapper').height(viewport - header - footer);
 
-            if (that.map !== null) {
-                that.map.invalidateSize();
+            if (e.data.context.map !== null) {
+                e.data.context.map.invalidateSize();
             }
             window.scroll(0, 0);
         },
@@ -250,8 +246,6 @@ define([
             // stop location services
             this.geoLocation.stopLocating();
 
-            // set the default height back
-            $('#content-wrapper').height('auto');
             // remove event handlers
             $(':jqmData(role="page")').off('pageinit', this.resizeMapViewport);
             $(window).off('orientationchange resize', this.resizeMapViewport);

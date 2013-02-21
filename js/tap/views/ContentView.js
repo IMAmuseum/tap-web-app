@@ -16,7 +16,7 @@ define([
         },
         render: function(view) {
             if (view === undefined) return this;
-
+this.$el.removeAttr('style');
             // cleanup previous view
             if (this.currentView !== undefined) {
                 this.$el.removeClass(this.currentView.id);
