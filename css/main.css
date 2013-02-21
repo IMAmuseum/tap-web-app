@@ -3,7 +3,10 @@
 	margin: .7em 5.5em;
 }
 .ui-page-header-fixed {
-	padding-top: 40px;
+	padding-top: 43px;
+}
+.ui-page-footer-fixed {
+	padding-bottom: 49px;
 }
 
 /* Dialog */
@@ -25,7 +28,7 @@
 	border-radius: 0 !important;
 }
 #footer .ui-btn-inner {
-	padding: 30px 0 3px 0;
+	padding: 30px 0 5px 0;
 	font-size: 9px;
 }
 .ui-icon-keypad {
