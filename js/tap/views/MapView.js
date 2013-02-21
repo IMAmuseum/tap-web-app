@@ -226,7 +226,7 @@ define([
         resizeMapViewport: function() {
             var footer, header, viewport;
 
-            viewport = $(window).height();
+            viewport = $('html').height();
             header = $('#header').outerHeight();
             footer = $('#footer').outerHeight();
 
