@@ -13,6 +13,7 @@ define([
         initialize: function() {
             this._super('initialize');
 
+            this.title = 'This is a map';
             this.map = null;
             this.mapOptions = {
                 'initialLat': null,
@@ -50,6 +51,8 @@ define([
                 }
             }, this);
 
+
+            $(':jqmData(role="page")').on('pageinit', this.resizeMapViewport);
             $(window).on('orientationchange resize', this.resizeMapViewport);
         },
         render: function() {
@@ -112,8 +115,6 @@ define([
                 this.onLocationFound(this.geoLocation.latestLocation);
             }
             this.listenTo(Backbone, 'geolocation.location.recieved', this.onLocationFound);
-
-            this.resizeMapViewport();
         },
         generateBubbleContent: function(stop, formattedDistance) {
             if (formattedDistance === undefined) {
@@ -221,31 +222,28 @@ define([
         },
         onLocationError: function(e) {
             console.log('onLocationError', e);
-
         },
         resizeMapViewport: function() {
             var footer, header, viewport;
-            window.scroll(0, 0);
-
-
-            $('#content-wrapper').css('padding', 0);
 
             viewport = $(window).height();
             header = $('#header').outerHeight();
             footer = $('#footer').outerHeight();
+console.log(viewport, 'viewport');
+console.log(header, 'header');
+console.log(footer, 'footer');
+            $('#content-wrapper').height(viewport - footer - header);
 
-            $('#content-wrapper').height(viewport - header - footer);
+            window.scroll(0, 0);
         },
         onClose: function() {
             // stop location services
             this.geoLocation.stopLocating();
 
             // set the default height back
-            $('#content-wrapper').css({
-                padding: '',
-                height: 'auto'
-            });
-            // remove event handler
+            $('#content-wrapper').height('auto');
+            // remove event handlers
+            $(':jqmData(role="page")').off('pageinit', this.resizeMapViewport);
             $(window).off('orientationchange resize', this.resizeMapViewport);
         }
     });
