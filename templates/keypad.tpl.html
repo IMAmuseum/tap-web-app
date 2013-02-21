@@ -1,11 +1,8 @@
 <fieldset class="ui-grid-b" id="keypad">
-    <div id="code-label-wrapper" class="ui-block-a">
+    <div id="code-label-wrapper" class="ui-block-a ui-block-b ui-block-c">
         <div id="code-label-border">
             <div id="code-label"></div>
         </div>
-    </div>
-    <div class="ui-block-b">
-        <div id="go-button" data-role="button" data-theme="b" class="action-button ui-disabled">Go</div>
     </div>
     <div class="ui-block-a">
         <div data-role="button" data-theme="a" class="keypad-button">1</div>
@@ -34,10 +31,13 @@
     <div class="ui-block-c">
         <div data-role="button" data-theme="a" class="keypad-button">9</div>
     </div>
-    <div class="ui-block-a">
+    <div class="ui-block-a" id="clear-button-wrapper">
+        <div id="clear-button" data-role="button" data-theme="b" class="action-button ui-disabled">Clear</div>
+    </div>
+    <div class="ui-block-b">
         <div data-role="button" data-theme="a" class="keypad-button">0</div>
     </div>
-    <div class="ui-block-b ui-block-c" id="clear-button-wrapper">
-        <div id="clear-button" data-role="button" data-theme="b" class="action-button ui-disabled">Clear</div>
+    <div class="ui-block-c">
+        <div id="go-button" data-role="button" data-theme="b" class="action-button ui-disabled">Go</div>
     </div>
 </fieldset>

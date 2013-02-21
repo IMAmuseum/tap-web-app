@@ -11,6 +11,8 @@ define([
     var mapView = BaseView.extend({
         id: 'tour-map',
         initialize: function() {
+            var that = this;
+
             this._super('initialize');
 
             this.title = 'This is a map';
@@ -51,9 +53,12 @@ define([
                 }
             }, this);
 
-
-            $(':jqmData(role="page")').on('pageinit', this.resizeMapViewport(this));
-            $(window).on('orientationchange resize', this.resizeMapViewport(this));
+            $(':jqmData(role="page")').on('pageinit', function() {
+                that.resizeMapViewport(that);
+            });
+            $(window).on('orientationchange resize', function() {
+                that.resizeMapViewport(that);
+            });
         },
         render: function() {
             return this;
