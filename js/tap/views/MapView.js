@@ -53,7 +53,6 @@ define([
             $(window).on('orientationchange resize', this.resizeMapViewport);
         },
         render: function() {
-            this.resizeMapViewport();
             return this;
         },
         finishedAddingContent: function() {
@@ -114,7 +113,7 @@ define([
             }
             this.listenTo(Backbone, 'geolocation.location.recieved', this.onLocationFound);
 
-            return this;
+            this.resizeMapViewport();
         },
         generateBubbleContent: function(stop, formattedDistance) {
             if (formattedDistance === undefined) {

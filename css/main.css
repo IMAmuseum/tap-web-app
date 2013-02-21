@@ -1,31 +1,76 @@
-.ui-page-footer-fixed {
-
+/* Page */
+.ui-header .ui-title {
+	margin: .6em 20% .8em;
+}
+/* Footer */
+#footer .ui-icon {
+	top: 3px;
+	width: 26px!important;
+	height: 26px!important;
+	margin-left: -14px !important;
+	box-shadow: none!important;
+	-moz-box-shadow: none!important;
+	-webkit-box-shadow: none!important;
+	-webkit-border-radius: 0 !important;
+	border-radius: 0 !important;
+}
+.ui-icon-keypad {
+	background: url(../images/keypad-white.png) 0 0 no-repeat;
+	background-size: 26px 26px;
+}
+.ui-icon-stop-list {
+	background: url(../images/list-white.png) 0 0 no-repeat;
+	background-size: 26px 26px;
+}
+.ui-icon-map {
+	background: url(../images/map-white.png) 0 0 no-repeat;
+	background-size: 26px 26px;
 }
 /* Keypad View */
-.ui-bar {
-	padding:.4em;
+#keypad {
+	padding-top: -10px;
+}
+#code-label {
+	text-align: center;
+	font-weight: bold;
+}
+
+#code-label,
+.action-button,
+.keypad-button {
+	padding: .4em;
 	margin: .1em;
-	text-align:center;
-	font-weight:bold;
-	cursor: pointer; 
-	font-family: arial, helvetica, sans-serif;
-	font-size:2em;
+	font-size: 2em;
 	border-radius: .3em;
 	-moz-border-radius: .3em;
 	-webkit-border-radius: .3em;
 }
 
-#writeStyle {
-	width:66.4%;
+#go-button .ui-btn-inner {
+	padding: 0.6em 10px;
+}
+
+.keypad-button .ui-btn-inner,
+.action-button .ui-btn-inner {
+	border-top: none;
+}
+
+.ui-block-b.ui-block-c {
+	width: 66.666%;
+}
+
+#code-label-wrapper {
+	width: 66.4%;
 	border: 1px solid #666;
 	background-color: #FFF;
 	margin-top: .3em;
 	height: 60px;
-	border-radius:.3em;
-	-moz-border-radius:.3em;
-	-webkit-border-radius:.3em;
+	border-radius: .3em;
+	-moz-border-radius: .3em;
+	-webkit-border-radius: .3em;
 }
-#clearStyle {
+
+#clear-button-wrapper {
 	width:66.55%;
 }
 
@@ -42,7 +87,7 @@
 	background-color: #7FBCE5;
 	border-radius:.3em;
 	-moz-border-radius:.3em;
-	-webkit-border-radius:.3em;	
+	-webkit-border-radius:.3em;
 }
 
 /* Map View */
@@ -107,11 +152,11 @@
 
 /*** MEDIA QUERIES ***********************************************************/
 .tap_backend_li{
-	list-style:none;	
+	list-style:none;
 }
 
 
 /* Hide weird characters that appear after grunt contatenation */
 .ui-icon.ui-icon-arrow-r.ui-icon-shadow {
-	text-indent: -9999px;	
+	text-indent: -9999px;
 }
