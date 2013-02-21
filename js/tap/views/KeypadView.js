@@ -16,18 +16,12 @@ define([
 		},
 		events: {
 			'tap #go-button' : 'submit',
-			//'tap .keypad-button' : 'inputKeyCode',
+			'tap .keypad-button' : 'inputKeyCode',
 			'tap #clear-button' : 'clearKeyCode'
 		},
 		render: function() {
 			this.$el.html(this.template());
 			return this;
-		},
-		finishedAddingContent: function() {
-			var that = this;
-			this.$el.find('.keypad-button').on('tap', function(e) {
-				that.inputKeyCode(e);
-			});
 		},
 		submit: function() {
 			this.code = this.$el.find('#code-label').html();
@@ -50,14 +44,12 @@ define([
 
 			if (this.code.length > 4) return;
 
-			this.$el.find('#clear-button').removeClass('ui-disabled');
 			this.$el.find('#go-button').removeClass('ui-disabled');
 
 			$('#code-label').html(this.code);
 		},
 		clearKeyCode: function() {
 			this.$el.find('#go-button').addClass('ui-disabled');
-			this.$el.find('#clear-button').addClass('ui-disabled');
 			this.$el.find('#code-label').html('');
 			this.code = '';
 		}
