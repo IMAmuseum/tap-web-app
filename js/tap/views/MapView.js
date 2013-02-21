@@ -229,9 +229,7 @@ define([
             viewport = $(window).height();
             header = $('#header').outerHeight();
             footer = $('#footer').outerHeight();
-console.log(viewport, 'viewport');
-console.log(header, 'header');
-console.log(footer, 'footer');
+
             $('#content-wrapper').height(viewport - footer - header);
 
             window.scroll(0, 0);
