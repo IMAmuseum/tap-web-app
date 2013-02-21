@@ -16,12 +16,18 @@ define([
 		},
 		events: {
 			'tap #go-button' : 'submit',
-			'tap .keypad-button' : 'inputKeyCode',
+			//'tap .keypad-button' : 'inputKeyCode',
 			'tap #clear-button' : 'clearKeyCode'
 		},
 		render: function() {
 			this.$el.html(this.template());
 			return this;
+		},
+		finishedAddingContent: function() {
+			var that = this;
+			this.$el.find('.keypad-button').on('tap', function(e) {
+				that.inputKeyCode(e);
+			});
 		},
 		submit: function() {
 			this.code = this.$el.find('#code-label').html();
