@@ -228,9 +228,8 @@ define([
 
             viewport = $(window).height();
             header = $('#header').outerHeight();
-            footer = $('#footer').outerHeight();
 
-            $('#content-wrapper').height(viewport - footer - header);
+            $('#content-wrapper').height(viewport - header);
 
             window.scroll(0, 0);
         },
