@@ -1,11 +1,14 @@
 /* Page */
+.ui-mobile [data-role="page"], .ui-mobile [data-role="dialog"], .ui-page {
+	height: 100%;
+}
 .ui-header .ui-title {
 	margin: .4em 20% .8em;
 }
 
 /* Footer */
 #footer .ui-icon {
-	top: 6px;
+	top: 3px;
 	width: 26px!important;
 	height: 26px!important;
 	margin-left: -14px !important;
@@ -17,7 +20,8 @@
 	border-radius: 0 !important;
 }
 #footer .ui-btn-inner {
-	padding: 35px 0 5px 0;
+	padding: 30px 0 3px 0;
+	font-size: 9px;
 }
 .ui-icon-keypad {
 	background: url(../images/keypad-white.png) 0 0 no-repeat;
@@ -44,16 +48,12 @@
 #code-label,
 .action-button,
 .keypad-button {
-	padding: .3em;
+	padding: .24em;
 	margin: .1em;
 	font-size: 2em;
 	-moz-border-radius: .3em;
 	-webkit-border-radius: .3em;
 	border-radius: .3em;
-}
-
-#go-button .ui-btn-inner {
-	padding: 0.4em 10px;
 }
 
 .keypad-button .ui-btn-inner,
@@ -74,7 +74,7 @@
 	border: 1px solid #666;
 	background-color: #FFF;
 	margin-top: .3em;
-	height: 56px;
+	height: 51px;
 	-moz-border-radius: .3em;
 	-webkit-border-radius: .3em;
 	border-radius: .3em;
