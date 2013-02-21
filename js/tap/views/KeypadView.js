@@ -53,6 +53,7 @@ define([
 			this.$el.find('#go-button').addClass('ui-disabled');
 			this.$el.find('#clear-button').addClass('ui-disabled');
 			this.$el.find('#code-label').html('');
+			this.code = '';
 		}
 	});
 	return keypad;
