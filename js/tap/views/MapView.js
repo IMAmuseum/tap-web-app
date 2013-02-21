@@ -52,8 +52,8 @@ define([
             }, this);
 
 
-            $(':jqmData(role="page")').on('pageinit', this.resizeMapViewport);
-            $(window).on('orientationchange resize', this.resizeMapViewport);
+            $(':jqmData(role="page")').on('pageinit', this.resizeMapViewport(this));
+            $(window).on('orientationchange resize', this.resizeMapViewport(this));
         },
         render: function() {
             return this;
@@ -115,6 +115,10 @@ define([
                 this.onLocationFound(this.geoLocation.latestLocation);
             }
             this.listenTo(Backbone, 'geolocation.location.recieved', this.onLocationFound);
+
+            // _.delay(function() {
+            //     that.map.invalidateSize();
+            // }, 1000);
         },
         generateBubbleContent: function(stop, formattedDistance) {
             if (formattedDistance === undefined) {
@@ -223,7 +227,7 @@ define([
         onLocationError: function(e) {
             console.log('onLocationError', e);
         },
-        resizeMapViewport: function() {
+        resizeMapViewport: function(that) {
             var footer, header, viewport;
 
             viewport = $('html').height();
@@ -232,6 +236,9 @@ define([
 
             $('#content-wrapper').height(viewport - header - footer);
 
+            if (that.map !== null) {
+                that.map.invalidateSize();
+            }
             window.scroll(0, 0);
         },
         onClose: function() {
