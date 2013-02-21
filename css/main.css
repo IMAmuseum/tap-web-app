@@ -1,6 +1,6 @@
 /* Page */
 .ui-header .ui-title {
-	margin: .6em 20% .8em;
+	margin: .4em 20% .8em;
 }
 
 /* Footer */
@@ -53,7 +53,7 @@
 }
 
 #go-button .ui-btn-inner {
-	padding: 0.6em 10px;
+	padding: 0.4em 10px;
 }
 
 .keypad-button .ui-btn-inner,
