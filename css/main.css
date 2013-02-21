@@ -1,9 +1,14 @@
 /* Page */
 .ui-header .ui-title {
-	margin: .4em 20% .8em;
+	margin: .7em 5.5em;
 }
 .ui-page-header-fixed {
 	padding-top: 40px;
+}
+
+/* Dialog */
+#dialog-view p {
+	text-align: center;
 }
 
 /* Footer */
@@ -161,15 +166,4 @@
 	display: block;
 	width: 100%;
 	height: auto;
-}
-
-/*** MEDIA QUERIES ***********************************************************/
-.tap_backend_li{
-	list-style:none;
-}
-
-
-/* Hide weird characters that appear after grunt contatenation */
-.ui-icon.ui-icon-arrow-r.ui-icon-shadow {
-	text-indent: 9999px;
 }
