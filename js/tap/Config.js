@@ -2,6 +2,11 @@ define([], function() {
     return {
         url: '../../tour.xml',
         trackerID: 'UA-20840633-3',
+        navigationControllers: [
+            { label: 'Keypad', endpoint: '', icon: '' },
+            { label: 'StopList', endpoint: '', icon: '' },
+            { label: 'Map', endpoint: '', icon: '' }
+        ],
         viewRegistry: {
             'tour_audio_stop': {
                 view: 'AudioStopView',
