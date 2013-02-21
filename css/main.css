@@ -66,13 +66,9 @@
 	border-top: none;
 }
 
-.ui-block-b.ui-block-c {
-	width: 66.666%;
-}
-
 #code-label-wrapper {
-	width: 66.666%;
-	padding: 0 4px;
+	width: 100%;
+	padding: 0 4px 5px 4px;
 }
 
 #code-label-border {
@@ -83,10 +79,6 @@
 	-moz-border-radius: .3em;
 	-webkit-border-radius: .3em;
 	border-radius: .3em;
-}
-
-#clear-button-wrapper {
-	width:66.55%;
 }
 
 /* Stop List View */

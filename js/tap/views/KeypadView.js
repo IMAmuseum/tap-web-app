@@ -41,6 +41,8 @@ define([
 		inputKeyCode: function(e) {
 			var code = this.$el.find('#code-label').html() + $(e.currentTarget).find('.ui-btn-text').html();
 
+			if (code.length > 4) return;
+
 			this.$el.find('#clear-button').removeClass('ui-disabled');
 			this.$el.find('#go-button').removeClass('ui-disabled');
 
