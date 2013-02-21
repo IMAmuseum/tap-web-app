@@ -1,168 +1,174 @@
 /* Page */
 .ui-header .ui-title {
-	margin: .7em 5.5em;
+    margin: .7em 5.5em;
 }
 .ui-page-header-fixed {
-	padding-top: 43px;
+    padding-top: 43px;
 }
 .ui-page-footer-fixed {
-	padding-bottom: 49px;
+    padding-bottom: 49px;
 }
 
 /* Dialog */
 #dialog-view p {
-	text-align: center;
+    text-align: center;
+}
+
+/* Header */
+#header .ui-icon-social {
+    background-image: url(../images/share-white.png);
+    background-size: 16px 16px;
 }
 
 /* Footer */
 #footer .ui-icon {
-	top: 3px;
-	width: 26px!important;
-	height: 26px!important;
-	margin-left: -14px !important;
-	-moz-box-shadow: none!important;
-	-webkit-box-shadow: none!important;
-	box-shadow: none!important;
-	-webkit-border-radius: 0 !important;
-	-moz-border-radius: 0 !important;
-	border-radius: 0 !important;
+    top: 3px;
+    width: 26px!important;
+    height: 26px!important;
+    margin-left: -14px !important;
+    -moz-box-shadow: none!important;
+    -webkit-box-shadow: none!important;
+    box-shadow: none!important;
+    -webkit-border-radius: 0 !important;
+    -moz-border-radius: 0 !important;
+    border-radius: 0 !important;
 }
 #footer .ui-btn-inner {
-	padding: 30px 0 5px 0;
-	font-size: 9px;
+    padding: 30px 0 5px 0;
+    font-size: 9px;
 }
 .ui-icon-keypad {
-	background: url(../images/keypad-white.png) 0 0 no-repeat;
-	background-size: 26px 26px;
+    background: url(../images/keypad-white.png) 0 0 no-repeat;
+    background-size: 26px 26px;
 }
 .ui-icon-stop-list {
-	background: url(../images/list-white.png) 0 0 no-repeat;
-	background-size: 26px 26px;
+    background: url(../images/list-white.png) 0 0 no-repeat;
+    background-size: 26px 26px;
 }
 .ui-icon-map {
-	background: url(../images/map-white.png) 0 0 no-repeat;
-	background-size: 26px 26px;
+    background: url(../images/map-white.png) 0 0 no-repeat;
+    background-size: 26px 26px;
 }
 
 /* Keypad */
 #keypad {
-	padding-top: -10px;
+    padding-top: -10px;
 }
 #code-label {
-	text-align: center;
-	font-weight: bold;
+    text-align: center;
+    font-weight: bold;
 }
 
 #code-label,
 .action-button,
 .keypad-button {
-	padding: .24em;
-	margin: .1em;
-	font-size: 2em;
-	-moz-border-radius: .3em;
-	-webkit-border-radius: .3em;
-	border-radius: .3em;
+    padding: .24em;
+    margin: .1em;
+    font-size: 2em;
+    -moz-border-radius: .3em;
+    -webkit-border-radius: .3em;
+    border-radius: .3em;
 }
 
 #clear-button-wrapper .ui-btn-inner {
-	padding: .6em 15px;
+    padding: .6em 15px;
 }
 
 .keypad-button .ui-btn-inner,
 .action-button .ui-btn-inner {
-	border-top: none;
+    border-top: none;
 }
 
 #code-label-wrapper {
-	width: 100%;
-	padding: 0 6px 5px 5px;
+    width: 100%;
+    padding: 0 6px 5px 5px;
 }
 
 #code-label-border {
-	border: 1px solid #666;
-	background-color: #FFF;
-	margin-top: .3em;
-	height: 51px;
-	-moz-border-radius: .3em;
-	-webkit-border-radius: .3em;
-	border-radius: .3em;
+    border: 1px solid #666;
+    background-color: #FFF;
+    margin-top: .3em;
+    height: 51px;
+    -moz-border-radius: .3em;
+    -webkit-border-radius: .3em;
+    border-radius: .3em;
 }
 
 /* Stop List View */
 #tour-stop-list .distance {
-	float: right;
-	margin-right: 1em;
-	padding: 0.3em;
-	font-size: 0.8em;
+    float: right;
+    margin-right: 1em;
+    padding: 0.3em;
+    font-size: 0.8em;
 }
 
 #tour-stop-list .nearest .distance {
-	background-color: #7FBCE5;
-	-moz-border-radius: .3em;
-	-webkit-border-radius: .3em;
-	border-radius:.3em;
+    background-color: #7FBCE5;
+    -moz-border-radius: .3em;
+    -webkit-border-radius: .3em;
+    border-radius:.3em;
 }
 
 /* Map View */
 #content-wrapper.tour-map {
-	padding: 0;
+    padding: 0;
 }
 
 #tour-map {
-	width: 100%;
-	height: 100%;
+    width: 100%;
+    height: 100%;
 }
 
 .leaflet-top, .leaflet-bottom {
-	z-index: 999 !important;
+    z-index: 999 !important;
 }
 
 /*** Tour Stops ***/
 
 .tour-stop .title {
-	font-size: 120%;
-	margin: 0 0 20px 10px;
+    font-size: 120%;
+    margin: 0 0 20px 10px;
 }
 
 .tour-stop .description {
-	margin: 10px;
+    margin: 10px;
 }
 
 
 /*** Audio Stops ***/
 #audio-stop {
-	width: 100%;
+    width: 100%;
 }
 
 #audio-stop .poster-image {
-	width: 100%;
+    width: 100%;
 }
 
 /*** Video Stops ***/
 #video-stop .player {
-	width: 100%;
+    width: 100%;
 }
 
 /* Image Stop */
 #gallery {
-	margin: 0;
-	padding: 0;
-	list-style: none;
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
 #gallery li {
-	float: left;
-	width: 33.33333333%;
+    float: left;
+    width: 33.33333333%;
 }
 
 #gallery li a {
-	display: block;
-	margin: 5px;
-	border: 1px solid #3c3c3c;
+    display: block;
+    margin: 5px;
+    border: 1px solid #3c3c3c;
 }
 
 #gallery li a img {
-	display: block;
-	width: 100%;
-	height: auto;
+    display: block;
+    width: 100%;
+    height: auto;
 }
