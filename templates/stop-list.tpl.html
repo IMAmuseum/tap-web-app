@@ -1,7 +1,5 @@
-<ul id="tour-stop-list" class="ui-listview" data-inset="true" data-role="listview" data-filter="true">
 <% _.each(stops, function(stop) { %>
-	<li>
-		<a href='#tour/<%= tourID %>/stop/<%= stop.get('id') %>'><%= stop.get('title') %></a>
-	</li>
+<li>
+    <a href='#tour/<%= tourID %>/stop/<%= stop.get('id') %>'><%= stop.get('title') %></a>
+</li>
 <% }); %>
-</ul>
