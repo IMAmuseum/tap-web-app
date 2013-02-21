@@ -15,7 +15,7 @@ define([
 
             this._super('initialize');
 
-            this.title = 'This is a map';
+            this.title = '';
             this.map = null;
             this.mapOptions = {
                 'initialLat': null,
