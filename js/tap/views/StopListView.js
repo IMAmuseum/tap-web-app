@@ -8,13 +8,6 @@ define([
 ], function($, _, Backbone, TapAPI, TemplateManager, BaseView) {
 	var stopListView = BaseView.extend({
 		id: 'tour-stop-list',
-		tagName: 'ul',
-		className: 'ui-listview',
-		attributes: {
-			'data-inset': true,
-			'data-role': 'listview',
-			'data-filter': true
-		},
 		template: TemplateManager.get('stop-list'),
 		initialize: function() {
 			this._super('initialize');

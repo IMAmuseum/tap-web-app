@@ -249,6 +249,8 @@ define([
             // remove event handlers
             $(':jqmData(role="page")').off('pageinit', this.resizeMapViewport);
             $(window).off('orientationchange resize', this.resizeMapViewport);
+
+            this.$el.removeAttr('style');
         }
     });
     return mapView;
