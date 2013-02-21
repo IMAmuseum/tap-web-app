@@ -27,9 +27,7 @@ define([
             // add the new view
             this.$el.addClass(view.id);
             this.$el.html(view.render().$el);
-            _.delay(function() {
-                view.finishedAddingContent();
-            }, 100);
+            view.finishedAddingContent();
 
             return this;
         }
