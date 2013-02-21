@@ -1,9 +1,9 @@
 /* Page */
-.ui-mobile [data-role="page"], .ui-mobile [data-role="dialog"], .ui-page {
-	height: 100%;
-}
 .ui-header .ui-title {
 	margin: .4em 20% .8em;
+}
+.ui-page-header-fixed {
+	padding-top: 40px;
 }
 
 /* Footer */
