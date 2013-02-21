@@ -4,7 +4,7 @@
 }
 /* Footer */
 #footer .ui-icon {
-	top: 3px;
+	top: 6px;
 	width: 26px!important;
 	height: 26px!important;
 	margin-left: -14px !important;
@@ -13,6 +13,9 @@
 	-webkit-box-shadow: none!important;
 	-webkit-border-radius: 0 !important;
 	border-radius: 0 !important;
+}
+#footer .ui-btn-inner {
+	padding: 35px 0 5px 0;
 }
 .ui-icon-keypad {
 	background: url(../images/keypad-white.png) 0 0 no-repeat;
@@ -38,7 +41,7 @@
 #code-label,
 .action-button,
 .keypad-button {
-	padding: .4em;
+	padding: .3em;
 	margin: .1em;
 	font-size: 2em;
 	border-radius: .3em;
@@ -60,11 +63,15 @@
 }
 
 #code-label-wrapper {
-	width: 66.4%;
+	width: 66.666%;
+	padding: 0 4px;
+}
+
+#code-label-border {
 	border: 1px solid #666;
 	background-color: #FFF;
 	margin-top: .3em;
-	height: 60px;
+	height: 56px;
 	border-radius: .3em;
 	-moz-border-radius: .3em;
 	-webkit-border-radius: .3em;
