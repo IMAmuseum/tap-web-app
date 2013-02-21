@@ -41,12 +41,14 @@ define([
 		inputKeyCode: function(e) {
 			var code = this.$el.find('#code-label').html() + $(e.currentTarget).find('.ui-btn-text').html();
 
+			this.$el.find('#clear-button').removeClass('ui-disabled');
 			this.$el.find('#go-button').removeClass('ui-disabled');
 
 			$('#code-label').html(code);
 		},
 		clearKeyCode: function() {
-			this.$el.find('#gobutton').addClass('ui-disabled');
+			this.$el.find('#go-button').addClass('ui-disabled');
+			this.$el.find('#clear-button').addClass('ui-disabled');
 			this.$el.find('#code-label').html('');
 		}
 	});
