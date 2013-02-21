@@ -14,9 +14,9 @@ define([
 			this.title = 'Enter a Stop Code';
 		},
 		events: {
-			'tap #go-btn' : 'submit',
-			'tap #keypad .button' : 'inputKeyCode',
-			'tap #delete' : 'clearKeyCode'
+			'tap #go-button' : 'submit',
+			'tap .keypad-button' : 'inputKeyCode',
+			'tap #clear-button' : 'clearKeyCode'
 		},
 		render: function() {
 			this.$el.html(this.template());
@@ -39,14 +39,14 @@ define([
 			}
 		},
 		inputKeyCode: function(e) {
-			var code = this.$el.find('#code-label').html() + $(e.currentTarget).html();
+			var code = this.$el.find('#code-label').html() + $(e.currentTarget).find('.ui-btn-text').html();
 
-			this.$el.find('#go-btn').removeClass('ui-disabled');
+			this.$el.find('#go-button').removeClass('ui-disabled');
 
 			$('#code-label').html(code);
 		},
 		clearKeyCode: function() {
-			this.$el.find('#gobtn').addClass('ui-disabled');
+			this.$el.find('#gobutton').addClass('ui-disabled');
 			this.$el.find('#code-label').html('');
 		}
 	});
