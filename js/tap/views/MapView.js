@@ -4,11 +4,11 @@ define([
     'backbone',
     'tap/TapAPI',
     'tap/TemplateManager',
-    'tap/views/BaseView',
+    'tap/views/StopSelectionView',
     'tap/GeoLocation',
     'leaflet'
-], function($, _, Backbone, TapAPI, TemplateManager, BaseView, GeoLocation) {
-    var mapView = BaseView.extend({
+], function($, _, Backbone, TapAPI, TemplateManager, StopSelectionView, GeoLocation) {
+    var mapView = StopSelectionView.extend({
         id: 'tour-map',
         initialize: function() {
             var that = this;
@@ -16,6 +16,7 @@ define([
             this._super('initialize');
 
             this.title = '';
+            this.activeToolbarButton = 'MapView';
             this.map = null;
             this.mapOptions = {
                 'initialLat': null,
@@ -250,7 +251,7 @@ define([
             $(':jqmData(role="page")').off('pageinit', this.resizeMapViewport);
             $(window).off('orientationchange resize', this.resizeMapViewport);
 
-            this.$el.removeAttr('style');
+            $('#content-wrapper').removeAttr('style');
         }
     });
     return mapView;

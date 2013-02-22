@@ -20,7 +20,11 @@ define([
         render: function(view) {
             if (!_.isUndefined(TapAPI.currentTour) && view.displayFooter) {
                 this.$el.show();
-                this.$el.html(this.template({tourID: TapAPI.currentTour}));
+                this.$el.html(this.template({
+                    activeToolbarButton: view.activeToolbarButton,
+                    tourID: TapAPI.currentTour,
+                    controllers: TapAPI.navigationControllers
+                }));
             } else {
                 this.$el.hide();
             }

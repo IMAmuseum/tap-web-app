@@ -4,14 +4,15 @@ define([
     'backbone',
     'tap/TapAPI',
     'tap/TemplateManager',
-    'tap/views/BaseView'
-], function($, _, Backbone, TapAPI, TemplateManager, BaseView) {
-	var stopListView = BaseView.extend({
+    'tap/views/StopSelectionView'
+], function($, _, Backbone, TapAPI, TemplateManager, StopSelectionView) {
+	var stopListView = StopSelectionView.extend({
 		id: 'tour-stop-list',
 		template: TemplateManager.get('stop-list'),
 		initialize: function() {
 			this._super('initialize');
 			this.title = 'Select a Stop';
+			this.activeToolbarButton = 'StopListView';
 
 			// retrieve all stops that have a code associated with it
 			this.stops = _.filter(TapAPI.tourStops.models, function(stop) {

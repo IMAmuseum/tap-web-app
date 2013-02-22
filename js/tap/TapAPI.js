@@ -14,9 +14,9 @@ define([
         views: {},
         templates: {},
         navigationControllers: [
-            { view: 'KeypadView', label: 'Keypad', icon: '', defaultView: true},
-            { view: 'StopListView', label: 'Stop List', icon: ''},
-            { view: 'MapView', label: 'Map', icon: '' }
+            { view: 'KeypadView', label: 'Keypad', defaultView: true},
+            { view: 'StopListView', label: 'Stop List'},
+            { view: 'MapView', label: 'Map'}
         ],
         config: _.defaults(Config, {
             defaultLanguage: 'en',

@@ -6,10 +6,9 @@ define([
     'tap/views/BaseView',
     'backbone-super'
 ], function($, _, Backbone, TapAPI, BaseView) {
-    var stopSelectionView = BaseView.extend({
+    var stopSelectionView = BaseView.View.extend({
         initialize: function() {
             this._super('initialize');
-            this.activeToolbarButton = '';
         }
     });
     return stopSelectionView;
