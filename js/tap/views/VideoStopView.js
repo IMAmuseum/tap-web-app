@@ -4,11 +4,11 @@ define([
     'backbone',
     'tap/TapAPI',
     'tap/TemplateManager',
-    'tap/views/StopView',
+    'tap/views/BaseView',
     'tap/AnalyticsTimer',
     'mediaelement'
-], function($, _, Backbone, TapAPI, TemplateManager, StopView, AnalyticsTimer) {
-	var videoStopView = StopView.extend({
+], function($, _, Backbone, TapAPI, TemplateManager, BaseView, AnalyticsTimer) {
+	var videoStopView = BaseView.extend({
 		id: 'video-stop',
         template: TemplateManager.get('video'),
 		initialize: function() {
