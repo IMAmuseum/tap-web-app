@@ -37,15 +37,15 @@
     padding: 30px 0 5px 0;
     font-size: 9px;
 }
-.ui-icon-keypad {
+.ui-icon-keypadview {
     background: url(../images/keypad-white.png) 0 0 no-repeat;
     background-size: 26px 26px;
 }
-.ui-icon-stop-list {
+.ui-icon-stoplistview {
     background: url(../images/list-white.png) 0 0 no-repeat;
     background-size: 26px 26px;
 }
-.ui-icon-map {
+.ui-icon-mapview {
     background: url(../images/map-white.png) 0 0 no-repeat;
     background-size: 26px 26px;
 }

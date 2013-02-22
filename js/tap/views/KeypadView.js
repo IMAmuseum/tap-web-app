@@ -4,14 +4,15 @@ define([
     'backbone',
     'tap/TapAPI',
     'tap/TemplateManager',
-    'tap/views/BaseView'
-], function($, _, Backbone, TapAPI, TemplateManager, BaseView) {
-    var keypad = BaseView.extend({
+    'tap/views/StopSelectionView'
+], function($, _, Backbone, TapAPI, TemplateManager, StopSelectionView) {
+    var keypad = StopSelectionView.extend({
         id: 'keypad',
         template: TemplateManager.get('keypad'),
         initialize: function() {
             this._super('initialize');
             this.title = 'Enter a Stop Code';
+            this.activeToolbarButton = 'KeypadView';
             this.code = '';
         },
         events: {

@@ -1,7 +1,12 @@
 <div data-role="navbar" data-iconpos="top">
 	<ul>
-		<li><a href="#tour/<%= tourID %>/keypad" data-icon="keypad" data-iconshadow="true">Keypad</a></li>
-		<li><a href="#tour/<%= tourID %>/stop-list" data-icon="stop-list" data-iconshadow="true">Stops</a></li>
-		<li><a href="#tour/<%= tourID %>/map" data-icon="map" data-iconshadow="true">Map</a></li>
+        <% _.each(controllers, function(controller) { %>
+		<li>
+            <a href="#tour/<%= tourID %>/controller/<%= controller.view %>"
+            data-icon="<%= controller.view.toLowerCase() %>"
+            data-iconshadow="true"
+            class="<%= controller.view === activeToolbarButton ? 'ui-btn-active' : '' %>"><%= controller.label %></a>
+        </li>
+        <% }); %>
 	</ul>
 </div>
