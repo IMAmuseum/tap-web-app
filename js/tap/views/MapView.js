@@ -117,10 +117,6 @@ define([
                 this.onLocationFound(this.geoLocation.latestLocation);
             }
             this.listenTo(Backbone, 'geolocation.location.recieved', this.onLocationFound);
-
-            // _.delay(function() {
-            //     that.map.invalidateSize();
-            // }, 1000);
         },
         generateBubbleContent: function(stop, formattedDistance) {
             if (formattedDistance === undefined) {
@@ -129,14 +125,14 @@ define([
                 }
             }
 
-            var template = TemplateManager.get('tour-map-marker-bubble');
+            var template = TemplateManager.get('map-marker-bubble');
             return template({
                 'title': stop.get('title'),
-                'tour_id': stop.get('tour'),
-                'stop_id': stop.get('id'),
+                'tourID': stop.get('tour'),
+                'stopID': stop.get('id'),
                 'distance': (formattedDistance === undefined) ? '' : 'Distance: ' + formattedDistance,
-                'stop_lat': stop.get('location').lat,
-                'stop_lon': stop.get('location').lng
+                'stopLat': stop.get('location').lat,
+                'stopLong': stop.get('location').lng
             });
         },
         // Plot a single tour stop marker on the map
@@ -182,7 +178,7 @@ define([
             if (stop.get('distance')) {
                 formatted_distance = this.geoLocation.formatDistance(stop.get('distance'));
             }
-
+console.log(this.stopPopups[stop.id]);
             this.stopPopups[stop.id].setContent(this.generateBubbleContent(stop), formatted_distance);
 
             // Update the stop icon

@@ -123,6 +123,14 @@
     z-index: 999 !important;
 }
 
+#tour-map .stop-icon {
+	background-image: url('../images/marker.png') !important;
+	width: 25px !important;
+	height: 41px !important;
+	margin-left: -12px !important;
+	margin-top: -41px !important;
+}
+
 /*** Tour Stops ***/
 
 .tour-stop .title {
