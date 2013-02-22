@@ -34,7 +34,9 @@ define([
                     message: 'Stop not found for code \'' + this.code + '\'',
                     cancelButtonTitle: 'OK'
                 });
+
                 this.$el.find('#code-label').html('');
+                this.code = '';
                 return false;
             } else {
                 Backbone.history.navigate('tour/' + TapAPI.currentTour + '/stop/' + stop.get('id'), true);
