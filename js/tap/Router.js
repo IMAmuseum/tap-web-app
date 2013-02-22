@@ -6,19 +6,21 @@ define([
     'tap/TapAPI',
     'tap/views/ContentView',
     'tap/views/TourListView',
-    'tap/views/TourDetailsView',
-    'tap/views/KeypadView',
-    'tap/views/StopListView',
-    'tap/views/MapView'
-], function($, _, Require, Backbone, TapAPI, ContentView, TourListView, TourDetailsView, KeypadView, StopListView, MapView) {
+    'tap/views/TourDetailsView'
+], function($, _, Require, Backbone, TapAPI, ContentView, TourListView, TourDetailsView) {
     var router = Backbone.Router.extend({
         routes: {
             '': 'tourSelection',
             'tour/:tourID/details': 'tourDetails',
-            'tour/:tourID/keypad': 'keypad',
-            'tour/:tourID/stop-list': 'tourStopList',
-            'tour/:tourID/map': 'map',
+            // 'tour/:tourID/keypad': 'keypad',
+            // 'tour/:tourID/stop-list': 'tourStopList',
+            // 'tour/:tourID/map': 'map',
             'tour/:tourID/stop/:stopID': 'tourStop'
+        },
+        initialize: function() {
+            _.each(TapAPI.navigationControllers, function(controller) {
+                this.route('tour/:tourID/controller/:view', 'routeToController');
+            }, this);
         },
         /**
          * Route to the tour listing
@@ -40,28 +42,14 @@ define([
             TapAPI.tours.selectTour(tourID);
             this.changePage(new TourDetailsView());
         },
-        /**
-         * Route to the keypad
-         * @param id The id of the tour
-         */
-        keypad: function(tourID) {
+        routeToController: function(tourID, view) {
+            var that = this;
             TapAPI.tours.selectTour(tourID);
-            this.changePage(new KeypadView());
-        },
-        /**
-         * Route to the tour list
-         * @param id The id of the tour
-         */
-        tourStopList: function(tourID) {
-            TapAPI.tours.selectTour(tourID);
-            this.changePage(new StopListView());
-        },
-        /**
-         * Route to the tour map
-         */
-        map: function(tourID) {
-            TapAPI.tours.selectTour(tourID);
-            this.changePage(new MapView());
+
+            var viewPath = 'tap/views/' + view;
+            Require([viewPath], function(view) {
+                that.changePage(new view());
+            });
         },
         /**
          * Route to a stop

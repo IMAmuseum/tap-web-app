@@ -18,8 +18,12 @@ define([
 			this.displayFooter = false;
 		},
 		render: function() {
+            var defaultController = _.find(TapAPI.navigationControllers, function(controller) {
+                return _.has(controller, 'defaultView') && controller.defaultView;
+            });
+
 			this.$el.html(this.template({
-				defaultStopSelectionView: 'keypad',
+				defaultStopSelectionView: defaultController.view,
 				tourID: this.tour.get('id'),
 				description: this.tour.get('description') ? this.tour.get('description') : ''
 			}));
