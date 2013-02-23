@@ -5,13 +5,13 @@ define([
     'tap/TapAPI',
     'tap/TemplateManager'
 ], function($, _, Backbone, TapAPI, TemplateManager) {
-    var dialogView = Backbone.View.extend({
-        id: 'dialog-view',
+    var socialPopupView = Backbone.View.extend({
+        id: 'social-popup',
         attributes: {
             'data-role': 'popup',
             'data-theme': 'c'
         },
-        template: TemplateManager.get('dialog'),
+        template: TemplateManager.get('social-popup'),
         initialize: function() {
             this.title = '';
             this.message = '';
@@ -54,5 +54,5 @@ define([
             this.$el.popup('close');
         }
     });
-    return dialogView;
+    return socialPopupView;
 });

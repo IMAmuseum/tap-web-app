@@ -11,6 +11,7 @@ define([
     var router = Backbone.Router.extend({
         routes: {
             '': 'tourSelection',
+            'tour/:tourID/details': 'tourDetails',
             'tour/:tourID/stop/:stopID': 'tourStop'
         },
         initialize: function() {

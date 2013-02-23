@@ -8,8 +8,8 @@ define([
     'tap/views/HeaderView',
     'tap/views/ContentView',
     'tap/views/FooterView',
-    'tap/views/DialogView'
-], function($, _, Backbone, TapAPI, TemplateManager, TourCollection, HeaderView, ContentView, FooterView, DialogView) {
+    'tap/views/PopupView'
+], function($, _, Backbone, TapAPI, TemplateManager, TourCollection, HeaderView, ContentView, FooterView, PopupView) {
     var appView = Backbone.View.extend({
         id: 'page-wrapper',
         initialize: function() {
@@ -30,8 +30,8 @@ define([
             this.$el.append(footerView.$el);
 
             // add dialog view
-            var dialogView = new DialogView();
-            this.$el.append(dialogView.$el);
+            var popupView = new PopupView();
+            this.$el.append(popupView.$el);
 
             // trigger jquery mobile to initialize new widgets
             Backbone.trigger('app.widgets.refresh');
