@@ -29,7 +29,7 @@ define([
 
             var stop = TapAPI.tourStops.getStopByKeycode(this.code);
             if(_.isEmpty(stop)) {
-                Backbone.trigger('tap.dialog.dislay', {
+                Backbone.trigger('tap.popup.dislay', {
                     title: 'Stop Not Found',
                     message: 'Stop not found for code \'' + this.code + '\'',
                     cancelButtonTitle: 'OK'

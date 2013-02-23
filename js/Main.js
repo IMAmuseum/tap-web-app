@@ -1,4 +1,5 @@
 requirejs.config({
+    waitSeconds: 45,
     paths: {
         'jquery': 'vendor/jquery',
         'jqm-config': 'tap/JQMConfig',
@@ -11,7 +12,9 @@ requirejs.config({
         'leaflet': 'vendor/leaflet/leaflet',
         'klass': 'vendor/klass',
         'photoswipe': 'vendor/photoswipe/code.photoswipe',
-        'mediaelement': 'vendor/mediaelement/mediaelement-and-player'
+        'mediaelement': 'vendor/mediaelement/mediaelement-and-player',
+        'facebook-api': 'http://connect.facebook.net/en_US/all.js#xfbml=1&appId=417559234998011',
+        'twitter-api': 'http://platform.twitter.com/widgets'
     },
     shim: {
         'jquerymobile': {

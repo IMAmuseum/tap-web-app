@@ -18,10 +18,10 @@ define([
             this.cancelButtonTitle = '';
 
             // add listener for requests to display dialogs
-            this.listenTo(Backbone, 'tap.dialog.dislay', this.displayDialog);
+            this.listenTo(Backbone, 'tap.popup.dislay', this.displayDialog);
         },
         events: {
-            'tap #dialog-cancel': 'closeDialog'
+            'tap #popup-cancel': 'closeDialog'
         },
         render: function() {
             this.$el.html(this.template({
@@ -33,16 +33,16 @@ define([
             return this;
         },
         displayDialog: function(args) {
-            // set dialog content
+            // set popup content
             this.title = args.title;
             this.message = args.message;
             this.cancelButtonTitle = args.cancelButtonTitle;
 
-            // render the dialog
+            // render the popup
             this.render();
             // intitialize jqmobile styles
             Backbone.trigger('app.widgets.refresh');
-            // open up dialog
+            // open up popup
             this.$el.popup('open');
             return false;
         },

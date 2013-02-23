@@ -18,7 +18,8 @@ define([
             this.listenTo(Backbone, 'tap.router.routed', this.render);
         },
         events: {
-            'tap #back-btn': 'navigateBack'
+            'tap #back-button': 'navigateBack',
+            'tap #social-button': 'displaySocialPopup'
         },
         render: function(view) {
             var title = view && !_.isEmpty(view.title) ? view.title : '';
@@ -36,6 +37,10 @@ define([
         navigateBack: function(e) {
             e.preventDefault();
             window.history.back();
+        },
+        displaySocialPopup: function(e) {
+            e.preventDefault();
+            Backbone.trigger('tap.socialPopup.dislay');
         }
     });
     return headerView;
