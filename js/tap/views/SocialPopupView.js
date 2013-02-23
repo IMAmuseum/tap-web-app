@@ -2,9 +2,10 @@ define([
     'jquery',
     'underscore',
     'backbone',
+    'require',
     'tap/TapAPI',
     'tap/TemplateManager'
-], function($, _, Backbone, TapAPI, TemplateManager) {
+], function($, _, Backbone, Require, TapAPI, TemplateManager) {
     var socialPopupView = Backbone.View.extend({
         id: 'social-popup',
         attributes: {
@@ -13,44 +14,21 @@ define([
         },
         template: TemplateManager.get('social-popup'),
         initialize: function() {
-            this.title = '';
-            this.message = '';
-            this.cancelButtonTitle = '';
-
-            // add listener for requests to display dialogs
-            this.listenTo(Backbone, 'tap.dialog.dislay', this.displayDialog);
-        },
-        events: {
-            'tap #dialog-cancel': 'closeDialog'
+            // add listener for requests to display poup
+            this.listenTo(Backbone, 'tap.socialPopup.dislay', this.displayPopup);
         },
         render: function() {
-            this.$el.html(this.template({
-                title: this.title,
-                message: this.message,
-                cancelButtonTitle: this.cancelButtonTitle
-            }));
-
+            this.$el.html(this.template());
             return this;
         },
-        displayDialog: function(args) {
-            // set dialog content
-            this.title = args.title;
-            this.message = args.message;
-            this.cancelButtonTitle = args.cancelButtonTitle;
-
-            // render the dialog
-            this.render();
-            // intitialize jqmobile styles
-            Backbone.trigger('app.widgets.refresh');
-            // open up dialog
-            this.$el.popup('open');
+        displayPopup: function() {
+            var that = this;
+            Require(['facebook-api', 'twitter-api'], function() {
+                that.$el.popup('open');
+            });
             return false;
         },
         closeDialog: function() {
-            this.title = '';
-            this.message = '';
-            this.cancelButtonTitle = '';
-
             this.$el.popup('close');
         }
     });
