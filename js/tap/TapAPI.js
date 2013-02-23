@@ -6,7 +6,7 @@ define([
         tours: {},
         tourAssets: {},
         tourStops: {},
-        language: 'es',
+        language: 'en',
         currentStop: '',
         currentTour: '',
         collections: {},

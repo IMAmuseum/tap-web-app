@@ -23,6 +23,13 @@ define([
 			this.stops = _.sortBy(this.stops, function(stop) {
 				return stop.get('propertySet').where({'name': 'code'});
 			});
+
+			_.each(this.stops, function(stop) {
+				var stopConfig = TapAPI.config.viewRegistry[stop.get('view')];
+				if (stopConfig) {
+					stop.set('icon', stopConfig.icon);
+				}
+			}, this);
 		},
 		render: function() {
 			this.$el.html(this.template({

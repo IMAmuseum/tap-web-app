@@ -10,19 +10,19 @@ define([], function() {
         viewRegistry: {
             'tour_audio_stop': {
                 view: 'AudioStopView',
-                icon: ''
+                icon: 'images/audio.png'
             },
             'tour_image_stop': {
                 view: 'ImageStopView',
-                icon: ''
+                icon: 'images/photo.png'
             },
             'tour_stop_group': {
                 view: 'StopGroupView',
-                icon: ''
+                icon: 'images/list.png'
             },
             'tour_video_stop': {
                 view: 'VideoStopView',
-                icon: ''
+                icon: 'images/video.png'
             }
         }
     };
