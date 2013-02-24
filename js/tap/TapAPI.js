@@ -28,21 +28,25 @@ define([
         },
         tourSettings: Config.tourSettings,
         viewRegistry: {
-           'tour_audio_stop': {
+           'audio_stop': {
                 view: 'AudioStopView',
                 icon: 'images/audio.png'
             },
-            'tour_image_stop': {
+            'image_stop': {
                 view: 'ImageStopView',
                 icon: 'images/photo.png'
             },
-            'tour_stop_group': {
+            'stop_group': {
                 view: 'StopGroupView',
                 icon: 'images/list.png'
             },
-            'tour_video_stop': {
+            'video_stop': {
                 view: 'VideoStopView',
                 icon: 'images/video.png'
+            },
+            'web_stop': {
+                view: 'WebView',
+                icon: 'images/web.png'
             }
         },
         social: {
