@@ -6,7 +6,7 @@ define([
     'tap/TemplateManager'
 ], function($, _, Backbone, TapAPI, TemplateManager) {
     var popupView = Backbone.View.extend({
-        id: 'dialog-view',
+        id: 'popup-view',
         attributes: {
             'data-role': 'popup',
             'data-theme': 'c'

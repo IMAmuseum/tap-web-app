@@ -13,8 +13,7 @@ requirejs.config({
         'klass': 'vendor/klass',
         'photoswipe': 'vendor/photoswipe/code.photoswipe',
         'mediaelement': 'vendor/mediaelement/mediaelement-and-player',
-        'facebook-api': 'http://connect.facebook.net/en_US/all.js#xfbml=1&appId=417559234998011',
-        'twitter-api': 'http://platform.twitter.com/widgets'
+        'twitter': 'http://platform.twitter.com/widgets'
     },
     shim: {
         'jquerymobile': {
@@ -32,6 +31,9 @@ requirejs.config({
         },
         'mediaelement': {
             exports: 'mediaelement'
+        },
+        'twitter' : {
+            exports: 'twitter'
         }
     }
 });
