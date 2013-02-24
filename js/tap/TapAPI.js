@@ -20,7 +20,9 @@ define([
                 defaultView: true
             },
             'StopListView': {
-                label: 'Stop List'
+                label: 'Stop List',
+                filterBy: 'stopGroup',
+                sortBy: 'title'
             },
             'MapView': {
                 label: 'Map'
