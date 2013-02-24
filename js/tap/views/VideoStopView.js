@@ -18,8 +18,8 @@ define([
 			this.mediaOptions = {
 				defaultVideoWidth: '100%',
 				defaultVideoHeight: '100%',
-				flashName: 'js/vendor/mediaelment/' + mejs.MediaElementDefaults.flashName,
-				silverlightName: 'js/vendor/mediaelment/' + mejs.MediaElementDefaults.flashName
+				flashName: mejs.MediaElementDefaults.flashName,
+				silverlightName: mejs.MediaElementDefaults.flashName
 			};
 
 			this.timer = new AnalyticsTimer('VideoStop', 'played_for', TapAPI.currentStop.id);
@@ -40,7 +40,7 @@ define([
 				posterImagePath = posterImageAsset[0].get('source').at(0).get('uri');
 			}
 
-			mediaAsset = this.model.getAssetsByType("tour_video");
+			mediaAsset = this.model.getAssetsByType("video");
 
 			if (_.isEmpty(mediaAsset)) {
 				console.log('No media found.');

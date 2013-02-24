@@ -37,7 +37,7 @@ define([
 				posterImagePath = posterImageAsset[0].get('source').at(0).get('uri');
 			}
 
-			var mediaAsset = this.model.getAssetsByType(['tour_audio', 'tour_video']);
+			var mediaAsset = this.model.getAssetsByType(['audio', 'video']);
 
 			if (_.isEmpty(mediaAsset)) {
 				console.log('No media found.');
@@ -52,7 +52,7 @@ define([
 
 			// get the appropriate template
 			var mediaTemplate = '';
-			if (mediaAsset[0].get('type') === 'tour_audio') {
+			if (mediaAsset[0].get('type') === 'audio') {
 				mediaTemplate = 'audio';
 				this.mediaOptions.defaultAudioWidth = '100%';
 			} else {
