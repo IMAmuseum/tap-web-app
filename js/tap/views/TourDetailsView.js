@@ -18,12 +18,17 @@ define([
 			this.displayFooter = false;
 		},
 		render: function() {
-            var defaultController = _.find(TapAPI.navigationControllers, function(controller) {
-                return _.has(controller, 'defaultView') && controller.defaultView;
-            });
+            var defaultController;
+            for (var controller in TapAPI.navigationControllers) {
+                if (_.has(TapAPI.navigationControllers[controller], 'defaultView') &&
+                    TapAPI.navigationControllers[controller].defaultView) {
+                    defaultController = controller;
+                    break;
+                }
+            }
 
 			this.$el.html(this.template({
-				defaultStopSelectionView: defaultController.view,
+				defaultStopSelectionView: defaultController,
 				tourID: this.tour.get('id'),
 				description: this.tour.get('description') ? this.tour.get('description') : ''
 			}));

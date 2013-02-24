@@ -47,9 +47,9 @@ define([
             TapAPI.language = browserLanguage.split('-')[0];
 
             // initialize GA if trackerID is available
-            if (TapAPI.config.trackerID) {
+            if (TapAPI.trackerID) {
                 window._gaq = window._gaq || [];
-                window._gaq.push(["_setAccount", TapAPI.config.trackerID]);
+                window._gaq.push(["_setAccount", TapAPI.trackerID]);
                 (function(d,t){
                     var g = d.createElement(t),
                         s = d.getElementsByTagName(t)[0];
@@ -61,7 +61,7 @@ define([
 
             // create new instance of tour collection
             TapAPI.tours = new TourCollection();
-            TapAPI.tours.syncTourML(TapAPI.config.url);
+            TapAPI.tours.syncTourML(TapAPI.tourMLEndpoint);
 
             // trigger tap init end event
             Backbone.trigger('tap.app.complete');

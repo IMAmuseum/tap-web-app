@@ -20,6 +20,7 @@ define([
         },
         render: function() {
             this.$el.html(this.template({
+                FBAppID: TapAPI.social.facebook.appID,
                 url: escape(document.URL)
             }));
             return this;

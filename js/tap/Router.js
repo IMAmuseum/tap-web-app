@@ -58,15 +58,16 @@ define([
             TapAPI.currentStop = TapAPI.tourStops.get(stopID);
 
             var stopType = TapAPI.currentStop.get('view');
-            var viewPath = 'tap/views/' + TapAPI.config.viewRegistry[stopType].view;
+            var viewPath = 'tap/views/' + TapAPI.viewRegistry[stopType].view;
 
             Require([viewPath], function(View) {
                 that.changePage(new View({model: TapAPI.currentStop}));
             });
         },
         changePage: function(view) {
-            _gaq.push(['_trackPageview', '/#' + Backbone.history.getFragment()]);
-
+            if (TapAPI.trackerID !== '') {
+                _gaq.push(['_trackPageview', '/#' + Backbone.history.getFragment()]);
+            }
             Backbone.trigger('tap.router.routed', view);
             Backbone.trigger('app.widgets.refresh');
         }
