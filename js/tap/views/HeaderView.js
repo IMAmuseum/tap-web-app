@@ -25,16 +25,10 @@ define([
             var title = view && !_.isEmpty(view.title) ? view.title : '';
 
             this.$el.html(this.template({
+                displayBackButton: Backbone.history.getFragment() !== '' && !(view && !view.displayBackButton),
                 title: title,
                 displaySocialButton: TapAPI.social.enabled
             }));
-
-            // don't show the back button on the root
-            if (Backbone.history.getFragment() === '') {
-                this.$el.find('#back-btn').hide();
-            } else {
-                this.$el.find('#back-btn').show();
-            }
 
             return this;
         },

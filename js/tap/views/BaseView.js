@@ -10,6 +10,7 @@ define([
 			this.title = '';
 			this.displayHeader = true;
 			this.displayFooter = true;
+			this.displayBackButton = true;
 		},
 		render: function() {},
 		finishedAddingContent: function() {},
