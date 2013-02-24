@@ -14,22 +14,30 @@ define([
         },
         template: TemplateManager.get('social-popup'),
         initialize: function() {
+            this.uri = Backbone.history.fragment;
+
             // add listener for requests to display poup
             this.listenTo(Backbone, 'tap.socialPopup.dislay', this.displayPopup);
         },
         render: function() {
-            this.$el.html(this.template());
+            this.$el.html(this.template({
+                uri: this.uri
+            }));
             return this;
         },
         displayPopup: function() {
             var that = this;
-            Require(['facebook-api', 'twitter-api'], function() {
+
+            // render the popup
+            this.render();
+            // intitialize jqmobile styles
+            Backbone.trigger('app.widgets.refresh');
+            // require social libraries
+            Require(['twitter'], function() {
+                // open popup
                 that.$el.popup('open');
             });
             return false;
-        },
-        closeDialog: function() {
-            this.$el.popup('close');
         }
     });
     return socialPopupView;

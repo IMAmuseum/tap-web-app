@@ -9,9 +9,14 @@
     padding-bottom: 49px;
 }
 
-/* Dialog */
-#dialog-view p {
+/* popup */
+#popup-view p {
     text-align: center;
+}
+
+/* social popup */
+#social-popup {
+    min-width: 300px;
 }
 
 /* Header */
