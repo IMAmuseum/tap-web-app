@@ -20,7 +20,7 @@ define([
 					stops.push({
 						id: stop.get('id'),
 						title: stop.get('title'),
-						icon: TapAPI.config.viewRegistry[stop.get('type')]
+						icon: TapAPI.viewRegistry[stop.get('type')]
 					});
 				}
 			});

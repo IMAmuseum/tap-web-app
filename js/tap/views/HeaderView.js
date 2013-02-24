@@ -40,7 +40,12 @@ define([
         },
         navigateBack: function(e) {
             e.preventDefault();
-            window.history.back();
+
+            if (_.isNull(TapAPI.currentStop)) {
+                Backbone.history.navigate('', {trigger: true});
+            } else {
+                window.history.back();
+            }
         },
         displaySocialPopup: function(e) {
             e.preventDefault();

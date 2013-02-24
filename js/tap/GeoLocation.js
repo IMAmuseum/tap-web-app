@@ -107,7 +107,7 @@ define([
     GeoLocation.prototype.formatDistance = function(d) {
         if (d === undefined) return '';
 
-        if (TapAPI.config.units == 'si') {
+        if (TapAPI.units == 'si') {
             if (d < 100) {
                 return parseInt(d, 10) + ' m';
             } else if (d < 10000) {

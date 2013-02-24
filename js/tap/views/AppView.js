@@ -46,18 +46,16 @@ define([
             var browserLanguage = (navigator.language) ? navigator.language : navigator.userLanguage;
             TapAPI.language = browserLanguage.split('-')[0];
 
-            // initialize GA if trackerID is available
-            if (TapAPI.trackerID) {
-                window._gaq = window._gaq || [];
-                window._gaq.push(["_setAccount", TapAPI.trackerID]);
-                (function(d,t){
-                    var g = d.createElement(t),
-                        s = d.getElementsByTagName(t)[0];
-                    g.async = 1;
-                    g.src= ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js';
-                    s.parentNode.insertBefore(g, s);
-                }(document, 'script'));
-            }
+            // initialize GA
+            window._gaq = window._gaq || [];
+            window._gaq.push(["_setAccount", TapAPI.trackerID]);
+            (function(d,t){
+                var g = d.createElement(t),
+                    s = d.getElementsByTagName(t)[0];
+                g.async = 1;
+                g.src= ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js';
+                s.parentNode.insertBefore(g, s);
+            }(document, 'script'));
 
             // create new instance of tour collection
             TapAPI.tours = new TourCollection();
