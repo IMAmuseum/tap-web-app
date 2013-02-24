@@ -1,13 +1,16 @@
-<div class='tour-stop stop-group'>
-	<div class='description'><%= description %></div>
-	<ul id="stop-list" data-role="listview" data-inset="true">
-	<% _.each(stops, function(stop) { %>
-		<li>
-			<a href="#tour/<%= tourID %>/stop/<%= stop.id %>">
-                <img src="<%= stop.icon %>" class="ui-li-icon ui-li-thumb" />
-                <%= stop.title %>
-            </a>
-		</li>
-	<% }); %>
-	</ul>
+<% if (!_.isUndefined(header)) { %>
+<div id="header-wrapper">
+    <img src="<%= header %>" />
 </div>
+<% } %>
+<div class='description'><%= description %></div>
+<ul id="stop-list" data-role="listview" data-inset="true">
+<% _.each(stops, function(stop) { %>
+    <li>
+        <a href="#tour/<%= tourID %>/stop/<%= stop.id %>">
+            <img src="<%= stop.icon %>" class="ui-li-icon ui-li-thumb" />
+            <%= stop.title %>
+        </a>
+    </li>
+<% }); %>
+</ul>

@@ -162,6 +162,23 @@
     margin: 10px;
 }
 
+/* Stop Group */
+.ui-content.stop-group {
+    padding: 0;
+}
+
+#stop-group #header-wrapper img {
+    display: block;
+    width: 100%;
+}
+
+#stop-group .description {
+    margin: 20px;
+}
+
+#stop-group #stop-list {
+    margin: 20px;
+}
 
 /*** Audio Stops ***/
 #audio-stop {
