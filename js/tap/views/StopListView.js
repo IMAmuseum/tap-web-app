@@ -14,15 +14,31 @@ define([
 			this.title = 'Select a Stop';
 			this.activeToolbarButton = 'StopListView';
 
-			// retrieve all stops that have a code associated with it
-			this.stops = _.filter(TapAPI.tourStops.models, function(stop) {
-				return stop.get('propertySet').where({'name': 'code'}) !== undefined;
-			});
+			// apply filter
+			if (TapAPI.navigationControllers.StopListView.filterBy === 'stopGroup') {
+				// retrieve all stops that are stop groups
+				this.stops = _.filter(TapAPI.tourStops.models, function(stop) {
+					return stop.get('view') === 'stop_group';
+				});
+			} else {
+				// retrieve all stops that have a code associated with it
+				this.stops = _.filter(TapAPI.tourStops.models, function(stop) {
+					return stop.get('propertySet').where({'name': 'code'}) !== undefined;
+				});
+			}
 
-			// sort by their key code
-			this.stops = _.sortBy(this.stops, function(stop) {
-				return stop.get('propertySet').where({'name': 'code'});
-			});
+			// apply sorting
+			if (TapAPI.navigationControllers.StopListView.sortBy === 'title') {
+				// sort by title
+				this.stops = _.sortBy(this.stops, function(stop) {
+					return stop.get('title');
+				});
+			} else {
+				// sort by their key code
+				this.stops = _.sortBy(this.stops, function(stop) {
+					return stop.get('propertySet').where({'name': 'code'});
+				});
+			}
 
 			_.each(this.stops, function(stop) {
 				var stopConfig = TapAPI.viewRegistry[stop.get('view')];
