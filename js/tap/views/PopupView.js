@@ -7,9 +7,11 @@ define([
 ], function($, _, Backbone, TapAPI, TemplateManager) {
     var popupView = Backbone.View.extend({
         id: 'popup-view',
+        className: 'ui-corner-all',
         attributes: {
             'data-role': 'popup',
-            'data-theme': 'c'
+            'data-theme': 'a',
+            'data-overlay-theme': 'a'
         },
         template: TemplateManager.get('popup'),
         initialize: function() {
