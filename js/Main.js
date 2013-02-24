@@ -12,8 +12,7 @@ requirejs.config({
         'leaflet': 'vendor/leaflet/leaflet',
         'klass': 'vendor/klass',
         'photoswipe': 'vendor/photoswipe/code.photoswipe',
-        'mediaelement': 'vendor/mediaelement/mediaelement-and-player',
-        'twitter': 'http://platform.twitter.com/widgets'
+        'mediaelement': 'vendor/mediaelement/mediaelement-and-player'
     },
     shim: {
         'jquerymobile': {
@@ -31,9 +30,6 @@ requirejs.config({
         },
         'mediaelement': {
             exports: 'mediaelement'
-        },
-        'twitter' : {
-            exports: 'twitter'
         }
     }
 });

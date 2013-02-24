@@ -15,8 +15,8 @@
 }
 
 /* social popup */
-#social-popup {
-    min-width: 300px;
+.share-button {
+    margin-bottom: 10px;
 }
 
 /* Header */
