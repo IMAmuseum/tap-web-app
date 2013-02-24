@@ -23,7 +23,7 @@ define([
                 that.locationReceived(position);
             },
             that.locationError, {
-                enableHighAccuracy: tap.config.geolocation.enableHighAccuracy
+                enableHighAccuracy: true
             }
         );
     };

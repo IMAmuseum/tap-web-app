@@ -23,7 +23,11 @@ define([
         },
         render: function(view) {
             var title = view && !_.isEmpty(view.title) ? view.title : '';
-            this.$el.html(this.template({title: title}));
+
+            this.$el.html(this.template({
+                title: title,
+                displaySocialButton: TapAPI.social.enabled
+            }));
 
             // don't show the back button on the root
             if (Backbone.history.getFragment() === '') {

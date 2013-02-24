@@ -25,7 +25,7 @@ define([
 			});
 
 			_.each(this.stops, function(stop) {
-				var stopConfig = TapAPI.config.viewRegistry[stop.get('view')];
+				var stopConfig = TapAPI.viewRegistry[stop.get('view')];
 				if (stopConfig) {
 					stop.set('icon', stopConfig.icon);
 				}

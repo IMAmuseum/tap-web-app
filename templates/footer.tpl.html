@@ -1,12 +1,12 @@
 <div data-role="navbar" data-iconpos="top">
 	<ul>
-        <% _.each(controllers, function(controller) { %>
+        <% for(var view in controllers) { %>
 		<li>
-            <a href="#tour/<%= tourID %>/controller/<%= controller.view %>"
-            data-icon="<%= controller.view.toLowerCase() %>"
+            <a href="#tour/<%= tourID %>/controller/<%= view %>"
+            data-icon="<%= view.toLowerCase() %>"
             data-iconshadow="true"
-            class="<%= controller.view === activeToolbarButton ? 'ui-btn-active' : '' %>"><%= controller.label %></a>
+            class="<%= view === activeToolbarButton ? 'ui-btn-active' : '' %>"><%= controllers[view].label %></a>
         </li>
-        <% }); %>
+        <% }; %>
 	</ul>
 </div>
