@@ -16,6 +16,7 @@ define([
 			this.title = this.tour.get('title');
 
 			this.displayFooter = false;
+            this.displayBackButton = false;
 		},
 		render: function() {
             var defaultController;
