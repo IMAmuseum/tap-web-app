@@ -173,24 +173,24 @@ define([
             stop.on('change:distance', this.updateStopMarker, this);
         },
         updateStopMarker: function(stop) {
-            var formatted_distance;
+            var formattedDistance;
 
             if (stop.get('distance')) {
-                formatted_distance = this.geoLocation.formatDistance(stop.get('distance'));
+                formattedDistance = this.geoLocation.formatDistance(stop.get('distance'));
             }
-console.log(this.stopPopups[stop.id]);
-            this.stopPopups[stop.id].setContent(this.generateBubbleContent(stop), formatted_distance);
+
+            this.stopPopups[stop.id].setContent(this.generateBubbleContent(stop), formattedDistance);
 
             // Update the stop icon
-            var distance_label = $('.stop-icon.' + stop.id + ' .distance-label');
+            var distanceLabel = $('.stop-icon.' + stop.id + ' .distance-label');
 
-            if (distance_label.length === 0) {
-                template = TemplateManager.get('tour-map-distance-label');
+            if (distanceLabel.length === 0) {
+                template = TemplateManager.get('map-distance-label');
                 $('.stop-icon.' + stop.id).append(template({
-                    distance: formatted_distance
+                    distance: formattedDistance
                 }));
             } else {
-                distance_label.html(formatted_distance);
+                distanceLabel.html(formattedDistance);
             }
 
         },

@@ -7,7 +7,7 @@ define([
         tourAssets: {},
         tourStops: {},
         language: 'en',
-        currentStop: '',
+        currentStop: null,
         currentTour: '',
         templates: {},
         // User Configurable

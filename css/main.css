@@ -136,6 +136,21 @@
 	margin-top: -41px !important;
 }
 
+#tour-map .distance-label-container {
+    font-size: 12px;
+    margin-top: -20px;
+    width: 60px;
+    margin-left: -18px;
+    text-align: center;
+}
+
+#tour-map .distance-label {
+    background-color: #ccc;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+}
+
 /*** Tour Stops ***/
 
 .tour-stop .title {

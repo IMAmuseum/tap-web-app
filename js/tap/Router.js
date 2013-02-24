@@ -37,11 +37,15 @@ define([
          */
         tourDetails: function(tourID) {
             TapAPI.tours.selectTour(tourID);
+            TapAPI.currentStop = null;
+
             this.changePage(new TourDetailsView());
         },
         routeToController: function(tourID, view) {
             var that = this;
+
             TapAPI.tours.selectTour(tourID);
+            TapAPI.currentStop = null;
 
             var viewPath = 'tap/views/' + view;
             Require([viewPath], function(view) {
@@ -65,9 +69,7 @@ define([
             });
         },
         changePage: function(view) {
-            if (TapAPI.trackerID !== '') {
-                _gaq.push(['_trackPageview', '/#' + Backbone.history.getFragment()]);
-            }
+            _gaq.push(['_trackPageview', '/#' + Backbone.history.getFragment()]);
             Backbone.trigger('tap.router.routed', view);
             Backbone.trigger('app.widgets.refresh');
         }
