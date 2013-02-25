@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tourml:Tour xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tourml="http://tapintomuseums.org/TourML" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://tapintomuseums.org/TourML TourML.xsd" tourml:id="tour-1" tourml:lastModified="2013-02-24T20:07:45-05:00">
   <tourml:TourMetadata>
-    <tourml:Title xml:lang="en"><![CDATA[100 Acres: Art]]></tourml:Title>
+    <tourml:Title xml:lang="en"><![CDATA[100 Acres: The Virginia B. Fairbanks Art & Nature Park]]></tourml:Title>
     <tourml:Description xml:lang="en"><![CDATA[<p>Explore more about the art of 100 Acres: The Virginia B. Fairbanks Art &amp; Nature Park.</p>
 ]]></tourml:Description>
     <tourml:AppResource tourml:id="asset-image-49" tourml:usage="image"/>
