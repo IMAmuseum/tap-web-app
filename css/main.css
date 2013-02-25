@@ -128,14 +128,6 @@
     z-index: 999 !important;
 }
 
-#tour-map .stop-icon {
-	background-image: url('../images/marker.png') !important;
-	width: 25px !important;
-	height: 41px !important;
-	margin-left: -12px !important;
-	margin-top: -41px !important;
-}
-
 #tour-map .distance-label-container {
     font-size: 12px;
     margin-top: -20px;
