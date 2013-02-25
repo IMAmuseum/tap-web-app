@@ -4,6 +4,7 @@
     <tourml:Title xml:lang="en"><![CDATA[100 Acres: Art]]></tourml:Title>
     <tourml:Description xml:lang="en"><![CDATA[<p>Explore more about the art of 100 Acres: The Virginia B. Fairbanks Art &amp; Nature Park.</p>
 ]]></tourml:Description>
+    <tourml:AppResource tourml:id="asset-image-49" tourml:usage="image"/>
     <tourml:AppResource tourml:id="asset-geo-1-0" tourml:usage="geo"/>
     <tourml:PropertySet>
       <tourml:Property tourml:name="initial_map_zoom">16</tourml:Property>
@@ -203,6 +204,14 @@
     <tourml:AssetRef tourml:id="asset-geo-34-0" tourml:usage="geo"/>
     <tourml:AssetRef tourml:id="asset-header_image-46" tourml:usage="header_image"/>
   </tourml:Stop>
+  <tourml:Asset tourml:id="asset-image-49" tourml:type="image">
+    <tourml:Source tourml:format="image/jpeg" tourml:lastModified="2013-02-25T12:01:12-05:00" xml:lang="en" tourml:uri="http://imamuseum.org/tap-tours/sites/default/files/main_0.jpg">
+      <tourml:PropertySet>
+        <tourml:Property tourml:name="width">300</tourml:Property>
+        <tourml:Property tourml:name="height">100</tourml:Property>
+      </tourml:PropertySet>
+    </tourml:Source>
+  </tourml:Asset>
   <tourml:Asset tourml:id="asset-geo-1-0" tourml:type="geo">
     <tourml:Content>
       <tourml:Data><![CDATA[{"type":"Point","coordinates":[-86.1892,39.8273]}]]></tourml:Data>

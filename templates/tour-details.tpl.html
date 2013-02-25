@@ -1,2 +1,8 @@
+<% if (!_.isUndefined(header)) { %>
+<div id="header-wrapper">
+    <img src="<%= header %>" />
+</div>
+<% } %>
+<h3 class="tour-title"><%= title %></h3>
 <p><%= description %></p>
 <a href="#tour/<%= tourID %>/controller/<%= defaultStopSelectionView %>" id="start-tour" data-role="button" data-theme="b">Start Tour</a>

@@ -11,7 +11,6 @@ define([
         template: TemplateManager.get('stop-group'),
         initialize: function() {
             this._super('initialize');
-            this.title = this.model.get('title');
         },
         render: function() {
             var stops = [],
@@ -36,6 +35,7 @@ define([
 
             this.$el.html(this.template({
                 header: header,
+                title: this.model.get('title'),
                 tourID: TapAPI.currentTour,
                 description: _.isEmpty(description) ? '' : description,
                 stops: stops
