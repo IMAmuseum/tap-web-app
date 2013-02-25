@@ -14,7 +14,6 @@ define([
         template: TemplateManager.get('image-stop'),
         initialize: function() {
             this._super('initialize');
-            this.title = this.model.get('title');
         },
         render: function() {
             var assetRefs = this.model.get('assetRef');
@@ -41,7 +40,10 @@ define([
                 }
             });
 
-            this.$el.html(this.template({images: images}));
+            this.$el.html(this.template({
+                title: this.model.get('title'),
+                images: images
+            }));
 
             this.gallery = this.$el.find('a').photoSwipe({
                 enableMouseWheel: false,

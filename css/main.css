@@ -8,6 +8,12 @@
 .ui-page-footer-fixed {
     padding-bottom: 49px;
 }
+#content-wrapper {
+    margin-top: -1px;
+}
+#content-wrapper h3.stop-title {
+    margin-top: 0;
+}
 
 /* popup */
 #popup-view p {
@@ -53,6 +59,12 @@
 .ui-icon-mapview {
     background: url(../images/map-white.png) 0 0 no-repeat;
     background-size: 26px 26px;
+}
+
+/* Tour Details */
+#tour-details #header-wrapper img {
+    display: block;
+    width: 100%;
 }
 
 /* Keypad */
@@ -148,7 +160,7 @@
     text-align: center;
 }
 
-/*** Tour Stops ***/
+/* Tour Stops */
 
 .tour-stop .title {
     font-size: 120%;
@@ -169,6 +181,10 @@
     width: 100%;
 }
 
+#stop-group h3.stop-title {
+    margin: 15px 20px 0 20px;
+}
+
 #stop-group .description {
     margin: 20px;
 }
@@ -186,13 +202,13 @@
     height: 100%;
     width: 100%;
 }
-/*** Audio Stops ***/
+/* Audio Stops */
 
 #audio-stop .poster-image {
     width: 100%;
 }
 
-/*** Video Stops ***/
+/* Video Stops */
 #video-stop .player {
     max-width: 100%;
 }
@@ -223,4 +239,5 @@
 /* Web stop */
 #web-stop img {
     width: 100%;
+    padding: 10px 0;
 }
