@@ -19,11 +19,19 @@ define([
         },
         render: function(view) {
             if (!_.isUndefined(TapAPI.currentTour) && view.displayFooter) {
+                var controllers;
+                if (!_.isUndefined(TapAPI.tourSettings[TapAPI.currentTour]) &&
+                    TapAPI.tourSettings[TapAPI.currentTour].enabledNavigationControllers) {
+                    controllers = _.pick(TapAPI.navigationControllers, TapAPI.tourSettings[TapAPI.currentTour].enabledNavigationControllers);
+                } else {
+                    controllers = TapAPI.navigationControllers;
+                }
+
                 this.$el.show();
                 this.$el.html(this.template({
                     activeToolbarButton: view.activeToolbarButton,
                     tourID: TapAPI.currentTour,
-                    controllers: TapAPI.navigationControllers
+                    controllers: controllers
                 }));
             } else {
                 this.$el.hide();

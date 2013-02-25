@@ -19,10 +19,17 @@ define([
             this.displayBackButton = false;
 		},
 		render: function() {
-            var defaultController;
-            for (var controller in TapAPI.navigationControllers) {
-                if (_.has(TapAPI.navigationControllers[controller], 'defaultView') &&
-                    TapAPI.navigationControllers[controller].defaultView) {
+            var defaultController, controller;
+
+            // get tour specific default navigation controller
+            if (!_.isUndefined(TapAPI.tourSettings[TapAPI.currentTour]) &&
+                TapAPI.tourSettings[TapAPI.currentTour].defaultNavigationController) {
+                defaultController = TapAPI.tourSettings[TapAPI.currentTour].defaultNavigationController;
+            }
+
+            // get first controller if none were selected as a default
+            if (_.isUndefined(defaultController)) {
+                for (controller in TapAPI.navigationControllers) {
                     defaultController = controller;
                     break;
                 }
