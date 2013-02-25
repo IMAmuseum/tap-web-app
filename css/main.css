@@ -151,6 +151,11 @@
     border-radius: 3px;
 }
 
+.marker-bubble-content .stop-options {
+    margin-top: 5px;
+    text-align: center;
+}
+
 /*** Tour Stops ***/
 
 .tour-stop .title {
