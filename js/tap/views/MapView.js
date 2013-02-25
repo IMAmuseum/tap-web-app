@@ -123,15 +123,26 @@ define([
                     formattedDistance = this.geoLocation.formatDistance(stop.get('distance'));
                 }
             }
-
+            if (TapAPI.navigationControllers.StopListView.filterBy === 'stopGroup') {
+                // retrieve all stops that are stop groups
+                this.stops = _.filter(TapAPI.tourStops.models, function(stop) {
+                    return stop.get('view') === 'stop_group';
+                });
+            } else {
+                // retrieve all stops that have a code associated with it
+                this.stops = _.filter(TapAPI.tourStops.models, function(stop) {
+                    return stop.get('propertySet').where({'name': 'code'}) !== undefined;
+                });
+            }
             var template = TemplateManager.get('map-marker-bubble');
             return template({
-                'title': stop.get('title'),
-                'tourID': stop.get('tour'),
-                'stopID': stop.get('id'),
-                'distance': (formattedDistance === undefined) ? '' : 'Distance: ' + formattedDistance,
-                'stopLat': stop.get('location').lat,
-                'stopLong': stop.get('location').lng
+                title: stop.get('title'),
+                tourID: stop.get('tour'),
+                stopID: stop.get('id'),
+                distance: (formattedDistance === undefined) ? '' : 'Distance: ' + formattedDistance,
+                stopLat: stop.get('location').lat,
+                stopLong: stop.get('location').lng,
+                showDirections: TapAPI.navigationControllers.MapView.showDirections
             });
         },
         // Plot a single tour stop marker on the map
@@ -180,19 +191,6 @@ define([
             }
 
             this.stopPopups[stop.id].setContent(this.generateBubbleContent(stop), formattedDistance);
-
-            // Update the stop icon
-            var distanceLabel = $('.stop-icon.' + stop.id + ' .distance-label');
-
-            if (distanceLabel.length === 0) {
-                template = TemplateManager.get('map-distance-label');
-                $('.stop-icon.' + stop.id).append(template({
-                    distance: formattedDistance
-                }));
-            } else {
-                distanceLabel.html(formattedDistance);
-            }
-
         },
         // When a marker is selected, show the popup
         // Assumes that the context is set to (MapView)
@@ -204,7 +202,6 @@ define([
             $('.marker-bubble-content .directions a').on('click', function() {
                 _gaq.push(['_trackEvent', 'Map', 'get_directions', e.target.stop_id]);
             });
-
         },
         onLocationFound: function(position) {
             var latlong = new L.LatLng(position.coords.latitude, position.coords.longitude);
@@ -222,7 +219,6 @@ define([
                 this.positionMarker.addEventListener('click', function() {
                     _gaq.push(['_trackEvent', 'Map', 'you_are_here_clicked']);
                 });
-
             } else {
                 this.positionMarker.setLatLng(latlong);
             }

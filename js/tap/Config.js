@@ -2,6 +2,7 @@ define([], function() {
     return {
         tourMLEndpoint: '../../tour.xml',
         trackerID: '',
+        geo: {},
         social: {},
         tourSettings: {
             'tour-1': {
@@ -9,7 +10,7 @@ define([], function() {
                 'enabledNavigationControllers': ['StopListView', 'MapView']
             }
         },
-        navigationControllers: [],
+        navigationControllers: {},
         viewRegistry: {}
     };
 });
