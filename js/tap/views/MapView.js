@@ -24,7 +24,6 @@ define([
                 'initialZoom': 2
             };
             this.stopMarkers = {};
-            this.stopIcons = {};
             this.stopPopups = {};
             this.positionMarker = null;
 
@@ -148,7 +147,9 @@ define([
             var data = $.parseJSON(content.at(0).get('data'));
 
             if (data.type == 'Point') {
-                var stopIcon = L.divIcon({
+                var stopIcon = L.icon({
+                    iconUrl: 'images/marker-icon.png',
+                    shadowUrl: 'images/marker-shadow.png',
                     className: 'stop-icon ' + stop.id
                 });
 
@@ -163,7 +164,6 @@ define([
                 marker.stop_id = stop.id;
                 marker.addEventListener('click', this.onMarkerSelected, this);
 
-                this.stopIcons[stop.id] = stopIcon;
                 this.stopMarkers[stop.id] = marker;
                 this.map.addLayer(marker);
 
@@ -210,7 +210,12 @@ define([
             var latlong = new L.LatLng(position.coords.latitude, position.coords.longitude);
 
             if (this.positionMarker === null) {
-                this.positionMarker = new L.Marker(latlong)
+                var stopIcon = L.icon({
+                    iconUrl: 'images/marker-person.png',
+                    shadowUrl: 'images/marker-shadow.png',
+                    className: 'stop-icon ' + stop.id
+                });
+                this.positionMarker = new L.Marker(latlong, {icon: stopIcon})
                     .bindPopup('You are here');
                 this.map.addLayer(this.positionMarker);
 
