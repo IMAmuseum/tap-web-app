@@ -29,6 +29,7 @@ requirejs.config({
             exports: 'photoswipe'
         },
         'mediaelement': {
+            deps: ['jquery'],
             exports: 'mediaelement'
         }
     }
