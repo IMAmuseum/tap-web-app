@@ -16,8 +16,8 @@ define([
 
 			this.title = this.model.get('title');
 			this.mediaOptions = {
-				defaultVideoWidth: '100%',
-				defaultVideoHeight: '100%',
+				defaultVideoWidth: '220',
+				defaultVideoHeight: '200',
 				flashName: mejs.MediaElementDefaults.flashName,
 				silverlightName: mejs.MediaElementDefaults.flashName
 			};
@@ -41,7 +41,6 @@ define([
 			}
 
 			mediaAsset = this.model.getAssetsByType("video");
-
 			if (_.isEmpty(mediaAsset)) {
 				console.log('No media found.');
 				return this;
