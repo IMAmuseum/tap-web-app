@@ -7,11 +7,13 @@
                 <span class="ui-btn-text">View Stop</span>
             </span>
         </a>
+        <% if (showDirections) { %>
         <a href="http://maps.google.com/maps?saddr=Current%20Location&daddr=<%= stopLat %>,<%= stopLong %>"
             class="ui-btn ui-shadow ui-btn-corner-all ui-mini ui-btn-inline ui-btn-up-c">
             <span class="ui-btn-inner">
                 <span class="ui-btn-text">Directions</span>
             </span>
         </a>
+        <% } %>
 	</div>
 </div>

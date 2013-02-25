@@ -21,7 +21,8 @@ define([
                 sortBy: 'title'
             },
             'KeypadView': {
-                label: 'Keypad'
+                label: 'Keypad',
+                showDirections: false
             },
             'MapView': {
                 label: 'Map'
@@ -49,6 +50,9 @@ define([
                 view: 'WebView',
                 icon: 'images/web.png'
             }
+        },
+        geo: {
+            units: 'metric'
         },
         social: {
             enabled: false,
