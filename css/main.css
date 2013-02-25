@@ -179,6 +179,7 @@
 #stop-group #header-wrapper img {
     display: block;
     width: 100%;
+    height: auto;
 }
 
 #stop-group h3.stop-title {
@@ -239,5 +240,6 @@
 /* Web stop */
 #web-stop img {
     width: 100%;
+    height: auto;
     padding: 10px 0;
 }
