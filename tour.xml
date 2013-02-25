@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tourml:Tour xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tourml="http://tapintomuseums.org/TourML" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://tapintomuseums.org/TourML TourML.xsd" tourml:id="tour-1" tourml:lastModified="2013-02-23T23:18:50-05:00">
+<tourml:Tour xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tourml="http://tapintomuseums.org/TourML" xmlns:gml="http://www.opengis.net/gml" xsi:schemaLocation="http://tapintomuseums.org/TourML TourML.xsd" tourml:id="tour-1" tourml:lastModified="2013-02-24T20:07:45-05:00">
   <tourml:TourMetadata>
     <tourml:Title xml:lang="en"><![CDATA[100 Acres: Art]]></tourml:Title>
     <tourml:Description xml:lang="en"><![CDATA[<p>Explore more about the art of 100 Acres: The Virginia B. Fairbanks Art &amp; Nature Park.</p>
@@ -503,7 +503,7 @@
   </tourml:Asset>
   <tourml:Asset tourml:id="asset-web_content-33-0" tourml:type="web_content">
     <tourml:Content>
-      <tourml:Data><![CDATA[<p>&nbsp;</p><div>How does the water you use enter the system? Follow a raindrop from your location in a drainage basin as it flows to the river.</div><div>&nbsp;</div><div>Track your water by visiting <span style="line-height: 1.538em;">http://www.TrackARaindrop.org</span></div>]]></tourml:Data>
+      <tourml:Data><![CDATA[<p><span style="line-height: 1.538em;">How does the water you use enter the system? Follow a raindrop from your location in a drainage basin as it flows to the river.</span></p><div>Track your water by visiting <span style="line-height: 1.538em;">http://www.TrackARaindrop.org</span></div>]]></tourml:Data>
     </tourml:Content>
   </tourml:Asset>
   <tourml:Asset tourml:id="asset-header_image-10" tourml:type="header_image">
