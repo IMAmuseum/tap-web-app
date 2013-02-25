@@ -490,7 +490,7 @@ mejs.PluginMediaElement.prototype = {
 			} else {
 				this.pluginApi.loadMedia();
 			}
-			
+
 			this.paused = false;
 		}
 	},
@@ -500,9 +500,8 @@ mejs.PluginMediaElement.prototype = {
 				this.pluginApi.pauseVideo();
 			} else {
 				this.pluginApi.pauseMedia();
-			}			
-			
-			
+			}
+
 			this.paused = true;
 		}
 	},
@@ -512,7 +511,7 @@ mejs.PluginMediaElement.prototype = {
 				this.pluginApi.stopVideo();
 			} else {
 				this.pluginApi.stopMedia();
-			}	
+			}
 			this.paused = true;
 		}
 	},
@@ -540,19 +539,17 @@ mejs.PluginMediaElement.prototype = {
 
 		return false;
 	},
-	
+
 	positionFullscreenButton: function(x,y,visibleAndAbove) {
 		if (this.pluginApi != null && this.pluginApi.positionFullscreenButton) {
 			this.pluginApi.positionFullscreenButton(x,y,visibleAndAbove);
 		}
 	},
-	
 	hideFullscreenButton: function() {
 		if (this.pluginApi != null && this.pluginApi.hideFullscreenButton) {
 			this.pluginApi.hideFullscreenButton();
-		}		
-	},	
-	
+		}
+	},
 
 	// custom methods since not all JavaScript implementations support get/set
 
@@ -582,10 +579,8 @@ mejs.PluginMediaElement.prototype = {
 				this.pluginApi.seekTo(time);
 			} else {
 				this.pluginApi.setCurrentTime(time);
-			}				
-			
-			
-			
+			}
+
 			this.currentTime = time;
 		}
 	},
@@ -619,8 +614,9 @@ mejs.PluginMediaElement.prototype = {
 
 	// additional non-HTML5 methods
 	setVideoSize: function (width, height) {
+
 		//if (this.pluginType == 'flash' || this.pluginType == 'silverlight') {
-			if ( this.pluginElement.style) {
+			if (this.pluginElement !== null && this.pluginElement.style) {
 				this.pluginElement.style.width = width + 'px';
 				this.pluginElement.style.height = height + 'px';
 			}
@@ -1515,7 +1511,7 @@ mejs.YouTubeApi = {
 			pluginMediaElement = settings.pluginMediaElement;
 		
 		// hook up and return to MediaELementPlayer.success	
-
+alert('test');
 		pluginMediaElement.pluginApi = 
 		pluginMediaElement.pluginElement = player;
 		mejs.MediaPluginBridge.initPlugin(id);
@@ -2579,7 +2575,7 @@ if (typeof jQuery != 'undefined') {
 					t.container.find('object, embed, iframe')
 						.width('100%')
 						.height('100%');
-						
+
 					// if shim is ready, send the size to the embeded plugin	
 					if (t.isVideo) {
 						if (t.media.setVideoSize) {
