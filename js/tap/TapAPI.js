@@ -15,14 +15,13 @@ define([
         tourMLEndpoint: _.isUndefined(Config.tourMLEndpoint) ? '' : Config.tourMLEndpoint,
         trackerID: _.isUndefined(Config.trackerID) ? '' : Config.trackerID,
         navigationControllers: {
-            'KeypadView': {
-                label: 'Keypad',
-                defaultView: true
-            },
             'StopListView': {
                 label: 'Stop List',
                 filterBy: 'stopGroup',
                 sortBy: 'title'
+            },
+            'KeypadView': {
+                label: 'Keypad'
             },
             'MapView': {
                 label: 'Map'

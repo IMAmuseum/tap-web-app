@@ -503,7 +503,9 @@
   </tourml:Asset>
   <tourml:Asset tourml:id="asset-web_content-33-0" tourml:type="web_content">
     <tourml:Content>
-      <tourml:Data><![CDATA[<p><span style="line-height: 1.538em;">How does the water you use enter the system? Follow a raindrop from your location in a drainage basin as it flows to the river.</span></p><div>Track your water by visiting <span style="line-height: 1.538em;">http://www.TrackARaindrop.org</span></div>]]></tourml:Data>
+      <tourml:Data><![CDATA[ <p><span style="line-height: 1.538em;">How does the water you use enter the system? Follow a raindrop from your location in a drainage basin as it flows to the river.</span></p>
+<div>Track your water by visiting <span style="line-height: 1.538em;"><a href="http://www.TrackARaindrop.org">http://www.TrackARaindrop.org</a></span></div>
+ ]]></tourml:Data>
     </tourml:Content>
   </tourml:Asset>
   <tourml:Asset tourml:id="asset-header_image-10" tourml:type="header_image">
@@ -570,7 +572,11 @@
   </tourml:Asset>
   <tourml:Asset tourml:id="asset-web_content-14-0" tourml:type="web_content">
     <tourml:Content>
-      <tourml:Data><![CDATA[<p><span style="line-height: 1.538em;">The Visitors Pavilion is a LEED certified structure, with careful attention paid to environmental sensitivity and energy efficiency throughout the design and construction process.&nbsp;</span></p><div>Water saving fixtures fed by on-site well water are used in the restrooms, energy efficient lighting is installed throughout the building, and a geothermal system provides heating and cooling.</div><div>&nbsp;</div><div>[[{"type":"media","view_mode":"media_original","fid":"15","attributes":{"alt":"","class":"media-image","height":"405","style":"line-height: 1.538em;","typeof":"foaf:Image","width":"540"}}]]</div>]]></tourml:Data>
+      <tourml:Data><![CDATA[ <p><span style="line-height: 1.538em;">The Visitors Pavilion is a LEED certified structure, with careful attention paid to environmental sensitivity and energy efficiency throughout the design and construction process. </span></p>
+<div>Water saving fixtures fed by on-site well water are used in the restrooms, energy efficient lighting is installed throughout the building, and a geothermal system provides heating and cooling.</div>
+<div> </div>
+<div><img alt="" class="media-image" height="405" style="line-height: 1.538em;" width="540" typeof="foaf:Image" src="http://imamuseum.org/tap-tours/sites/default/files/exterior3finalcrop5x7.jpg" /></div>
+ ]]></tourml:Data>
     </tourml:Content>
   </tourml:Asset>
   <tourml:Asset tourml:id="asset-header_image-12" tourml:type="header_image">
@@ -595,7 +601,8 @@
   </tourml:Asset>
   <tourml:Asset tourml:id="asset-web_content-32-0" tourml:type="web_content">
     <tourml:Content>
-      <tourml:Data><![CDATA[<p>Each summer the Island will be occupied by one or two residents, who are also students from Herron School of Art &amp; Design in Indianapolis. This year&#39;s students are Michael Runge and Jessica Dunn. They will collaborate with Zittel by adapting and modifying the island&rsquo;s structure according to their individual needs. The project, Give &amp; Take, blends elements of environmental art, sculpture, design and performance in a unique way, offering a challenging and experimental forum for exploring ideas about individualism and self-sufficiency, which have long-standing connections to the history of modernism.</p>]]></tourml:Data>
+      <tourml:Data><![CDATA[<p>Each summer the Island will be occupied by one or two residents, who are also students from Herron School of Art &amp; Design in Indianapolis. This year's students are Michael Runge and Jessica Dunn. They will collaborate with Zittel by adapting and modifying the island’s structure according to their individual needs. The project, Give &amp; Take, blends elements of environmental art, sculpture, design and performance in a unique way, offering a challenging and experimental forum for exploring ideas about individualism and self-sufficiency, which have long-standing connections to the history of modernism.</p>
+]]></tourml:Data>
     </tourml:Content>
   </tourml:Asset>
   <tourml:Asset tourml:id="asset-geo-34-0" tourml:type="geo">
