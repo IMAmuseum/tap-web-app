@@ -1,4 +1,5 @@
 module.exports = function(grunt) {
+	var precompileTemplates;
 
 	// Project configuration.
 	grunt.initConfig({
@@ -69,16 +70,6 @@ module.exports = function(grunt) {
 				dest: 'dist/Tap-<%= meta.version %>.css'
 			}
 		},
-		min: {
-			dist: {
-				src: ['<banner:meta.banner>', '<config:concat.dist.dest>'],
-				dest: 'dist/Tap-<%= meta.version %>.min.js'
-			},
-			dependencies: {
-				src: ['<banner:meta.banner>', '<config:concat.dependencies.dest>'],
-				dest: 'dist/Tap-<%= meta.version %>-dependencies.min.js'
-			}
-		},
 		cssmin: {
 			dist: {
 				src: ['<banner:meta.banner>', '<config:concat.css.dest>'],
@@ -91,7 +82,7 @@ module.exports = function(grunt) {
 		},
 		precompileTemplates: {
 			dist : {
-				src: ['js/backbone/templates/*.tpl.html'],
+				src: ['templates/*.tpl.html'],
 				dest: 'js/backbone/templates/CompiledTemplates.js'
 			}
 		},
@@ -113,53 +104,66 @@ module.exports = function(grunt) {
 				jQuery: true
 			}
 		},
-		uglify: {}
+		uglify: {
+			dist: {
+				src: ['<banner:meta.banner>', '<config:concat.dist.dest>'],
+				dest: 'dist/Tap-<%= meta.version %>.min.js'
+			},
+			dependencies: {
+				src: ['<banner:meta.banner>', '<config:concat.dependencies.dest>'],
+				dest: 'dist/Tap-<%= meta.version %>-dependencies.min.js'
+			}
+		},
+		requirejs: {
+			compile: {
+				options: {
+					baseUrl: "./",
+					mainConfigFile: "js/Main.js",
+					out: ""
+				}
+			}
+		}
 	});
+
+	// load tasks
+	grunt.loadNpmTasks('grunt-contrib-concat');
+	grunt.loadNpmTasks('grunt-contrib-jshint');
+	grunt.loadNpmTasks('grunt-contrib-uglify');
+	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-contrib-requirejs');
+	grunt.loadNpmTasks('grunt-css');
 
 	//MultiTask for Compiling Underscore templates into a single file
 	grunt.registerMultiTask('precompileTemplates', 'Precompile Underscore templates', function() {
-		var files = grunt.file.expandFiles(this.file.src);
+		this.files.forEach(function(f) {
+			var src = f.src.filter(function(filepath) {
+				// Warn on and remove invalid source files (if nonull was set).
+				if (!grunt.file.exists(filepath)) {
+					grunt.log.warn('Source file "' + filepath + '" not found.');
+					return false;
+				} else {
+					return true;
+				}
+			}).map(function(filepath) {
+				// Read file source.
+				var src = grunt.file.read(filepath);
+				// Process files as templates if requested.
+				src = grunt.util._.template(src).source;
 
-		var src = grunt.helper('precompileTemplates', files);
-		grunt.file.write(this.file.dest, src);
+				var fileParts = filepath.split("\/");
+				var fileName = fileParts[fileParts.length - 1];
 
-		if (this.errorCount) { return false; }
+				return "TapAPI.templates['" + fileName.substr(0,fileName.indexOf('.tpl.html')) + "'] = " + src;
+			}).join(grunt.util.normalizelf(";\n\n"));
 
-		grunt.log.writeln('File "' + this.file.dest + '" created.');
+			// Write the destination file.
+			grunt.file.write(f.dest, src);
+
+			// Print a success message.
+			grunt.log.writeln('File "' + f.dest + '" created.');
+		});
 	});
-
-	// Helper for compiling Underscore templates
-	grunt.registerHelper('precompileTemplates', function(files) {
-		var output = '// TapAPI Namespace Initialization //\n' +
-			'if (typeof TapAPI === "undefined"){TapAPI = {};}\n' +
-			'if (typeof TapAPI.templates === "undefined"){TapAPI.templates = {};}\n' +
-			'// TapAPI Namespace Initialization //\n';
-
-		if (files) {
-			output += files.map(function(filepath) {
-				var templateHtml = grunt.task.directive(filepath, grunt.file.read),
-					templateSrc = grunt.utils._.template(templateHtml).source,
-					fileParts = filepath.split("\/"),
-					fileName = fileParts[fileParts.length - 1];
-
-				grunt.log.writeln('template:');
-				grunt.log.write(templateHtml);
-				grunt.log.writeln('templated:');
-				//grunt.log.write(grunt.utils._.template(templateHtml));
-				grunt.log.writeln('source:');
-				grunt.log.write(templateSrc);
-
-				return "TapAPI.templates['" + fileName.substr(0,fileName.indexOf('.tpl.html')) + "'] = " + templateSrc;
-			}).join('\n');
-		}
-
-		return output;
-	});
-
-	//grunt.loadNpmTasks('/usr/local/lib/node_modules/grunt/node_modules/grunt-css');
-	grunt.loadNpmTasks('/usr/local/lib/node_modules/grunt-css');
 
 	// Default task.
-	grunt.registerTask('default', 'precompileTemplates concat min cssmin');
-
+	grunt.registerTask('default', ['precompileTemplates', 'jshint', 'concat', 'uglify', 'cssmin']);
 };
