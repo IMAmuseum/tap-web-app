@@ -51,6 +51,9 @@ define([
                 icon: 'images/web.png'
             }
         },
+        media: {
+            pluginPath: 'vendor/mediaelement/'
+        },
         geo: {
             units: 'metric'
         },
@@ -61,6 +64,11 @@ define([
             }
         }
     };
+
+    // attempt to get user defined media configurations
+    if (!_.isUndefined(Config.media)) {
+        _.extend(TapAPI.media, Config.media);
+    }
 
     // attempt to get user defined social configurations
     if (!_.isUndefined(Config.social)) {

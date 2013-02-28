@@ -91,8 +91,9 @@ define([
             that.player = new MediaElementPlayer('.player', {
                 defaultVideoWidth: '220',
                 defaultVideoHeight: '200',
-                flashName: mejs.MediaElementDefaults.flashName,
-                silverlightName: mejs.MediaElementDefaults.flashName,
+                pluginPath: TapAPI.media.pluginPath,
+                flashName: 'flashmediaelement.swf',
+                silverlightName: 'silverlightmediaelement.xap',
                 success: function (mediaElement, domObject, elems) {
                     if (mediaElement.pluginType === 'youtube') {
                         $(elems.container).find('.mejs-poster').hide();

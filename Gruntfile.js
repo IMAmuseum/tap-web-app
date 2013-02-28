@@ -23,8 +23,7 @@ module.exports = function(grunt) {
             main: {
                 files: [
                     {src: ['vendor/**'], dest: 'dist/'},
-                    {src: ['images/**'], dest: 'dist/'},
-                    {src: ['Config.js'], dest: 'dist/Config.js'}
+                    {src: ['images/**'], dest: 'dist/'}
                 ]
             }
         },
@@ -53,7 +52,7 @@ module.exports = function(grunt) {
             compile: {
                 options: {
                     mainConfigFile: 'js/Main.js',
-                    optimize: 'none',
+                    optimize: 'uglify',
                     skipDirOptimize: true,
                     optimizeCss: 'none',
                     name: 'main',
@@ -72,7 +71,10 @@ module.exports = function(grunt) {
                         'tap/views/WebView',
                         '../templates/CompiledTemplates'
                     ],
-                    out: 'dist/js/tap/Main.js'
+                    out: 'dist/js/tap/Main.js',
+                    wrap: {
+                        start: '<%= meta.banner %>'
+                    }
                 }
             }
         },

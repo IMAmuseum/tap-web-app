@@ -2,6 +2,9 @@ define([], function() {
     return {
         tourMLEndpoint: '../../tour.xml',
         trackerID: '',
+        media: {
+            pluginPath: 'dist/vendor/mediaelement/'
+        },
         geo: {},
         social: {},
         tourSettings: {
