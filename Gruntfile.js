@@ -19,6 +19,15 @@ module.exports = function(grunt) {
                 dest: 'templates/CompiledTemplates.js'
             }
         },
+        copy: {
+            main: {
+                files: [
+                    {src: ['vendor/**'], dest: 'dist/'},
+                    {src: ['images/**'], dest: 'dist/'},
+                    {src: ['Config.js'], dest: 'dist/Config.js'}
+                ]
+            }
+        },
         jshint: {
             options: {
                 curly: true,
@@ -44,12 +53,13 @@ module.exports = function(grunt) {
             compile: {
                 options: {
                     mainConfigFile: 'js/Main.js',
-                    dir: 'dist/',
-                    optimize: 'uglify',
+                    optimize: 'none',
                     skipDirOptimize: true,
                     optimizeCss: 'none',
-                    removeCombined: false,
                     name: 'main',
+                    excludeShallow: [
+                        'Config'
+                    ],
                     include: [
                         'tap/views/AudioStopView',
                         'tap/views/ImageStopView',
@@ -62,64 +72,7 @@ module.exports = function(grunt) {
                         'tap/views/WebView',
                         '../templates/CompiledTemplates'
                     ],
-                    exclude: [
-                        'jquery',
-                        'jquerymobile',
-                        'json2',
-                        'underscore',
-                        'backbone',
-                        'localStorage',
-                        'backbone-super',
-                        'mediaelement',
-                        'leaflet',
-                        'klass',
-                        'photoswipe',
-                        'jqm-config',
-                        'tap/Config'
-                    ]
-                }
-            }
-        },
-        concat: {
-            options: {
-                stripBanners: true,
-                banner: '<%= meta.banner %>'
-            },
-            dependencies: {
-                src: [
-                    'js/vendor/jquery.js',
-                    'js/tap/JQMConfig.js',
-                    'js/vendor/jqmobile/jquery.mobile.js',
-                    'js/vendor/json2.js',
-                    'js/vendor/underscore.js',
-                    'js/vendor/backbone.js',
-                    'js/vendor/backbone.localStorage.js',
-                    'js/vendor/backbone-super.js',
-                    'js/vendor/leaflet/leaflet.js',
-                    'js/vendor/klass.js',
-                    'js/vendor/photoswipe/code.photoswipe.jquery.js',
-                    'js/vendor/mediaelement/mediaelement-and-player.js'
-                ],
-                dest: 'dist/Tap-<%= meta.version %>-dependencies.js'
-            },
-            css: {
-                src: [
-                    'js/vendor/jqmobile/jquery.mobile.css',
-                    'js/vendor/leaflet/leaflet.css',
-                    'js/vendor/mediaelement/mediaelementplayer.css',
-                    'js/vendor/photoswipe/photoswipe.css',
-                    'css/main.css'
-                ],
-                dest: 'dist/Tap-<%= meta.version %>.css'
-            }
-        },
-        uglify: {
-            options: {
-                banner: '<%= meta.banner %>'
-            },
-            dependencies: {
-                files: {
-                    'dist/Tap-<%= meta.version %>-dependencies.min.js': ['<%= concat.dependencies.dest %>']
+                    out: 'dist/js/tap/Main.js'
                 }
             }
         },
@@ -128,18 +81,11 @@ module.exports = function(grunt) {
                 banner: '<%= meta.banner %>'
             },
             dist: {
-                src: ['<%= concat.css.dest %>'],
-                dest: 'dist/Tap-<%= meta.version %>.min.css'
+                src: ['css/main.css'],
+                dest: 'dist/css/Tap-<%= meta.version %>.min.css'
             }
         }
     });
-
-    // load tasks
-    grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-requirejs');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-css');
 
     //MultiTask for Compiling Underscore templates into a single file
     grunt.registerMultiTask('precompileTemplates', 'Precompile Underscore templates', function() {
@@ -164,14 +110,25 @@ module.exports = function(grunt) {
                 return "TapAPI.templates['" + fileName.substr(0,fileName.indexOf('.tpl.html')) + "'] = " + src;
             }).join(grunt.util.normalizelf(";\n\n"));
 
+            // wrap the templates inside of a module
+            var templateDoc = 'define(["tap/TapAPI"], function (TapAPI) {';
+                templateDoc += src;
+                templateDoc += '});';
+
             // Write the destination file.
-            grunt.file.write(f.dest, src);
+            grunt.file.write(f.dest, templateDoc);
 
             // Print a success message.
             grunt.log.writeln('File "' + f.dest + '" created.');
         });
     });
 
+    // load tasks
+    grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-requirejs');
+    grunt.loadNpmTasks('grunt-css');
+
     // Default task.
-    grunt.registerTask('default', ['precompileTemplates', 'jshint', 'requirejs', 'concat', 'uglify', 'cssmin']);
+    grunt.registerTask('default', ['precompileTemplates', 'copy', 'jshint', 'requirejs', 'cssmin']);
 };

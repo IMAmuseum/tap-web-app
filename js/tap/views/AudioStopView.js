@@ -14,8 +14,8 @@ define([
 			this._super('initialize');
 
 			this.mediaOptions = {
-				flashName: 'js/vendor/mediaelment/' + mejs.MediaElementDefaults.flashName,
-				silverlightName: 'js/vendor/mediaelment/' + mejs.MediaElementDefaults.flashName
+				flashName: 'vendor/mediaelement/' + mejs.MediaElementDefaults.flashName,
+				silverlightName: 'vendor/mediaelement/' + mejs.MediaElementDefaults.flashName
 			};
 
 			this.timer = new AnalyticsTimer('AudioStop', 'played_for', TapAPI.currentStop.id);

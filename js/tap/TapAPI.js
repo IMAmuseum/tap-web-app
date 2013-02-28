@@ -1,6 +1,6 @@
 define([
     'underscore',
-    'tap/Config'
+    'config'
 ], function(_, Config) {
     var TapAPI = {
         tours: {},
