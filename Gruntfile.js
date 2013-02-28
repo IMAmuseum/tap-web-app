@@ -56,9 +56,7 @@ module.exports = function(grunt) {
                     skipDirOptimize: true,
                     optimizeCss: 'none',
                     name: 'main',
-                    excludeShallow: [
-                        'Config'
-                    ],
+                    exclude: ['config'],
                     include: [
                         'tap/views/AudioStopView',
                         'tap/views/ImageStopView',
@@ -71,7 +69,7 @@ module.exports = function(grunt) {
                         'tap/views/WebView',
                         '../templates/CompiledTemplates'
                     ],
-                    out: 'dist/js/tap/Main.js',
+                    out: 'dist/js/Main.js',
                     wrap: {
                         start: '<%= meta.banner %>'
                     }
