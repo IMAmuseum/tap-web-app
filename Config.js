@@ -19,9 +19,12 @@ define([], function() {
     }
 
     //remove query parameters from url so backbone is good to go
-    var url = window.location.href.slice(0, window.location.href.indexOf('?'));
-    // set the url 
-    window.history.pushState(null, null, url);
+    var qPosition = window.location.href.indexOf('?');
+    if (qPosition > 0) {
+      var url = window.location.href.slice(0, qPosition);
+      // set the url 
+      window.history.pushState(null, null, url);
+    }
 
     //customize these variables for your install
     return {
