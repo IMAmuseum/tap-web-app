@@ -1,5 +1,5 @@
 define([], function() {
-    var tourMLEndpoint = '../../tour.xml';
+    var tourMLEndpoint = 'tour.xml';
 
     //check for query parameters
     var queryParameters = function() {
@@ -35,7 +35,7 @@ define([], function() {
         tourSettings: {
             'tour-1': {
                 'defaultNavigationController': 'StopListView',
-                'enabledNavigationControllers': ['StopListView', 'MapView']
+                'enabledNavigationControllers': ['KeypadView', 'StopListView', 'MapView']
             }
         },
         navigationControllers: {},
