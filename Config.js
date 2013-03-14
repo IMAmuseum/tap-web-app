@@ -1,6 +1,31 @@
 define([], function() {
+    var tourMLEndpoint = '../../tour.xml';
+
+    //check for query parameters
+    var queryParameters = function() {
+       var vars = [], hash;
+       var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+       for(var i = 0; i < hashes.length; i++) {
+           hash = hashes[i].split('=');
+           vars.push(hash[0]);
+           vars[hash[0]] = hash[1];
+       }
+       return vars;
+    }();
+
+    //if tourml query parameter exists override the config
+    if (queryParameters["tourml"] !== undefined) {
+        tourMLEndpoint = queryParameters["tourml"];
+    }
+
+    //remove query parameters from url so backbone is good to go
+    var url = window.location.href.slice(0, window.location.href.indexOf('?'));
+    // set the url 
+    window.history.pushState(null, null, url);
+
+    //customize these variables for your install
     return {
-        tourMLEndpoint: '../../tour.xml',
+        tourMLEndpoint: tourMLEndpoint,
         trackerID: '',
         geo: {},
         social: {},
