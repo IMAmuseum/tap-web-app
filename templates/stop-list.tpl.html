@@ -4,6 +4,9 @@
         <a href='#tour/<%= tourID %>/stop/<%= stop.get('id') %>'>
             <img src="<%= stop.get('icon') %>" class="ui-li-icon ui-li-thumb" />
             <%= stop.get('title') %>
+            <% if (displayCodes) { %>
+            <span class="ui-li-count"><%= stop.getProperty('code') %></span>
+            <% } %>
         </a>
     </li>
     <% }); %>

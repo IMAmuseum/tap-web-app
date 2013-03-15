@@ -36,7 +36,7 @@ define([
 			} else {
 				// sort by their key code
 				this.stops = _.sortBy(this.stops, function(stop) {
-					return stop.get('propertySet').where({'name': 'code'});
+					return parseInt(stop.getProperty('code'), 10);
 				});
 			}
 
@@ -50,7 +50,8 @@ define([
 		render: function() {
 			this.$el.html(this.template({
 				tourID: TapAPI.currentTour,
-				stops: this.stops
+				stops: this.stops,
+				displayCodes: TapAPI.navigationControllers.StopListView.displayCodes
 			}));
 			return this;
 		}
