@@ -97,6 +97,9 @@ define([
 			return _.sortBy(this.get('connection'), function(connection) {
 				return parseInt(connection.priority, 10);
 			});
+		},
+		getProperty: function(propertyName) {
+			return this.get('propertySet').getValueByName(propertyName);
 		}
 	});
 	return stopModel;
