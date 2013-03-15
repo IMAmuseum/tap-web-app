@@ -18,12 +18,13 @@ define([
             this.title = '';
             this.message = '';
             this.cancelButtonTitle = '';
+            this.routeAfterClose = '';
 
             // add listener for requests to display dialogs
             this.listenTo(Backbone, 'tap.popup.dislay', this.displayDialog);
         },
         events: {
-            'tap #popup-cancel': 'closeDialog'
+            'tap #dialog-cancel': 'closeDialog'
         },
         render: function() {
             this.$el.html(this.template({
@@ -39,6 +40,7 @@ define([
             this.title = args.title;
             this.message = args.message;
             this.cancelButtonTitle = args.cancelButtonTitle;
+            this.routeAfterClose = args.routeAfterClose;
 
             // render the popup
             this.render();
@@ -48,12 +50,18 @@ define([
             this.$el.popup('open');
             return false;
         },
-        closeDialog: function() {
+        closeDialog: function(e) {
+            e.preventDefault();
+
             this.title = '';
             this.message = '';
             this.cancelButtonTitle = '';
 
             this.$el.popup('close');
+
+            if (this.routeAfterClose.length) {
+                Backbone.history.navigate(this.routeAfterClose, {trigger: true});
+            }
         }
     });
     return popupView;

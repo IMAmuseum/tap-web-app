@@ -19,7 +19,7 @@ define([
                 label: 'Stop List',
                 filterBy: 'stopGroup',
                 sortBy: 'code',
-                displayCodes: false
+                displayCodes: true
             },
             'KeypadView': {
                 label: 'Keypad'

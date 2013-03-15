@@ -23,7 +23,8 @@ define([], function() {
     if (qPosition > 0) {
       var url = window.location.href.slice(0, qPosition);
       // set the url 
-      window.history.pushState(null, null, url);
+      window.history.replaceState(null, null, url);
+      //window.location.hash = url;
     }
 
     //customize these variables for your install

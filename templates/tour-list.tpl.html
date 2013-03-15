@@ -1,7 +1,8 @@
-<ul id="tour-list" class="ui-listview" data-inset="true" data-role="listview">
+<ul id="tour-list" class="ui-listview" data-split-icon="info" data-split-theme="d" data-role="listview">
 	<% _.each(tours, function(tour) { %>
 	<li>
 		<a href="#tour/<%= tour.get('id') %>/details"><%= tour.get('title') %></a>
+		<a href="#" data-tour-id="<%= tour.get('id') %>" class="tour-info">Tour Info</a>
 	</li>
 	<% }); %>
 </ul>

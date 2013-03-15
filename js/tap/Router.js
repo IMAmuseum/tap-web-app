@@ -72,7 +72,27 @@ define([
             _gaq.push(['_trackPageview', '/#' + Backbone.history.getFragment()]);
             Backbone.trigger('tap.router.routed', view);
             Backbone.trigger('app.widgets.refresh');
+        },
+        getTourDefaultRoute: function(tourId) {
+            var defaultController, controller;
+
+            // get tour specific default navigation controller
+            if (!_.isUndefined(TapAPI.tourSettings[tourId]) &&
+                TapAPI.tourSettings[tourId].defaultNavigationController) {
+                defaultController = TapAPI.tourSettings[tourId].defaultNavigationController;
+            }
+
+            // get first controller if none were selected as a default
+            if (_.isUndefined(defaultController)) {
+                for (controller in TapAPI.navigationControllers) {
+                    defaultController = controller;
+                    break;
+                }
+            }
+
+            return '#tour/' + tourId + '/controller/' + defaultController;
         }
     });
-    return new router();
+    TapAPI.router = new router();
+    return TapAPI.router;
 });

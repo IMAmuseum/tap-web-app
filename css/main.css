@@ -31,6 +31,10 @@
     background-size: 16px 16px;
 }
 
+.ui-li .ui-btn-text a.ui-link-inherit {
+    white-space: normal;
+}
+
 /* Footer */
 #footer .ui-icon {
     top: 3px;
@@ -59,6 +63,11 @@
 .ui-icon-mapview {
     background: url(../images/map-white.png) 0 0 no-repeat;
     background-size: 26px 26px;
+}
+
+/* list view overrides */
+.ui-listview .ui-li-icon {
+    top: .7em;
 }
 
 /* Tour Details */

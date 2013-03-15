@@ -39,7 +39,7 @@ define([
                 this.code = '';
                 return false;
             } else {
-                Backbone.history.navigate('tour/' + TapAPI.currentTour + '/stop/' + stop.get('id'), true);
+                Backbone.history.navigate('tour/' + TapAPI.currentTour + '/stop/' + stop.get('id'), {trigger: true});
             }
         },
         inputKeyCode: function(e) {

@@ -16,9 +16,25 @@ define([
 			this.displayHeader = false;
 			this.displayFooter = false;
 		},
+		events: {
+			'tap .tour-info' : 'tourInfoPopup'
+		},
 		render: function() {
 			this.$el.html(this.template({tours: TapAPI.tours.models}));
 			return this;
+		},
+		tourInfoPopup: function(e) {
+			e.preventDefault();
+
+			var target = $(e.target).parents('a.tour-info').data('tour-id');
+			var tour = TapAPI.tours.get(target);
+
+			Backbone.trigger('tap.popup.dislay', {
+                title: tour.get('title'),
+                message: tour.get('description'),
+                cancelButtonTitle: 'Start Tour',
+                routeAfterClose: TapAPI.router.getTourDefaultRoute(tour.get('id'))
+            });
 		}
 	});
 	return tourListView;

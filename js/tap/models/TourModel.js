@@ -46,6 +46,21 @@ define([
 			);
 
 			return response;
+		},
+		getAppResourceByUsage: function(usage) {
+			var appResource;
+
+			_.each(this.get('appResource'), function(resource) {
+                if (!_.isUndefined(resource) && resource.usage === usage) {
+                    var asset = TapAPI.tourAssets.get(resource.id);
+                    var source = asset.get('source');
+                    if (!_.isUndefined(source)) {
+                        appResource = source.at(0).get('uri');
+                    }
+                }
+            });
+
+            return appResource;
 		}
 	});
 	return tourModel;
