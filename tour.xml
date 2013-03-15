@@ -19,6 +19,9 @@
     <tourml:Title xml:lang="en"><![CDATA[Stratum Pier by Kendall Buster]]></tourml:Title>
     <tourml:Description xml:lang="en"><![CDATA[<p><em>Stratum Pier</em> consists of a series of organically shaped and layered platforms at the water’s edge that provides a vantage for observing the expansive 35-acre lake and woodlands.</p>
 ]]></tourml:Description>
+    <tourml:PropertySet>
+      <tourml:Property tourml:name="code">1</tourml:Property>
+    </tourml:PropertySet>
     <tourml:AssetRef tourml:id="asset-geo-2-0" tourml:usage="geo"/>
     <tourml:AssetRef tourml:id="asset-header_image-1" tourml:usage="header_image"/>
   </tourml:Stop>
@@ -36,6 +39,9 @@
     <tourml:Title xml:lang="en"><![CDATA[Free Basket by Los Carpinteros]]></tourml:Title>
     <tourml:Description xml:lang="en"><![CDATA[<p>Containing soaring blue and red steel arcs, this sculpture makes the apparent the trajectory of a bouncing ball.</p>
 ]]></tourml:Description>
+    <tourml:PropertySet>
+      <tourml:Property tourml:name="code">2</tourml:Property>
+    </tourml:PropertySet>
     <tourml:AssetRef tourml:id="asset-geo-3-0" tourml:usage="geo"/>
     <tourml:AssetRef tourml:id="asset-header_image-2" tourml:usage="header_image"/>
   </tourml:Stop>
@@ -48,6 +54,9 @@
     <tourml:Title xml:lang="en"><![CDATA[Park of the Laments by Alfredo Jaar]]></tourml:Title>
     <tourml:Description xml:lang="en"><![CDATA[<p>The form of <em>Park of the Laments</em> is a square within a square, one rigid and made of limestone-filled Gabion baskets, the other soft and organic, made of indigenous, trees and shrubs.</p>
 ]]></tourml:Description>
+    <tourml:PropertySet>
+      <tourml:Property tourml:name="code">3</tourml:Property>
+    </tourml:PropertySet>
     <tourml:AssetRef tourml:id="asset-geo-4-0" tourml:usage="geo"/>
     <tourml:AssetRef tourml:id="asset-header_image-3" tourml:usage="header_image"/>
   </tourml:Stop>
@@ -60,6 +69,9 @@
     <tourml:Title xml:lang="en"><![CDATA[Bench around the Lake by Jeppe Hein]]></tourml:Title>
     <tourml:Description xml:lang="en"><![CDATA[<p><em>Bench Around the Lake</em> is a series of 15 vivid yellow benches that interact with specific sites within the Park and along the bordering bank of the White River.</p>
 ]]></tourml:Description>
+    <tourml:PropertySet>
+      <tourml:Property tourml:name="code">4</tourml:Property>
+    </tourml:PropertySet>
     <tourml:AssetRef tourml:id="asset-geo-5-0" tourml:usage="geo"/>
     <tourml:AssetRef tourml:id="asset-header_image-5" tourml:usage="header_image"/>
   </tourml:Stop>
@@ -77,6 +89,9 @@
     <tourml:Title xml:lang="en"><![CDATA[Eden II by Tea Mäkipää]]></tourml:Title>
     <tourml:Description xml:lang="en"><![CDATA[<p>A large foreboding ship emerging from the 100 Acres lake and a guard house on the shore nearby comprise <em>Eden II</em>. An unexpected sight in the idyllic Park environment, <em>Eden II</em> is a modern ark seemingly filled with human passengers from an unknown homeland.</p>
 ]]></tourml:Description>
+    <tourml:PropertySet>
+      <tourml:Property tourml:name="code">5</tourml:Property>
+    </tourml:PropertySet>
     <tourml:AssetRef tourml:id="asset-geo-6-0" tourml:usage="geo"/>
     <tourml:AssetRef tourml:id="asset-header_image-6" tourml:usage="header_image"/>
   </tourml:Stop>
@@ -93,6 +108,9 @@
     <tourml:Title xml:lang="en"><![CDATA[Align by Type A]]></tourml:Title>
     <tourml:Description xml:lang="en"><![CDATA[<p><em>Team Building (Align)</em> is constructed of two 30 foot-wide metal rings suspended from telephone poles and trees, oriented so that their shadows become one during the annual summer solstice.</p>
 ]]></tourml:Description>
+    <tourml:PropertySet>
+      <tourml:Property tourml:name="code">6</tourml:Property>
+    </tourml:PropertySet>
     <tourml:AssetRef tourml:id="asset-geo-7-0" tourml:usage="geo"/>
     <tourml:AssetRef tourml:id="asset-header_image-7" tourml:usage="header_image"/>
   </tourml:Stop>
@@ -105,6 +123,9 @@
     <tourml:Title xml:lang="en"><![CDATA[Funky Bones by Atelier Van Lieshout]]></tourml:Title>
     <tourml:Description xml:lang="en"><![CDATA[<p>Located in the Park’s central meadow, <em>Funky Bones</em> is a group of 20 fiberglass benches emblazoned with depictions of bones that together take the form an enormous, stylized human skeleton.</p>
 ]]></tourml:Description>
+    <tourml:PropertySet>
+      <tourml:Property tourml:name="code">7</tourml:Property>
+    </tourml:PropertySet>
     <tourml:AssetRef tourml:id="asset-geo-8-0" tourml:usage="geo"/>
     <tourml:AssetRef tourml:id="asset-header_image-8" tourml:usage="header_image"/>
   </tourml:Stop>
@@ -122,6 +143,9 @@
     <tourml:Title xml:lang="en"><![CDATA[Indy Island by Andrea Zittel]]></tourml:Title>
     <tourml:Description xml:lang="en"><![CDATA[<p>About 20 feet in diameter, <em>Indy Island</em> is a fully inhabitable experimental living structure that examines the daily needs of contemporary human beings.</p>
 ]]></tourml:Description>
+    <tourml:PropertySet>
+      <tourml:Property tourml:name="code">8</tourml:Property>
+    </tourml:PropertySet>
     <tourml:AssetRef tourml:id="asset-geo-9-0" tourml:usage="geo"/>
     <tourml:AssetRef tourml:id="asset-header_image-9" tourml:usage="header_image"/>
   </tourml:Stop>
@@ -141,6 +165,9 @@
     <tourml:Title xml:lang="en"><![CDATA[FLOW: Can you see the River? by Mary Miss]]></tourml:Title>
     <tourml:Description xml:lang="en"><![CDATA[<p>Conceived by artist Mary Miss, <em>FLOW: Can You See the River?</em> is a city-wide public art project that reveals how ordinary activities are connected to the history, ecology, origin and potential of the White River water system.</p>
 ]]></tourml:Description>
+    <tourml:PropertySet>
+      <tourml:Property tourml:name="code">9</tourml:Property>
+    </tourml:PropertySet>
     <tourml:AssetRef tourml:id="asset-geo-10-0" tourml:usage="geo"/>
     <tourml:AssetRef tourml:id="asset-header_image-10" tourml:usage="header_image"/>
   </tourml:Stop>
@@ -157,6 +184,9 @@
     <tourml:Title xml:lang="en"><![CDATA[Welcome to 100 Acres]]></tourml:Title>
     <tourml:Description xml:lang="en"><![CDATA[<p>Located on 100 acres adjacent to the Museum’s main campus, 100 Acres: The Virginia B. Fairbanks Art &amp; Nature Park includes woodlands, wetlands, meadows, and a 35-acre lake.</p>
 ]]></tourml:Description>
+    <tourml:PropertySet>
+      <tourml:Property tourml:name="code">0</tourml:Property>
+    </tourml:PropertySet>
     <tourml:AssetRef tourml:id="asset-geo-11-0" tourml:usage="geo"/>
     <tourml:AssetRef tourml:id="asset-header_image-11" tourml:usage="header_image"/>
   </tourml:Stop>
@@ -175,6 +205,9 @@
     <tourml:Title xml:lang="en"><![CDATA[The Ruth Lilly Visitor's Pavilion]]></tourml:Title>
     <tourml:Description xml:lang="en"><![CDATA[<p>Designed by Marlon Blackwell Architects, the Ruth Lilly Visitors Pavilion serves as the cornerstone of the park and is one of the region’s signature architectural landmarks.</p>
 ]]></tourml:Description>
+    <tourml:PropertySet>
+      <tourml:Property tourml:name="code">10</tourml:Property>
+    </tourml:PropertySet>
     <tourml:AssetRef tourml:id="asset-geo-12-0" tourml:usage="geo"/>
     <tourml:AssetRef tourml:id="asset-header_image-12" tourml:usage="header_image"/>
   </tourml:Stop>
@@ -201,6 +234,9 @@
     <tourml:Title xml:lang="en"><![CDATA[Chop Stick]]></tourml:Title>
     <tourml:Description xml:lang="en"><![CDATA[<p><em>Chop Stick</em>, created by the Swedish architecture duo visiondivision, provides visitors to 100 Acres a place to sit, swing, and enjoy refreshments in an outdoor pavilion crafted almost entirely from a single tree.</p>
 ]]></tourml:Description>
+    <tourml:PropertySet>
+      <tourml:Property tourml:name="code">11</tourml:Property>
+    </tourml:PropertySet>
     <tourml:AssetRef tourml:id="asset-geo-34-0" tourml:usage="geo"/>
     <tourml:AssetRef tourml:id="asset-header_image-46" tourml:usage="header_image"/>
   </tourml:Stop>
