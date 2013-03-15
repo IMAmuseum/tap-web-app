@@ -22,11 +22,11 @@ define([
                 displayCodes: false
             },
             'KeypadView': {
-                label: 'Keypad',
-                showDirections: false
+                label: 'Keypad'
             },
             'MapView': {
-                label: 'Map'
+                label: 'Map',
+                showDirections: false
             }
         },
         tourSettings: Config.tourSettings,

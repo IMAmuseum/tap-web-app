@@ -16,6 +16,9 @@ define([
 
 			this.displayFooter = false;
             this.displayBackButton = false;
+            if (TapAPI.tours.length > 1) {
+                this.displayBackButton = true;
+            }
 		},
 		render: function() {
             var defaultController, controller;
