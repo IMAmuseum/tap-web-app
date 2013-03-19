@@ -205,7 +205,7 @@ __p += '\n<div data-role="header" data-theme="a" role="banner">\n\t<h1 role="hea
  } ;
 __p += '\n<div data-role="content" data-theme="d" role="main">\n\t<p>' +
 ((__t = ( message )) == null ? '' : __t) +
-'</p>\n\t<a href="#" id="dialog-cancel" data-role="button" data-rel="back" data-theme="c"\n\t\tdata-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span">' +
+'</p>\n\t<a href="#" id="dialog-cancel" data-role="button" data-theme="c"\n\t\tdata-corners="true" data-shadow="true" data-iconshadow="true" data-wrapperels="span">' +
 ((__t = ( cancelButtonTitle )) == null ? '' : __t) +
 '</a>\n</div>';
 
@@ -264,13 +264,19 @@ obj || (obj = {});
 var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-__p += '<ul data-inset="true" data-role="listview" data-filter="true">\n    ';
+__p += '<ul  data-role="listview" data-filter="true">\n    ';
  _.each(stops, function(stop) { ;
 __p += '\n    <li>\n        <a href=\'#tour/' +
 ((__t = ( tourID )) == null ? '' : __t) +
 '/stop/' +
 ((__t = ( stop.get('id') )) == null ? '' : __t) +
-'\'>\n            <img src="' +
+'\'>\n            ';
+ if (displayCodes && stop.getProperty('code')) { ;
+__p += '\n            <span class="ui-li-count">' +
+((__t = ( stop.getProperty('code') )) == null ? '' : __t) +
+'</span>\n            ';
+ } ;
+__p += '\n            <img src="' +
 ((__t = ( stop.get('icon') )) == null ? '' : __t) +
 '" class="ui-li-icon ui-li-thumb" />\n            ' +
 ((__t = ( stop.get('title') )) == null ? '' : __t) +
@@ -297,9 +303,7 @@ __p += '\n<h3 class="tour-title">' +
 ((__t = ( title )) == null ? '' : __t) +
 '</h3>\n<p>' +
 ((__t = ( description )) == null ? '' : __t) +
-'</p>\n<a href="#tour/' +
-((__t = ( tourID )) == null ? '' : __t) +
-'/controller/' +
+'</p>\n<a href="' +
 ((__t = ( defaultStopSelectionView )) == null ? '' : __t) +
 '" id="start-tour" data-role="button" data-theme="b">Start Tour</a>';
 
@@ -312,13 +316,15 @@ obj || (obj = {});
 var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-__p += '<ul id="tour-list" class="ui-listview" data-inset="true" data-role="listview">\n\t';
+__p += '<ul id="tour-list" class="ui-listview" data-split-icon="info" data-split-theme="d" data-role="listview">\n\t';
  _.each(tours, function(tour) { ;
 __p += '\n\t<li>\n\t\t<a href="#tour/' +
 ((__t = ( tour.get('id') )) == null ? '' : __t) +
 '/details">' +
 ((__t = ( tour.get('title') )) == null ? '' : __t) +
-'</a>\n\t</li>\n\t';
+'</a>\n\t\t<a href="#" data-tour-id="' +
+((__t = ( tour.get('id') )) == null ? '' : __t) +
+'" class="tour-info">Tour Info</a>\n\t</li>\n\t';
  }); ;
 __p += '\n</ul>';
 
