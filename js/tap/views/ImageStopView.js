@@ -26,7 +26,7 @@ define([
 
                 if (assetRef.usage === 'image_asset') {
                     var thumbnail = asset.getSourcesByPart('thumbnail');
-                    var image = asset.getSourcesByPart('image_asset_image');
+                    var image = asset.getSourcesByPart('image');
                     var title = asset.getContentsByPart('title');
                     var caption = asset.getContentsByPart('caption');
 
