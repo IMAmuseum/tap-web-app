@@ -48,11 +48,8 @@ define([
             var mediaTemplate = '';
             if (mediaAsset[0].get('type') === 'audio') {
                 mediaTemplate = 'audio';
-                this.mediaOptions.defaultAudioWidth = '100%';
             } else {
                 mediaTemplate = 'video';
-                this.mediaOptions.defaultVideoWidth = '100%';
-                this.mediaOptions.defaultVideoHeight = 270;
             }
             this.template = TemplateManager.get(mediaTemplate);
 
