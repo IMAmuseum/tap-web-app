@@ -1,4 +1,4 @@
-define([
+    define([
     'jquery',
     'underscore',
     'backbone',
@@ -38,19 +38,27 @@ define([
                 return this;
             }
 
-            // Get media element sources
+            // Get media element sources and determine template
             var sources = [];
+            var mediaTemplate = '';
             _.each(mediaAsset[0].get('source').models, function(source) {
+                if (mediaTemplate === '') {
+                    if(source.get('format').indexOf('audio') >= 0) {
+                        mediaTemplate = 'audio';
+                    } else {
+                        mediaTemplate = 'video';
+                    }
+                }
                 sources.push('<source src="' + source.get('uri') + '" type="' + source.get('format') + '" />');
             });
 
             // get the appropriate template
-            var mediaTemplate = '';
-            if (mediaAsset[0].get('type') === 'audio') {
-                mediaTemplate = 'audio';
-            } else {
-                mediaTemplate = 'video';
-            }
+            //var mediaTemplate = '';
+            // if (mediaAsset[0].get('type') === 'audio') {
+            //     mediaTemplate = 'audio';
+            // } else {
+            //     mediaTemplate = 'video';
+            // }
             this.template = TemplateManager.get(mediaTemplate);
 
             // Render from the template
