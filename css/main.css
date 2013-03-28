@@ -164,12 +164,15 @@ div.tour-title {
 
 .stop-code {
     position: absolute;
-    top: -5px;
-    display: table-cell;
-    vertical-align: middle;
-    font-size: 3em;
-    opacity: .2;
-    right: 36px;
+    top: 1px;
+    font-size: 2em;
+    opacity: .3;
+    width: 36px;
+    text-align: right;
+}
+
+.title-with-code {
+    padding-left: 46px;
 }
 
 /* Map View */
