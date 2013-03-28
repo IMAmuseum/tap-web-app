@@ -162,6 +162,16 @@ div.tour-title {
     border-radius:.3em;
 }
 
+.stop-code {
+    position: absolute;
+    top: -5px;
+    display: table-cell;
+    vertical-align: middle;
+    font-size: 3em;
+    opacity: .2;
+    right: 36px;
+}
+
 /* Map View */
 #content-wrapper.tour-map {
     padding: 0;

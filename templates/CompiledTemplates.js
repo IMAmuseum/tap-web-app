@@ -266,17 +266,17 @@ function print() { __p += __j.call(arguments, '') }
 with (obj) {
 __p += '<ul  data-role="listview" data-filter="true">\n    ';
  _.each(stops, function(stop) { ;
-__p += '\n    <li>\n        <a href=\'#tour/' +
+__p += '\n    <li>\n        ';
+ if (displayCodes && stop.getProperty('code')) { ;
+__p += '\n        <span class="stop-code">' +
+((__t = ( stop.getProperty('code') )) == null ? '' : __t) +
+'</span>\n        ';
+ } ;
+__p += '\n        <a href=\'#tour/' +
 ((__t = ( tourID )) == null ? '' : __t) +
 '/stop/' +
 ((__t = ( stop.get('id') )) == null ? '' : __t) +
-'\'>\n            ';
- if (displayCodes && stop.getProperty('code')) { ;
-__p += '\n            <span class="ui-li-count">' +
-((__t = ( stop.getProperty('code') )) == null ? '' : __t) +
-'</span>\n            ';
- } ;
-__p += '\n            <img src="' +
+'\'>\n            <img src="' +
 ((__t = ( stop.get('icon') )) == null ? '' : __t) +
 '" class="ui-li-icon ui-li-thumb" />\n            ' +
 ((__t = ( stop.get('title') )) == null ? '' : __t) +
