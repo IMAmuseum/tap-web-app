@@ -317,14 +317,18 @@ var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
 __p += '<ul id="tour-list" class="ui-listview" data-split-icon="info" data-split-theme="d" data-role="listview">\n\t';
- _.each(tours, function(tour) { ;
-__p += '\n\t<li>\n\t\t<a href="#tour/' +
+ _.each(tours, function(tour, i) { ;
+__p += '\n\t<li data-icon="false">\n\t\t<a href="#" data-tour-id="' +
 ((__t = ( tour.get('id') )) == null ? '' : __t) +
-'/details">' +
+'" class="tour-info">\n\t\t\t<div class="tour-wrapper">\n\t\t\t\t';
+ if (headers[i] !== undefined) { ;
+__p += '\n\t\t\t\t<div class="tour-image"><img src="' +
+((__t = ( headers[i] )) == null ? '' : __t) +
+'" /></div>\n\t\t\t\t';
+ } ;
+__p += '\n\t\t\t\t<div class="tour-title"><span>' +
 ((__t = ( tour.get('title') )) == null ? '' : __t) +
-'</a>\n\t\t<a href="#" data-tour-id="' +
-((__t = ( tour.get('id') )) == null ? '' : __t) +
-'" class="tour-info">Tour Info</a>\n\t</li>\n\t';
+'</span></div>\n\t\t\t</div>\n\t\t</a>\n\t</li>\n\t';
  }); ;
 __p += '\n</ul>';
 

@@ -52,13 +52,6 @@
                 sources.push('<source src="' + source.get('uri') + '" type="' + source.get('format') + '" />');
             });
 
-            // get the appropriate template
-            //var mediaTemplate = '';
-            // if (mediaAsset[0].get('type') === 'audio') {
-            //     mediaTemplate = 'audio';
-            // } else {
-            //     mediaTemplate = 'video';
-            // }
             this.template = TemplateManager.get(mediaTemplate);
 
             // Render from the template

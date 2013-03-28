@@ -70,6 +70,28 @@
     top: .7em;
 }
 
+/* Tour List */
+.tour-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+.tour-image img {
+    width: 100%;
+}
+
+.tour-title {
+    background: rgb(0,0,0);
+    background: rgba(0,0,0,.7);
+    padding: 10px;
+    color: #FFF;
+    z-index: 99;
+    text-shadow: none;
+    position: absolute;
+    bottom: 3px;
+    left: 0;
+    width: 100%;
+}
+
 /* Tour Details */
 #tour-details #header-wrapper img {
     display: block;

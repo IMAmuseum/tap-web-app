@@ -1,8 +1,14 @@
 <ul id="tour-list" class="ui-listview" data-split-icon="info" data-split-theme="d" data-role="listview">
-	<% _.each(tours, function(tour) { %>
-	<li>
-		<a href="#tour/<%= tour.get('id') %>/details"><%= tour.get('title') %></a>
-		<a href="#" data-tour-id="<%= tour.get('id') %>" class="tour-info">Tour Info</a>
+	<% _.each(tours, function(tour, i) { %>
+	<li data-icon="false">
+		<a href="#" data-tour-id="<%= tour.get('id') %>" class="tour-info">
+			<div class="tour-wrapper">
+				<% if (headers[i] !== undefined) { %>
+				<div class="tour-image"><img src="<%= headers[i] %>" /></div>
+				<% } %>
+				<div class="tour-title"><span><%= tour.get('title') %></span></div>
+			</div>
+		</a>
 	</li>
 	<% }); %>
 </ul>

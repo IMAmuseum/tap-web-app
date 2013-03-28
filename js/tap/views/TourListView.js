@@ -20,7 +20,16 @@ define([
 			'tap .tour-info' : 'tourInfoPopup'
 		},
 		render: function() {
-			this.$el.html(this.template({tours: TapAPI.tours.models}));
+			var headers = [];
+			TapAPI.tours.each(function(tour) {
+				TapAPI.tours.selectTour(tour.get('id'));
+				headers.push(tour.getAppResourceByUsage('image'));
+			});
+
+			this.$el.html(this.template({
+				tours: TapAPI.tours.models,
+				headers: headers
+			}));
 			return this;
 		},
 		tourInfoPopup: function(e) {
