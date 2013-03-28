@@ -46,7 +46,7 @@ define([
             e.preventDefault();
             this.code += $(e.currentTarget).find('.ui-btn-text').html();
 
-            if (this.code.length > 4) return;
+            if (this.code.length > 6) return;
 
             this.$el.find('#go-button').removeClass('ui-disabled');
 
