@@ -86,6 +86,7 @@ div.tour-title {
     bottom: 4px;
     left: 0;
     width: 100%;
+    white-space: normal;
 }
 
 .tour-title span {
