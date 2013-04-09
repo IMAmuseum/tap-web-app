@@ -24,6 +24,8 @@
                 transcription = transcriptAsset[0].get('content').at(0).get('data');
             }
 
+            var description = this.model.get('description');
+
             // Find the poster image if one exists
             var posterImagePath = '';
             var posterImageAsset = this.model.getAssetsByUsage('image');
@@ -59,7 +61,8 @@
                 title: this.model.get('title'),
                 transcription: transcription,
                 imagePath: posterImagePath,
-                sources: sources
+                sources: sources,
+                description: description
             }));
 
             return this;

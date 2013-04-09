@@ -18,6 +18,12 @@ __p += '\n\t<img class="poster-image" src="' +
 '" />\n';
  } ;
 __p += '\n';
+ if (!_.isEmpty(description)) { ;
+__p += '\n<div class="description" data-role="collapsible" data-content-theme="c">\n\t<h3>Description</h3>\n\t' +
+((__t = ( description )) == null ? '' : __t) +
+'\n</div>\n';
+ } ;
+__p += '\n';
  if (!_.isEmpty(transcription)) { ;
 __p += '\n<div id="transcription" data-role="collapsible" data-content-theme="c">\n\t<h3>Transcript</h3>\n\t<p>' +
 ((__t = ( transcription )) == null ? '' : __t) +
