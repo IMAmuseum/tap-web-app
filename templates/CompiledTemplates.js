@@ -94,7 +94,7 @@ __p += '\n\t<li>\n\t\t<a href="' +
 ((__t = ( image.originalUri )) == null ? '' : __t) +
 '" rel="external">\n\t\t\t<img src="' +
 ((__t = ( image.thumbnailUri )) == null ? '' : __t) +
-'" alt="' +
+'" data-caption="' +
 ((__t = ( image.caption )) == null ? '' : __t) +
 '" title="' +
 ((__t = ( image.title )) == null ? '' : __t) +
