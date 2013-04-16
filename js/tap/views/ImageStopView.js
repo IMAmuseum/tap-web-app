@@ -49,12 +49,18 @@ define([
                 enableMouseWheel: false,
                 enableKeyboard: true,
                 doubleTapZoomLevel : 0,
-                captionAndToolbarFlipPosition: true,
+                captionAndToolbarFlipPosition: false,
                 captionAndToolbarShowEmptyCaptions: false,
                 captionAndToolbarOpacity : 0.8,
                 minUserZoom : 0.0,
                 preventSlideshow : true,
-                jQueryMobile : true
+                jQueryMobile : true,
+                getImageCaption : function(el) {
+                    var caption = $(el).find("img").data("caption");
+                    var captionEl = document.createElement('div');
+                    $(captionEl).html(caption);
+                    return captionEl;
+                }
             });
             return this;
         }
