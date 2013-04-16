@@ -16,7 +16,7 @@ define([
         trackerID: _.isUndefined(Config.trackerID) ? '' : Config.trackerID,
         navigationControllers: {
             'StopListView': {
-                label: 'Stop List',
+                label: 'Stop Menu',
                 filterBy: 'stopGroup',
                 sortBy: 'code',
                 displayCodes: true
