@@ -160,7 +160,12 @@ define([
             if (data.type == 'Point') {
                 var stopIcon = L.icon({
                     iconUrl: 'images/marker-icon.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                    iconRetinaUrl: 'images/marker-icon@2x.png',
                     shadowUrl: 'images/marker-shadow.png',
+                    shadowSize: [41, 41],
+                    popupAnchor: [0, -42],
                     className: 'stop-icon ' + stop.id
                 });
 
@@ -209,7 +214,11 @@ define([
             if (this.positionMarker === null) {
                 var stopIcon = L.icon({
                     iconUrl: 'images/marker-person.png',
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
                     shadowUrl: 'images/marker-shadow.png',
+                    shadowSize: [41, 41],
+                    popupAnchor: [0, -42],
                     className: 'stop-icon ' + stop.id
                 });
                 this.positionMarker = new L.Marker(latlong, {icon: stopIcon})
