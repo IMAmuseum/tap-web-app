@@ -69,6 +69,7 @@ define([
 
             var i, j;
             // load tour models
+            data.stop = Helper.objectToArray(data.stop);
             var numStops = data.stop.length;
             for (i = 0; i < numStops; i++) {
                 var stop,
