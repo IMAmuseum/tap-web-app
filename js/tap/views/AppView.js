@@ -34,8 +34,10 @@ define([
             var popupView = new PopupView();
             this.$el.append(popupView.render().$el);
 
-            var socialPopupView = new SocialPopupView();
-            this.$el.append(socialPopupView.render().$el);
+            if (TapAPI.social.enabled) {
+                var socialPopupView = new SocialPopupView();
+                this.$el.append(socialPopupView.render().$el);
+            }
 
             // trigger jquery mobile to initialize new widgets
             Backbone.trigger('app.widgets.refresh');
