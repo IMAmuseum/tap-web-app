@@ -25,9 +25,10 @@ define([
             if(tourML.tour) { // Single tour
                 tours.push(this.parseTourML(tourML.tour));
             } else if(tourML.tourSet && tourML.tourSet.tourMLRef) { // TourSet w/ external tours
-                len = tourML.tourSet.tourMLRef.length;
+                var tourRefs = Helper.objectToArray(tourML.tourSet.tourMLRef);
+                len = tourRefs.length;
                 for(i = 0; i < len; i++) {
-                    var data = Helper.xmlToJson(Helper.loadXMLDoc(tourML.tourSet.tourMLRef[i].uri));
+                    var data = Helper.xmlToJson(Helper.loadXMLDoc(tourRefs[i].uri));
                     tours.push(this.parseTourML(data.tour));
                 }
             } else if(tourML.tourSet && tourML.tourSet.tour) { // TourSet w/ tours as children elements
@@ -68,15 +69,17 @@ define([
 
             var i, j;
             // load tour models
+            var connectionData = Helper.objectToArray(data.connection);
+            data.stop = Helper.objectToArray(data.stop);
             var numStops = data.stop.length;
             for (i = 0; i < numStops; i++) {
                 var stop,
                     connections = [];
 
                 if(!_.isUndefined(data.connection)) {
-                    for(j = 0; j < data.connection.length; j++) {
-                        if(data.connection[j].srcId == data.stop[i].id) {
-                            connections.push({priority: data.connection[j].priority, destId: data.connection[j].destId});
+                    for(j = 0; j < connectionData.length; j++) {
+                        if(connectionData[j].srcId == data.stop[i].id) {
+                            connections.push({priority: connectionData[j].priority, destId: connectionData[j].destId});
                         }
                     }
                 }
@@ -96,6 +99,7 @@ define([
             }
 
             // load asset models
+            data.asset = Helper.objectToArray(data.asset);
             var numAssets = data.asset.length;
             for (i = 0; i < numAssets; i++) {
                 var asset;
