@@ -59,7 +59,7 @@ define([
 
             this.$el.popup('close');
 
-            if (this.routeAfterClose.length) {
+            if (this.routeAfterClose && this.routeAfterClose.length) {
                 Backbone.history.navigate(this.routeAfterClose, {trigger: true});
             }
         }
