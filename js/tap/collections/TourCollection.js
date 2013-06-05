@@ -69,6 +69,7 @@ define([
 
             var i, j;
             // load tour models
+            var connectionData = Helper.objectToArray(data.connection);
             data.stop = Helper.objectToArray(data.stop);
             var numStops = data.stop.length;
             for (i = 0; i < numStops; i++) {
@@ -76,7 +77,6 @@ define([
                     connections = [];
 
                 if(!_.isUndefined(data.connection)) {
-                    var connectionData = Helper.objectToArray(data.connection);
                     for(j = 0; j < connectionData.length; j++) {
                         if(connectionData[j].srcId == data.stop[i].id) {
                             connections.push({priority: connectionData[j].priority, destId: connectionData[j].destId});
@@ -99,6 +99,7 @@ define([
             }
 
             // load asset models
+            data.asset = Helper.objectToArray(data.asset);
             var numAssets = data.asset.length;
             for (i = 0; i < numAssets; i++) {
                 var asset;
