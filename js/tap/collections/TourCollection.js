@@ -74,9 +74,10 @@ define([
                     connections = [];
 
                 if(!_.isUndefined(data.connection)) {
-                    for(j = 0; j < data.connection.length; j++) {
-                        if(data.connection[j].srcId == data.stop[i].id) {
-                            connections.push({priority: data.connection[j].priority, destId: data.connection[j].destId});
+                    var connectionData = Helper.objectToArray(data.connection);
+                    for(j = 0; j < connectionData.length; j++) {
+                        if(connectionData[j].srcId == data.stop[i].id) {
+                            connections.push({priority: connectionData[j].priority, destId: connectionData[j].destId});
                         }
                     }
                 }
