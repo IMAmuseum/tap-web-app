@@ -1,13 +1,10 @@
-define([
-	'underscore',
-	'backbone'
-], function(_, Backbone) {
-	var propertyModel = Backbone.Model.extend({
-		defaults: {
-			'name': undefined,
-			'value': undefined,
-			'lang': undefined
-		}
-	});
-	return propertyModel;
+/*
+ * Backbone Model for storing a TourML Property
+ */
+TapApi.classes.models.propertyModel = Backbone.Model.extend({
+    defaults: {
+        'name': undefined,
+        'value': undefined,
+        'lang': undefined
+    }
 });

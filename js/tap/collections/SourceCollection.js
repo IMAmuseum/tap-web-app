@@ -1,15 +1,10 @@
-define([
-	'underscore',
-	'backbone',
-	'tap/models/SourceModel',
-	'localStorage'
-], function(_, Backbone, SourceModel) {
-	var sourceCollection = Backbone.Collection.extend({
-		model: SourceModel,
-		initialize: function(models, options) {
-			this.localStorage = new Backbone.LocalStorage(options.id + '-source');
-			this.asset = options.asset;
-		}
-	});
-	return sourceCollection;
+/*
+ * Backbone collection for managing TourML Asset sources
+ */
+TapApi.classes.collections.sourceCollection = Backbone.Collection.extend({
+    model: SourceModel,
+    initialize: function(models, options) {
+        this.localStorage = new Backbone.LocalStorage(options.id + '-source');
+        this.asset = options.asset;
+    }
 });
