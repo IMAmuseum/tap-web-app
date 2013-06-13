@@ -1,7 +1,7 @@
 /*
  * Backbone View for displaying social sharing features
  */
-TapAPI.classes.views.socialPopupView = Backbone.View.extend({
+TapAPI.classes.views.SocialPopupView = Backbone.View.extend({
     id: 'social-popup',
     className: 'ui-corner-all',
     attributes: {

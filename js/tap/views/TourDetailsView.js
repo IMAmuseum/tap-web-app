@@ -1,7 +1,7 @@
 /*
  * Backbone View for displaying a Tour Summary/Start screen
  */
-TapAPI.classes.views.tourDetailsView = TapAPI.classes.views.baseView.extend({
+TapAPI.classes.views.TourDetailsView = TapAPI.classes.views.BaseView.extend({
 	id: 'tour-details',
 	template: TapAPI.templateManager.get('tour-details'),
 	initialize: function() {

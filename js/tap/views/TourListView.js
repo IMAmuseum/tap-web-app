@@ -1,7 +1,7 @@
 /*
  * Backbone View for displaying a List of Available Tours
  */
-TapAPI.classes.views.tourListView = TapAPI.classes.views.baseView.extend({
+TapAPI.classes.views.TourListView = TapAPI.classes.views.BaseView.extend({
 	id: 'tour-list',
 	template: TapAPI.templateManager.get('tour-list'),
 	initialize: function() {

@@ -1,7 +1,7 @@
 /*
  * The Primary router for TAP
  */
-TapAPI.classes.routers.primary = Backbone.Router.extend({
+TapAPI.classes.routers.Primary = Backbone.Router.extend({
     routes: {
         '': 'tourSelection',
         'tour/:tourID/details': 'tourDetails',
@@ -21,7 +21,7 @@ TapAPI.classes.routers.primary = Backbone.Router.extend({
             // navigate them directly to that tours details page
             this.navigate('tour/' + TapAPI.tours.at(0).get('id') + '/details', {trigger: true});
         } else {
-            this.changePage(new TourListView());
+            this.changePage(new TapAPI.classes.views.TourListView());
         }
     },
     /**
@@ -32,7 +32,7 @@ TapAPI.classes.routers.primary = Backbone.Router.extend({
         TapAPI.tours.selectTour(tourID);
         TapAPI.currentStop = null;
 
-        this.changePage(new TourDetailsView());
+        this.changePage(new TapAPI.classes.views.TourDetailsView());
     },
     routeToController: function(tourID, view) {
         var that = this;
@@ -40,10 +40,7 @@ TapAPI.classes.routers.primary = Backbone.Router.extend({
         TapAPI.tours.selectTour(tourID);
         TapAPI.currentStop = null;
 
-        var viewPath = 'tap/views/' + view;
-        Require([viewPath], function(view) {
-            that.changePage(new view());
-        });
+        that.changePage(TapAPI.classes.views[view]);
     },
     /**
      * Route to a stop
@@ -86,3 +83,5 @@ TapAPI.classes.routers.primary = Backbone.Router.extend({
         return '#tour/' + tourId + '/controller/' + defaultController;
     }
 });
+
+TapAPI.router = new TapAPI.classes.routers.Primary();

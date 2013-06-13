@@ -1,7 +1,7 @@
 /*
  * Backbone View for Initializing and Starting the TAP Web App
  */
-TapAPI.classes.views.appView = Backbone.View.extend({
+TapAPI.classes.views.AppView = Backbone.View.extend({
     id: 'page-wrapper',
     initialize: function() {
         this.listenTo(Backbone, 'app.widgets.refresh', this.refreshWidgets);
@@ -9,23 +9,23 @@ TapAPI.classes.views.appView = Backbone.View.extend({
     render: function() {
         $(':jqmData(role="page")').append(this.el);
         // add navigation bar
-        var headerView = new HeaderView();
+        var headerView = new TapAPI.classes.views.HeaderView();
         this.$el.append(headerView.$el);
 
         // add content view
-        var contentView = new ContentView();
+        var contentView = new TapAPI.classes.views.ContentView();
         this.$el.append(contentView.$el);
 
         // add footer bar
-        var footerView = new FooterView();
+        var footerView = new TapAPI.classes.views.FooterView();
         this.$el.append(footerView.$el);
 
         // add dialog view
-        var popupView = new PopupView();
+        var popupView = new TapAPI.classes.views.PopupView();
         this.$el.append(popupView.render().$el);
 
         if (TapAPI.social.enabled) {
-            var socialPopupView = new SocialPopupView();
+            var socialPopupView = new TapAPI.classes.views.SocialPopupView();
             this.$el.append(socialPopupView.render().$el);
         }
 

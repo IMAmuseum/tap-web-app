@@ -1,7 +1,7 @@
 /*
  * Backbone View for displaying a jquery mobile pop-up
  */
-TapAPI.classes.views.popupView = Backbone.View.extend({
+TapAPI.classes.views.PopupView = Backbone.View.extend({
     id: 'popup-view',
     className: 'ui-corner-all',
     attributes: {

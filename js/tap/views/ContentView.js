@@ -1,7 +1,7 @@
 /*
  * Backbone view used to display content (stop views) between the header & footer
  */
-TapAPI.classes.views.contentView = TapAPI.classes.views.baseView.extend({
+TapAPI.classes.views.ContentView = TapAPI.classes.views.BaseView.extend({
     id: 'content-wrapper',
     attributes: {
         'data-role': 'content'

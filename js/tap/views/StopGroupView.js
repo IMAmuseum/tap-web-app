@@ -1,7 +1,7 @@
 /*
  * Backbone View for displaying a Stop group
  */
-TapAPI.classes.views.stopGroupView = TapAPI.classes.views.baseView.extend({
+TapAPI.classes.views.StopGroupView = TapAPI.classes.views.BaseView.extend({
     id: 'stop-group',
     template: TapAPI.templateManager.get('stop-group'),
     initialize: function() {

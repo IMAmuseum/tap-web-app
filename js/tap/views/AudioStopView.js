@@ -2,7 +2,7 @@
  * Backbone View for displaying an Audio Stop
  * Relies on the MediaElement Plugin
  */
-TapAPI.classes.views.audioStopView = TapAPI.classes.views.baseView.extend({
+TapAPI.classes.views.AudioStopView = TapAPI.classes.views.BaseView.extend({
     id: 'audio-stop',
     initialize: function() {
         this._super('initialize');
