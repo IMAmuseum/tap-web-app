@@ -2,7 +2,7 @@
  * Backbone View for providing helper functions to all TAP Views
  * All STOP views in TAP should extend from this
  */
-TapApi.classes.views.baseView = Backbone.View.extend({
+TapAPI.classes.views.baseView = Backbone.View.extend({
 	initialize: function() {
 		this.title = '';
 		this.displayHeader = true;

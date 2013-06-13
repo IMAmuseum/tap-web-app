@@ -2,7 +2,7 @@
  * Backbone View for displaying the Header
  * Includes back navigation, title and social charing button
  */
-TapApi.classes.views.headerView = Backbone.view.extend({
+TapAPI.classes.views.headerView = Backbone.view.extend({
     id: 'header',
     attributes: {
         'data-role': 'header',

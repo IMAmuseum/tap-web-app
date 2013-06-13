@@ -2,7 +2,7 @@
  * Backbone View for displaying a Video Stop
  * Relies on the MediaElement plugin
  */
-TapApi.classes.views.videoStopView = TapApi.classes.views.baseView.extend({
+TapAPI.classes.views.videoStopView = TapAPI.classes.views.baseView.extend({
     id: 'video-stop',
     template: TemplateManager.get('video'),
     initialize: function() {

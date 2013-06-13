@@ -1,4 +1,4 @@
-var helper = {
+TapAPI.helper = {
     replaceArray: function(obj, find, replace) {
         for (var i = 0; i < find.length; i++) {
             obj = obj.replace(find[i], replace);

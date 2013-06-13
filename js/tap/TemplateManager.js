@@ -1,4 +1,4 @@
-TapApi.templateManager = {
+TapAPI.templateManager = {
     get : function(templateName) {
         if (TapAPI.templates[templateName] === undefined) {
             $.ajax({

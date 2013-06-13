@@ -26,7 +26,7 @@ if (qPosition > 0) {
     //window.location.hash = url;
 }
 
-var config = {
+TapAPI.config = {
     //customize these variables for your install
     tourMLEndpoint: tourMLEndpoint,
     trackerID: '',

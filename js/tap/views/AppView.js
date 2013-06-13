@@ -1,7 +1,7 @@
 /*
  * Backbone View for Initializing and Starting the TAP Web App
  */
-TapApi.classes.views.appView = Backbone.View.extend({
+TapAPI.classes.views.appView = Backbone.View.extend({
     id: 'page-wrapper',
     initialize: function() {
         this.listenTo(Backbone, 'app.widgets.refresh', this.refreshWidgets);

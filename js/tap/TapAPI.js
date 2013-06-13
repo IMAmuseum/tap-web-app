@@ -2,7 +2,8 @@ var TapAPI = {
     classes: {
         models: {},
         views: {},
-        collections: {}
+        collections: {},
+        routers: {}
     },
     tours: {},
     tourAssets: {},

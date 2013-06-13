@@ -1,7 +1,7 @@
 /*
  * Backbone View for displaying the footer tab bar
  */
-TapApi.classes.views.footerView = Backbone.view.extend({
+TapAPI.classes.views.footerView = Backbone.view.extend({
     id: 'footer',
     attributes: {
         'data-role': 'footer',

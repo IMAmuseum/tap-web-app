@@ -1,7 +1,7 @@
 /*
  * Backbone View for displaying a Web Stop (generic web content)
  */
-TapApi.classes.views.webStopView = TapApi.classes.views.baseView.extend({
+TapAPI.classes.views.webStopView = TapAPI.classes.views.baseView.extend({
     id: 'web-stop',
     template: TemplateManager.get('web'),
     initialize: function() {

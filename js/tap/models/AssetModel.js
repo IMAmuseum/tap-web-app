@@ -1,7 +1,7 @@
 /*
  * Backbone Model for storing a TourML Asset
  */
-TapApi.classes.models.assetModel = Backbone.Model.extend({
+TapAPI.classes.models.assetModel = Backbone.Model.extend({
     parse: function(response) {
         response.propertySet = new PropertySetCollection(
             response.propertySet,

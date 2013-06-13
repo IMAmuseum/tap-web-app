@@ -1,4 +1,7 @@
-var TapRouter = Backbone.Router.extend({
+/*
+ * The Primary router for TAP
+ */
+TapAPI.classes.routers.primary = Backbone.Router.extend({
     routes: {
         '': 'tourSelection',
         'tour/:tourID/details': 'tourDetails',
@@ -83,5 +86,3 @@ var TapRouter = Backbone.Router.extend({
         return '#tour/' + tourId + '/controller/' + defaultController;
     }
 });
-
-TapAPI.router = new TapRouter();

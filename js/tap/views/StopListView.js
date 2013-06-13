@@ -1,7 +1,7 @@
 /*
  * Backbone View for displaying the Stop List Navigation
  */
-TapApi.classes.views.stopListView = TapApi.classes.views.stopSelectionView.extend({
+TapAPI.classes.views.stopListView = TapAPI.classes.views.stopSelectionView.extend({
     id: 'tour-stop-list',
     template: TemplateManager.get('stop-list'),
     initialize: function() {

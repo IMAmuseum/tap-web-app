@@ -2,7 +2,7 @@
  * Backbone View for displaying the Map navigation interface
  * Relies on leaflet
  */
-TapApi.classes.views.mapView = TapApi.classes.views.stopSelectionView.extend({
+TapAPI.classes.views.mapView = TapAPI.classes.views.stopSelectionView.extend({
     id: 'tour-map',
     initialize: function() {
         var that = this;

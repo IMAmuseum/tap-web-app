@@ -1,7 +1,7 @@
 /*
  * Backbone View for displaying the KeyPad navigation
  */
-TapApi.classes.views.keypad = TapApi.classes.views.stopSelectionView.extend({
+TapAPI.classes.views.keypad = TapAPI.classes.views.stopSelectionView.extend({
     id: 'keypad',
     template: TemplateManager.get('keypad'),
     initialize: function() {

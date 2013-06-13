@@ -1,7 +1,7 @@
 /*
  * Backbone Model for storing a TourML Asset content element
  */
-TapApi.classes.models.contentModel = Backbone.Model.extend({
+TapAPI.classes.models.contentModel = Backbone.Model.extend({
     initialize: function() {
         //parse never gets called due to this not being in localstorage as its own record
         this.set('propertySet', new PropertySetCollection(

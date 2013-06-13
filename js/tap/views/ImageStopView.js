@@ -2,7 +2,7 @@
  * Backbone View for displaying an Image Stop
  * Relies on the PhotoSwipe jquery plugin
  */
-TapApi.classes.views.imageStopView = TapApi.classes.views.baseView.extend({
+TapAPI.classes.views.imageStopView = TapAPI.classes.views.baseView.extend({
     tagName: 'ul',
     id: 'gallery',
     className: 'ui-grid-b',

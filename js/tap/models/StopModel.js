@@ -1,7 +1,7 @@
 /*
  * Backbone Model for storing a TourML Stop
  */
-TapApi.classes.models.stopModel = Backbone.Model.extend({
+TapAPI.classes.models.stopModel = Backbone.Model.extend({
     get: function(attr) { // override get method
         if(!this.attributes[attr]) return this.attributes[attr];
         switch(attr) {  // retrieve attribute based on language
