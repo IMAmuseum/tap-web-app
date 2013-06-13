@@ -37,7 +37,7 @@ TapAPI.classes.models.tourModel = Backbone.Model.extend({
         }
     },
     parse: function(response) {
-        response.propertySet = new PropertySetCollection(
+        response.propertySet = new TapAPI.classes.collections.propertySetCollection(
             response.propertySet,
             {id: response.id}
         );
