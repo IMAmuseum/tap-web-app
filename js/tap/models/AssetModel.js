@@ -1,15 +1,15 @@
 /*
  * Backbone Model for storing a TourML Asset
  */
-TapAPI.classes.models.assetModel = Backbone.Model.extend({
+TapAPI.classes.models.AssetModel = Backbone.Model.extend({
     parse: function(response) {
-        response.propertySet = new TapAPI.classes.collections.propertySetCollection(
+        response.propertySet = new TapAPI.classes.collections.PropertySetCollection(
             response.propertySet,
             {id: response.id}
         );
 
         if (response.source) {
-            response.source = new TapAPI.classes.collections.sourceCollection(
+            response.source = new TapAPI.classes.collections.SourceCollection(
                 response.source,
                 {
                     id: response.id,
@@ -19,7 +19,7 @@ TapAPI.classes.models.assetModel = Backbone.Model.extend({
         }
 
         if (response.content) {
-            response.content = new TapAPI.classes.collections.contentCollection(
+            response.content = new TapAPI.classes.collections.ContentCollection(
                 response.content,
                 {
                     id: response.id,

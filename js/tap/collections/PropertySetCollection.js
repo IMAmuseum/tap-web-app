@@ -1,8 +1,8 @@
 /*
  * Backbone Collection for managing TourML PropertySets
  */
-TapAPI.classes.collections.propertySetCollection = Backbone.Collection.extend({
-    model: TapAPI.classes.models.propertyModel,
+TapAPI.classes.collections.PropertySetCollection = Backbone.Collection.extend({
+    model: TapAPI.classes.models.PropertyModel,
     initialize: function(models, options) {
         this.localStorage = new Backbone.LocalStorage(options.id + '-propertyset');
     },

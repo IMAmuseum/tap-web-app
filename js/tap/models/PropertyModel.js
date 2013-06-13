@@ -1,7 +1,7 @@
 /*
  * Backbone Model for storing a TourML Property
  */
-TapAPI.classes.models.propertyModel = Backbone.Model.extend({
+TapAPI.classes.models.PropertyModel = Backbone.Model.extend({
     defaults: {
         'name': undefined,
         'value': undefined,

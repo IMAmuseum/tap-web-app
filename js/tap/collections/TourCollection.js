@@ -1,8 +1,8 @@
 /*
  * Backbone colleciton for managing Tours
  */
-TapAPI.classes.collections.tourCollection = Backbone.Collection.extend({
-    model: TapAPI.classes.models.tourModel,
+TapAPI.classes.collections.TourCollection = Backbone.Collection.extend({
+    model: TapAPI.classes.models.TourModel,
     localStorage: new Backbone.LocalStorage('tours'),
     syncTourML: function(url) {
         var tours = [],
@@ -40,7 +40,7 @@ TapAPI.classes.collections.tourCollection = Backbone.Collection.extend({
             assets = [];
 
         // create new tour
-        tour = new TapAPI.classes.models.tourModel({
+        tour = new TapAPI.classes.models.TourModel({
             id: data.id,
             appResource: data.tourMetadata && data.tourMetadata.appResource ? TapAPI.helper.objectToArray(data.tourMetadata.appResource) : undefined,
             connection: data.connection ? TapAPI.helper.objectToArray(data.connection) : undefined,
@@ -54,9 +54,9 @@ TapAPI.classes.collections.tourCollection = Backbone.Collection.extend({
         this.create(tour);
 
         // create new instance of StopCollection
-        var stopCollection = new TapAPI.classes.collections.stopCollection(null, data.id);
+        var stopCollection = new TapAPI.classes.collections.StopCollection(null, data.id);
         // create new instance of AssetCollection
-        var assetCollection = new TapAPI.classes.collections.assetCollection(null, data.id);
+        var assetCollection = new TapAPI.classes.collections.AssetCollection(null, data.id);
 
         var i, j;
         // load tour models
@@ -75,7 +75,7 @@ TapAPI.classes.collections.tourCollection = Backbone.Collection.extend({
                 }
             }
 
-            stop = new TapAPI.classes.models.stopModel({
+            stop = new TapAPI.classes.models.StopModel({
                 id: data.stop[i].id,
                 connection: connections,
                 view: data.stop[i].view,
@@ -115,7 +115,7 @@ TapAPI.classes.collections.tourCollection = Backbone.Collection.extend({
                 }
             }
 
-            asset = new TapAPI.classes.models.assetModel({
+            asset = new TapAPI.classes.models.AssetModel({
                 assetRights: TapAPI.helper.objectToArray(data.asset[i].assetRights),
                 content: data.asset[i].content,
                 id: data.asset[i].id,
@@ -162,9 +162,9 @@ TapAPI.classes.collections.tourCollection = Backbone.Collection.extend({
         }
 
         // create new instance of StopCollection
-        TapAPI.tourStops = new TapAPI.classes.collections.stopCollection(null, tourID);
+        TapAPI.tourStops = new TapAPI.classes.collections.StopCollection(null, tourID);
         // create new instance of AssetCollection
-        TapAPI.tourAssets = new TapAPI.classes.collections.assetCollection(null, tourID);
+        TapAPI.tourAssets = new TapAPI.classes.collections.AssetCollection(null, tourID);
 
         // load data from local storage
         TapAPI.tourAssets.fetch();

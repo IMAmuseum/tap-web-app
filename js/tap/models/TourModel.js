@@ -1,7 +1,7 @@
 /*
  * Backbone Model for storing a Tour
  */
-TapAPI.classes.models.tourModel = Backbone.Model.extend({
+TapAPI.classes.models.TourModel = Backbone.Model.extend({
     get: function(attr) { // override get method
         if(!this.attributes[attr]) return this.attributes[attr];
         switch(attr) {  // retrieve attribute based on language
@@ -37,7 +37,7 @@ TapAPI.classes.models.tourModel = Backbone.Model.extend({
         }
     },
     parse: function(response) {
-        response.propertySet = new TapAPI.classes.collections.propertySetCollection(
+        response.propertySet = new TapAPI.classes.collections.PropertySetCollection(
             response.propertySet,
             {id: response.id}
         );
