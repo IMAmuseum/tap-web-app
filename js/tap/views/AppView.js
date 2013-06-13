@@ -50,7 +50,7 @@ TapAPI.classes.views.appView = Backbone.View.extend({
         }(document, 'script'));
 
         // create new instance of tour collection
-        TapAPI.tours = new TourCollection();
+        TapAPI.tours = new TapAPI.classes.collections.tourCollection();
         TapAPI.tours.syncTourML(TapAPI.tourMLEndpoint);
 
         // trigger tap init end event

@@ -12,14 +12,14 @@ TapAPI.classes.collections.tourCollection = Backbone.Collection.extend({
         this.fetch();
 
         // load tourML
-        tourML = Helper.xmlToJson(Helper.loadXMLDoc(url));
+        tourML = TapAPI.helper.xmlToJson(TapAPI.helper.loadXMLDoc(url));
         if(tourML.tour) { // Single tour
             tours.push(this.parseTourML(tourML.tour));
         } else if(tourML.tourSet && tourML.tourSet.tourMLRef) { // TourSet w/ external tours
-            var tourRefs = Helper.objectToArray(tourML.tourSet.tourMLRef);
+            var tourRefs = TapAPI.helper.objectToArray(tourML.tourSet.tourMLRef);
             len = tourRefs.length;
             for(i = 0; i < len; i++) {
-                var data = Helper.xmlToJson(Helper.loadXMLDoc(tourRefs[i].uri));
+                var data = TapAPI.helper.xmlToJson(TapAPI.helper.loadXMLDoc(tourRefs[i].uri));
                 tours.push(this.parseTourML(data.tour));
             }
         } else if(tourML.tourSet && tourML.tourSet.tour) { // TourSet w/ tours as children elements
@@ -42,14 +42,14 @@ TapAPI.classes.collections.tourCollection = Backbone.Collection.extend({
         // create new tour
         tour = new TourModel({
             id: data.id,
-            appResource: data.tourMetadata && data.tourMetadata.appResource ? Helper.objectToArray(data.tourMetadata.appResource) : undefined,
-            connection: data.connection ? Helper.objectToArray(data.connection) : undefined,
-            description: data.tourMetadata && data.tourMetadata.description ? Helper.objectToArray(data.tourMetadata.description) : undefined,
+            appResource: data.tourMetadata && data.tourMetadata.appResource ? TapAPI.helper.objectToArray(data.tourMetadata.appResource) : undefined,
+            connection: data.connection ? TapAPI.helper.objectToArray(data.connection) : undefined,
+            description: data.tourMetadata && data.tourMetadata.description ? TapAPI.helper.objectToArray(data.tourMetadata.description) : undefined,
             lastModified: data.tourMetadata && data.tourMetadata.lastModified ? data.tourMetadata.lastModified : undefined,
-            propertySet: data.tourMetadata && data.tourMetadata.propertySet ? Helper.objectToArray(data.tourMetadata.propertySet.property) : undefined,
-            publishDate: data.tourMetadata && data.tourMetadata.publishDate ? Helper.objectToArray(data.tourMetadata.publishDate) : undefined,
+            propertySet: data.tourMetadata && data.tourMetadata.propertySet ? TapAPI.helper.objectToArray(data.tourMetadata.propertySet.property) : undefined,
+            publishDate: data.tourMetadata && data.tourMetadata.publishDate ? TapAPI.helper.objectToArray(data.tourMetadata.publishDate) : undefined,
             rootStopRef: data.tourMetadata && data.tourMetadata.rootStopRef ? data.tourMetadata.rootStopRef : undefined,
-            title: data.tourMetadata && data.tourMetadata.title ? Helper.objectToArray(data.tourMetadata.title) : undefined
+            title: data.tourMetadata && data.tourMetadata.title ? TapAPI.helper.objectToArray(data.tourMetadata.title) : undefined
         });
         this.create(tour);
 
@@ -60,8 +60,8 @@ TapAPI.classes.collections.tourCollection = Backbone.Collection.extend({
 
         var i, j;
         // load tour models
-        var connectionData = Helper.objectToArray(data.connection);
-        data.stop = Helper.objectToArray(data.stop);
+        var connectionData = TapAPI.helper.objectToArray(data.connection);
+        data.stop = TapAPI.helper.objectToArray(data.stop);
         var numStops = data.stop.length;
         for (i = 0; i < numStops; i++) {
             var stop,
@@ -79,10 +79,10 @@ TapAPI.classes.collections.tourCollection = Backbone.Collection.extend({
                 id: data.stop[i].id,
                 connection: connections,
                 view: data.stop[i].view,
-                description: Helper.objectToArray(data.stop[i].description),
-                propertySet: data.stop[i].propertySet ? Helper.objectToArray(data.stop[i].propertySet.property) : undefined,
-                assetRef: Helper.objectToArray(data.stop[i].assetRef),
-                title: Helper.objectToArray(data.stop[i].title),
+                description: TapAPI.helper.objectToArray(data.stop[i].description),
+                propertySet: data.stop[i].propertySet ? TapAPI.helper.objectToArray(data.stop[i].propertySet.property) : undefined,
+                assetRef: TapAPI.helper.objectToArray(data.stop[i].assetRef),
+                title: TapAPI.helper.objectToArray(data.stop[i].title),
                 tour: data.id
             });
             stopCollection.create(stop);
@@ -90,37 +90,37 @@ TapAPI.classes.collections.tourCollection = Backbone.Collection.extend({
         }
 
         // load asset models
-        data.asset = Helper.objectToArray(data.asset);
+        data.asset = TapAPI.helper.objectToArray(data.asset);
         var numAssets = data.asset.length;
         for (i = 0; i < numAssets; i++) {
             var asset;
 
             // modifiy source propertySet child to match similar elements
             if(data.asset[i].source) {
-                data.asset[i].source = Helper.objectToArray(data.asset[i].source);
+                data.asset[i].source = TapAPI.helper.objectToArray(data.asset[i].source);
                 var numSources = data.asset[i].source.length;
                 for (j = 0; j < numSources; j++) {
                     if(data.asset[i].source[j].propertySet) {
-                        data.asset[i].source[j].propertySet = Helper.objectToArray(data.asset[i].source[j].propertySet.property);
+                        data.asset[i].source[j].propertySet = TapAPI.helper.objectToArray(data.asset[i].source[j].propertySet.property);
                     }
                 }
             }
             if(data.asset[i].content) {
-                data.asset[i].content = Helper.objectToArray(data.asset[i].content);
+                data.asset[i].content = TapAPI.helper.objectToArray(data.asset[i].content);
                 var numContent = data.asset[i].content.length;
                 for (j = 0; j < numContent; j++) {
                     if(data.asset[i].content[j].propertySet) {
-                        data.asset[i].content[j].propertySet = Helper.objectToArray(data.asset[i].content[j].propertySet.property);
+                        data.asset[i].content[j].propertySet = TapAPI.helper.objectToArray(data.asset[i].content[j].propertySet.property);
                     }
                 }
             }
 
             asset = new AssetModel({
-                assetRights: Helper.objectToArray(data.asset[i].assetRights),
+                assetRights: TapAPI.helper.objectToArray(data.asset[i].assetRights),
                 content: data.asset[i].content,
                 id: data.asset[i].id,
                 source: data.asset[i].source,
-                propertySet: data.asset[i].propertySet ? Helper.objectToArray(data.asset[i].propertySet.property) : undefined,
+                propertySet: data.asset[i].propertySet ? TapAPI.helper.objectToArray(data.asset[i].propertySet.property) : undefined,
                 type: data.asset[i].type
             });
             assetCollection.create(asset);
