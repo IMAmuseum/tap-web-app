@@ -9,7 +9,7 @@ TapAPI.classes.models.assetModel = Backbone.Model.extend({
         );
 
         if (response.source) {
-            response.source = new SourceCollection(
+            response.source = new TapAPI.classes.collections.sourceCollection(
                 response.source,
                 {
                     id: response.id,
@@ -19,7 +19,7 @@ TapAPI.classes.models.assetModel = Backbone.Model.extend({
         }
 
         if (response.content) {
-            response.content = new ContentCollection(
+            response.content = new TapAPI.classes.collections.contentCollection(
                 response.content,
                 {
                     id: response.id,

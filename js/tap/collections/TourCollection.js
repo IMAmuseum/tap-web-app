@@ -2,7 +2,7 @@
  * Backbone colleciton for managing Tours
  */
 TapAPI.classes.collections.tourCollection = Backbone.Collection.extend({
-    model: TapAPI.classes.models.TourModel,
+    model: TapAPI.classes.models.tourModel,
     localStorage: new Backbone.LocalStorage('tours'),
     syncTourML: function(url) {
         var tours = [],
@@ -29,7 +29,7 @@ TapAPI.classes.collections.tourCollection = Backbone.Collection.extend({
             }
         }
 
-        this.update(tours);
+        this.set(tours);
     },
     parseTourML: function(data) {
         // check to see if the tour has been updated
@@ -136,8 +136,8 @@ TapAPI.classes.collections.tourCollection = Backbone.Collection.extend({
         assetCollection.fetch();
 
         // create/update new stops and assets
-        stopCollection.update(stops);
-        assetCollection.update(assets);
+        stopCollection.set(stops);
+        assetCollection.set(assets);
 
         // clear out the temporary models
         stopCollection.reset();
