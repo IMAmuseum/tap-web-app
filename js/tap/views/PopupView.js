@@ -9,7 +9,7 @@ TapAPI.classes.views.popupView = Backbone.View.extend({
         'data-theme': 'a',
         'data-overlay-theme': 'a'
     },
-    template: TemplateManager.get('popup'),
+    template: TapAPI.templateManager.get('popup'),
     initialize: function() {
         this.title = '';
         this.message = '';

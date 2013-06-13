@@ -4,7 +4,7 @@
  */
 TapAPI.classes.views.videoStopView = TapAPI.classes.views.baseView.extend({
     id: 'video-stop',
-    template: TemplateManager.get('video'),
+    template: TapAPI.templateManager.get('video'),
     initialize: function() {
         this._super('initialize');
 

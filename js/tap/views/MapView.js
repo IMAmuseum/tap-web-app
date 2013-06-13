@@ -128,7 +128,7 @@ TapAPI.classes.views.mapView = TapAPI.classes.views.stopSelectionView.extend({
                 return stop.get('propertySet').where({'name': 'code'}) !== undefined;
             });
         }
-        var template = TemplateManager.get('map-marker-bubble');
+        var template = TapAPI.templateManager.get('map-marker-bubble');
         return template({
             title: stop.get('title'),
             tourID: stop.get('tour'),

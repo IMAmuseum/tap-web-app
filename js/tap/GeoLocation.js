@@ -119,6 +119,4 @@ GeoLocation.prototype.formatDistance = function(d) {
             return parseInt(feet, 10) + ' ft';
         }
     }
-};
-
-return GeoLocation;
+};  

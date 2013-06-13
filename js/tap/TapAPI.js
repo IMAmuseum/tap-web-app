@@ -13,9 +13,9 @@ var TapAPI = {
     currentTour: '',
     templates: {},
     // User Configurable
-    defaultLanguage: _.isUndefined(Config.defaultLanguage) ? 'en' : Config.defaultLanguage,
-    tourMLEndpoint: _.isUndefined(Config.tourMLEndpoint) ? '' : Config.tourMLEndpoint,
-    trackerID: _.isUndefined(Config.trackerID) ? '' : Config.trackerID,
+    defaultLanguage: _.isUndefined(TapConfig.defaultLanguage) ? 'en' : TapConfig.defaultLanguage,
+    tourMLEndpoint: _.isUndefined(TapConfig.tourMLEndpoint) ? '' : TapConfig.tourMLEndpoint,
+    trackerID: _.isUndefined(TapConfig.trackerID) ? '' : TapConfig.trackerID,
     navigationControllers: {
         'StopListView': {
             label: 'Stop Menu',
@@ -31,7 +31,7 @@ var TapAPI = {
             showDirections: false
         }
     },
-    tourSettings: Config.tourSettings,
+    tourSettings: TapConfig.tourSettings,
     viewRegistry: {
        'audio_stop': {
             view: 'AudioStopView',
@@ -69,21 +69,21 @@ var TapAPI = {
 };
 
 // attempt to get user defined media configurations
-if (!_.isUndefined(Config.media)) {
-    _.extend(TapAPI.media, Config.media);
+if (!_.isUndefined(TapConfig.media)) {
+    _.extend(TapAPI.media, TapConfig.media);
 }
 
 // attempt to get user defined social configurations
-if (!_.isUndefined(Config.social)) {
-    _.extend(TapAPI.social, Config.social);
+if (!_.isUndefined(TapConfig.social)) {
+    _.extend(TapAPI.social, TapConfig.social);
 }
 
 // attempt to get user defined view registry
-if (!_.isUndefined(Config.viewRegistry)) {
-    _.extend(TapAPI.viewRegistry, Config.viewRegistry);
+if (!_.isUndefined(TapConfig.viewRegistry)) {
+    _.extend(TapAPI.viewRegistry, TapConfig.viewRegistry);
 }
 
 // attempt to get user defiend navigation controllers
-if (!_.isUndefined(Config.navigationControllers)) {
-    _.extend(TapAPI.navigationControllers, Config.navigationControllers);
+if (!_.isUndefined(TapConfig.navigationControllers)) {
+    _.extend(TapAPI.navigationControllers, TapConfig.navigationControllers);
 }

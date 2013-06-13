@@ -3,7 +3,7 @@
  */
 TapAPI.classes.views.tourDetailsView = TapAPI.classes.views.baseView.extend({
 	id: 'tour-details',
-	template: TemplateManager.get('tour-details'),
+	template: TapAPI.templateManager.get('tour-details'),
 	initialize: function() {
 		this._super('initialize');
 

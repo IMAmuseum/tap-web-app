@@ -2,7 +2,7 @@
  * Backbone collection for managing Stops for a tour
  */
 TapAPI.classes.collections.stopCollection = Backbone.Collection.extend({
-    model: StopModel,
+    model: TapAPI.classes.models.StopModel,
     initialize: function(models, id) {
         this.localStorage = new Backbone.LocalStorage(id + '-stop');
     },

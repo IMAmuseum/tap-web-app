@@ -9,7 +9,7 @@ TapAPI.classes.views.socialPopupView = Backbone.View.extend({
         'data-theme': 'a',
         'data-overlay-theme': 'a'
     },
-    template: TemplateManager.get('social-popup'),
+    template: TapAPI.templateManager.get('social-popup'),
     initialize: function() {
         // add listener for requests to display poup
         this.listenTo(Backbone, 'tap.socialPopup.dislay', this.displayPopup);
@@ -32,4 +32,3 @@ TapAPI.classes.views.socialPopupView = Backbone.View.extend({
         return false;
     }
 });
-return socialPopupView;

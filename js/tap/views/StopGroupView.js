@@ -3,7 +3,7 @@
  */
 TapAPI.classes.views.stopGroupView = TapAPI.classes.views.baseView.extend({
     id: 'stop-group',
-    template: TemplateManager.get('stop-group'),
+    template: TapAPI.templateManager.get('stop-group'),
     initialize: function() {
         this._super('initialize');
     },

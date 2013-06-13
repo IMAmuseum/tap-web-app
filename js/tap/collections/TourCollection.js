@@ -2,7 +2,7 @@
  * Backbone colleciton for managing Tours
  */
 TapAPI.classes.collections.tourCollection = Backbone.Collection.extend({
-    model: TourModel,
+    model: TapAPI.classes.models.TourModel,
     localStorage: new Backbone.LocalStorage('tours'),
     syncTourML: function(url) {
         var tours = [],

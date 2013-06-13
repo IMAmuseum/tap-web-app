@@ -3,7 +3,7 @@
  */
 TapAPI.classes.views.stopListView = TapAPI.classes.views.stopSelectionView.extend({
     id: 'tour-stop-list',
-    template: TemplateManager.get('stop-list'),
+    template: TapAPI.templateManager.get('stop-list'),
     initialize: function() {
         this._super('initialize');
         this.title = 'Select a Stop';

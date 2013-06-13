@@ -48,7 +48,7 @@ TapAPI.classes.views.audioStopView = TapAPI.classes.views.baseView.extend({
             sources.push('<source src="' + source.get('uri') + '" type="' + source.get('format') + '" />');
         });
 
-        this.template = TemplateManager.get(mediaTemplate);
+        this.template = TapAPI.templateManager.get(mediaTemplate);
 
         // Render from the template
         this.$el.html(this.template({
