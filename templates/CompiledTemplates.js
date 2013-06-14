@@ -1,4 +1,4 @@
-define(["tap/TapAPI"], function (TapAPI) {TapAPI.templates['audio'] = function(obj) {
+TapAPI.templates['audio'] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
@@ -380,4 +380,4 @@ __p += '<h3 class="stop-title">' +
 ((__t = ( obj.html )) == null ? '' : __t) +
 '</div>';
 return __p
-}});
+}

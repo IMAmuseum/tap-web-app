@@ -1,4 +1,4 @@
-var config = {
+var TapConfig = {
     tourMLEndpoint: '../../tour.xml',
     trackerID: '',
     media: {
