@@ -38,6 +38,9 @@ TapAPI.classes.views.AppView = Backbone.View.extend({
         var browserLanguage = (navigator.language) ? navigator.language : navigator.userLanguage;
         TapAPI.language = browserLanguage.split('-')[0];
 
+        //Load up the Router
+        TapAPI.router = new TapAPI.classes.routers.Primary();
+
         // initialize GA
         window._gaq = window._gaq || [];
         window._gaq.push(["_setAccount", TapAPI.trackerID]);

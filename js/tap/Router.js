@@ -40,7 +40,7 @@ TapAPI.classes.routers.Primary = Backbone.Router.extend({
         TapAPI.tours.selectTour(tourID);
         TapAPI.currentStop = null;
 
-        that.changePage(TapAPI.classes.views[view]);
+        that.changePage(new TapAPI.classes.views[view]());
     },
     /**
      * Route to a stop
@@ -52,11 +52,9 @@ TapAPI.classes.routers.Primary = Backbone.Router.extend({
         TapAPI.currentStop = TapAPI.tourStops.get(stopID);
 
         var stopType = TapAPI.currentStop.get('view');
-        var viewPath = 'tap/views/' + TapAPI.viewRegistry[stopType].view;
+        var viewName = TapAPI.viewRegistry[stopType].view;
 
-        Require([viewPath], function(View) {
-            that.changePage(new View({model: TapAPI.currentStop}));
-        });
+        that.changePage(new TapAPI.classes.views[viewName]({model: TapAPI.currentStop}));
     },
     changePage: function(view) {
         _gaq.push(['_trackPageview', '/#' + Backbone.history.getFragment()]);
@@ -83,5 +81,3 @@ TapAPI.classes.routers.Primary = Backbone.Router.extend({
         return '#tour/' + tourId + '/controller/' + defaultController;
     }
 });
-
-TapAPI.router = new TapAPI.classes.routers.Primary();
