@@ -44,12 +44,15 @@ TapAPI.classes.views.VideoStopView = TapAPI.classes.views.BaseView.extend({
             sources.push('<source src="' + source.get('uri') + '" type="' + source.get('format') + '" />');
         });
 
+        var description = this.model.get('description');
+
         // Render from the template
         this.$el.html(this.template({
             title: this.model.get('title'),
             transcription: transcription,
             imagePath: posterImagePath,
-            sources: sources
+            sources: sources,
+            description: description
         }));
 
         return this;

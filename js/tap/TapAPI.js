@@ -50,7 +50,7 @@ var TapAPI = {
             icon: 'images/video.png'
         },
         'web_stop': {
-            view: 'WebView',
+            view: 'WebStopView',
             icon: 'images/web.png'
         }
     },
