@@ -62,8 +62,7 @@ TapAPI.classes.views.VideoStopView = TapAPI.classes.views.BaseView.extend({
 
         // add event handlers for media player events
         mediaElement.addEventListener('loadedmetadata', function() {
-
-            that.timer.maxThreshold = mediaElement.duration * 1000;
+            TapAPI.tracker.setTimerOption('maxThreshold', mediaElement.duration * 1000);
         });
 
         mediaElement.addEventListener('play', function() {
