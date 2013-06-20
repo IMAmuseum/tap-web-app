@@ -21,7 +21,7 @@ TapAPI.classes.views.MapView = TapAPI.classes.views.StopSelectionView.extend({
         this.stopPopups = {};
         this.positionMarker = null;
 
-        this.geoLocation = new GeoLocation();
+        TapAPI.geoLocation.parseCurrentStopLocations();
 
         // Look to see if a location is defined for the tour to use as the initial map center
         var tour = TapAPI.tours.get(TapAPI.currentTour);
@@ -55,7 +55,7 @@ TapAPI.classes.views.MapView = TapAPI.classes.views.StopSelectionView.extend({
     },
     finishedAddingContent: function() {
         // initialize geo location
-        this.geoLocation.startLocating();
+        TapAPI.geoLocation.startLocating();
 
         // create map
         this.map = L.map('tour-map', {
@@ -106,15 +106,15 @@ TapAPI.classes.views.MapView = TapAPI.classes.views.StopSelectionView.extend({
             }
         }, this);
 
-        if (this.geoLocation.latestLocation !== null) {
-            this.onLocationFound(this.geoLocation.latestLocation);
+        if (TapAPI.geoLocation.latestLocation !== null) {
+            this.onLocationFound(TapAPI.geoLocation.latestLocation);
         }
         this.listenTo(Backbone, 'geolocation.location.recieved', this.onLocationFound);
     },
     generateBubbleContent: function(stop, formattedDistance) {
         if (formattedDistance === undefined) {
             if (stop.get('distance')) {
-                formattedDistance = this.geoLocation.formatDistance(stop.get('distance'));
+                formattedDistance = TapAPI.geoLocation.formatDistance(stop.get('distance'));
             }
         }
         if (TapAPI.navigationControllers.StopListView.filterBy === 'stopGroup') {
@@ -186,7 +186,7 @@ TapAPI.classes.views.MapView = TapAPI.classes.views.StopSelectionView.extend({
         var formattedDistance;
 
         if (stop.get('distance')) {
-            formattedDistance = this.geoLocation.formatDistance(stop.get('distance'));
+            formattedDistance = TapAPI.geoLocation.formatDistance(stop.get('distance'));
         }
 
         this.stopPopups[stop.id].setContent(this.generateBubbleContent(stop), formattedDistance);
@@ -245,7 +245,7 @@ TapAPI.classes.views.MapView = TapAPI.classes.views.StopSelectionView.extend({
     },
     onClose: function() {
         // stop location services
-        this.geoLocation.stopLocating();
+        TapAPI.geoLocation.stopLocating();
 
         // remove event handlers
         $(':jqmData(role="page")').off('pageinit', this.resizeMapViewport);
