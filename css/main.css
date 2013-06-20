@@ -185,26 +185,37 @@ div.tour-title {
     z-index: 999 !important;
 }
 
-#tour-map .distance-label-container {
-    font-size: 12px;
-    margin-top: -20px;
-    width: 60px;
-    margin-left: -18px;
-    text-align: center;
-}
-
-#tour-map .distance-label {
-    background-color: #ccc;
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-radius: 3px;
-}
-
 .marker-bubble-content .stop-options {
     margin-top: 5px;
     text-align: center;
 }
 
+.leaflet-popup-content-wrapper {
+    -webkit-border-radius: 0;
+    border-radius: 0;
+}
+
+.leaflet-popup-content {
+    margin: 2px 4px;
+}
+
+.leaflet-popup-content .title a {
+    font-weight: bold;
+    color: #000;
+    text-decoration: none;
+}
+
+.leaflet-popup-content .distance {
+    font-size: 80%;
+}
+
+.leaflet-popup-content .goto-stop {
+    float: right;
+    margin: 2px 0 0 0;
+}
+.leaflet-popup {
+    margin-bottom: 20px;
+}
 /* Tour Stops */
 
 .tour-stop .title {

@@ -1,19 +1,15 @@
 <div class="marker-bubble-content">
-	<div class="title"><%= title %></div>
-	<div class="distance"><%= distance %></div>
-	<div class="stop-options">
-        <a href="#tour/<%= tourID %>/stop/<%= stopID %>" class="ui-btn ui-shadow ui-btn-corner-all ui-mini ui-btn-inline ui-btn-up-c">
-            <span class="ui-btn-inner">
-                <span class="ui-btn-text">View Stop</span>
-            </span>
-        </a>
+    <a href="#tour/<%= tourID %>/stop/<%= stopID %>" class="goto-stop ui-btn ui-shadow ui-btn-corner-all ui-btn-inline ui-btn-icon-notext ui-btn-up-c">
+        <span class="ui-btn-inner">
+            <span class="ui-btn-text">View Stop</span>
+            <span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span>
+        </span>
+    </a>
+	<div class="title"><a href="#tour/<%= tourID %>/stop/<%= stopID %>"><%= title %></a></div>
+	<div class="distance">
+        <%= distance %> 
         <% if (showDirections) { %>
-        <a href="http://maps.google.com/maps?saddr=Current%20Location&daddr=<%= stopLat %>,<%= stopLong %>"
-            class="ui-btn ui-shadow ui-btn-corner-all ui-mini ui-btn-inline ui-btn-up-c">
-            <span class="ui-btn-inner">
-                <span class="ui-btn-text">Directions</span>
-            </span>
-        </a>
+        <a href="http://maps.google.com/maps?saddr=Current%20Location&daddr=<%= stopLat %>,<%= stopLong %>">Get Directions</a>
         <% } %>
-	</div>
+    </div>
 </div>

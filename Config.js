@@ -1,4 +1,4 @@
-var tourMLEndpoint = 'tour.xml';
+var tourMLEndpoint = 'http://localhost/tap/node/7/tourml.xml';
 
 //check for query parameters
 var queryParameters = function() {
@@ -29,7 +29,7 @@ if (qPosition > 0) {
 var TapConfig = {
     //customize these variables for your install
     tourMLEndpoint: tourMLEndpoint,
-    trackerID: '',
+    trackerID: 'UA-1868672-28',
     geo: {},
     social: {},
     tourSettings: {

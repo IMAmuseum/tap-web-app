@@ -159,17 +159,23 @@ TapAPI.classes.views.MapView = TapAPI.classes.views.StopSelectionView.extend({
                 iconRetinaUrl: 'images/marker-icon@2x.png',
                 shadowUrl: 'images/marker-shadow.png',
                 shadowSize: [41, 41],
-                popupAnchor: [0, -42],
+                popupAnchor: [0, -100],
                 className: 'stop-icon ' + stop.id
             });
 
             var markerLocation = new L.LatLng(data.coordinates[1], data.coordinates[0]);
             var marker = new L.Marker(markerLocation, {icon: stopIcon});
 
-            var popup = new L.Popup();
+            var popup = new L.Popup({
+                maxWidth: 300,
+                minWidth: 200,
+                closeButton: false
+            });
             popup.setLatLng(markerLocation);
             popup.setContent(this.generateBubbleContent(stop));
             this.stopPopups[stop.id] = popup;
+
+            //marker.bindPopup(popup);
 
             marker.stop_id = stop.id;
             marker.addEventListener('click', this.onMarkerSelected, this);
@@ -212,11 +218,13 @@ TapAPI.classes.views.MapView = TapAPI.classes.views.StopSelectionView.extend({
                 iconAnchor: [12, 41],
                 shadowUrl: 'images/marker-shadow.png',
                 shadowSize: [41, 41],
-                popupAnchor: [0, -42],
+                popupAnchor: [0, -22],
                 className: 'stop-icon ' + stop.id
             });
             this.positionMarker = new L.Marker(latlong, {icon: stopIcon})
-                .bindPopup('You are here');
+                .bindPopup('You are here',{
+                closeButton: false
+            });
             this.map.addLayer(this.positionMarker);
 
             this.positionMarker.addEventListener('click', function() {
