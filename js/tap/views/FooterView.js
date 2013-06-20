@@ -9,6 +9,9 @@ TapAPI.classes.views.FooterView = Backbone.View.extend({
         'data-tap-toggle': 'false'
     },
     template: TapAPI.templateManager.get('footer'),
+    events: {
+        'click a': 'clickTrack'
+    },
     initialize: function() {
         this.listenTo(Backbone, 'tap.router.routed', this.render);
     },
@@ -32,5 +35,9 @@ TapAPI.classes.views.FooterView = Backbone.View.extend({
             this.$el.hide();
         }
         return this;
+    },
+    clickTrack: function(e) {
+        var item = $(e.currentTarget).find("span.ui-btn-text").text();
+        TapAPI.tracker.trackEvent('Navigation', 'tapped', item, null);
     }
 });

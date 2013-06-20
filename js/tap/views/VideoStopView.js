@@ -15,8 +15,7 @@ TapAPI.classes.views.VideoStopView = TapAPI.classes.views.BaseView.extend({
             silverlightName: mejs.MediaElementDefaults.flashName
         };
 
-        this.timer = new AnalyticsTimer('VideoStop', 'played_for', TapAPI.currentStop.id);
-        this.timer.reset();
+        TapAPI.tracker.createTimer('VideoStop', 'played_for', TapAPI.currentStop.id);
     },
     render: function() {
         // Find the transcription if one exists
@@ -63,26 +62,34 @@ TapAPI.classes.views.VideoStopView = TapAPI.classes.views.BaseView.extend({
 
         // add event handlers for media player events
         mediaElement.addEventListener('loadedmetadata', function() {
+
             that.timer.maxThreshold = mediaElement.duration * 1000;
         });
 
         mediaElement.addEventListener('play', function() {
-            _gaq.push(['_trackEvent', 'VideoStop', 'media_started']);
-            that.timer.start();
+            var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
+            TapAPI.tracker.trackEvent('VideoStop', 'media_started', label, null);
+            TapAPI.tracker.startTimer();
         });
 
         mediaElement.addEventListener('pause', function() {
-            _gaq.push(['_trackEvent', 'VideoStop', 'media_paused']);
-            that.timer.stop();
+            var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
+            TapAPI.tracker.stopTimer();
+            var timer = TapAPI.tracker.get('timer');
+            TapAPI.tracker.trackEvent('VideoStop', 'media_paused', label, timer.elapsed);
         });
 
         mediaElement.addEventListener('ended', function() {
-            _gaq.push(['_trackEvent', 'VideoStop', 'media_ended']);
+            var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
+            TapAPI.tracker.stopTimer();
+            var timer = TapAPI.tracker.get('timer');
+            TapAPI.tracker.trackEvent('VideoStop', 'media_ended', label, timer.elapsed);
         });
 
         // Add click handler on the transcription toggle button
         this.$el.find('#transcription').on('expand', function(e, ui) {
-            _gaq.push(['_trackEvent', 'VideoStop', 'show_transcription']);
+            var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
+            TapAPI.tracker.trackEvent('VideoStop', 'show_transcription', label, null);
         });
 
         that.player = new MediaElementPlayer('.player', {
@@ -101,6 +108,6 @@ TapAPI.classes.views.VideoStopView = TapAPI.classes.views.BaseView.extend({
     },
     onClose: function() {
         // Send information about playback duration when the view closes
-        this.timer.send();
+        TapAPI.tracker.trackTime();
     }
 });

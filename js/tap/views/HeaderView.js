@@ -31,6 +31,8 @@ TapAPI.classes.views.HeaderView = Backbone.View.extend({
     navigateBack: function(e) {
         e.preventDefault();
 
+        TapAPI.tracker.trackEvent('Navigation', 'tapped', 'back', null);
+
         if (_.isNull(TapAPI.currentStop)) {
             Backbone.history.navigate('', {trigger: true});
         } else {

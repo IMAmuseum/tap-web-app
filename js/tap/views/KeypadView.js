@@ -21,6 +21,7 @@ TapAPI.classes.views.KeypadView = TapAPI.classes.views.StopSelectionView.extend(
     },
     submit: function() {
         this.code = this.$el.find('#code-label').html();
+        TapAPI.tracker.trackEvent('Navigation', 'tapped', 'KeyPad-Go', this.code);
 
         var stop = TapAPI.tourStops.getStopByKeycode(this.code);
         if(_.isEmpty(stop)) {
@@ -48,6 +49,7 @@ TapAPI.classes.views.KeypadView = TapAPI.classes.views.StopSelectionView.extend(
         $('#code-label').html(this.code);
     },
     clearKeyCode: function() {
+        TapAPI.tracker.trackEvent('Navigation', 'tapped', 'KeyPad-Clear', null);
         this.$el.find('#go-button').addClass('ui-disabled');
         this.$el.find('#code-label').html('');
         this.code = '';

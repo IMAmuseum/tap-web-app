@@ -194,12 +194,12 @@ TapAPI.classes.views.MapView = TapAPI.classes.views.StopSelectionView.extend({
     // When a marker is selected, show the popup
     // Assumes that the context is set to (MapView)
     onMarkerSelected: function(e) {
-        _gaq.push(['_trackEvent', 'Map', 'marker_clicked', e.target.stop_id]);
+        TapAPI.tracker.trackEvent('Map', 'marker_tapped', e.target.stop_id, null);
 
         this.map.openPopup(this.stopPopups[e.target.stop_id]);
 
         $('.marker-bubble-content .directions a').on('click', function() {
-            _gaq.push(['_trackEvent', 'Map', 'get_directions', e.target.stop_id]);
+            TapAPI.tracker.trackEvent('Map', 'get_directions', e.target.stop_id, null);
         });
     },
     onLocationFound: function(position) {
@@ -220,7 +220,7 @@ TapAPI.classes.views.MapView = TapAPI.classes.views.StopSelectionView.extend({
             this.map.addLayer(this.positionMarker);
 
             this.positionMarker.addEventListener('click', function() {
-                _gaq.push(['_trackEvent', 'Map', 'you_are_here_clicked']);
+                TapAPI.tracker.trackEvent('_trackEvent', 'Map', 'you_are_here_clicked', null);
             });
         } else {
             this.positionMarker.setLatLng(latlong);

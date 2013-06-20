@@ -41,16 +41,12 @@ TapAPI.classes.views.AppView = Backbone.View.extend({
         //Load up the Router
         TapAPI.router = new TapAPI.classes.routers.Primary();
 
-        // initialize GA
-        window._gaq = window._gaq || [];
-        window._gaq.push(["_setAccount", TapAPI.trackerID]);
-        (function(d,t){
-            var g = d.createElement(t),
-                s = d.getElementsByTagName(t)[0];
-            g.async = 1;
-            g.src= ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js';
-            s.parentNode.insertBefore(g, s);
-        }(document, 'script'));
+        // initialize Analytics
+        if (!_.isUndefined(TapAPI.classes.models[TapAPI.trackerClass])) {
+            TapAPI.tracker = new TapAPI.classes.models[TapAPI.trackerClass]({
+                trackerId: TapAPI.trackerID
+            });
+        }
 
         // create new instance of tour collection
         TapAPI.tours = new TapAPI.classes.collections.TourCollection();

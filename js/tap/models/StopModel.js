@@ -15,7 +15,7 @@ TapAPI.classes.models.StopModel = Backbone.Model.extend({
                     return item.lang === TapAPI.language;
                 });
 
-                if (!property && tap.language !== TapAPI.defaultLanguage) {
+                if (!property && TapAPI.language !== TapAPI.defaultLanguage) {
                     property = _.find(this.attributes[attr], function(item) {
                         return item.lang === TapAPI.defaultLanguage;
                     });

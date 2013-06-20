@@ -57,7 +57,8 @@ TapAPI.classes.routers.Primary = Backbone.Router.extend({
         that.changePage(new TapAPI.classes.views[viewName]({model: TapAPI.currentStop}));
     },
     changePage: function(view) {
-        _gaq.push(['_trackPageview', '/#' + Backbone.history.getFragment()]);
+        TapAPI.tracker.trackPageView('/#' + Backbone.history.getFragment());
+        //_gaq.push(['_trackPageview', '/#' + Backbone.history.getFragment()]);
         Backbone.trigger('tap.router.routed', view);
         Backbone.trigger('app.widgets.refresh');
     },

@@ -15,7 +15,9 @@ var TapAPI = {
     // User Configurable
     defaultLanguage: _.isUndefined(TapConfig.defaultLanguage) ? 'en' : TapConfig.defaultLanguage,
     tourMLEndpoint: _.isUndefined(TapConfig.tourMLEndpoint) ? '' : TapConfig.tourMLEndpoint,
+    tracker: null,
     trackerID: _.isUndefined(TapConfig.trackerID) ? '' : TapConfig.trackerID,
+    trackerClass: _.isUndefined(TapConfig.trackerClass) ? 'GAModel' : TapConfig.trackerClass,
     navigationControllers: {
         'StopListView': {
             label: 'Stop Menu',

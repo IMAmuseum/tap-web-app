@@ -7,8 +7,7 @@ TapAPI.classes.views.AudioStopView = TapAPI.classes.views.BaseView.extend({
     initialize: function() {
         this._super('initialize');
 
-        this.timer = new AnalyticsTimer('AudioStop', 'played_for', TapAPI.currentStop.id);
-        this.timer.reset();
+        TapAPI.tracker.createTimer('AudioStop', 'played_for', TapAPI.currentStop.id);
     },
     render: function() {
         // Find the transcription if one exists
@@ -67,26 +66,33 @@ TapAPI.classes.views.AudioStopView = TapAPI.classes.views.BaseView.extend({
 
         // add event handlers for media player events
         mediaElement.addEventListener('loadedmetadata', function() {
-            that.timer.maxThreshold = mediaElement.duration * 1000;
+            TapAPI.tracker.setTimerOption('maxThreshold', mediaElement.duration * 1000);
         });
 
         mediaElement.addEventListener('play', function() {
-            _gaq.push(['_trackEvent', 'AudioStop', 'media_started']);
-            that.timer.start();
+            var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
+            TapAPI.tracker.trackEvent('AudioStop', 'media_started', label, null);
+            TapAPI.tracker.startTimer();
         });
 
         mediaElement.addEventListener('pause', function() {
-            _gaq.push(['_trackEvent', 'AudioStop', 'media_paused']);
-            that.timer.stop();
+            var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
+            TapAPI.tracker.stopTimer();
+            var timer = TapAPI.tracker.get('timer');
+            TapAPI.tracker.trackEvent('AudioStop', 'media_paused', label, timer.elapsed);
         });
 
         mediaElement.addEventListener('ended', function() {
-            _gaq.push(['_trackEvent', 'AudioStop', 'media_ended']);
+            var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
+            TapAPI.tracker.stopTimer();
+            var timer = TapAPI.tracker.get('timer');
+            TapAPI.tracker.trackEvent('AudioStop', 'media_ended', label, timer.elapsed);
         });
 
         // Add expand handler on the transcription toggle button
         this.$el.find('#transcription').on('expand', function(e, ui) {
-            _gaq.push(['_trackEvent', 'AudioStop', 'show_transcription']);
+            var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
+            TapAPI.tracker.trackEvent('AudioStop', 'show_transcription', label, null);
         });
 
         this.player = new MediaElementPlayer('.player', {
@@ -98,6 +104,6 @@ TapAPI.classes.views.AudioStopView = TapAPI.classes.views.BaseView.extend({
     },
     close: function() {
         // Send information about playback duration when the view closes
-        this.timer.send();
+        TapAPI.tracker.trackTime();
     }
 });
