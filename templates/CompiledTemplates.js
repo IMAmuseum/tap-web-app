@@ -127,23 +127,27 @@ obj || (obj = {});
 var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-__p += '<div class="marker-bubble-content">\n\t<div class="title">' +
-((__t = ( title )) == null ? '' : __t) +
-'</div>\n\t<div class="distance">' +
-((__t = ( distance )) == null ? '' : __t) +
-'</div>\n\t<div class="stop-options">\n        <a href="#tour/' +
+__p += '<div class="marker-bubble-content">\n    <a href="#tour/' +
 ((__t = ( tourID )) == null ? '' : __t) +
 '/stop/' +
 ((__t = ( stopID )) == null ? '' : __t) +
-'" class="ui-btn ui-shadow ui-btn-corner-all ui-mini ui-btn-inline ui-btn-up-c">\n            <span class="ui-btn-inner">\n                <span class="ui-btn-text">View Stop</span>\n            </span>\n        </a>\n        ';
+'" class="goto-stop ui-btn ui-shadow ui-btn-corner-all ui-btn-inline ui-btn-icon-notext ui-btn-up-c">\n        <span class="ui-btn-inner">\n            <span class="ui-btn-text">View Stop</span>\n            <span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span>\n        </span>\n    </a>\n\t<div class="title"><a href="#tour/' +
+((__t = ( tourID )) == null ? '' : __t) +
+'/stop/' +
+((__t = ( stopID )) == null ? '' : __t) +
+'">' +
+((__t = ( title )) == null ? '' : __t) +
+'</a></div>\n\t<div class="distance">\n        ' +
+((__t = ( distance )) == null ? '' : __t) +
+' \n        ';
  if (showDirections) { ;
 __p += '\n        <a href="http://maps.google.com/maps?saddr=Current%20Location&daddr=' +
 ((__t = ( stopLat )) == null ? '' : __t) +
 ',' +
 ((__t = ( stopLong )) == null ? '' : __t) +
-'"\n            class="ui-btn ui-shadow ui-btn-corner-all ui-mini ui-btn-inline ui-btn-up-c">\n            <span class="ui-btn-inner">\n                <span class="ui-btn-text">Directions</span>\n            </span>\n        </a>\n        ';
+'">Get Directions</a>\n        ';
  } ;
-__p += '\n\t</div>\n</div>';
+__p += '\n    </div>\n</div>';
 
 }
 return __p
@@ -360,6 +364,12 @@ __p += '\n\t' +
 '\n\t';
  }); ;
 __p += '\n</video>\n';
+ if (!_.isEmpty(description)) { ;
+__p += '\n<div id="description" data-role="collapsible" data-content-theme="c">\n\t<h3>Description</h3>\n\t<p>' +
+((__t = ( description )) == null ? '' : __t) +
+'</p>\n';
+ } ;
+__p += '\n';
  if (!_.isEmpty(transcription)) { ;
 __p += '\n<div id="transcription" data-role="collapsible" data-content-theme="c">\n\t<h3>Transcript</h3>\n\t<p>' +
 ((__t = ( transcription )) == null ? '' : __t) +
