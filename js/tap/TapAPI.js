@@ -3,7 +3,8 @@ var TapAPI = {
         models: {},
         views: {},
         collections: {},
-        routers: {}
+        routers: {},
+        utility: {}
     },
     tours: {},
     tourAssets: {},
@@ -35,7 +36,7 @@ var TapAPI = {
     },
     tourSettings: TapConfig.tourSettings,
     viewRegistry: {
-       'audio_stop': {
+        'audio_stop': {
             view: 'AudioStopView',
             icon: 'images/audio.png'
         },
