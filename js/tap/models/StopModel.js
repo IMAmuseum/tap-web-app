@@ -91,9 +91,10 @@ TapAPI.classes.models.StopModel = Backbone.Model.extend({
     */
     getSortedConnections: function() {
         if(_.isUndefined(this.get('connection'))) return undefined;
-        return _.sortBy(this.get('connection'), function(connection) {
+        var connections = _.sortBy(this.get('connection'), function(connection) {
             return parseInt(connection.priority, 10);
         });
+        return connections.length ? connections : undefined;
     },
     getProperty: function(propertyName) {
         return this.get('propertySet').getValueByName(propertyName);
