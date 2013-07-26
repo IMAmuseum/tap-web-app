@@ -19,6 +19,7 @@ var TapAPI = {
     tracker: null,
     trackerID: _.isUndefined(TapConfig.trackerID) ? '' : TapConfig.trackerID,
     trackerClass: _.isUndefined(TapConfig.trackerClass) ? 'GAModel' : TapConfig.trackerClass,
+    primaryRouter: _.isUndefined(TapConfig.primaryRouter) ? 'Default' : TapConfig.primaryRouter,
     navigationControllers: {
         'StopListView': {
             label: 'Stop Menu',

@@ -39,7 +39,11 @@ TapAPI.classes.views.AppView = Backbone.View.extend({
         TapAPI.language = browserLanguage.split('-')[0];
 
         //Load up the Router
-        TapAPI.router = new TapAPI.classes.routers.Primary();
+        if (!_.isUndefined(TapAPI.classes.routers[TapAPI.primaryRouter])) {
+            TapAPI.router = new TapAPI.classes.routers[TapAPI.primaryRouter]();
+        } else {
+            TapAPI.router = new TapAPI.classes.routers.Default();
+        }
 
         // initialize Analytics
         if (!_.isUndefined(TapAPI.classes.models[TapAPI.trackerClass])) {

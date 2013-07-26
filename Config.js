@@ -39,5 +39,6 @@ var TapConfig = {
         }
     },
     navigationControllers: {},
-    viewRegistry: {}
+    viewRegistry: {},
+    primaryRouter: "Default"
 };

@@ -1,7 +1,7 @@
 /*
  * The Primary router for TAP
  */
-TapAPI.classes.routers.Primary = Backbone.Router.extend({
+TapAPI.classes.routers.Default = Backbone.Router.extend({
     routes: {
         '': 'tourSelection',
         'tour/:tourID/details': 'tourDetails',
