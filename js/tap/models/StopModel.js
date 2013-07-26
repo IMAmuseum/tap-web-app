@@ -90,7 +90,7 @@ TapAPI.classes.models.StopModel = Backbone.Model.extend({
     * @return array The connection array ordered by priority in ascending order
     */
     getSortedConnections: function() {
-        if(_.isUndefined(this.get('connections'))) return undefined;
+        if(_.isUndefined(this.get('connection'))) return undefined;
         return _.sortBy(this.get('connection'), function(connection) {
             return parseInt(connection.priority, 10);
         });

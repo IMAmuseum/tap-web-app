@@ -16,7 +16,8 @@ TapAPI.classes.views.WebStopView = TapAPI.classes.views.BaseView.extend({
         }
         this.$el.html(this.template({
             title: this.model.get('title'),
-            html: html
+            html: html,
+            nextStopPath: this.getNextStopPath()
         }));
         return this;
     }

@@ -27,5 +27,13 @@ TapAPI.classes.views.BaseView = Backbone.View.extend({
 			});
 		}
 		return this;
+	},
+	getNextStopPath: function () {
+		var nextStopId = this.getNextStopId();
+		return !_.isUndefined(nextStopId) ? '#tour/' + TapAPI.currentTour + '/stop/' + nextStopId : undefined;
+	},
+	getNextStopId : function () {
+		var nextStop = this.model.getSortedConnections();
+		return !_.isUndefined(nextStop) ? nextStop[0].destId : undefined;
 	}
 });
