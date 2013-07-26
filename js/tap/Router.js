@@ -65,7 +65,7 @@ TapAPI.classes.routers.Default = Backbone.Router.extend({
     getTourDefaultRoute: function(tourId) {
         var defaultController, controller;
 
-        var rootStop = TapAPI.tours.get(TapAPI.currentTour).get('rootStopRef');
+        var rootStop = TapAPI.tours.get(tourId).get('rootStopRef');
         if (!_.isUndefined(rootStop)) {
             return '#tour/' + tourId + '/stop/' + rootStop.id;
         }
