@@ -8,9 +8,10 @@ TapAPI.tourMLParser = {
         if(tourML.tour) { // Single tour
             tours.push(this.parseTourML(tourML.tour));
         } else if(tourML.tourSet && tourML.tourSet.tourMLRef) { // TourSet w/ external tours
-            len = tourML.tourSet.tourMLRef.length;
+            var tourRefs = TapAPI.helper.objectToArray(tourML.tourSet.tourMLRef);
+            len = tourRefs.length;
             for(i = 0; i < len; i++) {
-                var data = TapAPI.helper.xmlToJson(TapAPI.helper.loadXMLDoc(tourML.tourSet.tourMLRef[i].uri));
+                var data = TapAPI.helper.xmlToJson(TapAPI.helper.loadXMLDoc(tourRefs[i].uri));
                 tours.push(this.parseTourML(data.tour));
             }
         } else if(tourML.tourSet && tourML.tourSet.tour) { // TourSet w/ tours as children elements
