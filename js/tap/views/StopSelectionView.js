@@ -4,8 +4,8 @@
  * All Navigation Views should extend from thie View
  */
 TapAPI.classes.views.StopSelectionView = TapAPI.classes.views.BaseView.extend({
-    initialize: function() {
-        this._super('initialize');
+    initialize: function(options) {
+        this._super(options);
         this.activeToolbarButton = '';
     }
 });

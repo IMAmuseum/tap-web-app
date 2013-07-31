@@ -7,8 +7,8 @@ TapAPI.classes.views.ImageStopView = TapAPI.classes.views.BaseView.extend({
     id: 'gallery',
     className: 'ui-grid-b',
     template: TapAPI.templateManager.get('image-stop'),
-    initialize: function() {
-        this._super('initialize');
+    initialize: function(options) {
+        this._super(options);
     },
     render: function() {
         var assetRefs = this.model.get('assetRef');

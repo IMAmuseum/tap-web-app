@@ -4,8 +4,8 @@
 TapAPI.classes.views.StopListView = TapAPI.classes.views.StopSelectionView.extend({
     id: 'tour-stop-list',
     template: TapAPI.templateManager.get('stop-list'),
-    initialize: function() {
-        this._super('initialize');
+    initialize: function(options) {
+        this._super(options);
         this.title = 'Select a Stop';
         this.activeToolbarButton = 'StopListView';
 

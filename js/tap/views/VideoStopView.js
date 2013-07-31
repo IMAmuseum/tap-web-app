@@ -5,8 +5,8 @@
 TapAPI.classes.views.VideoStopView = TapAPI.classes.views.BaseView.extend({
     id: 'video-stop',
     template: TapAPI.templateManager.get('video'),
-    initialize: function() {
-        this._super('initialize');
+    initialize: function(options) {
+        this._super(options);
 
         this.mediaOptions = {
             defaultVideoWidth: '220',

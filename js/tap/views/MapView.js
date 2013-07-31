@@ -4,10 +4,10 @@
  */
 TapAPI.classes.views.MapView = TapAPI.classes.views.StopSelectionView.extend({
     id: 'tour-map',
-    initialize: function() {
+    initialize: function(options) {
         var that = this;
 
-        this._super('initialize');
+        this._super(options);
 
         this.title = '';
         this.activeToolbarButton = 'MapView';

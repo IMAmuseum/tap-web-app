@@ -4,8 +4,8 @@
 TapAPI.classes.views.KeypadView = TapAPI.classes.views.StopSelectionView.extend({
     id: 'keypad',
     template: TapAPI.templateManager.get('keypad'),
-    initialize: function() {
-        this._super('initialize');
+    initialize: function(options) {
+        this._super(options);
         this.title = 'Enter a Stop Code';
         this.activeToolbarButton = 'KeypadView';
         this.code = '';
