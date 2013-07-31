@@ -1,11 +1,11 @@
 <div class="marker-bubble-content">
-    <a href="#tour/<%= tourID %>/stop/<%= stopID %>" class="goto-stop ui-btn ui-shadow ui-btn-corner-all ui-btn-inline ui-btn-icon-notext ui-btn-up-c">
+    <a href="<%= route %>" class="goto-stop ui-btn ui-shadow ui-btn-corner-all ui-btn-inline ui-btn-icon-notext ui-btn-up-c">
         <span class="ui-btn-inner">
             <span class="ui-btn-text">View Stop</span>
             <span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span>
         </span>
     </a>
-	<div class="title"><a href="#tour/<%= tourID %>/stop/<%= stopID %>"><%= title %></a></div>
+	<div class="title"><a href="<%= route %>"><%= title %></a></div>
 	<div class="distance">
         <%= distance %> 
         <% if (showDirections) { %>

@@ -136,7 +136,8 @@ TapAPI.classes.views.MapView = TapAPI.classes.views.StopSelectionView.extend({
             distance: (formattedDistance === undefined) ? '' : 'Distance: ' + formattedDistance,
             stopLat: stop.get('location').lat,
             stopLong: stop.get('location').lng,
-            showDirections: TapAPI.navigationControllers.MapView.showDirections
+            showDirections: TapAPI.navigationControllers.MapView.showDirections,
+            route: stop.getRoute()
         });
     },
     // Plot a single tour stop marker on the map
