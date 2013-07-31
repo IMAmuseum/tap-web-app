@@ -4,8 +4,8 @@
 TapAPI.classes.views.WebStopView = TapAPI.classes.views.BaseView.extend({
     id: 'web-stop',
     template: TapAPI.templateManager.get('web'),
-    initialize: function() {
-        this._super('initialize');
+    initialize: function(options) {
+        this._super(options);
         this.title = this.model.get('title');
     },
     render: function() {

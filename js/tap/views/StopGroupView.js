@@ -4,8 +4,8 @@
 TapAPI.classes.views.StopGroupView = TapAPI.classes.views.BaseView.extend({
     id: 'stop-group',
     template: TapAPI.templateManager.get('stop-group'),
-    initialize: function() {
-        this._super('initialize');
+    initialize: function(options) {
+        this._super(options);
     },
     render: function() {
         var stops = [],

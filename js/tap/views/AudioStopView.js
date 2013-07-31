@@ -4,8 +4,8 @@
  */
 TapAPI.classes.views.AudioStopView = TapAPI.classes.views.BaseView.extend({
     id: 'audio-stop',
-    initialize: function() {
-        this._super('initialize');
+    initialize: function(options) {
+        this._super(options);
 
         TapAPI.tracker.createTimer('AudioStop', 'played_for', TapAPI.currentStop.id);
     },

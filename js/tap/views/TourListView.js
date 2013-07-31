@@ -4,8 +4,8 @@
 TapAPI.classes.views.TourListView = TapAPI.classes.views.BaseView.extend({
 	id: 'tour-list',
 	template: TapAPI.templateManager.get('tour-list'),
-	initialize: function() {
-		this._super('initialize');
+	initialize: function(options) {
+		this._super(options);
 		this.title = 'Select a Tour';
 
 		this.displayHeader = false;
