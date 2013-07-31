@@ -5,6 +5,7 @@ TapAPI.classes.collections.StopCollection = Backbone.Collection.extend({
     model: TapAPI.classes.models.StopModel,
     initialize: function(models, id) {
         this.localStorage = new Backbone.LocalStorage(id + '-stop');
+        this.tourId = id;
     },
     // retrieve the stop id of a given key code
     getStopByKeycode: function(key) {

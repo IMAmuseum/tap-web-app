@@ -64,10 +64,11 @@ TapAPI.classes.routers.Default = Backbone.Router.extend({
     },
     getTourDefaultRoute: function(tourId) {
         var defaultController, controller;
+        var fragments = this.getFragmentParts();
 
         var rootStop = TapAPI.tours.get(tourId).get('rootStopRef');
         if (!_.isUndefined(rootStop)) {
-            return '#tour/' + tourId + '/stop/' + rootStop.id;
+            return '#' + fragments[0] '/' + tourId + '/stop/' + rootStop.id;
         }
 
         // get tour specific default navigation controller
@@ -84,6 +85,13 @@ TapAPI.classes.routers.Default = Backbone.Router.extend({
             }
         }
 
-        return '#tour/' + tourId + '/controller/' + defaultController;
+        return '#' + fragments[0] '/' + tourId + '/controller/' + defaultController;
+    },
+    getStopRoute: function(tourId, stopId) {
+        var fragments = this.getFragmentParts();
+        return '#' + fragments[0] + '/' + tourId + '/stop/' + stopId;
+    },
+    getFragmentParts: function() {
+        return Backbone.history.fragment.split("/");
     }
 });

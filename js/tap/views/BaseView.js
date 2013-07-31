@@ -3,7 +3,7 @@
  * All STOP views in TAP should extend from this
  */
 TapAPI.classes.views.BaseView = Backbone.View.extend({
-	initialize: function() {
+	initialize: function(options) {
 		this.title = '';
 		this.displayHeader = true;
 		this.displayFooter = true;
