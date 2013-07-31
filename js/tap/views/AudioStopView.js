@@ -55,7 +55,8 @@ TapAPI.classes.views.AudioStopView = TapAPI.classes.views.BaseView.extend({
             transcription: transcription,
             imagePath: posterImagePath,
             sources: sources,
-            description: description
+            description: description,
+            nextStopPath: this.getNextStopPath()
         }));
 
         return this;
