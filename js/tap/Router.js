@@ -101,6 +101,9 @@ TapAPI.classes.routers.Default = Backbone.Router.extend({
     },
     getBaseRoute: function() {
         var parts = this.getFragmentParts();
+        if (parts[0].length === 0) {
+            return 'tour';
+        }
         return parts[0];
     }
 });
