@@ -20,3 +20,6 @@
 	<p><%= transcription %></p>
 </div>
 <% } %>
+<% if (!_.isUndefined(nextStopPath)) { %>
+    <a href="<%= nextStopPath %>" data-role="button">next</a>
+<% } %>

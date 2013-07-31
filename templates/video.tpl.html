@@ -15,3 +15,6 @@
 	<h3>Transcript</h3>
 	<p><%= transcription %></p>
 <% } %>
+<% if (!_.isUndefined(nextStopPath)) { %>
+    <a href="<%= nextStopPath %>" data-role="button">next</a>
+<% } %>
