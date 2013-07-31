@@ -23,7 +23,8 @@ TapAPI.classes.views.StopGroupView = TapAPI.classes.views.BaseView.extend({
                 stops.push({
                     id: stop.get('id'),
                     title: stop.get('title'),
-                    icon: TapAPI.viewRegistry[stop.get('view')].icon
+                    icon: TapAPI.viewRegistry[stop.get('view')].icon,
+                    route: stop.getRoute()
                 });
             }
         });
