@@ -64,11 +64,11 @@ TapAPI.classes.routers.Default = Backbone.Router.extend({
     },
     getTourDefaultRoute: function(tourId) {
         var defaultController, controller;
-        var fragments = this.getFragmentParts();
+        var baseRoute = this.getBaseRoute();
 
         var rootStop = TapAPI.tours.get(tourId).get('rootStopRef');
         if (!_.isUndefined(rootStop)) {
-            return '#' + fragments[0] + '/' + tourId + '/stop/' + rootStop.id;
+            return '#' + baseRoute + '/' + tourId + '/stop/' + rootStop.id;
         }
 
         // get tour specific default navigation controller
@@ -85,7 +85,7 @@ TapAPI.classes.routers.Default = Backbone.Router.extend({
             }
         }
 
-        return '#' + fragments[0] + '/' + tourId + '/controller/' + defaultController;
+        return '#' + baseRoute + '/' + tourId + '/controller/' + defaultController;
     },
     getStopRoute: function(tourId, stopId, withHash) {
         if (_.isUndefined(withHash) || withHash === true) {
@@ -93,10 +93,14 @@ TapAPI.classes.routers.Default = Backbone.Router.extend({
         } else {
             withHash = '';
         }
-        var fragments = this.getFragmentParts();
-        return withHash + fragments[0] + '/' + tourId + '/stop/' + stopId;
+        var baseRoute = this.getBaseRoute();
+        return withHash + baseRoute + '/' + tourId + '/stop/' + stopId;
     },
     getFragmentParts: function() {
         return Backbone.history.fragment.split("/");
+    },
+    getBaseRoute: function() {
+        var parts = this.getFragmentParts();
+        return parts[0];
     }
 });

@@ -29,7 +29,8 @@ TapAPI.classes.views.FooterView = Backbone.View.extend({
             this.$el.html(this.template({
                 activeToolbarButton: view.activeToolbarButton,
                 tourID: TapAPI.currentTour,
-                controllers: controllers
+                controllers: controllers,
+                baseRoute: TapAPI.router.getBaseRoute()
             }));
         } else {
             this.$el.hide();
