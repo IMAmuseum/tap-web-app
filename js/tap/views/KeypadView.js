@@ -35,7 +35,7 @@ TapAPI.classes.views.KeypadView = TapAPI.classes.views.StopSelectionView.extend(
             this.code = '';
             return false;
         } else {
-            Backbone.history.navigate('tour/' + TapAPI.currentTour + '/stop/' + stop.get('id'), {trigger: true});
+            Backbone.history.navigate(stop.getRoute(false), {trigger: true});
         }
     },
     inputKeyCode: function(e) {

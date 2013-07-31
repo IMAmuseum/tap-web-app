@@ -99,7 +99,7 @@ TapAPI.classes.models.StopModel = Backbone.Model.extend({
     getProperty: function(propertyName) {
         return this.get('propertySet').getValueByName(propertyName);
     },
-    getRoute: function() {
-        return TapAPI.router.getStopRoute(this.collection.tourId, this.get('id'));
+    getRoute: function(withHash) {
+        return TapAPI.router.getStopRoute(this.collection.tourId, this.get('id'), withHash);
     }
 });

@@ -87,9 +87,14 @@ TapAPI.classes.routers.Default = Backbone.Router.extend({
 
         return '#' + fragments[0] + '/' + tourId + '/controller/' + defaultController;
     },
-    getStopRoute: function(tourId, stopId) {
+    getStopRoute: function(tourId, stopId, withHash) {
+        if (_.isUndefined(withHash) || withHash === true) {
+            withHash = '#';
+        } else {
+            withHash = '';
+        }
         var fragments = this.getFragmentParts();
-        return '#' + fragments[0] + '/' + tourId + '/stop/' + stopId;
+        return withHash + fragments[0] + '/' + tourId + '/stop/' + stopId;
     },
     getFragmentParts: function() {
         return Backbone.history.fragment.split("/");
