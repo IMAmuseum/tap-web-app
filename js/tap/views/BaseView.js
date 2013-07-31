@@ -31,7 +31,7 @@ TapAPI.classes.views.BaseView = Backbone.View.extend({
 	getNextStopPath: function () {
 		var nextStopId = this.getNextStopId();
 		var fragments = Backbone.history.fragment.split("/");
-		return !_.isUndefined(nextStopId) ? fragments[0] + '/' + TapAPI.currentTour + '/stop/' + nextStopId : undefined;
+		return !_.isUndefined(nextStopId) ? '#' + fragments[0] + '/' + TapAPI.currentTour + '/stop/' + nextStopId : undefined;
 	},
 	getNextStopId : function () {
 		var nextStop = this.model.getSortedConnections();
