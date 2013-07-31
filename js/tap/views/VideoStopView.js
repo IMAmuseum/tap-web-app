@@ -51,7 +51,8 @@ TapAPI.classes.views.VideoStopView = TapAPI.classes.views.BaseView.extend({
             transcription: transcription,
             imagePath: posterImagePath,
             sources: sources,
-            description: description
+            description: description,
+            nextStopPath: this.getNextStopPath()
         }));
 
         return this;

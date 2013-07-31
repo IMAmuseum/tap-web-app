@@ -37,7 +37,8 @@ TapAPI.classes.views.ImageStopView = TapAPI.classes.views.BaseView.extend({
 
         this.$el.html(this.template({
             title: this.model.get('title'),
-            images: images
+            images: images,
+            nextStopPath: this.getNextStopPath()
         }));
 
         this.gallery = this.$el.find('a').photoSwipe({
