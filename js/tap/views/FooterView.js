@@ -21,6 +21,9 @@ TapAPI.classes.views.FooterView = Backbone.View.extend({
             if (!_.isUndefined(TapAPI.tourSettings[TapAPI.currentTour]) &&
                 TapAPI.tourSettings[TapAPI.currentTour].enabledNavigationControllers) {
                 controllers = _.pick(TapAPI.navigationControllers, TapAPI.tourSettings[TapAPI.currentTour].enabledNavigationControllers);
+            } else if (!_.isUndefined(TapAPI.tourSettings['default']) &&
+                TapAPI.tourSettings['default'].enabledNavigationControllers) {
+                controllers = _.pick(TapAPI.navigationControllers, TapAPI.tourSettings['default'].enabledNavigationControllers);
             } else {
                 controllers = TapAPI.navigationControllers;
             }
