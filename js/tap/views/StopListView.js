@@ -55,7 +55,8 @@ TapAPI.classes.views.StopListView = TapAPI.classes.views.StopSelectionView.exten
             stops.push({
                 model: stop,
                 title: this.getStopTitle(stop),
-                icon: this.getStopIcon(stop)
+                icon: this.getStopIcon(stop),
+                thumbnail: this.getStopThumbnail(stop)
             });
         }, this);
 
@@ -66,8 +67,7 @@ TapAPI.classes.views.StopListView = TapAPI.classes.views.StopSelectionView.exten
             tourID: TapAPI.currentTour,
             stops: this.stops,
             displayCodes: this.displayCodes,
-            displayThumbnails: this.displayThumbnails,
-            thumbnail: this.getStopThumbnail
+            displayThumbnails: this.displayThumbnails
         }));
         return this;
     },
