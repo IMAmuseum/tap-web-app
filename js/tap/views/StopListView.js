@@ -17,6 +17,7 @@ TapAPI.classes.views.StopListView = TapAPI.classes.views.StopSelectionView.exten
             this.filterBy = options.sortBy;
         }
         this.displayCodes = TapAPI.navigationControllers.StopListView.displayCodes;
+        this.displayThumbnails = TapAPI.navigationControllers.StopListView.displayThumbnails;
 
         // apply filter
         if (this.filterBy === 'stopGroup') {
@@ -64,7 +65,9 @@ TapAPI.classes.views.StopListView = TapAPI.classes.views.StopSelectionView.exten
         this.$el.html(this.template({
             tourID: TapAPI.currentTour,
             stops: this.stops,
-            displayCodes: this.displayCodes
+            displayCodes: this.displayCodes,
+            displayThumbnails: this.displayThumbnails,
+            thumbnail: this.getStopThumbnail
         }));
         return this;
     },
@@ -78,5 +81,8 @@ TapAPI.classes.views.StopListView = TapAPI.classes.views.StopSelectionView.exten
             icon = stopConfig.icon;
         }
         return icon;
+    },
+    getStopThumbnail: function(stop) {
+        return undefined;
     }
 });
