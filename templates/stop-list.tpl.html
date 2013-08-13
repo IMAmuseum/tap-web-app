@@ -1,15 +1,15 @@
 <ul  data-role="listview" data-filter="true">
     <% _.each(stops, function(stop) { %>
     <li>
-        <a href='<%= stop.getRoute() %>'>
-            <% if (displayCodes && stop.getProperty('code')) { %>
-            <span class="stop-code"><%= stop.getProperty('code') %></span>
+        <a href='<%= stop.model.getRoute() %>'>
+            <% if (displayCodes && stop.model.getProperty('code')) { %>
+            <span class="stop-code"><%= stop.model.getProperty('code') %></span>
             <span class="title-with-code">
             <% } else { %>
-            <img src="<%= stop.get('icon') %>" class="ui-li-icon ui-li-thumb" />
+            <img src="<%= stop.icon %>" class="ui-li-icon ui-li-thumb" />
             <span>
             <% } %>
-                <%= stop.get('title') %>
+                <%= stop.title %>
             </span>
         </a>
     </li>
