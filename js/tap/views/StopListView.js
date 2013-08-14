@@ -8,9 +8,19 @@ TapAPI.classes.views.StopListView = TapAPI.classes.views.StopSelectionView.exten
         this._super(options);
         this.title = 'Select a Stop';
         this.activeToolbarButton = 'StopListView';
+        this.filterBy = TapAPI.navigationControllers.StopListView.filterBy;
+        if (!_.isUndefined(options) && options.filterBy) {
+            this.filterBy = options.filterBy;
+        }
+        this.sortBy = TapAPI.navigationControllers.StopListView.sortBy;
+        if (!_.isUndefined(options) && options.sortBy) {
+            this.filterBy = options.sortBy;
+        }
+        this.displayCodes = TapAPI.navigationControllers.StopListView.displayCodes;
+        this.displayThumbnails = TapAPI.navigationControllers.StopListView.displayThumbnails;
 
         // apply filter
-        if (TapAPI.navigationControllers.StopListView.filterBy === 'stopGroup') {
+        if (this.filterBy === 'stopGroup') {
             // retrieve all stops that are stop groups
             this.stops = _.filter(TapAPI.tourStops.models, function(stop) {
                 return stop.get('view') === 'stop_group';
@@ -18,12 +28,17 @@ TapAPI.classes.views.StopListView = TapAPI.classes.views.StopSelectionView.exten
         } else {
             // retrieve all stops that have a code associated with it
             this.stops = _.filter(TapAPI.tourStops.models, function(stop) {
-                return stop.get('propertySet').where({'name': 'code'}) !== undefined;
+                var code = parseInt(stop.getProperty('code'), 10);
+                if (isNaN(code)) {
+                    return false;
+                } else {
+                    return true;
+                }
             });
         }
 
         // apply sorting
-        if (TapAPI.navigationControllers.StopListView.sortBy === 'title') {
+        if (this.sortBy === 'title') {
             // sort by title
             this.stops = _.sortBy(this.stops, function(stop) {
                 return stop.get('title');
@@ -35,19 +50,39 @@ TapAPI.classes.views.StopListView = TapAPI.classes.views.StopSelectionView.exten
             });
         }
 
+        var stops = [];
         _.each(this.stops, function(stop) {
-            var stopConfig = TapAPI.viewRegistry[stop.get('view')];
-            if (stopConfig) {
-                stop.set('icon', stopConfig.icon);
-            }
+            stops.push({
+                model: stop,
+                title: this.getStopTitle(stop),
+                icon: this.getStopIcon(stop),
+                thumbnail: this.getStopThumbnail(stop)
+            });
         }, this);
+
+        this.stops = stops;
     },
     render: function() {
         this.$el.html(this.template({
             tourID: TapAPI.currentTour,
             stops: this.stops,
-            displayCodes: TapAPI.navigationControllers.StopListView.displayCodes
+            displayCodes: this.displayCodes,
+            displayThumbnails: this.displayThumbnails
         }));
         return this;
+    },
+    getStopTitle: function(stop) {
+        return stop.get('title');
+    },
+    getStopIcon: function(stop) {
+        var stopConfig = TapAPI.viewRegistry[stop.get('view')];
+        var icon;
+        if (stopConfig) {
+            icon = stopConfig.icon;
+        }
+        return icon;
+    },
+    getStopThumbnail: function(stop) {
+        return undefined;
     }
 });
