@@ -12,18 +12,29 @@ TapAPI.tourMLParser = {
             len = tourRefs.length;
             for(i = 0; i < len; i++) {
                 var data = TapAPI.helper.xmlToJson(TapAPI.helper.loadXMLDoc(tourRefs[i].uri));
-                tours.push(this.parseTourML(data.tour));
+                tours.push(this.parseTourML(data.tour, url));
             }
         } else if(tourML.tourSet && tourML.tourSet.tour) { // TourSet w/ tours as children elements
             len = tourML.tourSet.tour.length;
             for(i = 0; i < len; i++) {
-               tours.push(this.parseTourML(tourML.tourSet.tour[i]));
+               tours.push(this.parseTourML(tourML.tourSet.tour[i], url));
             }
         }
 
         return tours;
     },
-    parseTourML: function(data) {
+    parseTourML: function(data, toursetUrl) {
+
+        // bind pre and post processing events
+        this.on('willParseTour', $.proxy(this.onWillParseTour, this));
+        this.on('didParseTour', $.proxy(this.onDidParseTour, this));
+        this.on('willParseStop', $.proxy(this.onWillParseStop, this));
+        this.on('didParseStop', $.proxy(this.onDidParseStop, this));
+        this.on('willParseAsset', $.proxy(this.onWillParseAsset, this));
+        this.on('didParseAsset', $.proxy(this.onDidParseAsset, this));
+
+        this.trigger('willParseTour');
+
         // check to see if the tour has been updated
         var tour = TapAPI.tours.get(data.id);
         if (tour && Date.parse(data.lastModified) <= Date.parse(tour.get('lastModified'))) return tour;
@@ -34,6 +45,7 @@ TapAPI.tourMLParser = {
         // create new tour
         tour = new TapAPI.classes.models.TourModel({
             id: data.id,
+            toursetUrl: toursetUrl,
             appResource: data.tourMetadata && data.tourMetadata.appResource ? TapAPI.helper.objectToArray(data.tourMetadata.appResource) : undefined,
             connection: data.connection ? TapAPI.helper.objectToArray(data.connection) : undefined,
             description: data.tourMetadata && data.tourMetadata.description ? TapAPI.helper.objectToArray(data.tourMetadata.description) : undefined,
@@ -56,6 +68,7 @@ TapAPI.tourMLParser = {
         data.stop = TapAPI.helper.objectToArray(data.stop);
         var numStops = data.stop.length;
         for (i = 0; i < numStops; i++) {
+            this.trigger('willParseStop');
             var stop,
                 connections = [];
 
@@ -66,7 +79,7 @@ TapAPI.tourMLParser = {
                     }
                 }
             }
-
+            
             stop = new TapAPI.classes.models.StopModel({
                 id: data.stop[i].id,
                 connection: connections,
@@ -79,12 +92,14 @@ TapAPI.tourMLParser = {
             });
             stopCollection.create(stop);
             stops.push(stop);
+            this.trigger('didParseStop', stop);
         }
 
         // load asset models
         data.asset = TapAPI.helper.objectToArray(data.asset);
         var numAssets = data.asset.length;
         for (i = 0; i < numAssets; i++) {
+            this.trigger('willParseAsset');
             var asset;
 
             // modifiy source propertySet child to match similar elements
@@ -117,6 +132,7 @@ TapAPI.tourMLParser = {
             });
             assetCollection.create(asset);
             assets.push(asset);
+            this.trigger('didParseAsset', asset);
         }
 
         // clear out the temporary models
@@ -134,7 +150,20 @@ TapAPI.tourMLParser = {
         // clear out the temporary models
         stopCollection.reset();
         assetCollection.reset();
-
+        
+        // announce we're done parsing the tour
+        this.trigger('didParseTour', tour);
+        
         return tour;
-    }
+    },
+    
+    // stubs for local parse event handlers
+    onWillParseTour: (TapConfig.willParseTour) ? TapConfig.willParseTour : function () {},
+    onDidParseTour: (TapConfig.didParseTour) ? TapConfig.didParseTour : function (tour) {},
+    onWillParseStop: (TapConfig.willParseStop) ? TapConfig.willParseStop : function () {},
+    onDidParseStop: (TapConfig.didParseStop) ? TapConfig.didParseStop : function (stop) {},
+    onWillParseAsset: (TapConfig.willParseAsset) ? TapConfig.willParseAsset : function () {},
+    onDidParseAsset: (TapConfig.didParseAsset) ? TapConfig.didParseAsset : function (asset) {}
 };
+
+_.extend(TapAPI.tourMLParser, Backbone.Events);
