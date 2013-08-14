@@ -1,30 +1,6 @@
 TapAPI.tourMLParser = {
-    process: function(url) {
-        var tours = [];
-        var i, len;
-
-        // load tourML
-        var tourML = TapAPI.helper.xmlToJson(TapAPI.helper.loadXMLDoc(url));
-        if(tourML.tour) { // Single tour
-            tours.push(this.parseTourML(tourML.tour));
-        } else if(tourML.tourSet && tourML.tourSet.tourMLRef) { // TourSet w/ external tours
-            var tourRefs = TapAPI.helper.objectToArray(tourML.tourSet.tourMLRef);
-            len = tourRefs.length;
-            for(i = 0; i < len; i++) {
-                var data = TapAPI.helper.xmlToJson(TapAPI.helper.loadXMLDoc(tourRefs[i].uri));
-                tours.push(this.parseTourML(data.tour, url));
-            }
-        } else if(tourML.tourSet && tourML.tourSet.tour) { // TourSet w/ tours as children elements
-            len = tourML.tourSet.tour.length;
-            for(i = 0; i < len; i++) {
-               tours.push(this.parseTourML(tourML.tourSet.tour[i], url));
-            }
-        }
-
-        return tours;
-    },
-    parseTourML: function(data, toursetUrl) {
-
+    initialized: false,
+    initialize: function() {
         // bind pre and post processing events
         this.on('willParseTour', $.proxy(this.onWillParseTour, this));
         this.on('didParseTour', $.proxy(this.onDidParseTour, this));
@@ -33,6 +9,43 @@ TapAPI.tourMLParser = {
         this.on('willParseAsset', $.proxy(this.onWillParseAsset, this));
         this.on('didParseAsset', $.proxy(this.onDidParseAsset, this));
 
+        this.initialized = true;
+    },
+    process: function(uri) {
+        if (!this.initialized) {
+            this.initialize();
+        }
+
+        var tours = [];
+        var i, len;
+
+        // load tourML
+        var tourML = TapAPI.helper.xmlToJson(TapAPI.helper.loadXMLDoc(uri));
+        if(tourML.tour) { // Single tour
+            tours.push(this.parseTourML(tourML.tour));
+        } else if(tourML.tourSet && tourML.tourSet.tourMLRef) { // TourSet w/ external tours
+            var tourRefs = TapAPI.helper.objectToArray(tourML.tourSet.tourMLRef);
+            len = tourRefs.length;
+            for(i = 0; i < len; i++) {
+                //check modified date before requesting tourml from server
+                var tour = TapAPI.tours.where({tourUri:tourRefs[i].uri});
+                if (tour.length > 0 && Date.parse(tourRefs[i].lastModified) <= Date.parse(tour[0].get('lastModified'))) {
+                    tours.push(tour[0]);
+                } else {
+                    var data = TapAPI.helper.xmlToJson(TapAPI.helper.loadXMLDoc(tourRefs[i].uri));
+                    tours.push(this.parseTourML(data.tour, tourRefs[i].uri, uri));
+                }
+            }
+        } else if(tourML.tourSet && tourML.tourSet.tour) { // TourSet w/ tours as children elements
+            len = tourML.tourSet.tour.length;
+            for(i = 0; i < len; i++) {
+               tours.push(this.parseTourML(tourML.tourSet.tour[i], uri, uri));
+            }
+        }
+
+        return tours;
+    },
+    parseTourML: function(data, tourUri, toursetUri) {
         this.trigger('willParseTour');
 
         // check to see if the tour has been updated
@@ -45,7 +58,8 @@ TapAPI.tourMLParser = {
         // create new tour
         tour = new TapAPI.classes.models.TourModel({
             id: data.id,
-            toursetUrl: toursetUrl,
+            toursetUri: toursetUri,
+            tourUri: tourUri,
             appResource: data.tourMetadata && data.tourMetadata.appResource ? TapAPI.helper.objectToArray(data.tourMetadata.appResource) : undefined,
             connection: data.connection ? TapAPI.helper.objectToArray(data.connection) : undefined,
             description: data.tourMetadata && data.tourMetadata.description ? TapAPI.helper.objectToArray(data.tourMetadata.description) : undefined,
