@@ -105,5 +105,14 @@ TapAPI.classes.routers.Default = Backbone.Router.extend({
             return 'tour';
         }
         return parts[0];
+    },
+    getControllerRoute: function(tourId, viewName, withHash) {
+        if (_.isUndefined(withHash) || withHash === true) {
+            withHash = '#';
+        } else {
+            withHash = '';
+        }
+        var baseRoute = this.getBaseRoute();
+        return withHash + baseRoute + '/' + tourId + '/controller/' + viewName;
     }
 });
