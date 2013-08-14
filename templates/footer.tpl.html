@@ -2,7 +2,7 @@
 	<ul>
         <% for(var view in controllers) { %>
 		<li>
-            <a href="#<%= baseRoute %>/<%= tourID %>/controller/<%= view %>"
+            <a href="<%= TapAPI.router.getControllerRoute(tourID, view) %>"
             data-icon="<%= view.toLowerCase() %>"
             data-iconshadow="true"
             class="<%= view === activeToolbarButton ? 'ui-btn-active' : '' %>"><%= controllers[view].label %></a>
