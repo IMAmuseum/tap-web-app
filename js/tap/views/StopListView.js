@@ -20,21 +20,28 @@ TapAPI.classes.views.StopListView = TapAPI.classes.views.StopSelectionView.exten
         this.displayThumbnails = TapAPI.navigationControllers.StopListView.displayThumbnails;
 
         // apply filter
-        if (this.filterBy === 'stopGroup') {
-            // retrieve all stops that are stop groups
-            this.stops = _.filter(TapAPI.tourStops.models, function(stop) {
-                return stop.get('view') === 'stop_group';
-            });
-        } else {
-            // retrieve all stops that have a code associated with it
-            this.stops = _.filter(TapAPI.tourStops.models, function(stop) {
-                var code = parseInt(stop.getProperty('code'), 10);
-                if (isNaN(code)) {
-                    return false;
-                } else {
-                    return true;
-                }
-            });
+        switch (this.filterBy) {
+            case 'stopGroup':
+                // retrieve all stops that are stop groups
+                this.stops = _.filter(TapAPI.tourStops.models, function(stop) {
+                    return stop.get('view') === 'stop_group';
+                });
+                break;
+
+            case 'code':
+                // retrieve all stops that have a code associated with it
+                this.stops = _.filter(TapAPI.tourStops.models, function(stop) {
+                    var code = parseInt(stop.getProperty('code'), 10);
+                    if (isNaN(code)) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                });
+                break;
+
+            default:
+                this.stops = TapAPI.tourStops.models;
         }
 
         // apply sorting
