@@ -7,5 +7,8 @@ TapAPI.classes.views.StopSelectionView = TapAPI.classes.views.BaseView.extend({
     initialize: function(options) {
         this._super(options);
         this.activeToolbarButton = '';
+    },
+    getRoute: function(withHash) {
+        return TapAPI.router.getControllerRoute(TapAPI.currentTour, this.activeToolbarButton, withHash);
     }
 });
