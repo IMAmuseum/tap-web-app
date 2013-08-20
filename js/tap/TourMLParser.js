@@ -112,7 +112,7 @@ TapAPI.tourMLParser = {
             });
             stopCollection.create(stop);
             stops.push(stop);
-            this.trigger('didParseStop', stop);
+            this.trigger('didParseStop', stop, tour);
         }
 
         // load asset models
@@ -152,7 +152,7 @@ TapAPI.tourMLParser = {
             });
             assetCollection.create(asset);
             assets.push(asset);
-            this.trigger('didParseAsset', asset);
+            this.trigger('didParseAsset', asset, tour);
         }
 
         // clear out the temporary models
@@ -191,9 +191,9 @@ TapAPI.tourMLParser = {
     onWillParseTour: (TapConfig.willParseTour) ? TapConfig.willParseTour : function () {},
     onDidParseTour: (TapConfig.didParseTour) ? TapConfig.didParseTour : function (tour) {},
     onWillParseStop: (TapConfig.willParseStop) ? TapConfig.willParseStop : function () {},
-    onDidParseStop: (TapConfig.didParseStop) ? TapConfig.didParseStop : function (stop) {},
+    onDidParseStop: (TapConfig.didParseStop) ? TapConfig.didParseStop : function (stop, tour) {},
     onWillParseAsset: (TapConfig.willParseAsset) ? TapConfig.willParseAsset : function () {},
-    onDidParseAsset: (TapConfig.didParseAsset) ? TapConfig.didParseAsset : function (asset) {}
+    onDidParseAsset: (TapConfig.didParseAsset) ? TapConfig.didParseAsset : function (asset, tour) {}
 };
 
 _.extend(TapAPI.tourMLParser, Backbone.Events);
