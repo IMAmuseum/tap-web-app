@@ -27,6 +27,7 @@ TapAPI.helper = {
         if (this.readyState === 4) {
             if (this.status === 200) {
                 var response = TapAPI.helper.xmlToJson(this.responseXML);
+                response.uri = this.responseXML.URL;
                 Backbone.trigger('tap.tourml.loaded', response);
             }
         }
