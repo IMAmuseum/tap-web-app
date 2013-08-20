@@ -10,11 +10,18 @@ TapAPI.classes.views.TourListView = TapAPI.classes.views.BaseView.extend({
 
 		this.displayHeader = false;
 		this.displayFooter = false;
+
+		//update the view when tours are added to the collection
+		TapAPI.tours.on("add", this.render, this);
 	},
 	events: {
 		'tap .tour-info' : 'tourInfoPopup'
 	},
 	render: function() {
+		if (TapAPI.tours.length === 0) {
+			return this;
+		}
+
 		var headers = [];
 		TapAPI.tours.each(function(tour) {
 			TapAPI.tours.selectTour(tour.get('id'));
@@ -25,6 +32,9 @@ TapAPI.classes.views.TourListView = TapAPI.classes.views.BaseView.extend({
 			tours: TapAPI.tours.models,
 			headers: headers
 		}));
+
+		Backbone.trigger('app.widgets.refresh');
+
 		return this;
 	},
 	tourInfoPopup: function(e) {

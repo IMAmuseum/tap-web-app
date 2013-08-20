@@ -33,7 +33,7 @@ var TapConfig = {
     geo: {},
     social: {},
     tourSettings: {
-        'tour-1': {
+        'default': {
             'defaultNavigationController': 'StopListView',
             'enabledNavigationControllers': ['KeypadView', 'StopListView', 'MapView']
         }

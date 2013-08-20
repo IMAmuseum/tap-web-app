@@ -30,6 +30,12 @@ TapAPI.classes.routers.Default = Backbone.Router.extend({
      */
     tourDetails: function(tourID) {
         TapAPI.tours.selectTour(tourID);
+        if (_.isUndefined(TapAPI.currentTour)) {
+            Backbone.on("tap.tour.loaded." + tourID, this.tourDetails, this);
+            return;
+        } else {
+            Backbone.off("tap.tour.loaded." + tourID);
+        }
         TapAPI.currentStop = null;
 
         this.changePage(new TapAPI.classes.views.TourDetailsView());
@@ -38,6 +44,18 @@ TapAPI.classes.routers.Default = Backbone.Router.extend({
         var that = this;
 
         TapAPI.tours.selectTour(tourID);
+        if (_.isUndefined(TapAPI.currentTour)) {
+            Backbone.on("tap.tour.loaded." + tourID, this.routeToController, this);
+            return;
+        } else {
+            Backbone.off("tap.tour.loaded." + tourID);
+        }
+
+        if (_.isUndefined(view)) {
+            var parts = Backbone.history.getFragment().split("/");
+            view = parts[parts.length - 1];
+        }
+
         TapAPI.currentStop = null;
 
         that.changePage(new TapAPI.classes.views[view]());
@@ -49,6 +67,19 @@ TapAPI.classes.routers.Default = Backbone.Router.extend({
         var that = this;
 
         TapAPI.tours.selectTour(tourID);
+
+        if (_.isUndefined(TapAPI.currentTour)) {
+            Backbone.on("tap.tour.loaded." + tourID, this.tourStop, this);
+            return;
+        } else {
+            Backbone.off("tap.tour.loaded." + tourID);
+        }
+
+        if (_.isUndefined(stopID)) {
+            var parts = Backbone.history.getFragment().split("/");
+            stopID = parts[parts.length - 1];
+        }
+
         TapAPI.currentStop = TapAPI.tourStops.get(stopID);
 
         var stopType = TapAPI.currentStop.get('view');

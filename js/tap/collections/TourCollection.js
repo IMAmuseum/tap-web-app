@@ -4,6 +4,9 @@
 TapAPI.classes.collections.TourCollection = Backbone.Collection.extend({
     model: TapAPI.classes.models.TourModel,
     localStorage: new Backbone.LocalStorage('tours'),
+    initialize: function() {
+        this.listenTo(Backbone, 'tap.tourml.parsed', this.tourMLParsed);
+    },
     syncTourML: function(url) {
         var tours = [],
             tourML, i, len;
@@ -12,9 +15,16 @@ TapAPI.classes.collections.TourCollection = Backbone.Collection.extend({
         this.fetch();
 
         // load tourML
-        tours = TapAPI.tourMLParser.process(url);
+        TapAPI.tourMLParser.process(url);
 
-        this.set(tours);
+        //clear the models
+        this.set([]);
+    },
+    tourMLParsed: function(tours) {
+        this.set(tours, {remove: false});
+        for (var i = 0, len = tours.length; i < len; i++) {
+            Backbone.trigger("tap.tour.loaded." + tours[i].get("id"), tours[i].get("id"));
+        }
     },
     selectTour: function(tourID) {
         if (TapAPI.currentTour == tourID) return;

@@ -19,9 +19,17 @@ TapAPI.helper = {
      */
     loadXMLDoc: function(url) {
         xhttp = new XMLHttpRequest();
-        xhttp.open('GET', url, false);
+        xhttp.onreadystatechange = this.onreadystatechange;
+        xhttp.open('GET', url, true);
         xhttp.send();
-        return xhttp.responseXML;
+    },
+    onreadystatechange: function() {
+        if (this.readyState === 4) {
+            if (this.status === 200) {
+                var response = TapAPI.helper.xmlToJson(this.responseXML);
+                Backbone.trigger('tap.tourml.loaded', response);
+            }
+        }
     },
     /*
      * Attempt to make the variable an array
