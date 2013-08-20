@@ -6,7 +6,7 @@
             <span class="stop-code"><%= stop.model.getProperty('code') %></span>
             <span class="title-with-code">
             <% } else if (displayThumbnails && stop.thumbnail) { %>
-            <div class="img-wrapper"><img src="<%= stop.thumbnail %>" class="ui-li-thumb" /></div>
+            <div class="img-wrapper ui-li-thumb"><img src="<%= stop.thumbnail %>" /></div>
             <span class="title-with-thumbnail">
             <% } else { %>
             <img src="<%= stop.icon %>" class="ui-li-icon ui-li-thumb" />
