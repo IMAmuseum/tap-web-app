@@ -75,7 +75,7 @@ TapAPI.tourMLParser = {
             rootStopRef: data.tourMetadata && data.tourMetadata.rootStopRef ? data.tourMetadata.rootStopRef : undefined,
             title: data.tourMetadata && data.tourMetadata.title ? TapAPI.helper.objectToArray(data.tourMetadata.title) : undefined
         });
-        //TapAPI.tours.create(tour);
+        TapAPI.tours.create(tour);
 
         // create new instance of StopCollection
         var stopCollection = new TapAPI.classes.collections.StopCollection(null, data.id);
