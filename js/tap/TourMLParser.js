@@ -34,7 +34,7 @@ TapAPI.tourMLParser = {
             for(i = 0; i < len; i++) {
                 this.addTourToMap(tourRefs[i].uri, tourML.uri);
                 //check modified date before requesting tourml from server
-                var tour = TapAPI.tours.where({tourUri:tourRefs[i].uri});
+                var tour = TapAPI.tours.cache.where({tourUri:tourRefs[i].uri});
                 if (tour.length > 0 && Date.parse(tourRefs[i].lastModified) <= Date.parse(tour[0].get('lastModified'))) {
                     tours.push(tour[0]);
                 } else {
@@ -55,7 +55,7 @@ TapAPI.tourMLParser = {
         var toursetUri = this.tourMap[tourUri];
 
         // check to see if the tour has been updated
-        var tour = TapAPI.tours.get(data.id);
+        var tour = TapAPI.tours.cache.get(data.id);
         if (tour && Date.parse(data.lastModified) <= Date.parse(tour.get('lastModified'))) return tour;
 
         var stops = [],

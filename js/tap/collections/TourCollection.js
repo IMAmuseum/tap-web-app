@@ -12,13 +12,18 @@ TapAPI.classes.collections.TourCollection = Backbone.Collection.extend({
             tourML, i, len;
 
         // populate the tour collection
-        this.fetch();
+        this.fetch({
+            success: this.fetchCache
+        });
 
         // load tourML
         TapAPI.tourMLParser.process(url);
 
         //clear the models
         this.set([]);
+    },
+    fetchCache: function(collection, response, options) {
+        collection.cache = collection.clone();
     },
     tourMLParsed: function(tours) {
         this.set(tours, {remove: false});
