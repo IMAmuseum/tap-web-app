@@ -31,6 +31,8 @@ TapAPI.classes.views.AppView = Backbone.View.extend({
 
         // trigger jquery mobile to initialize new widgets
         Backbone.trigger('app.widgets.refresh');
+
+        return this;
     },
     runApp: function() {
         Backbone.trigger('tap.app.loading');

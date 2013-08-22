@@ -90,6 +90,7 @@ TapAPI.classes.routers.Default = Backbone.Router.extend({
     changePage: function(view) {
         TapAPI.tracker.trackPageView('/#' + Backbone.history.getFragment());
         //_gaq.push(['_trackPageview', '/#' + Backbone.history.getFragment()]);
+        window.scrollTo(0, 0);
         Backbone.trigger('tap.router.routed', view);
         Backbone.trigger('app.widgets.refresh');
     },
