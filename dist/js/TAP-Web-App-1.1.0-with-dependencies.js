@@ -1,5 +1,5 @@
 /*
- * TAP - v1.1.0 - 2013-07-02
+ * TAP - v1.1.0 - 2013-08-22
  * http://tapintomuseums.org/
  * Copyright (c) 2011-2013 Indianapolis Museum of Art
  * GPLv3
@@ -32971,9 +32971,9 @@ $(document).bind('mobileinit', function () {
     $.mobile.hashListeningEnabled = false;
     $.mobile.pushStateEnabled = false;
 });
-/*
-* jQuery Mobile 1.3.1
-* Git HEAD hash: 74b4bec049fd93e4fe40205e6157de16eb64eb46 <> Date: Wed Apr 10 2013 21:57:23 UTC
+/*!
+* jQuery Mobile 1.3.2
+* Git HEAD hash: 528cf0e96940644ea644096bfeb913ed920ffaef <> Date: Fri Jul 19 2013 22:17:57 UTC
 * http://jquerymobile.com
 *
 * Copyright 2010, 2013 jQuery Foundation, Inc. and other contributors
@@ -33005,7 +33005,7 @@ $(document).bind('mobileinit', function () {
 	$.mobile = $.extend($.mobile, {
 
 		// Version of the jQuery Mobile Framework
-		version: "1.3.1",
+		version: "1.3.2",
 
 		// Namespace used framework-wide for data-attrs. Default is no namespace
 		ns: "",
@@ -37253,8 +37253,8 @@ $.mobile.getMaxScrollForTransition = $.mobile.getMaxScrollForTransition || defau
 				};
 		}
 		// Reset base to the default document base.
-		// only reset if we are not prefetching 
-		if ( base && typeof options.prefetch === "undefined" ) {
+		// only reset if we are not prefetching
+		if ( base && ( typeof options === "undefined" || typeof options.prefetch === "undefined" ) ) {
 			base.reset();
 		}
 
@@ -37290,7 +37290,7 @@ $.mobile.getMaxScrollForTransition = $.mobile.getMaxScrollForTransition || defau
 						url = fileUrl = path.getFilePath( $( "<div>" + RegExp.$1 + "</div>" ).text() );
 					}
 					//dont update the base tag if we are prefetching
-					if ( base && typeof options.prefetch === "undefined") {
+					if ( base && ( typeof options === "undefined" || typeof options.prefetch === "undefined" )) {
 						base.set( fileUrl );
 					}
 
@@ -38280,6 +38280,10 @@ $.widget( "mobile.dialog", $.mobile.widget, {
 		}
 	},
 
+	_handlePageBeforeHide: function() {
+		this._isCloseable = false;
+	},
+
 	_create: function() {
 		var self = this,
 			$el = this.element,
@@ -38314,7 +38318,8 @@ $.widget( "mobile.dialog", $.mobile.widget, {
 		});
 
 		this._on( $el, {
-			pagebeforeshow: "_handlePageBeforeShow"
+			pagebeforeshow: "_handlePageBeforeShow",
+			pagebeforehide: "_handlePageBeforeHide"
 		});
 
 		$.extend( this, {
@@ -38536,11 +38541,6 @@ $.fn.buttonMarkup = function( options ) {
 			} else {
 				e.setAttribute( nsKey + key, o[ key ] );
 			}
-		}
-
-		if ( getAttrFixed( e, nsKey + "rel" ) === "popup" && el.attr( "href" ) ) {
-			e.setAttribute( "aria-haspopup", true );
-			e.setAttribute( "aria-owns", el.attr( "href" ) );
 		}
 
 		// Check if this element is already enhanced
@@ -40561,7 +40561,7 @@ $.widget( "mobile.slider", $.mobile.widget, $.extend( {
 	_sliderVMouseDown: function( event ) {
 		// NOTE: we don't do this in refresh because we still want to
 		//       support programmatic alteration of disabled inputs
-		if ( this.options.disabled || !( event.which === 1 || event.which === 0 ) ) {
+		if ( this.options.disabled || !( event.which === 1 || event.which === 0 || event.which === undefined ) ) {
 			return false;
 		}
 		if ( this._trigger( "beforestart", event ) === false ) {
@@ -41319,882 +41319,874 @@ $.mobile.document.bind( "pagecreate create", function( e ) {
 
 (function( $, undefined ) {
 
-	function fitSegmentInsideSegment( winSize, segSize, offset, desired ) {
-		var ret = desired;
+function fitSegmentInsideSegment( winSize, segSize, offset, desired ) {
+	var ret = desired;
 
-		if ( winSize < segSize ) {
-			// Center segment if it's bigger than the window
-			ret = offset + ( winSize - segSize ) / 2;
-		} else {
-			// Otherwise center it at the desired coordinate while keeping it completely inside the window
-			ret = Math.min( Math.max( offset, desired - segSize / 2 ), offset + winSize - segSize );
+	if ( winSize < segSize ) {
+		// Center segment if it's bigger than the window
+		ret = offset + ( winSize - segSize ) / 2;
+	} else {
+		// Otherwise center it at the desired coordinate while keeping it completely inside the window
+		ret = Math.min( Math.max( offset, desired - segSize / 2 ), offset + winSize - segSize );
+	}
+
+	return ret;
+}
+
+function windowCoords() {
+	var $win = $.mobile.window;
+
+	return {
+		x: $win.scrollLeft(),
+		y: $win.scrollTop(),
+		cx: ( window.innerWidth || $win.width() ),
+		cy: ( window.innerHeight || $win.height() )
+	};
+}
+
+$.widget( "mobile.popup", $.mobile.widget, {
+	options: {
+		theme: null,
+		overlayTheme: null,
+		shadow: true,
+		corners: true,
+		transition: "none",
+		positionTo: "origin",
+		tolerance: null,
+		initSelector: ":jqmData(role='popup')",
+		closeLinkSelector: "a:jqmData(rel='back')",
+		closeLinkEvents: "click.popup",
+		navigateEvents: "navigate.popup",
+		closeEvents: "navigate.popup pagebeforechange.popup",
+		dismissible: true,
+
+		// NOTE Windows Phone 7 has a scroll position caching issue that
+		//      requires us to disable popup history management by default
+		//      https://github.com/jquery/jquery-mobile/issues/4784
+		//
+		// NOTE this option is modified in _create!
+		history: !$.mobile.browser.oldIE
+	},
+
+	_eatEventAndClose: function( e ) {
+		e.preventDefault();
+		e.stopImmediatePropagation();
+		if ( this.options.dismissible ) {
+			this.close();
+		}
+		return false;
+	},
+
+	// Make sure the screen size is increased beyond the page height if the popup's causes the document to increase in height
+	_resizeScreen: function() {
+		var popupHeight = this._ui.container.outerHeight( true );
+
+		this._ui.screen.removeAttr( "style" );
+		if ( popupHeight > this._ui.screen.height() ) {
+			this._ui.screen.height( popupHeight );
+		}
+	},
+
+	_handleWindowKeyUp: function( e ) {
+		if ( this._isOpen && e.keyCode === $.mobile.keyCode.ESCAPE ) {
+			return this._eatEventAndClose( e );
+		}
+	},
+
+	_expectResizeEvent: function() {
+		var winCoords = windowCoords();
+
+		if ( this._resizeData ) {
+			if ( winCoords.x === this._resizeData.winCoords.x &&
+				winCoords.y === this._resizeData.winCoords.y &&
+				winCoords.cx === this._resizeData.winCoords.cx &&
+				winCoords.cy === this._resizeData.winCoords.cy ) {
+				// timeout not refreshed
+				return false;
+			} else {
+				// clear existing timeout - it will be refreshed below
+				clearTimeout( this._resizeData.timeoutId );
+			}
 		}
 
-		return ret;
-	}
-
-	function windowCoords() {
-		var $win = $.mobile.window;
-
-		return {
-			x: $win.scrollLeft(),
-			y: $win.scrollTop(),
-			cx: ( window.innerWidth || $win.width() ),
-			cy: ( window.innerHeight || $win.height() )
+		this._resizeData = {
+			timeoutId: setTimeout( $.proxy( this, "_resizeTimeout" ), 200 ),
+			winCoords: winCoords
 		};
-	}
 
-	$.widget( "mobile.popup", $.mobile.widget, {
-		options: {
-			theme: null,
-			overlayTheme: null,
-			shadow: true,
-			corners: true,
-			transition: "none",
-			positionTo: "origin",
-			tolerance: null,
-			initSelector: ":jqmData(role='popup')",
-			closeLinkSelector: "a:jqmData(rel='back')",
-			closeLinkEvents: "click.popup",
-			navigateEvents: "navigate.popup",
-			closeEvents: "navigate.popup pagebeforechange.popup",
-			dismissible: true,
+		return true;
+	},
 
-			// NOTE Windows Phone 7 has a scroll position caching issue that
-			//      requires us to disable popup history management by default
-			//      https://github.com/jquery/jquery-mobile/issues/4784
-			//
-			// NOTE this option is modified in _create!
-			history: !$.mobile.browser.oldIE
-		},
-
-		_eatEventAndClose: function( e ) {
-			e.preventDefault();
-			e.stopImmediatePropagation();
-			if ( this.options.dismissible ) {
-				this.close();
-			}
-			return false;
-		},
-
-		// Make sure the screen size is increased beyond the page height if the popup's causes the document to increase in height
-		_resizeScreen: function() {
-			var popupHeight = this._ui.container.outerHeight( true );
-
-			this._ui.screen.removeAttr( "style" );
-			if ( popupHeight > this._ui.screen.height() ) {
-				this._ui.screen.height( popupHeight );
-			}
-		},
-
-		_handleWindowKeyUp: function( e ) {
-			if ( this._isOpen && e.keyCode === $.mobile.keyCode.ESCAPE ) {
-				return this._eatEventAndClose( e );
-			}
-		},
-
-		_expectResizeEvent: function() {
-			var winCoords = windowCoords();
-
-			if ( this._resizeData ) {
-				if ( winCoords.x === this._resizeData.winCoords.x &&
-					winCoords.y === this._resizeData.winCoords.y &&
-					winCoords.cx === this._resizeData.winCoords.cx &&
-					winCoords.cy === this._resizeData.winCoords.cy ) {
-					// timeout not refreshed
-					return false;
-				} else {
-					// clear existing timeout - it will be refreshed below
-					clearTimeout( this._resizeData.timeoutId );
+	_resizeTimeout: function() {
+		if ( this._isOpen ) {
+			if ( !this._expectResizeEvent() ) {
+				if ( this._ui.container.hasClass( "ui-popup-hidden" ) ) {
+					// effectively rapid-open the popup while leaving the screen intact
+					this._ui.container.removeClass( "ui-popup-hidden" );
+					this.reposition( { positionTo: "window" } );
+					this._ignoreResizeEvents();
 				}
-			}
 
-			this._resizeData = {
-				timeoutId: setTimeout( $.proxy( this, "_resizeTimeout" ), 200 ),
-				winCoords: winCoords
-			};
-
-			return true;
-		},
-
-		_resizeTimeout: function() {
-			if ( this._isOpen ) {
-				if ( !this._expectResizeEvent() ) {
-					if ( this._ui.container.hasClass( "ui-popup-hidden" ) ) {
-						// effectively rapid-open the popup while leaving the screen intact
-						this._ui.container.removeClass( "ui-popup-hidden" );
-						this.reposition( { positionTo: "window" } );
-						this._ignoreResizeEvents();
-					}
-
-					this._resizeScreen();
-					this._resizeData = null;
-					this._orientationchangeInProgress = false;
-				}
-			} else {
+				this._resizeScreen();
 				this._resizeData = null;
 				this._orientationchangeInProgress = false;
 			}
-		},
+		} else {
+			this._resizeData = null;
+			this._orientationchangeInProgress = false;
+		}
+	},
 
-		_ignoreResizeEvents: function() {
-			var self = this;
+	_ignoreResizeEvents: function() {
+		var self = this;
 
-			if ( this._ignoreResizeTo ) {
-				clearTimeout( this._ignoreResizeTo );
+		if ( this._ignoreResizeTo ) {
+			clearTimeout( this._ignoreResizeTo );
+		}
+		this._ignoreResizeTo = setTimeout( function() { self._ignoreResizeTo = 0; }, 1000 );
+	},
+
+	_handleWindowResize: function( e ) {
+		if ( this._isOpen && this._ignoreResizeTo === 0 ) {
+			if ( ( this._expectResizeEvent() || this._orientationchangeInProgress ) &&
+				!this._ui.container.hasClass( "ui-popup-hidden" ) ) {
+				// effectively rapid-close the popup while leaving the screen intact
+				this._ui.container
+					.addClass( "ui-popup-hidden" )
+					.removeAttr( "style" );
 			}
-			this._ignoreResizeTo = setTimeout( function() { self._ignoreResizeTo = 0; }, 1000 );
-		},
+		}
+	},
 
-		_handleWindowResize: function( e ) {
-			if ( this._isOpen && this._ignoreResizeTo === 0 ) {
-				if ( ( this._expectResizeEvent() || this._orientationchangeInProgress ) &&
-					!this._ui.container.hasClass( "ui-popup-hidden" ) ) {
-					// effectively rapid-close the popup while leaving the screen intact
-					this._ui.container
-						.addClass( "ui-popup-hidden" )
-						.removeAttr( "style" );
-				}
+	_handleWindowOrientationchange: function( e ) {
+		if ( !this._orientationchangeInProgress && this._isOpen && this._ignoreResizeTo === 0 ) {
+			this._expectResizeEvent();
+			this._orientationchangeInProgress = true;
+		}
+	},
+
+	// When the popup is open, attempting to focus on an element that is not a
+	// child of the popup will redirect focus to the popup
+	_handleDocumentFocusIn: function( e ) {
+		var tgt = e.target, $tgt, ui = this._ui;
+
+		if ( !this._isOpen ) {
+			return;
+		}
+
+		if ( tgt !== ui.container[ 0 ] ) {
+			$tgt = $( e.target );
+			if ( 0 === $tgt.parents().filter( ui.container[ 0 ] ).length ) {
+				$( document.activeElement ).one( "focus", function( e ) {
+					$tgt.blur();
+				});
+				ui.focusElement.focus();
+				e.preventDefault();
+				e.stopImmediatePropagation();
+				return false;
+			} else if ( ui.focusElement[ 0 ] === ui.container[ 0 ] ) {
+				ui.focusElement = $tgt;
 			}
-		},
+		}
 
-		_handleWindowOrientationchange: function( e ) {
-			if ( !this._orientationchangeInProgress && this._isOpen && this._ignoreResizeTo === 0 ) {
-				this._expectResizeEvent();
-				this._orientationchangeInProgress = true;
+		this._ignoreResizeEvents();
+	},
+
+	_create: function() {
+		var ui = {
+				screen: $( "<div class='ui-screen-hidden ui-popup-screen'></div>" ),
+				placeholder: $( "<div style='display: none;'><!-- placeholder --></div>" ),
+				container: $( "<div class='ui-popup-container ui-popup-hidden'></div>" )
+			},
+			thisPage = this.element.closest( ".ui-page" ),
+			myId = this.element.attr( "id" ),
+			o = this.options,
+			key, value;
+
+		// We need to adjust the history option to be false if there's no AJAX nav.
+		// We can't do it in the option declarations because those are run before
+		// it is determined whether there shall be AJAX nav.
+		o.history = o.history && $.mobile.ajaxEnabled && $.mobile.hashListeningEnabled;
+
+		if ( thisPage.length === 0 ) {
+			thisPage = $( "body" );
+		}
+
+		// define the container for navigation event bindings
+		// TODO this would be nice at the the mobile widget level
+		o.container = o.container || $.mobile.pageContainer || thisPage;
+
+		// Apply the proto
+		thisPage.append( ui.screen );
+		ui.container.insertAfter( ui.screen );
+		// Leave a placeholder where the element used to be
+		ui.placeholder.insertAfter( this.element );
+		if ( myId ) {
+			ui.screen.attr( "id", myId + "-screen" );
+			ui.container.attr( "id", myId + "-popup" );
+			ui.placeholder.html( "<!-- placeholder for " + myId + " -->" );
+		}
+		ui.container.append( this.element );
+		ui.focusElement = ui.container;
+
+		// Add class to popup element
+		this.element.addClass( "ui-popup" );
+
+		// Define instance variables
+		$.extend( this, {
+			_scrollTop: 0,
+			_page: thisPage,
+			_ui: ui,
+			_fallbackTransition: "",
+			_currentTransition: false,
+			_prereqs: null,
+			_isOpen: false,
+			_tolerance: null,
+			_resizeData: null,
+			_ignoreResizeTo: 0,
+			_orientationchangeInProgress: false
+		});
+
+		// This duplicates the code from the various option setters below for
+		// better performance. It must be kept in sync with those setters.
+		this._applyTheme( this.element, o.theme, "body" );
+		this._applyTheme( this._ui.screen, o.overlayTheme, "overlay" );
+		this._applyTransition( o.transition );
+		this.element
+			.toggleClass( "ui-overlay-shadow", o.shadow )
+			.toggleClass( "ui-corner-all", o.corners );
+		this._setTolerance( o.tolerance );
+
+		ui.screen.bind( "vclick", $.proxy( this, "_eatEventAndClose" ) );
+
+		this._on( $.mobile.window, {
+			orientationchange: $.proxy( this, "_handleWindowOrientationchange" ),
+			resize: $.proxy( this, "_handleWindowResize" ),
+			keyup: $.proxy( this, "_handleWindowKeyUp" )
+		});
+		this._on( $.mobile.document, {
+			focusin: $.proxy( this, "_handleDocumentFocusIn" )
+		});
+	},
+
+	_applyTheme: function( dst, theme, prefix ) {
+		var classes = ( dst.attr( "class" ) || "").split( " " ),
+			alreadyAdded = true,
+			currentTheme = null,
+			matches,
+			themeStr = String( theme );
+
+		while ( classes.length > 0 ) {
+			currentTheme = classes.pop();
+			matches = ( new RegExp( "^ui-" + prefix + "-([a-z])$" ) ).exec( currentTheme );
+			if ( matches && matches.length > 1 ) {
+				currentTheme = matches[ 1 ];
+				break;
+			} else {
+				currentTheme = null;
 			}
-		},
+		}
 
-		// When the popup is open, attempting to focus on an element that is not a
-		// child of the popup will redirect focus to the popup
-		_handleDocumentFocusIn: function( e ) {
-			var tgt = e.target, $tgt, ui = this._ui;
+		if ( theme !== currentTheme ) {
+			dst.removeClass( "ui-" + prefix + "-" + currentTheme );
+			if ( ! ( theme === null || theme === "none" ) ) {
+				dst.addClass( "ui-" + prefix + "-" + themeStr );
+			}
+		}
+	},
 
-			if ( !this._isOpen ) {
+	_setTheme: function( value ) {
+		this._applyTheme( this.element, value, "body" );
+	},
+
+	_setOverlayTheme: function( value ) {
+		this._applyTheme( this._ui.screen, value, "overlay" );
+
+		if ( this._isOpen ) {
+			this._ui.screen.addClass( "in" );
+		}
+	},
+
+	_setShadow: function( value ) {
+		this.element.toggleClass( "ui-overlay-shadow", value );
+	},
+
+	_setCorners: function( value ) {
+		this.element.toggleClass( "ui-corner-all", value );
+	},
+
+	_applyTransition: function( value ) {
+		this._ui.container.removeClass( this._fallbackTransition );
+		if ( value && value !== "none" ) {
+			this._fallbackTransition = $.mobile._maybeDegradeTransition( value );
+			if ( this._fallbackTransition === "none" ) {
+				this._fallbackTransition = "";
+			}
+			this._ui.container.addClass( this._fallbackTransition );
+		}
+	},
+
+	_setTransition: function( value ) {
+		if ( !this._currentTransition ) {
+			this._applyTransition( value );
+		}
+	},
+
+	_setTolerance: function( value ) {
+		var tol = { t: 30, r: 15, b: 30, l: 15 };
+
+		if ( value !== undefined ) {
+			var ar = String( value ).split( "," );
+
+			$.each( ar, function( idx, val ) { ar[ idx ] = parseInt( val, 10 ); } );
+
+			switch( ar.length ) {
+				// All values are to be the same
+				case 1:
+					if ( !isNaN( ar[ 0 ] ) ) {
+						tol.t = tol.r = tol.b = tol.l = ar[ 0 ];
+					}
+					break;
+
+				// The first value denotes top/bottom tolerance, and the second value denotes left/right tolerance
+				case 2:
+					if ( !isNaN( ar[ 0 ] ) ) {
+						tol.t = tol.b = ar[ 0 ];
+					}
+					if ( !isNaN( ar[ 1 ] ) ) {
+						tol.l = tol.r = ar[ 1 ];
+					}
+					break;
+
+				// The array contains values in the order top, right, bottom, left
+				case 4:
+					if ( !isNaN( ar[ 0 ] ) ) {
+						tol.t = ar[ 0 ];
+					}
+					if ( !isNaN( ar[ 1 ] ) ) {
+						tol.r = ar[ 1 ];
+					}
+					if ( !isNaN( ar[ 2 ] ) ) {
+						tol.b = ar[ 2 ];
+					}
+					if ( !isNaN( ar[ 3 ] ) ) {
+						tol.l = ar[ 3 ];
+					}
+					break;
+
+				default:
+					break;
+			}
+		}
+
+		this._tolerance = tol;
+	},
+
+	_setOption: function( key, value ) {
+		var setter = "_set" + key.charAt( 0 ).toUpperCase() + key.slice( 1 );
+
+		if ( this[ setter ] !== undefined ) {
+			this[ setter ]( value );
+		}
+
+		this._super( key, value );
+	},
+
+	// Try and center the overlay over the given coordinates
+	_placementCoords: function( desired ) {
+		// rectangle within which the popup must fit
+		var
+			winCoords = windowCoords(),
+			rc = {
+				x: this._tolerance.l,
+				y: winCoords.y + this._tolerance.t,
+				cx: winCoords.cx - this._tolerance.l - this._tolerance.r,
+				cy: winCoords.cy - this._tolerance.t - this._tolerance.b
+			},
+			menuSize, ret;
+
+		// Clamp the width of the menu before grabbing its size
+		this._ui.container.css( "max-width", rc.cx );
+		menuSize = {
+			cx: this._ui.container.outerWidth( true ),
+			cy: this._ui.container.outerHeight( true )
+		};
+
+		// Center the menu over the desired coordinates, while not going outside
+		// the window tolerances. This will center wrt. the window if the popup is too large.
+		ret = {
+			x: fitSegmentInsideSegment( rc.cx, menuSize.cx, rc.x, desired.x ),
+			y: fitSegmentInsideSegment( rc.cy, menuSize.cy, rc.y, desired.y )
+		};
+
+		// Make sure the top of the menu is visible
+		ret.y = Math.max( 0, ret.y );
+
+		// If the height of the menu is smaller than the height of the document
+		// align the bottom with the bottom of the document
+
+		// fix for $.mobile.document.height() bug in core 1.7.2.
+		var docEl = document.documentElement, docBody = document.body,
+			docHeight = Math.max( docEl.clientHeight, docBody.scrollHeight, docBody.offsetHeight, docEl.scrollHeight, docEl.offsetHeight );
+
+		ret.y -= Math.min( ret.y, Math.max( 0, ret.y + menuSize.cy - docHeight ) );
+
+		return { left: ret.x, top: ret.y };
+	},
+
+	_createPrereqs: function( screenPrereq, containerPrereq, whenDone ) {
+		var self = this, prereqs;
+
+		// It is important to maintain both the local variable prereqs and self._prereqs. The local variable remains in
+		// the closure of the functions which call the callbacks passed in. The comparison between the local variable and
+		// self._prereqs is necessary, because once a function has been passed to .animationComplete() it will be called
+		// next time an animation completes, even if that's not the animation whose end the function was supposed to catch
+		// (for example, if an abort happens during the opening animation, the .animationComplete handler is not called for
+		// that animation anymore, but the handler remains attached, so it is called the next time the popup is opened
+		// - making it stale. Comparing the local variable prereqs to the widget-level variable self._prereqs ensures that
+		// callbacks triggered by a stale .animationComplete will be ignored.
+
+		prereqs = {
+			screen: $.Deferred(),
+			container: $.Deferred()
+		};
+
+		prereqs.screen.then( function() {
+			if ( prereqs === self._prereqs ) {
+				screenPrereq();
+			}
+		});
+
+		prereqs.container.then( function() {
+			if ( prereqs === self._prereqs ) {
+				containerPrereq();
+			}
+		});
+
+		$.when( prereqs.screen, prereqs.container ).done( function() {
+			if ( prereqs === self._prereqs ) {
+				self._prereqs = null;
+				whenDone();
+			}
+		});
+
+		self._prereqs = prereqs;
+	},
+
+	_animate: function( args ) {
+		// NOTE before removing the default animation of the screen
+		//      this had an animate callback that would resolve the deferred
+		//      now the deferred is resolved immediately
+		// TODO remove the dependency on the screen deferred
+		this._ui.screen
+			.removeClass( args.classToRemove )
+			.addClass( args.screenClassToAdd );
+
+		args.prereqs.screen.resolve();
+
+		if ( args.transition && args.transition !== "none" ) {
+			if ( args.applyTransition ) {
+				this._applyTransition( args.transition );
+			}
+			if ( this._fallbackTransition ) {
+				this._ui.container
+					.animationComplete( $.proxy( args.prereqs.container, "resolve" ) )
+					.addClass( args.containerClassToAdd )
+					.removeClass( args.classToRemove );
 				return;
 			}
+		}
+		this._ui.container.removeClass( args.classToRemove );
+		args.prereqs.container.resolve();
+	},
 
-			if ( tgt !== ui.container[ 0 ] ) {
-				$tgt = $( e.target );
-				if ( 0 === $tgt.parents().filter( ui.container[ 0 ] ).length ) {
-					$( document.activeElement ).one( "focus", function( e ) {
-						$tgt.blur();
-					});
-					ui.focusElement.focus();
-					e.preventDefault();
-					e.stopImmediatePropagation();
-					return false;
-				} else if ( ui.focusElement[ 0 ] === ui.container[ 0 ] ) {
-					ui.focusElement = $tgt;
+	// The desired coordinates passed in will be returned untouched if no reference element can be identified via
+	// desiredPosition.positionTo. Nevertheless, this function ensures that its return value always contains valid
+	// x and y coordinates by specifying the center middle of the window if the coordinates are absent.
+	// options: { x: coordinate, y: coordinate, positionTo: string: "origin", "window", or jQuery selector
+	_desiredCoords: function( o ) {
+		var dst = null, offset, winCoords = windowCoords(), x = o.x, y = o.y, pTo = o.positionTo;
+
+		// Establish which element will serve as the reference
+		if ( pTo && pTo !== "origin" ) {
+			if ( pTo === "window" ) {
+				x = winCoords.cx / 2 + winCoords.x;
+				y = winCoords.cy / 2 + winCoords.y;
+			} else {
+				try {
+					dst = $( pTo );
+				} catch( e ) {
+					dst = null;
 				}
-			}
-
-			this._ignoreResizeEvents();
-		},
-
-		_create: function() {
-			var ui = {
-					screen: $( "<div class='ui-screen-hidden ui-popup-screen'></div>" ),
-					placeholder: $( "<div style='display: none;'><!-- placeholder --></div>" ),
-					container: $( "<div class='ui-popup-container ui-popup-hidden'></div>" )
-				},
-				thisPage = this.element.closest( ".ui-page" ),
-				myId = this.element.attr( "id" ),
-				self = this;
-
-			// We need to adjust the history option to be false if there's no AJAX nav.
-			// We can't do it in the option declarations because those are run before
-			// it is determined whether there shall be AJAX nav.
-			this.options.history = this.options.history && $.mobile.ajaxEnabled && $.mobile.hashListeningEnabled;
-
-			if ( thisPage.length === 0 ) {
-				thisPage = $( "body" );
-			}
-
-			// define the container for navigation event bindings
-			// TODO this would be nice at the the mobile widget level
-			this.options.container = this.options.container || $.mobile.pageContainer;
-
-			// Apply the proto
-			thisPage.append( ui.screen );
-			ui.container.insertAfter( ui.screen );
-			// Leave a placeholder where the element used to be
-			ui.placeholder.insertAfter( this.element );
-			if ( myId ) {
-				ui.screen.attr( "id", myId + "-screen" );
-				ui.container.attr( "id", myId + "-popup" );
-				ui.placeholder.html( "<!-- placeholder for " + myId + " -->" );
-			}
-			ui.container.append( this.element );
-			ui.focusElement = ui.container;
-
-			// Add class to popup element
-			this.element.addClass( "ui-popup" );
-
-			// Define instance variables
-			$.extend( this, {
-				_scrollTop: 0,
-				_page: thisPage,
-				_ui: ui,
-				_fallbackTransition: "",
-				_currentTransition: false,
-				_prereqs: null,
-				_isOpen: false,
-				_tolerance: null,
-				_resizeData: null,
-				_ignoreResizeTo: 0,
-				_orientationchangeInProgress: false
-			});
-
-			$.each( this.options, function( key, value ) {
-				// Cause initial options to be applied by their handler by temporarily setting the option to undefined
-				// - the handler then sets it to the initial value
-				self.options[ key ] = undefined;
-				self._setOption( key, value, true );
-			});
-
-			ui.screen.bind( "vclick", $.proxy( this, "_eatEventAndClose" ) );
-
-			this._on( $.mobile.window, {
-				orientationchange: $.proxy( this, "_handleWindowOrientationchange" ),
-				resize: $.proxy( this, "_handleWindowResize" ),
-				keyup: $.proxy( this, "_handleWindowKeyUp" )
-			});
-			this._on( $.mobile.document, {
-				focusin: $.proxy( this, "_handleDocumentFocusIn" )
-			});
-		},
-
-		_applyTheme: function( dst, theme, prefix ) {
-			var classes = ( dst.attr( "class" ) || "").split( " " ),
-				alreadyAdded = true,
-				currentTheme = null,
-				matches,
-				themeStr = String( theme );
-
-			while ( classes.length > 0 ) {
-				currentTheme = classes.pop();
-				matches = ( new RegExp( "^ui-" + prefix + "-([a-z])$" ) ).exec( currentTheme );
-				if ( matches && matches.length > 1 ) {
-					currentTheme = matches[ 1 ];
-					break;
-				} else {
-					currentTheme = null;
-				}
-			}
-
-			if ( theme !== currentTheme ) {
-				dst.removeClass( "ui-" + prefix + "-" + currentTheme );
-				if ( ! ( theme === null || theme === "none" ) ) {
-					dst.addClass( "ui-" + prefix + "-" + themeStr );
-				}
-			}
-		},
-
-		_setTheme: function( value ) {
-			this._applyTheme( this.element, value, "body" );
-		},
-
-		_setOverlayTheme: function( value ) {
-			this._applyTheme( this._ui.screen, value, "overlay" );
-
-			if ( this._isOpen ) {
-				this._ui.screen.addClass( "in" );
-			}
-		},
-
-		_setShadow: function( value ) {
-			this.element.toggleClass( "ui-overlay-shadow", value );
-		},
-
-		_setCorners: function( value ) {
-			this.element.toggleClass( "ui-corner-all", value );
-		},
-
-		_applyTransition: function( value ) {
-			this._ui.container.removeClass( this._fallbackTransition );
-			if ( value && value !== "none" ) {
-				this._fallbackTransition = $.mobile._maybeDegradeTransition( value );
-				if ( this._fallbackTransition === "none" ) {
-					this._fallbackTransition = "";
-				}
-				this._ui.container.addClass( this._fallbackTransition );
-			}
-		},
-
-		_setTransition: function( value ) {
-			if ( !this._currentTransition ) {
-				this._applyTransition( value );
-			}
-		},
-
-		_setTolerance: function( value ) {
-			var tol = { t: 30, r: 15, b: 30, l: 15 };
-
-			if ( value !== undefined ) {
-				var ar = String( value ).split( "," );
-
-				$.each( ar, function( idx, val ) { ar[ idx ] = parseInt( val, 10 ); } );
-
-				switch( ar.length ) {
-					// All values are to be the same
-					case 1:
-						if ( !isNaN( ar[ 0 ] ) ) {
-							tol.t = tol.r = tol.b = tol.l = ar[ 0 ];
-						}
-						break;
-
-					// The first value denotes top/bottom tolerance, and the second value denotes left/right tolerance
-					case 2:
-						if ( !isNaN( ar[ 0 ] ) ) {
-							tol.t = tol.b = ar[ 0 ];
-						}
-						if ( !isNaN( ar[ 1 ] ) ) {
-							tol.l = tol.r = ar[ 1 ];
-						}
-						break;
-
-					// The array contains values in the order top, right, bottom, left
-					case 4:
-						if ( !isNaN( ar[ 0 ] ) ) {
-							tol.t = ar[ 0 ];
-						}
-						if ( !isNaN( ar[ 1 ] ) ) {
-							tol.r = ar[ 1 ];
-						}
-						if ( !isNaN( ar[ 2 ] ) ) {
-							tol.b = ar[ 2 ];
-						}
-						if ( !isNaN( ar[ 3 ] ) ) {
-							tol.l = ar[ 3 ];
-						}
-						break;
-
-					default:
-						break;
-				}
-			}
-
-			this._tolerance = tol;
-		},
-
-		_setOption: function( key, value ) {
-			var exclusions, setter = "_set" + key.charAt( 0 ).toUpperCase() + key.slice( 1 );
-
-			if ( this[ setter ] !== undefined ) {
-				this[ setter ]( value );
-			}
-
-			// TODO REMOVE FOR 1.2.1 by moving them out to a default options object
-			exclusions = [
-				"initSelector",
-				"closeLinkSelector",
-				"closeLinkEvents",
-				"navigateEvents",
-				"closeEvents",
-				"history",
-				"container"
-			];
-
-			$.mobile.widget.prototype._setOption.apply( this, arguments );
-			if ( $.inArray( key, exclusions ) === -1 ) {
-				// Record the option change in the options and in the DOM data-* attributes
-				this.element.attr( "data-" + ( $.mobile.ns || "" ) + ( key.replace( /([A-Z])/, "-$1" ).toLowerCase() ), value );
-			}
-		},
-
-		// Try and center the overlay over the given coordinates
-		_placementCoords: function( desired ) {
-			// rectangle within which the popup must fit
-			var
-				winCoords = windowCoords(),
-				rc = {
-					x: this._tolerance.l,
-					y: winCoords.y + this._tolerance.t,
-					cx: winCoords.cx - this._tolerance.l - this._tolerance.r,
-					cy: winCoords.cy - this._tolerance.t - this._tolerance.b
-				},
-				menuSize, ret;
-
-			// Clamp the width of the menu before grabbing its size
-			this._ui.container.css( "max-width", rc.cx );
-			menuSize = {
-				cx: this._ui.container.outerWidth( true ),
-				cy: this._ui.container.outerHeight( true )
-			};
-
-			// Center the menu over the desired coordinates, while not going outside
-			// the window tolerances. This will center wrt. the window if the popup is too large.
-			ret = {
-				x: fitSegmentInsideSegment( rc.cx, menuSize.cx, rc.x, desired.x ),
-				y: fitSegmentInsideSegment( rc.cy, menuSize.cy, rc.y, desired.y )
-			};
-
-			// Make sure the top of the menu is visible
-			ret.y = Math.max( 0, ret.y );
-
-			// If the height of the menu is smaller than the height of the document
-			// align the bottom with the bottom of the document
-
-			// fix for $.mobile.document.height() bug in core 1.7.2.
-			var docEl = document.documentElement, docBody = document.body,
-				docHeight = Math.max( docEl.clientHeight, docBody.scrollHeight, docBody.offsetHeight, docEl.scrollHeight, docEl.offsetHeight );
-
-			ret.y -= Math.min( ret.y, Math.max( 0, ret.y + menuSize.cy - docHeight ) );
-
-			return { left: ret.x, top: ret.y };
-		},
-
-		_createPrereqs: function( screenPrereq, containerPrereq, whenDone ) {
-			var self = this, prereqs;
-
-			// It is important to maintain both the local variable prereqs and self._prereqs. The local variable remains in
-			// the closure of the functions which call the callbacks passed in. The comparison between the local variable and
-			// self._prereqs is necessary, because once a function has been passed to .animationComplete() it will be called
-			// next time an animation completes, even if that's not the animation whose end the function was supposed to catch
-			// (for example, if an abort happens during the opening animation, the .animationComplete handler is not called for
-			// that animation anymore, but the handler remains attached, so it is called the next time the popup is opened
-			// - making it stale. Comparing the local variable prereqs to the widget-level variable self._prereqs ensures that
-			// callbacks triggered by a stale .animationComplete will be ignored.
-
-			prereqs = {
-				screen: $.Deferred(),
-				container: $.Deferred()
-			};
-
-			prereqs.screen.then( function() {
-				if ( prereqs === self._prereqs ) {
-					screenPrereq();
-				}
-			});
-
-			prereqs.container.then( function() {
-				if ( prereqs === self._prereqs ) {
-					containerPrereq();
-				}
-			});
-
-			$.when( prereqs.screen, prereqs.container ).done( function() {
-				if ( prereqs === self._prereqs ) {
-					self._prereqs = null;
-					whenDone();
-				}
-			});
-
-			self._prereqs = prereqs;
-		},
-
-		_animate: function( args ) {
-			// NOTE before removing the default animation of the screen
-			//      this had an animate callback that would resolve the deferred
-			//      now the deferred is resolved immediately
-			// TODO remove the dependency on the screen deferred
-			this._ui.screen
-				.removeClass( args.classToRemove )
-				.addClass( args.screenClassToAdd );
-
-			args.prereqs.screen.resolve();
-
-			if ( args.transition && args.transition !== "none" ) {
-				if ( args.applyTransition ) {
-					this._applyTransition( args.transition );
-				}
-				if ( this._fallbackTransition ) {
-					this._ui.container
-						.animationComplete( $.proxy( args.prereqs.container, "resolve" ) )
-						.addClass( args.containerClassToAdd )
-						.removeClass( args.classToRemove );
-					return;
-				}
-			}
-			this._ui.container.removeClass( args.classToRemove );
-			args.prereqs.container.resolve();
-		},
-
-		// The desired coordinates passed in will be returned untouched if no reference element can be identified via
-		// desiredPosition.positionTo. Nevertheless, this function ensures that its return value always contains valid
-		// x and y coordinates by specifying the center middle of the window if the coordinates are absent.
-		// options: { x: coordinate, y: coordinate, positionTo: string: "origin", "window", or jQuery selector
-		_desiredCoords: function( o ) {
-			var dst = null, offset, winCoords = windowCoords(), x = o.x, y = o.y, pTo = o.positionTo;
-
-			// Establish which element will serve as the reference
-			if ( pTo && pTo !== "origin" ) {
-				if ( pTo === "window" ) {
-					x = winCoords.cx / 2 + winCoords.x;
-					y = winCoords.cy / 2 + winCoords.y;
-				} else {
-					try {
-						dst = $( pTo );
-					} catch( e ) {
+				if ( dst ) {
+					dst.filter( ":visible" );
+					if ( dst.length === 0 ) {
 						dst = null;
 					}
-					if ( dst ) {
-						dst.filter( ":visible" );
-						if ( dst.length === 0 ) {
-							dst = null;
-						}
-					}
 				}
 			}
+		}
 
-			// If an element was found, center over it
-			if ( dst ) {
-				offset = dst.offset();
-				x = offset.left + dst.outerWidth() / 2;
-				y = offset.top + dst.outerHeight() / 2;
-			}
+		// If an element was found, center over it
+		if ( dst ) {
+			offset = dst.offset();
+			x = offset.left + dst.outerWidth() / 2;
+			y = offset.top + dst.outerHeight() / 2;
+		}
 
-			// Make sure x and y are valid numbers - center over the window
-			if ( $.type( x ) !== "number" || isNaN( x ) ) {
-				x = winCoords.cx / 2 + winCoords.x;
-			}
-			if ( $.type( y ) !== "number" || isNaN( y ) ) {
-				y = winCoords.cy / 2 + winCoords.y;
-			}
+		// Make sure x and y are valid numbers - center over the window
+		if ( $.type( x ) !== "number" || isNaN( x ) ) {
+			x = winCoords.cx / 2 + winCoords.x;
+		}
+		if ( $.type( y ) !== "number" || isNaN( y ) ) {
+			y = winCoords.cy / 2 + winCoords.y;
+		}
 
-			return { x: x, y: y };
-		},
+		return { x: x, y: y };
+	},
 
-		_reposition: function( o ) {
-			// We only care about position-related parameters for repositioning
-			o = { x: o.x, y: o.y, positionTo: o.positionTo };
-			this._trigger( "beforeposition", o );
-			this._ui.container.offset( this._placementCoords( this._desiredCoords( o ) ) );
-		},
+	_reposition: function( o ) {
+		// We only care about position-related parameters for repositioning
+		o = { x: o.x, y: o.y, positionTo: o.positionTo };
+		this._trigger( "beforeposition", undefined, o );
+		this._ui.container.offset( this._placementCoords( this._desiredCoords( o ) ) );
+	},
 
-		reposition: function( o ) {
-			if ( this._isOpen ) {
-				this._reposition( o );
-			}
-		},
-
-		_openPrereqsComplete: function() {
-			this._ui.container.addClass( "ui-popup-active" );
-			this._isOpen = true;
-			this._resizeScreen();
-			this._ui.container.attr( "tabindex", "0" ).focus();
-			this._ignoreResizeEvents();
-			this._trigger( "afteropen" );
-		},
-
-		_open: function( options ) {
-			var o = $.extend( {}, this.options, options ),
-				// TODO move blacklist to private method
-				androidBlacklist = ( function() {
-					var w = window,
-						ua = navigator.userAgent,
-						// Rendering engine is Webkit, and capture major version
-						wkmatch = ua.match( /AppleWebKit\/([0-9\.]+)/ ),
-						wkversion = !!wkmatch && wkmatch[ 1 ],
-						androidmatch = ua.match( /Android (\d+(?:\.\d+))/ ),
-						andversion = !!androidmatch && androidmatch[ 1 ],
-						chromematch = ua.indexOf( "Chrome" ) > -1;
-
-					// Platform is Android, WebKit version is greater than 534.13 ( Android 3.2.1 ) and not Chrome.
-					if( androidmatch !== null && andversion === "4.0" && wkversion && wkversion > 534.13 && !chromematch ) {
-						return true;
-					}
-					return false;
-				}());
-
-			// Count down to triggering "popupafteropen" - we have two prerequisites:
-			// 1. The popup window animation completes (container())
-			// 2. The screen opacity animation completes (screen())
-			this._createPrereqs(
-				$.noop,
-				$.noop,
-				$.proxy( this, "_openPrereqsComplete" ) );
-
-			this._currentTransition = o.transition;
-			this._applyTransition( o.transition );
-
-			if ( !this.options.theme ) {
-				this._setTheme( this._page.jqmData( "theme" ) || $.mobile.getInheritedTheme( this._page, "c" ) );
-			}
-
-			this._ui.screen.removeClass( "ui-screen-hidden" );
-			this._ui.container.removeClass( "ui-popup-hidden" );
-
-			// Give applications a chance to modify the contents of the container before it appears
+	reposition: function( o ) {
+		if ( this._isOpen ) {
 			this._reposition( o );
+		}
+	},
 
-			if ( this.options.overlayTheme && androidBlacklist ) {
-				/* TODO:
-				The native browser on Android 4.0.X ("Ice Cream Sandwich") suffers from an issue where the popup overlay appears to be z-indexed
-				above the popup itself when certain other styles exist on the same page -- namely, any element set to `position: fixed` and certain
-				types of input. These issues are reminiscent of previously uncovered bugs in older versions of Android's native browser:
-				https://github.com/scottjehl/Device-Bugs/issues/3
+	_openPrereqsComplete: function() {
+		this._ui.container.addClass( "ui-popup-active" );
+		this._isOpen = true;
+		this._resizeScreen();
+		this._ui.container.attr( "tabindex", "0" ).focus();
+		this._ignoreResizeEvents();
+		this._trigger( "afteropen" );
+	},
 
-				This fix closes the following bugs ( I use "closes" with reluctance, and stress that this issue should be revisited as soon as possible ):
+	_open: function( options ) {
+		var o = $.extend( {}, this.options, options ),
+			// TODO move blacklist to private method
+			androidBlacklist = ( function() {
+				var w = window,
+					ua = navigator.userAgent,
+					// Rendering engine is Webkit, and capture major version
+					wkmatch = ua.match( /AppleWebKit\/([0-9\.]+)/ ),
+					wkversion = !!wkmatch && wkmatch[ 1 ],
+					androidmatch = ua.match( /Android (\d+(?:\.\d+))/ ),
+					andversion = !!androidmatch && androidmatch[ 1 ],
+					chromematch = ua.indexOf( "Chrome" ) > -1;
 
-				https://github.com/jquery/jquery-mobile/issues/4816
-				https://github.com/jquery/jquery-mobile/issues/4844
-				https://github.com/jquery/jquery-mobile/issues/4874
-				*/
-
-				// TODO sort out why this._page isn't working
-				this.element.closest( ".ui-page" ).addClass( "ui-popup-open" );
-			}
-			this._animate({
-				additionalCondition: true,
-				transition: o.transition,
-				classToRemove: "",
-				screenClassToAdd: "in",
-				containerClassToAdd: "in",
-				applyTransition: false,
-				prereqs: this._prereqs
-			});
-		},
-
-		_closePrereqScreen: function() {
-			this._ui.screen
-				.removeClass( "out" )
-				.addClass( "ui-screen-hidden" );
-		},
-
-		_closePrereqContainer: function() {
-			this._ui.container
-				.removeClass( "reverse out" )
-				.addClass( "ui-popup-hidden" )
-				.removeAttr( "style" );
-		},
-
-		_closePrereqsDone: function() {
-			var opts = this.options;
-
-			this._ui.container.removeAttr( "tabindex" );
-
-			// remove the global mutex for popups
-			$.mobile.popup.active = undefined;
-
-			// alert users that the popup is closed
-			this._trigger( "afterclose" );
-		},
-
-		_close: function( immediate ) {
-			this._ui.container.removeClass( "ui-popup-active" );
-			this._page.removeClass( "ui-popup-open" );
-
-			this._isOpen = false;
-
-			// Count down to triggering "popupafterclose" - we have two prerequisites:
-			// 1. The popup window reverse animation completes (container())
-			// 2. The screen opacity animation completes (screen())
-			this._createPrereqs(
-				$.proxy( this, "_closePrereqScreen" ),
-				$.proxy( this, "_closePrereqContainer" ),
-				$.proxy( this, "_closePrereqsDone" ) );
-
-			this._animate( {
-				additionalCondition: this._ui.screen.hasClass( "in" ),
-				transition: ( immediate ? "none" : ( this._currentTransition ) ),
-				classToRemove: "in",
-				screenClassToAdd: "out",
-				containerClassToAdd: "reverse out",
-				applyTransition: true,
-				prereqs: this._prereqs
-			});
-		},
-
-		_unenhance: function() {
-			// Put the element back to where the placeholder was and remove the "ui-popup" class
-			this._setTheme( "none" );
-			this.element
-				// Cannot directly insertAfter() - we need to detach() first, because
-				// insertAfter() will do nothing if the payload div was not attached
-				// to the DOM at the time the widget was created, and so the payload
-				// will remain inside the container even after we call insertAfter().
-				// If that happens and we remove the container a few lines below, we
-				// will cause an infinite recursion - #5244
-				.detach()
-				.insertAfter( this._ui.placeholder )
-				.removeClass( "ui-popup ui-overlay-shadow ui-corner-all" );
-			this._ui.screen.remove();
-			this._ui.container.remove();
-			this._ui.placeholder.remove();
-		},
-
-		_destroy: function() {
-			if ( $.mobile.popup.active === this ) {
-				this.element.one( "popupafterclose", $.proxy( this, "_unenhance" ) );
-				this.close();
-			} else {
-				this._unenhance();
-			}
-		},
-
-		_closePopup: function( e, data ) {
-			var parsedDst, toUrl, o = this.options, immediate = false;
-
-			// restore location on screen
-			window.scrollTo( 0, this._scrollTop );
-
-			if ( e && e.type === "pagebeforechange" && data ) {
-				// Determine whether we need to rapid-close the popup, or whether we can
-				// take the time to run the closing transition
-				if ( typeof data.toPage === "string" ) {
-					parsedDst = data.toPage;
-				} else {
-					parsedDst = data.toPage.jqmData( "url" );
+				// Platform is Android, WebKit version is greater than 534.13 ( Android 3.2.1 ) and not Chrome.
+				if( androidmatch !== null && andversion === "4.0" && wkversion && wkversion > 534.13 && !chromematch ) {
+					return true;
 				}
-				parsedDst = $.mobile.path.parseUrl( parsedDst );
-				toUrl = parsedDst.pathname + parsedDst.search + parsedDst.hash;
+				return false;
+			}());
 
-				if ( this._myUrl !== $.mobile.path.makeUrlAbsolute( toUrl ) ) {
-					// Going to a different page - close immediately
-					immediate = true;
-				} else {
-					e.preventDefault();
-				}
-			}
+		// Count down to triggering "popupafteropen" - we have two prerequisites:
+		// 1. The popup window animation completes (container())
+		// 2. The screen opacity animation completes (screen())
+		this._createPrereqs(
+			$.noop,
+			$.noop,
+			$.proxy( this, "_openPrereqsComplete" ) );
 
-			// remove nav bindings
-			o.container.unbind( o.closeEvents );
-			// unbind click handlers added when history is disabled
-			this.element.undelegate( o.closeLinkSelector, o.closeLinkEvents );
+		this._currentTransition = o.transition;
+		this._applyTransition( o.transition );
 
-			this._close( immediate );
-		},
+		if ( !this.options.theme ) {
+			this._setTheme( this._page.jqmData( "theme" ) || $.mobile.getInheritedTheme( this._page, "c" ) );
+		}
 
-		// any navigation event after a popup is opened should close the popup
-		// NOTE the pagebeforechange is bound to catch navigation events that don't
-		//      alter the url (eg, dialogs from popups)
-		_bindContainerClose: function() {
-			this.options.container
-				.one( this.options.closeEvents, $.proxy( this, "_closePopup" ) );
-		},
+		this._ui.screen.removeClass( "ui-screen-hidden" );
+		this._ui.container.removeClass( "ui-popup-hidden" );
 
-		// TODO no clear deliniation of what should be here and
-		// what should be in _open. Seems to be "visual" vs "history" for now
-		open: function( options ) {
-			var self = this, opts = this.options, url, hashkey, activePage, currentIsDialog, hasHash, urlHistory;
+		// Give applications a chance to modify the contents of the container before it appears
+		this._reposition( o );
 
-			// make sure open is idempotent
-			if( $.mobile.popup.active ) {
-				return;
-			}
+		if ( this.options.overlayTheme && androidBlacklist ) {
+			/* TODO:
+			The native browser on Android 4.0.X ("Ice Cream Sandwich") suffers from an issue where the popup overlay appears to be z-indexed
+			above the popup itself when certain other styles exist on the same page -- namely, any element set to `position: fixed` and certain
+			types of input. These issues are reminiscent of previously uncovered bugs in older versions of Android's native browser:
+			https://github.com/scottjehl/Device-Bugs/issues/3
 
-			// set the global popup mutex
-			$.mobile.popup.active = this;
-			this._scrollTop = $.mobile.window.scrollTop();
+			This fix closes the following bugs ( I use "closes" with reluctance, and stress that this issue should be revisited as soon as possible ):
 
-			// if history alteration is disabled close on navigate events
-			// and leave the url as is
-			if( !( opts.history ) ) {
-				self._open( options );
-				self._bindContainerClose();
+			https://github.com/jquery/jquery-mobile/issues/4816
+			https://github.com/jquery/jquery-mobile/issues/4844
+			https://github.com/jquery/jquery-mobile/issues/4874
+			*/
 
-				// When histoy is disabled we have to grab the data-rel
-				// back link clicks so we can close the popup instead of
-				// relying on history to do it for us
-				self.element
-					.delegate( opts.closeLinkSelector, opts.closeLinkEvents, function( e ) {
-						self.close();
-						e.preventDefault();
-					});
+			// TODO sort out why this._page isn't working
+			this.element.closest( ".ui-page" ).addClass( "ui-popup-open" );
+		}
+		this._animate({
+			additionalCondition: true,
+			transition: o.transition,
+			classToRemove: "",
+			screenClassToAdd: "in",
+			containerClassToAdd: "in",
+			applyTransition: false,
+			prereqs: this._prereqs
+		});
+	},
 
-				return;
-			}
+	_closePrereqScreen: function() {
+		this._ui.screen
+			.removeClass( "out" )
+			.addClass( "ui-screen-hidden" );
+	},
 
-			// cache some values for min/readability
-			urlHistory = $.mobile.urlHistory;
-			hashkey = $.mobile.dialogHashKey;
-			activePage = $.mobile.activePage;
-			currentIsDialog = activePage.is( ".ui-dialog" );
-			this._myUrl = url = urlHistory.getActive().url;
-			hasHash = ( url.indexOf( hashkey ) > -1 ) && !currentIsDialog && ( urlHistory.activeIndex > 0 );
+	_closePrereqContainer: function() {
+		this._ui.container
+			.removeClass( "reverse out" )
+			.addClass( "ui-popup-hidden" )
+			.removeAttr( "style" );
+	},
 
-			if ( hasHash ) {
-				self._open( options );
-				self._bindContainerClose();
-				return;
-			}
+	_closePrereqsDone: function() {
+		var container = this._ui.container;
 
-			// if the current url has no dialog hash key proceed as normal
-			// otherwise, if the page is a dialog simply tack on the hash key
-			if ( url.indexOf( hashkey ) === -1 && !currentIsDialog ){
-				url = url + (url.indexOf( "#" ) > -1 ? hashkey : "#" + hashkey);
+		container.removeAttr( "tabindex" );
+
+		// remove the global mutex for popups
+		$.mobile.popup.active = undefined;
+
+		// Blur elements inside the container, including the container
+		$( ":focus", container[ 0 ] ).add( container[ 0 ] ).blur();
+
+		// alert users that the popup is closed
+		this._trigger( "afterclose" );
+	},
+
+	_close: function( immediate ) {
+		this._ui.container.removeClass( "ui-popup-active" );
+		this._page.removeClass( "ui-popup-open" );
+
+		this._isOpen = false;
+
+		// Count down to triggering "popupafterclose" - we have two prerequisites:
+		// 1. The popup window reverse animation completes (container())
+		// 2. The screen opacity animation completes (screen())
+		this._createPrereqs(
+			$.proxy( this, "_closePrereqScreen" ),
+			$.proxy( this, "_closePrereqContainer" ),
+			$.proxy( this, "_closePrereqsDone" ) );
+
+		this._animate( {
+			additionalCondition: this._ui.screen.hasClass( "in" ),
+			transition: ( immediate ? "none" : ( this._currentTransition ) ),
+			classToRemove: "in",
+			screenClassToAdd: "out",
+			containerClassToAdd: "reverse out",
+			applyTransition: true,
+			prereqs: this._prereqs
+		});
+	},
+
+	_unenhance: function() {
+		// Put the element back to where the placeholder was and remove the "ui-popup" class
+		this._setTheme( "none" );
+		this.element
+			// Cannot directly insertAfter() - we need to detach() first, because
+			// insertAfter() will do nothing if the payload div was not attached
+			// to the DOM at the time the widget was created, and so the payload
+			// will remain inside the container even after we call insertAfter().
+			// If that happens and we remove the container a few lines below, we
+			// will cause an infinite recursion - #5244
+			.detach()
+			.insertAfter( this._ui.placeholder )
+			.removeClass( "ui-popup ui-overlay-shadow ui-corner-all" );
+		this._ui.screen.remove();
+		this._ui.container.remove();
+		this._ui.placeholder.remove();
+	},
+
+	_destroy: function() {
+		if ( $.mobile.popup.active === this ) {
+			this.element.one( "popupafterclose", $.proxy( this, "_unenhance" ) );
+			this.close();
+		} else {
+			this._unenhance();
+		}
+	},
+
+	_closePopup: function( e, data ) {
+		var parsedDst, toUrl, o = this.options, immediate = false;
+
+		// restore location on screen
+		window.scrollTo( 0, this._scrollTop );
+
+		if ( e && e.type === "pagebeforechange" && data ) {
+			// Determine whether we need to rapid-close the popup, or whether we can
+			// take the time to run the closing transition
+			if ( typeof data.toPage === "string" ) {
+				parsedDst = data.toPage;
 			} else {
-				url = $.mobile.path.parseLocation().hash + hashkey;
+				parsedDst = data.toPage.jqmData( "url" );
 			}
+			parsedDst = $.mobile.path.parseUrl( parsedDst );
+			toUrl = parsedDst.pathname + parsedDst.search + parsedDst.hash;
 
-			// Tack on an extra hashkey if this is the first page and we've just reconstructed the initial hash
-			if ( urlHistory.activeIndex === 0 && url === urlHistory.initialDst ) {
-				url += hashkey;
-			}
-
-			// swallow the the initial navigation event, and bind for the next
-			$(window).one( "beforenavigate", function( e ) {
+			if ( this._myUrl !== $.mobile.path.makeUrlAbsolute( toUrl ) ) {
+				// Going to a different page - close immediately
+				immediate = true;
+			} else {
 				e.preventDefault();
-				self._open( options );
-				self._bindContainerClose();
-			});
-
-			this.urlAltered = true;
-			$.mobile.navigate( url, {role: "dialog"} );
-		},
-
-		close: function() {
-			// make sure close is idempotent
-			if( $.mobile.popup.active !== this ) {
-				return;
-			}
-
-			this._scrollTop = $.mobile.window.scrollTop();
-
-			if( this.options.history && this.urlAltered ) {
-				$.mobile.back();
-				this.urlAltered = false;
-			} else {
-				// simulate the nav bindings having fired
-				this._closePopup();
 			}
 		}
-	});
 
+		// remove nav bindings
+		o.container.unbind( o.closeEvents );
+		// unbind click handlers added when history is disabled
+		this.element.undelegate( o.closeLinkSelector, o.closeLinkEvents );
 
-	// TODO this can be moved inside the widget
-	$.mobile.popup.handleLink = function( $link ) {
-		var closestPage = $link.closest( ":jqmData(role='page')" ),
-			scope = ( ( closestPage.length === 0 ) ? $( "body" ) : closestPage ),
-			// NOTE make sure to get only the hash, ie7 (wp7) return the absolute href
-			//      in this case ruining the element selection
-			popup = $( $.mobile.path.parseUrl($link.attr( "href" )).hash, scope[0] ),
-			offset;
+		this._close( immediate );
+	},
 
-		if ( popup.data( "mobile-popup" ) ) {
-			offset = $link.offset();
-			popup.popup( "open", {
-				x: offset.left + $link.outerWidth() / 2,
-				y: offset.top + $link.outerHeight() / 2,
-				transition: $link.jqmData( "transition" ),
-				positionTo: $link.jqmData( "position-to" )
-			});
+	// any navigation event after a popup is opened should close the popup
+	// NOTE the pagebeforechange is bound to catch navigation events that don't
+	//      alter the url (eg, dialogs from popups)
+	_bindContainerClose: function() {
+		this.options.container
+			.one( this.options.closeEvents, $.proxy( this, "_closePopup" ) );
+	},
+
+	// TODO no clear deliniation of what should be here and
+	// what should be in _open. Seems to be "visual" vs "history" for now
+	open: function( options ) {
+		var self = this, opts = this.options, url, hashkey, activePage, currentIsDialog, hasHash, urlHistory;
+
+		// make sure open is idempotent
+		if( $.mobile.popup.active ) {
+			return;
 		}
 
-		//remove after delay
-		setTimeout( function() {
-			// Check if we are in a listview
-			var $parent = $link.parent().parent();
-			if ($parent.hasClass("ui-li")) {
-				$link = $parent.parent();
-			}
-			$link.removeClass( $.mobile.activeBtnClass );
-		}, 300 );
-	};
+		// set the global popup mutex
+		$.mobile.popup.active = this;
+		this._scrollTop = $.mobile.window.scrollTop();
 
-	// TODO move inside _create
-	$.mobile.document.bind( "pagebeforechange", function( e, data ) {
-		if ( data.options.role === "popup" ) {
-			$.mobile.popup.handleLink( data.options.link );
+		// if history alteration is disabled close on navigate events
+		// and leave the url as is
+		if( !( opts.history ) ) {
+			self._open( options );
+			self._bindContainerClose();
+
+			// When histoy is disabled we have to grab the data-rel
+			// back link clicks so we can close the popup instead of
+			// relying on history to do it for us
+			self.element
+				.delegate( opts.closeLinkSelector, opts.closeLinkEvents, function( e ) {
+					self.close();
+					e.preventDefault();
+				});
+
+			return;
+		}
+
+		// cache some values for min/readability
+		urlHistory = $.mobile.urlHistory;
+		hashkey = $.mobile.dialogHashKey;
+		activePage = $.mobile.activePage;
+		currentIsDialog = activePage.is( ".ui-dialog" );
+		this._myUrl = url = urlHistory.getActive().url;
+		hasHash = ( url.indexOf( hashkey ) > -1 ) && !currentIsDialog && ( urlHistory.activeIndex > 0 );
+
+		if ( hasHash ) {
+			self._open( options );
+			self._bindContainerClose();
+			return;
+		}
+
+		// if the current url has no dialog hash key proceed as normal
+		// otherwise, if the page is a dialog simply tack on the hash key
+		if ( url.indexOf( hashkey ) === -1 && !currentIsDialog ){
+			url = url + (url.indexOf( "#" ) > -1 ? hashkey : "#" + hashkey);
+		} else {
+			url = $.mobile.path.parseLocation().hash + hashkey;
+		}
+
+		// Tack on an extra hashkey if this is the first page and we've just reconstructed the initial hash
+		if ( urlHistory.activeIndex === 0 && url === urlHistory.initialDst ) {
+			url += hashkey;
+		}
+
+		// swallow the the initial navigation event, and bind for the next
+		$(window).one( "beforenavigate", function( e ) {
 			e.preventDefault();
-		}
-	});
+			self._open( options );
+			self._bindContainerClose();
+		});
 
-	$.mobile.document.bind( "pagecreate create", function( e )  {
-		$.mobile.popup.prototype.enhanceWithin( e.target, true );
-	});
+		this.urlAltered = true;
+		$.mobile.navigate( url, {role: "dialog"} );
+	},
+
+	close: function() {
+		// make sure close is idempotent
+		if( $.mobile.popup.active !== this ) {
+			return;
+		}
+
+		this._scrollTop = $.mobile.window.scrollTop();
+
+		if( this.options.history && this.urlAltered ) {
+			$.mobile.back();
+			this.urlAltered = false;
+		} else {
+			// simulate the nav bindings having fired
+			this._closePopup();
+		}
+	}
+});
+
+
+// TODO this can be moved inside the widget
+$.mobile.popup.handleLink = function( $link ) {
+	var closestPage = $link.closest( ":jqmData(role='page')" ),
+		scope = ( ( closestPage.length === 0 ) ? $( "body" ) : closestPage ),
+		// NOTE make sure to get only the hash, ie7 (wp7) return the absolute href
+		//      in this case ruining the element selection
+		popup = $( $.mobile.path.parseUrl($link.attr( "href" )).hash, scope[0] ),
+		offset;
+
+	if ( popup.data( "mobile-popup" ) ) {
+		offset = $link.offset();
+		popup.popup( "open", {
+			x: offset.left + $link.outerWidth() / 2,
+			y: offset.top + $link.outerHeight() / 2,
+			transition: $link.jqmData( "transition" ),
+			positionTo: $link.jqmData( "position-to" )
+		});
+	}
+
+	//remove after delay
+	setTimeout( function() {
+		// Check if we are in a listview
+		var $parent = $link.parent().parent();
+		if ($parent.hasClass("ui-li")) {
+			$link = $parent.parent();
+		}
+		$link.removeClass( $.mobile.activeBtnClass );
+	}, 300 );
+};
+
+// TODO move inside _create
+$.mobile.document.bind( "pagebeforechange", function( e, data ) {
+	if ( data.options.role === "popup" ) {
+		$.mobile.popup.handleLink( data.options.link );
+		e.preventDefault();
+	}
+});
+
+$.mobile.document.bind( "pagecreate create", function( e )  {
+	$.mobile.popup.prototype.enhanceWithin( e.target, true );
+});
 
 })( jQuery );
 
@@ -42279,7 +42271,10 @@ $.mobile.document.bind( "pagecreate create", function( e ) {
 			placeholder: "",
 
 			build: function() {
-				var self = this;
+				var self = this,
+					escapeId = function( id ) {
+						return id.replace( /([!"#$%&'()*+,./:;<=>?@[\]^`{|}~])/g, "\\$1" );
+					};
 
 				// Create list from select, update state
 				self.refresh();
@@ -42309,9 +42304,9 @@ $.mobile.document.bind( "pagecreate create", function( e ) {
 
 						self._decideFormat();
 						if ( self.menuType === "overlay" ) {
-							self.button.attr( "href", "#" + self.popupID ).attr( "data-" + ( $.mobile.ns || "" ) + "rel", "popup" );
+							self.button.attr( "href", "#" + escapeId( self.popupID ) ).attr( "data-" + ( $.mobile.ns || "" ) + "rel", "popup" );
 						} else {
-							self.button.attr( "href", "#" + self.dialogID ).attr( "data-" + ( $.mobile.ns || "" ) + "rel", "dialog" );
+							self.button.attr( "href", "#" + escapeId( self.dialogID ) ).attr( "data-" + ( $.mobile.ns || "" ) + "rel", "dialog" );
 						}
 						self.isOpen = true;
 						// Do not prevent default, so the navigation may have a chance to actually open the chosen format
@@ -42718,6 +42713,9 @@ $.mobile.document.bind( "pagecreate create", function( e ) {
 				// Remove the popup
 				this.listbox.remove();
 
+				// Remove the dialog
+				this.menuPage.remove();
+
 				// Chain up
 				origDestroy.apply( this, arguments );
 			}
@@ -42847,6 +42845,25 @@ $( document ).bind( "pagecreate create", function( e ) {
 	$( e.target )
 		.find( "a" )
 		.jqmEnhanceable()
+		.filter( ":jqmData(rel='popup')[href][href!='']" )
+		.each( function() {
+			// Accessibility info for popups
+			var e = this,
+				href = $( this ).attr( "href" ),
+				idref = href.substring( 1 );
+
+			e.setAttribute( "aria-haspopup", true );
+			e.setAttribute( "aria-owns", idref );
+			e.setAttribute( "aria-expanded", false );
+			$( document )
+				.on( "popupafteropen", href, function() {
+					e.setAttribute( "aria-expanded", true );
+				})
+				.on( "popupafterclose", href, function() {
+					e.setAttribute( "aria-expanded", false );
+				});
+		})
+		.end()
 		.not( ".ui-btn, .ui-link-inherit, :jqmData(role='none'), :jqmData(role='nojs')" )
 		.addClass( "ui-link" );
 
@@ -42911,7 +42928,7 @@ $( document ).bind( "pagecreate create", function( e ) {
 			$.extend( this, {
 				_thisPage: null
 			});
- 
+
 			self._addTransitionClass();
 			self._bindPageEvents();
 			self._bindToggleHandlers();
@@ -43452,8 +43469,14 @@ $.widget( "mobile.panel", $.mobile.widget, {
 		self._page.on( "click.panel" , "a", function( e ) {
 			if ( this.href.split( "#" )[ 1 ] === self._panelID && self._panelID !== undefined ) {
 				e.preventDefault();
-				var $link = $( this );
+				var $link = $( this ),
+					$parent;
 				if ( ! $link.hasClass( "ui-link" ) ) {
+					// Check if we are in a listview
+					$parent = $link.parent().parent();
+					if ( $parent.hasClass( "ui-li" ) ) {
+						$link = $parent.parent();
+					}
 					$link.addClass( $.mobile.activeBtnClass );
 					self.element.one( "panelopen panelclose", function() {
 						$link.removeClass( $.mobile.activeBtnClass );
@@ -44070,6 +44093,10 @@ $.mobile.document.delegate( ":jqmData(role='table')", "tablecreate refresh", fun
 			// define page container
 			$.mobile.pageContainer = $.mobile.firstPage.parent().addClass( "ui-mobile-viewport" );
 
+			// initialize navigation events now, after mobileinit has occurred and the page container
+			// has been created but before the rest of the library is alerted to that fact
+			$.mobile.navreadyDeferred.resolve();
+
 			// alert listeners that the pagecontainer has been determined for binding
 			// to events triggered on it
 			$window.trigger( "pagecontainercreate" );
@@ -44122,9 +44149,6 @@ $.mobile.document.delegate( ":jqmData(role='table')", "tablecreate refresh", fun
 		}
 	});
 
-	// initialize events now, after mobileinit has occurred
-	$.mobile.navreadyDeferred.resolve();
-
 	// check which scrollTop value should be used by scrolling to 1 immediately at domready
 	// then check what the scroll top is. Android will report 0... others 1
 	// note that this initial scroll won't hide the address bar. It's just for the check.
@@ -44162,13 +44186,13 @@ $.mobile.document.delegate( ":jqmData(role='table')", "tablecreate refresh", fun
 
 
 }));
-
 var TapAPI = {
     classes: {
         models: {},
         views: {},
         collections: {},
-        routers: {}
+        routers: {},
+        utility: {}
     },
     tours: {},
     tourAssets: {},
@@ -44183,6 +44207,7 @@ var TapAPI = {
     tracker: null,
     trackerID: _.isUndefined(TapConfig.trackerID) ? '' : TapConfig.trackerID,
     trackerClass: _.isUndefined(TapConfig.trackerClass) ? 'GAModel' : TapConfig.trackerClass,
+    primaryRouter: _.isUndefined(TapConfig.primaryRouter) ? 'Default' : TapConfig.primaryRouter,
     navigationControllers: {
         'StopListView': {
             label: 'Stop Menu',
@@ -44200,7 +44225,7 @@ var TapAPI = {
     },
     tourSettings: TapConfig.tourSettings,
     viewRegistry: {
-       'audio_stop': {
+        'audio_stop': {
             view: 'AudioStopView',
             icon: 'images/audio.png'
         },
@@ -44275,9 +44300,18 @@ TapAPI.helper = {
      */
     loadXMLDoc: function(url) {
         xhttp = new XMLHttpRequest();
-        xhttp.open('GET', url, false);
+        xhttp.onreadystatechange = this.onreadystatechange;
+        xhttp.open('GET', url, true);
         xhttp.send();
-        return xhttp.responseXML;
+    },
+    onreadystatechange: function() {
+        if (this.readyState === 4) {
+            if (this.status === 200) {
+                var response = TapAPI.helper.xmlToJson(this.responseXML);
+                response.uri = this.responseXML.URL;
+                Backbone.trigger('tap.tourml.loaded', response);
+            }
+        }
     },
     /*
      * Attempt to make the variable an array
@@ -44341,7 +44375,7 @@ TapAPI.helper = {
 /*
  * The Primary router for TAP
  */
-TapAPI.classes.routers.Primary = Backbone.Router.extend({
+TapAPI.classes.routers.Default = Backbone.Router.extend({
     routes: {
         '': 'tourSelection',
         'tour/:tourID/details': 'tourDetails',
@@ -44370,6 +44404,12 @@ TapAPI.classes.routers.Primary = Backbone.Router.extend({
      */
     tourDetails: function(tourID) {
         TapAPI.tours.selectTour(tourID);
+        if (_.isUndefined(TapAPI.currentTour)) {
+            Backbone.on("tap.tour.loaded." + tourID, this.tourDetails, this);
+            return;
+        } else {
+            Backbone.off("tap.tour.loaded." + tourID);
+        }
         TapAPI.currentStop = null;
 
         this.changePage(new TapAPI.classes.views.TourDetailsView());
@@ -44378,6 +44418,18 @@ TapAPI.classes.routers.Primary = Backbone.Router.extend({
         var that = this;
 
         TapAPI.tours.selectTour(tourID);
+        if (_.isUndefined(TapAPI.currentTour)) {
+            Backbone.on("tap.tour.loaded." + tourID, this.routeToController, this);
+            return;
+        } else {
+            Backbone.off("tap.tour.loaded." + tourID);
+        }
+
+        if (_.isUndefined(view)) {
+            var parts = Backbone.history.getFragment().split("/");
+            view = parts[parts.length - 1];
+        }
+
         TapAPI.currentStop = null;
 
         that.changePage(new TapAPI.classes.views[view]());
@@ -44389,6 +44441,19 @@ TapAPI.classes.routers.Primary = Backbone.Router.extend({
         var that = this;
 
         TapAPI.tours.selectTour(tourID);
+
+        if (_.isUndefined(TapAPI.currentTour)) {
+            Backbone.on("tap.tour.loaded." + tourID, this.tourStop, this);
+            return;
+        } else {
+            Backbone.off("tap.tour.loaded." + tourID);
+        }
+
+        if (_.isUndefined(stopID)) {
+            var parts = Backbone.history.getFragment().split("/");
+            stopID = parts[parts.length - 1];
+        }
+
         TapAPI.currentStop = TapAPI.tourStops.get(stopID);
 
         var stopType = TapAPI.currentStop.get('view');
@@ -44399,11 +44464,18 @@ TapAPI.classes.routers.Primary = Backbone.Router.extend({
     changePage: function(view) {
         TapAPI.tracker.trackPageView('/#' + Backbone.history.getFragment());
         //_gaq.push(['_trackPageview', '/#' + Backbone.history.getFragment()]);
+        window.scrollTo(0, 0);
         Backbone.trigger('tap.router.routed', view);
         Backbone.trigger('app.widgets.refresh');
     },
     getTourDefaultRoute: function(tourId) {
         var defaultController, controller;
+        var baseRoute = this.getBaseRoute();
+
+        var rootStop = TapAPI.tours.get(tourId).get('rootStopRef');
+        if (!_.isUndefined(rootStop)) {
+            return '#' + baseRoute + '/' + tourId + '/stop/' + rootStop.id;
+        }
 
         // get tour specific default navigation controller
         if (!_.isUndefined(TapAPI.tourSettings[tourId]) &&
@@ -44419,51 +44491,131 @@ TapAPI.classes.routers.Primary = Backbone.Router.extend({
             }
         }
 
-        return '#tour/' + tourId + '/controller/' + defaultController;
+        return '#' + baseRoute + '/' + tourId + '/controller/' + defaultController;
+    },
+    getStopRoute: function(tourId, stopId, withHash) {
+        if (_.isUndefined(withHash) || withHash === true) {
+            withHash = '#';
+        } else {
+            withHash = '';
+        }
+        var baseRoute = this.getBaseRoute();
+        return withHash + baseRoute + '/' + tourId + '/stop/' + stopId;
+    },
+    getFragmentParts: function() {
+        return Backbone.history.fragment.split("/");
+    },
+    getBaseRoute: function() {
+        var parts = this.getFragmentParts();
+        if (parts[0].length === 0) {
+            return 'tour';
+        }
+        return parts[0];
+    },
+    getControllerRoute: function(tourId, viewName, withHash) {
+        if (_.isUndefined(withHash) || withHash === true) {
+            withHash = '#';
+        } else {
+            withHash = '';
+        }
+        var baseRoute = this.getBaseRoute();
+        return withHash + baseRoute + '/' + tourId + '/controller/' + viewName;
     }
 });
-TapAPI.templateManager = {
-    get : function(templateName) {
-        if (TapAPI.templates[templateName] === undefined) {
-            $.ajax({
-                async : false,
-                dataType : 'html',
-                url : 'templates/' + templateName + '.tpl.html',
-                success : function(data, textStatus, jqXHR) {
-                    TapAPI.templates[templateName] = _.template(data);
-                }
-            });
-        }
-        return TapAPI.templates[templateName];
+TapAPI.classes.utility.TemplateManager = function() {
+    this.templateUrls = ['templates/'];
+
+    if (!_.isUndefined(TapConfig.templateUrls)) {
+        this.templateUrls = _.uniq(TapConfig.templateUrls.concat(this.templateUrls));
     }
+
+    this.get = function(templateName) {
+        var that = this;
+        return function(data) {
+            return that.useTemplate(templateName, data);
+        };
+    };
+
+    this.useTemplate = function(templateName, templateData) {
+        if (TapAPI.templates[templateName] === undefined) {
+            var found = false;
+            var numUrls = this.templateUrls.length;
+            for(var i=0; i < numUrls; i++) {
+                $.ajax({
+                    async : false,
+                    dataType : 'html',
+                    url : this.templateUrls[i] + templateName + '.tpl.html',
+                    success : function(data, textStatus, jqXHR) {
+                        TapAPI.templates[templateName] = _.template(data);
+                        found = true;
+                    }
+                });
+                if (found) break;
+            }
+        }
+        return TapAPI.templates[templateName](templateData);
+    };
 };
+
+TapAPI.templateManager = new TapAPI.classes.utility.TemplateManager();
 TapAPI.tourMLParser = {
-    process: function(url) {
-        var tours = [];
-        var i, len;
+    initialized: false,
+    initialize: function() {
+        // bind pre and post processing events
+        this.on('willParseTour', $.proxy(this.onWillParseTour, this));
+        this.on('didParseTour', $.proxy(this.onDidParseTour, this));
+        this.on('willParseStop', $.proxy(this.onWillParseStop, this));
+        this.on('didParseStop', $.proxy(this.onDidParseStop, this));
+        this.on('willParseAsset', $.proxy(this.onWillParseAsset, this));
+        this.on('didParseAsset', $.proxy(this.onDidParseAsset, this));
+
+        this.tourMap = {};
+
+        this.listenTo(Backbone, 'tap.tourml.loaded', this.parseTourML);
+
+        this.initialized = true;
+    },
+    process: function(uri) {
+        if (!this.initialized) {
+            this.initialize();
+        }
 
         // load tourML
-        var tourML = TapAPI.helper.xmlToJson(TapAPI.helper.loadXMLDoc(url));
+        TapAPI.helper.loadXMLDoc(uri);
+    },
+    parseTourML: function(tourML) {
+        var tours = [];
         if(tourML.tour) { // Single tour
-            tours.push(this.parseTourML(tourML.tour));
+            this.addTourToMap(tourML.uri);
+            tours.push(this.parseTour(tourML.tour, tourML.uri));
         } else if(tourML.tourSet && tourML.tourSet.tourMLRef) { // TourSet w/ external tours
-            len = tourML.tourSet.tourMLRef.length;
+            var tourRefs = TapAPI.helper.objectToArray(tourML.tourSet.tourMLRef);
+            len = tourRefs.length;
             for(i = 0; i < len; i++) {
-                var data = TapAPI.helper.xmlToJson(TapAPI.helper.loadXMLDoc(tourML.tourSet.tourMLRef[i].uri));
-                tours.push(this.parseTourML(data.tour));
+                this.addTourToMap(tourRefs[i].uri, tourML.uri);
+                //check modified date before requesting tourml from server
+                var tour = TapAPI.tours.cache.where({tourUri:tourRefs[i].uri});
+                if (tour.length > 0 && Date.parse(tourRefs[i].lastModified) <= Date.parse(tour[0].get('lastModified'))) {
+                    tours.push(tour[0]);
+                } else {
+                    TapAPI.helper.loadXMLDoc(tourRefs[i].uri);
+                }
             }
         } else if(tourML.tourSet && tourML.tourSet.tour) { // TourSet w/ tours as children elements
             len = tourML.tourSet.tour.length;
             for(i = 0; i < len; i++) {
-               tours.push(this.parseTourML(tourML.tourSet.tour[i]));
+               tours.push(this.parseTour(tourML.tourSet.tour[i], tourML.uri));
             }
         }
-
-        return tours;
+        Backbone.trigger('tap.tourml.parsed', tours);
     },
-    parseTourML: function(data) {
+    parseTour: function(data, tourUri) {
+        this.trigger('willParseTour');
+
+        var toursetUri = this.tourMap[tourUri];
+
         // check to see if the tour has been updated
-        var tour = TapAPI.tours.get(data.id);
+        var tour = TapAPI.tours.cache.get(data.id);
         if (tour && Date.parse(data.lastModified) <= Date.parse(tour.get('lastModified'))) return tour;
 
         var stops = [],
@@ -44472,10 +44624,12 @@ TapAPI.tourMLParser = {
         // create new tour
         tour = new TapAPI.classes.models.TourModel({
             id: data.id,
+            toursetUri: toursetUri,
+            tourUri: tourUri,
             appResource: data.tourMetadata && data.tourMetadata.appResource ? TapAPI.helper.objectToArray(data.tourMetadata.appResource) : undefined,
             connection: data.connection ? TapAPI.helper.objectToArray(data.connection) : undefined,
             description: data.tourMetadata && data.tourMetadata.description ? TapAPI.helper.objectToArray(data.tourMetadata.description) : undefined,
-            lastModified: data.tourMetadata && data.tourMetadata.lastModified ? data.tourMetadata.lastModified : undefined,
+            lastModified: data.lastModified ? data.lastModified : undefined,
             propertySet: data.tourMetadata && data.tourMetadata.propertySet ? TapAPI.helper.objectToArray(data.tourMetadata.propertySet.property) : undefined,
             publishDate: data.tourMetadata && data.tourMetadata.publishDate ? TapAPI.helper.objectToArray(data.tourMetadata.publishDate) : undefined,
             rootStopRef: data.tourMetadata && data.tourMetadata.rootStopRef ? data.tourMetadata.rootStopRef : undefined,
@@ -44494,6 +44648,7 @@ TapAPI.tourMLParser = {
         data.stop = TapAPI.helper.objectToArray(data.stop);
         var numStops = data.stop.length;
         for (i = 0; i < numStops; i++) {
+            this.trigger('willParseStop');
             var stop,
                 connections = [];
 
@@ -44504,7 +44659,7 @@ TapAPI.tourMLParser = {
                     }
                 }
             }
-
+            
             stop = new TapAPI.classes.models.StopModel({
                 id: data.stop[i].id,
                 connection: connections,
@@ -44517,12 +44672,14 @@ TapAPI.tourMLParser = {
             });
             stopCollection.create(stop);
             stops.push(stop);
+            this.trigger('didParseStop', stop, tour);
         }
 
         // load asset models
         data.asset = TapAPI.helper.objectToArray(data.asset);
         var numAssets = data.asset.length;
         for (i = 0; i < numAssets; i++) {
+            this.trigger('willParseAsset');
             var asset;
 
             // modifiy source propertySet child to match similar elements
@@ -44555,6 +44712,7 @@ TapAPI.tourMLParser = {
             });
             assetCollection.create(asset);
             assets.push(asset);
+            this.trigger('didParseAsset', asset, tour);
         }
 
         // clear out the temporary models
@@ -44572,19 +44730,41 @@ TapAPI.tourMLParser = {
         // clear out the temporary models
         stopCollection.reset();
         assetCollection.reset();
-
+        
+        // announce we're done parsing the tour
+        this.trigger('didParseTour', tour);
+        
         return tour;
-    }
-};
-// Check for geolocation support
-if (!navigator.geolocation) return;
+    },
 
+    addTourToMap: function(tourUri, tourSetUri) {
+        if (_.isUndefined(this.tourMap[tourUri])) {
+            this.tourMap[tourUri] = [];
+        }
+
+        if (!_.isUndefined(tourSetUri)) {
+            this.tourMap[tourUri].push(tourSetUri);
+        }
+    },
+    
+    // stubs for local parse event handlers
+    onWillParseTour: (TapConfig.willParseTour) ? TapConfig.willParseTour : function () {},
+    onDidParseTour: (TapConfig.didParseTour) ? TapConfig.didParseTour : function (tour) {},
+    onWillParseStop: (TapConfig.willParseStop) ? TapConfig.willParseStop : function () {},
+    onDidParseStop: (TapConfig.didParseStop) ? TapConfig.didParseStop : function (stop, tour) {},
+    onWillParseAsset: (TapConfig.willParseAsset) ? TapConfig.willParseAsset : function () {},
+    onDidParseAsset: (TapConfig.didParseAsset) ? TapConfig.didParseAsset : function (asset, tour) {}
+};
+
+_.extend(TapAPI.tourMLParser, Backbone.Events);
 TapAPI.geoLocation = {
     latestLocation: null,
     watch: null,
     nearestStop: null,
 
     locate: function() {
+        if (!navigator.geolocation) return;
+
         var that = this;
         navigator.geolocation.getCurrentPosition(
             function(position) {
@@ -44652,6 +44832,8 @@ TapAPI.geoLocation = {
     },
 
     startLocating: function(delay) {
+        if (!navigator.geolocation) return;
+
         var that = this;
         this.watch = navigator.geolocation.watchPosition(
             function(position) {
@@ -44664,6 +44846,8 @@ TapAPI.geoLocation = {
     },
 
     stopLocating: function() {
+        if (!navigator.geolocation) return;
+        
         navigator.geolocation.clearWatch(this.watch);
 
         if (this.nearestStop !== null) {
@@ -44727,6 +44911,12 @@ __p += '\n<div id="transcription" data-role="collapsible" data-content-theme="c"
 ((__t = ( transcription )) == null ? '' : __t) +
 '</p>\n</div>\n';
  } ;
+__p += '\n';
+ if (!_.isUndefined(nextStopPath)) { ;
+__p += '\n    <a href="' +
+((__t = ( nextStopPath )) == null ? '' : __t) +
+'" data-role="button">next</a>\n';
+ } ;
 
 
 }
@@ -44740,10 +44930,8 @@ function print() { __p += __j.call(arguments, '') }
 with (obj) {
 __p += '<div data-role="navbar" data-iconpos="top">\n\t<ul>\n        ';
  for(var view in controllers) { ;
-__p += '\n\t\t<li>\n            <a href="#tour/' +
-((__t = ( tourID )) == null ? '' : __t) +
-'/controller/' +
-((__t = ( view )) == null ? '' : __t) +
+__p += '\n\t\t<li>\n            <a href="' +
+((__t = ( TapAPI.router.getControllerRoute(tourID, view) )) == null ? '' : __t) +
 '"\n            data-icon="' +
 ((__t = ( view.toLowerCase() )) == null ? '' : __t) +
 '"\n            data-iconshadow="true"\n            class="' +
@@ -44798,6 +44986,12 @@ __p += '\n\t<li>\n\t\t<a href="' +
 ((__t = ( image.title )) == null ? '' : __t) +
 '" />\n\t\t</a>\n\t</li>\n';
  }) ;
+__p += '\n';
+ if (!_.isUndefined(nextStopPath)) { ;
+__p += '\n    <a href="' +
+((__t = ( nextStopPath )) == null ? '' : __t) +
+'" data-role="button">next</a>\n';
+ } ;
 
 
 }
@@ -44825,14 +45019,10 @@ obj || (obj = {});
 var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-__p += '<div class="marker-bubble-content">\n    <a href="#tour/' +
-((__t = ( tourID )) == null ? '' : __t) +
-'/stop/' +
-((__t = ( stopID )) == null ? '' : __t) +
-'" class="goto-stop ui-btn ui-shadow ui-btn-corner-all ui-btn-inline ui-btn-icon-notext ui-btn-up-c">\n        <span class="ui-btn-inner">\n            <span class="ui-btn-text">View Stop</span>\n            <span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span>\n        </span>\n    </a>\n\t<div class="title"><a href="#tour/' +
-((__t = ( tourID )) == null ? '' : __t) +
-'/stop/' +
-((__t = ( stopID )) == null ? '' : __t) +
+__p += '<div class="marker-bubble-content">\n    <a href="' +
+((__t = ( route )) == null ? '' : __t) +
+'" class="goto-stop ui-btn ui-shadow ui-btn-corner-all ui-btn-inline ui-btn-icon-notext ui-btn-up-c">\n        <span class="ui-btn-inner">\n            <span class="ui-btn-text">View Stop</span>\n            <span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span>\n        </span>\n    </a>\n\t<div class="title"><a href="' +
+((__t = ( route )) == null ? '' : __t) +
 '">' +
 ((__t = ( title )) == null ? '' : __t) +
 '</a></div>\n\t<div class="distance">\n        ' +
@@ -44951,10 +45141,8 @@ __p += '\n<h3 class="stop-title">' +
 ((__t = ( description )) == null ? '' : __t) +
 '</div>\n<ul id="stop-list" data-role="listview" data-inset="true">\n';
  _.each(stops, function(stop) { ;
-__p += '\n    <li>\n        <a href="#tour/' +
-((__t = ( tourID )) == null ? '' : __t) +
-'/stop/' +
-((__t = ( stop.id )) == null ? '' : __t) +
+__p += '\n    <li>\n        <a href="' +
+((__t = ( stop.route )) == null ? '' : __t) +
 '">\n            <img src="' +
 ((__t = ( stop.icon )) == null ? '' : __t) +
 '" class="ui-li-icon ui-li-thumb" />\n            ' +
@@ -44974,22 +45162,24 @@ function print() { __p += __j.call(arguments, '') }
 with (obj) {
 __p += '<ul  data-role="listview" data-filter="true">\n    ';
  _.each(stops, function(stop) { ;
-__p += '\n    <li>\n        <a href=\'#tour/' +
-((__t = ( tourID )) == null ? '' : __t) +
-'/stop/' +
-((__t = ( stop.get('id') )) == null ? '' : __t) +
+__p += '\n    <li>\n        <a href=\'' +
+((__t = ( stop.model.getRoute() )) == null ? '' : __t) +
 '\'>\n            ';
- if (displayCodes && stop.getProperty('code')) { ;
+ if (displayCodes && stop.model.getProperty('code')) { ;
 __p += '\n            <span class="stop-code">' +
-((__t = ( stop.getProperty('code') )) == null ? '' : __t) +
+((__t = ( stop.model.getProperty('code') )) == null ? '' : __t) +
 '</span>\n            <span class="title-with-code">\n            ';
+ } else if (displayThumbnails && stop.thumbnail) { ;
+__p += '\n            <img src="' +
+((__t = ( stop.thumbnail )) == null ? '' : __t) +
+'" class="ui-li-thumb" />\n            <span class="title-with-thumbnail">\n            ';
  } else { ;
 __p += '\n            <img src="' +
-((__t = ( stop.get('icon') )) == null ? '' : __t) +
+((__t = ( stop.icon )) == null ? '' : __t) +
 '" class="ui-li-icon ui-li-thumb" />\n            <span>\n            ';
  } ;
 __p += '\n                ' +
-((__t = ( stop.get('title') )) == null ? '' : __t) +
+((__t = ( stop.title )) == null ? '' : __t) +
 '\n            </span>\n        </a>\n    </li>\n    ';
  }); ;
 __p += '\n</ul>';
@@ -45073,6 +45263,12 @@ __p += '\n<div id="transcription" data-role="collapsible" data-content-theme="c"
 ((__t = ( transcription )) == null ? '' : __t) +
 '</p>\n';
  } ;
+__p += '\n';
+ if (!_.isUndefined(nextStopPath)) { ;
+__p += '\n    <a href="' +
+((__t = ( nextStopPath )) == null ? '' : __t) +
+'" data-role="button">next</a>\n';
+ } ;
 
 
 }
@@ -45081,12 +45277,22 @@ return __p
 
 TapAPI.templates['web'] = function(obj) {
 obj || (obj = {});
-var __t, __p = '', __e = _.escape, __d = obj.obj || obj;
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
 __p += '<h3 class="stop-title">' +
-((__t = ( obj.title )) == null ? '' : __t) +
+((__t = ( title )) == null ? '' : __t) +
 '</h3>\n<div id="html-container">' +
-((__t = ( obj.html )) == null ? '' : __t) +
-'</div>';
+((__t = ( html )) == null ? '' : __t) +
+'</div>\n';
+ if (!_.isUndefined(nextStopPath)) { ;
+__p += '\n    <a href="' +
+((__t = ( nextStopPath )) == null ? '' : __t) +
+'" data-role="button">next</a>\n';
+ } ;
+
+
+}
 return __p
 }
 /*
@@ -45447,13 +45653,17 @@ TapAPI.classes.models.StopModel = Backbone.Model.extend({
     * @return array The connection array ordered by priority in ascending order
     */
     getSortedConnections: function() {
-        if(_.isUndefined(this.get('connections'))) return undefined;
-        return _.sortBy(this.get('connection'), function(connection) {
+        if(_.isUndefined(this.get('connection'))) return undefined;
+        var connections = _.sortBy(this.get('connection'), function(connection) {
             return parseInt(connection.priority, 10);
         });
+        return connections.length ? connections : undefined;
     },
     getProperty: function(propertyName) {
         return this.get('propertySet').getValueByName(propertyName);
+    },
+    getRoute: function(withHash) {
+        return TapAPI.router.getStopRoute(this.collection.tourId, this.get('id'), withHash);
     }
 });
 /*
@@ -45574,6 +45784,7 @@ TapAPI.classes.collections.StopCollection = Backbone.Collection.extend({
     model: TapAPI.classes.models.StopModel,
     initialize: function(models, id) {
         this.localStorage = new Backbone.LocalStorage(id + '-stop');
+        this.tourId = id;
     },
     // retrieve the stop id of a given key code
     getStopByKeycode: function(key) {
@@ -45592,23 +45803,38 @@ TapAPI.classes.collections.StopCollection = Backbone.Collection.extend({
 TapAPI.classes.collections.TourCollection = Backbone.Collection.extend({
     model: TapAPI.classes.models.TourModel,
     localStorage: new Backbone.LocalStorage('tours'),
+    initialize: function() {
+        this.listenTo(Backbone, 'tap.tourml.parsed', this.tourMLParsed);
+    },
     syncTourML: function(url) {
         var tours = [],
             tourML, i, len;
 
         // populate the tour collection
-        this.fetch();
+        this.fetch({
+            success: this.fetchCache
+        });
 
         // load tourML
-        tours = TapAPI.tourMLParser.process(url);
+        TapAPI.tourMLParser.process(url);
 
-        this.set(tours);
+        //clear the models
+        this.set([]);
+    },
+    fetchCache: function(collection, response, options) {
+        collection.cache = collection.clone();
+    },
+    tourMLParsed: function(tours) {
+        this.set(tours, {remove: false});
+        for (var i = 0, len = tours.length; i < len; i++) {
+            Backbone.trigger("tap.tour.loaded." + tours[i].get("id"), tours[i].get("id"));
+        }
     },
     selectTour: function(tourID) {
         if (TapAPI.currentTour == tourID) return;
 
         if (!TapAPI.tours.get(tourID)) {
-            console.log('Unable to load tour.');
+            TapAPI.currentTour = undefined;
             return;
         }
 
@@ -45638,7 +45864,7 @@ TapAPI.classes.collections.TourCollection = Backbone.Collection.extend({
  * All STOP views in TAP should extend from this
  */
 TapAPI.classes.views.BaseView = Backbone.View.extend({
-	initialize: function() {
+	initialize: function(options) {
 		this.title = '';
 		this.displayHeader = true;
 		this.displayFooter = true;
@@ -45662,6 +45888,15 @@ TapAPI.classes.views.BaseView = Backbone.View.extend({
 			});
 		}
 		return this;
+	},
+	getNextStopPath: function () {
+		var nextStopId = this.getNextStopId();
+		var fragments = Backbone.history.fragment.split("/");
+		return !_.isUndefined(nextStopId) ? '#' + fragments[0] + '/' + TapAPI.currentTour + '/stop/' + nextStopId : undefined;
+	},
+	getNextStopId : function () {
+		var nextStop = this.model.getSortedConnections();
+		return !_.isUndefined(nextStop) ? nextStop[0].destId : undefined;
 	}
 });
 /*
@@ -45670,9 +45905,12 @@ TapAPI.classes.views.BaseView = Backbone.View.extend({
  * All Navigation Views should extend from thie View
  */
 TapAPI.classes.views.StopSelectionView = TapAPI.classes.views.BaseView.extend({
-    initialize: function() {
-        this._super('initialize');
+    initialize: function(options) {
+        this._super(options);
         this.activeToolbarButton = '';
+    },
+    getRoute: function(withHash) {
+        return TapAPI.router.getControllerRoute(TapAPI.currentTour, this.activeToolbarButton, withHash);
     }
 });
 /*
@@ -45708,6 +45946,8 @@ TapAPI.classes.views.AppView = Backbone.View.extend({
 
         // trigger jquery mobile to initialize new widgets
         Backbone.trigger('app.widgets.refresh');
+
+        return this;
     },
     runApp: function() {
         Backbone.trigger('tap.app.loading');
@@ -45716,7 +45956,11 @@ TapAPI.classes.views.AppView = Backbone.View.extend({
         TapAPI.language = browserLanguage.split('-')[0];
 
         //Load up the Router
-        TapAPI.router = new TapAPI.classes.routers.Primary();
+        if (!_.isUndefined(TapAPI.classes.routers[TapAPI.primaryRouter])) {
+            TapAPI.router = new TapAPI.classes.routers[TapAPI.primaryRouter]();
+        } else {
+            TapAPI.router = new TapAPI.classes.routers.Default();
+        }
 
         // initialize Analytics
         if (!_.isUndefined(TapAPI.classes.models[TapAPI.trackerClass])) {
@@ -45748,8 +45992,8 @@ TapAPI.classes.views.AppView = Backbone.View.extend({
  */
 TapAPI.classes.views.AudioStopView = TapAPI.classes.views.BaseView.extend({
     id: 'audio-stop',
-    initialize: function() {
-        this._super('initialize');
+    initialize: function(options) {
+        this._super(options);
 
         TapAPI.tracker.createTimer('AudioStop', 'played_for', TapAPI.currentStop.id);
     },
@@ -45799,7 +46043,8 @@ TapAPI.classes.views.AudioStopView = TapAPI.classes.views.BaseView.extend({
             transcription: transcription,
             imagePath: posterImagePath,
             sources: sources,
-            description: description
+            description: description,
+            nextStopPath: this.getNextStopPath()
         }));
 
         return this;
@@ -45904,6 +46149,9 @@ TapAPI.classes.views.FooterView = Backbone.View.extend({
             if (!_.isUndefined(TapAPI.tourSettings[TapAPI.currentTour]) &&
                 TapAPI.tourSettings[TapAPI.currentTour].enabledNavigationControllers) {
                 controllers = _.pick(TapAPI.navigationControllers, TapAPI.tourSettings[TapAPI.currentTour].enabledNavigationControllers);
+            } else if (!_.isUndefined(TapAPI.tourSettings['default']) &&
+                TapAPI.tourSettings['default'].enabledNavigationControllers) {
+                controllers = _.pick(TapAPI.navigationControllers, TapAPI.tourSettings['default'].enabledNavigationControllers);
             } else {
                 controllers = TapAPI.navigationControllers;
             }
@@ -45912,7 +46160,8 @@ TapAPI.classes.views.FooterView = Backbone.View.extend({
             this.$el.html(this.template({
                 activeToolbarButton: view.activeToolbarButton,
                 tourID: TapAPI.currentTour,
-                controllers: controllers
+                controllers: controllers,
+                baseRoute: TapAPI.router.getBaseRoute()
             }));
         } else {
             this.$el.hide();
@@ -45979,8 +46228,8 @@ TapAPI.classes.views.ImageStopView = TapAPI.classes.views.BaseView.extend({
     id: 'gallery',
     className: 'ui-grid-b',
     template: TapAPI.templateManager.get('image-stop'),
-    initialize: function() {
-        this._super('initialize');
+    initialize: function(options) {
+        this._super(options);
     },
     render: function() {
         var assetRefs = this.model.get('assetRef');
@@ -46009,7 +46258,8 @@ TapAPI.classes.views.ImageStopView = TapAPI.classes.views.BaseView.extend({
 
         this.$el.html(this.template({
             title: this.model.get('title'),
-            images: images
+            images: images,
+            nextStopPath: this.getNextStopPath()
         }));
 
         this.gallery = this.$el.find('a').photoSwipe({
@@ -46038,8 +46288,8 @@ TapAPI.classes.views.ImageStopView = TapAPI.classes.views.BaseView.extend({
 TapAPI.classes.views.KeypadView = TapAPI.classes.views.StopSelectionView.extend({
     id: 'keypad',
     template: TapAPI.templateManager.get('keypad'),
-    initialize: function() {
-        this._super('initialize');
+    initialize: function(options) {
+        this._super(options);
         this.title = 'Enter a Stop Code';
         this.activeToolbarButton = 'KeypadView';
         this.code = '';
@@ -46069,7 +46319,7 @@ TapAPI.classes.views.KeypadView = TapAPI.classes.views.StopSelectionView.extend(
             this.code = '';
             return false;
         } else {
-            Backbone.history.navigate('tour/' + TapAPI.currentTour + '/stop/' + stop.get('id'), {trigger: true});
+            Backbone.history.navigate(stop.getRoute(false), {trigger: true});
         }
     },
     inputKeyCode: function(e) {
@@ -46095,10 +46345,10 @@ TapAPI.classes.views.KeypadView = TapAPI.classes.views.StopSelectionView.extend(
  */
 TapAPI.classes.views.MapView = TapAPI.classes.views.StopSelectionView.extend({
     id: 'tour-map',
-    initialize: function() {
+    initialize: function(options) {
         var that = this;
 
-        this._super('initialize');
+        this._super(options);
 
         this.title = '';
         this.activeToolbarButton = 'MapView';
@@ -46227,7 +46477,8 @@ TapAPI.classes.views.MapView = TapAPI.classes.views.StopSelectionView.extend({
             distance: (formattedDistance === undefined) ? '' : 'Distance: ' + formattedDistance,
             stopLat: stop.get('location').lat,
             stopLong: stop.get('location').lng,
-            showDirections: TapAPI.navigationControllers.MapView.showDirections
+            showDirections: TapAPI.navigationControllers.MapView.showDirections,
+            route: stop.getRoute()
         });
     },
     // Plot a single tour stop marker on the map
@@ -46455,8 +46706,8 @@ TapAPI.classes.views.SocialPopupView = Backbone.View.extend({
 TapAPI.classes.views.StopGroupView = TapAPI.classes.views.BaseView.extend({
     id: 'stop-group',
     template: TapAPI.templateManager.get('stop-group'),
-    initialize: function() {
-        this._super('initialize');
+    initialize: function(options) {
+        this._super(options);
     },
     render: function() {
         var stops = [],
@@ -46474,7 +46725,8 @@ TapAPI.classes.views.StopGroupView = TapAPI.classes.views.BaseView.extend({
                 stops.push({
                     id: stop.get('id'),
                     title: stop.get('title'),
-                    icon: TapAPI.viewRegistry[stop.get('view')].icon
+                    icon: TapAPI.viewRegistry[stop.get('view')].icon,
+                    route: stop.getRoute()
                 });
             }
         });
@@ -46496,26 +46748,48 @@ TapAPI.classes.views.StopGroupView = TapAPI.classes.views.BaseView.extend({
 TapAPI.classes.views.StopListView = TapAPI.classes.views.StopSelectionView.extend({
     id: 'tour-stop-list',
     template: TapAPI.templateManager.get('stop-list'),
-    initialize: function() {
-        this._super('initialize');
+    initialize: function(options) {
+        this._super(options);
         this.title = 'Select a Stop';
         this.activeToolbarButton = 'StopListView';
+        this.filterBy = TapAPI.navigationControllers.StopListView.filterBy;
+        if (!_.isUndefined(options) && options.filterBy) {
+            this.filterBy = options.filterBy;
+        }
+        this.sortBy = TapAPI.navigationControllers.StopListView.sortBy;
+        if (!_.isUndefined(options) && options.sortBy) {
+            this.filterBy = options.sortBy;
+        }
+        this.displayCodes = TapAPI.navigationControllers.StopListView.displayCodes;
+        this.displayThumbnails = TapAPI.navigationControllers.StopListView.displayThumbnails;
 
         // apply filter
-        if (TapAPI.navigationControllers.StopListView.filterBy === 'stopGroup') {
-            // retrieve all stops that are stop groups
-            this.stops = _.filter(TapAPI.tourStops.models, function(stop) {
-                return stop.get('view') === 'stop_group';
-            });
-        } else {
-            // retrieve all stops that have a code associated with it
-            this.stops = _.filter(TapAPI.tourStops.models, function(stop) {
-                return stop.get('propertySet').where({'name': 'code'}) !== undefined;
-            });
+        switch (this.filterBy) {
+            case 'stopGroup':
+                // retrieve all stops that are stop groups
+                this.stops = _.filter(TapAPI.tourStops.models, function(stop) {
+                    return stop.get('view') === 'stop_group';
+                });
+                break;
+
+            case 'code':
+                // retrieve all stops that have a code associated with it
+                this.stops = _.filter(TapAPI.tourStops.models, function(stop) {
+                    var code = parseInt(stop.getProperty('code'), 10);
+                    if (isNaN(code)) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                });
+                break;
+
+            default:
+                this.stops = TapAPI.tourStops.models;
         }
 
         // apply sorting
-        if (TapAPI.navigationControllers.StopListView.sortBy === 'title') {
+        if (this.sortBy === 'title') {
             // sort by title
             this.stops = _.sortBy(this.stops, function(stop) {
                 return stop.get('title');
@@ -46527,20 +46801,40 @@ TapAPI.classes.views.StopListView = TapAPI.classes.views.StopSelectionView.exten
             });
         }
 
+        var stops = [];
         _.each(this.stops, function(stop) {
-            var stopConfig = TapAPI.viewRegistry[stop.get('view')];
-            if (stopConfig) {
-                stop.set('icon', stopConfig.icon);
-            }
+            stops.push({
+                model: stop,
+                title: this.getStopTitle(stop),
+                icon: this.getStopIcon(stop),
+                thumbnail: this.getStopThumbnail(stop)
+            });
         }, this);
+
+        this.stops = stops;
     },
     render: function() {
         this.$el.html(this.template({
             tourID: TapAPI.currentTour,
             stops: this.stops,
-            displayCodes: TapAPI.navigationControllers.StopListView.displayCodes
+            displayCodes: this.displayCodes,
+            displayThumbnails: this.displayThumbnails
         }));
         return this;
+    },
+    getStopTitle: function(stop) {
+        return stop.get('title');
+    },
+    getStopIcon: function(stop) {
+        var stopConfig = TapAPI.viewRegistry[stop.get('view')];
+        var icon;
+        if (stopConfig) {
+            icon = stopConfig.icon;
+        }
+        return icon;
+    },
+    getStopThumbnail: function(stop) {
+        return undefined;
     }
 });
 /*
@@ -46549,8 +46843,8 @@ TapAPI.classes.views.StopListView = TapAPI.classes.views.StopSelectionView.exten
 TapAPI.classes.views.TourDetailsView = TapAPI.classes.views.BaseView.extend({
 	id: 'tour-details',
 	template: TapAPI.templateManager.get('tour-details'),
-	initialize: function() {
-		this._super('initialize');
+	initialize: function(options) {
+		this._super(options);
 
 		this.tour = TapAPI.tours.get(TapAPI.currentTour);
 
@@ -46581,17 +46875,24 @@ TapAPI.classes.views.TourDetailsView = TapAPI.classes.views.BaseView.extend({
 TapAPI.classes.views.TourListView = TapAPI.classes.views.BaseView.extend({
 	id: 'tour-list',
 	template: TapAPI.templateManager.get('tour-list'),
-	initialize: function() {
-		this._super('initialize');
+	initialize: function(options) {
+		this._super(options);
 		this.title = 'Select a Tour';
 
 		this.displayHeader = false;
 		this.displayFooter = false;
+
+		//update the view when tours are added to the collection
+		Backbone.on('tap.tourml.parsed', this.render, this);
 	},
 	events: {
 		'tap .tour-info' : 'tourInfoPopup'
 	},
 	render: function() {
+		if (TapAPI.tours.length === 0) {
+			return this;
+		}
+
 		var headers = [];
 		TapAPI.tours.each(function(tour) {
 			TapAPI.tours.selectTour(tour.get('id'));
@@ -46602,6 +46903,9 @@ TapAPI.classes.views.TourListView = TapAPI.classes.views.BaseView.extend({
 			tours: TapAPI.tours.models,
 			headers: headers
 		}));
+
+		Backbone.trigger('app.widgets.refresh');
+
 		return this;
 	},
 	tourInfoPopup: function(e) {
@@ -46625,8 +46929,8 @@ TapAPI.classes.views.TourListView = TapAPI.classes.views.BaseView.extend({
 TapAPI.classes.views.VideoStopView = TapAPI.classes.views.BaseView.extend({
     id: 'video-stop',
     template: TapAPI.templateManager.get('video'),
-    initialize: function() {
-        this._super('initialize');
+    initialize: function(options) {
+        this._super(options);
 
         this.mediaOptions = {
             defaultVideoWidth: '220',
@@ -46671,7 +46975,8 @@ TapAPI.classes.views.VideoStopView = TapAPI.classes.views.BaseView.extend({
             transcription: transcription,
             imagePath: posterImagePath,
             sources: sources,
-            description: description
+            description: description,
+            nextStopPath: this.getNextStopPath()
         }));
 
         return this;
@@ -46736,8 +47041,8 @@ TapAPI.classes.views.VideoStopView = TapAPI.classes.views.BaseView.extend({
 TapAPI.classes.views.WebStopView = TapAPI.classes.views.BaseView.extend({
     id: 'web-stop',
     template: TapAPI.templateManager.get('web'),
-    initialize: function() {
-        this._super('initialize');
+    initialize: function(options) {
+        this._super(options);
         this.title = this.model.get('title');
     },
     render: function() {
@@ -46748,7 +47053,8 @@ TapAPI.classes.views.WebStopView = TapAPI.classes.views.BaseView.extend({
         }
         this.$el.html(this.template({
             title: this.model.get('title'),
-            html: html
+            html: html,
+            nextStopPath: this.getNextStopPath()
         }));
         return this;
     }

@@ -29,6 +29,12 @@ __p += '\n<div id="transcription" data-role="collapsible" data-content-theme="c"
 ((__t = ( transcription )) == null ? '' : __t) +
 '</p>\n</div>\n';
  } ;
+__p += '\n';
+ if (!_.isUndefined(nextStopPath)) { ;
+__p += '\n    <a href="' +
+((__t = ( nextStopPath )) == null ? '' : __t) +
+'" data-role="button">next</a>\n';
+ } ;
 
 
 }
@@ -42,10 +48,8 @@ function print() { __p += __j.call(arguments, '') }
 with (obj) {
 __p += '<div data-role="navbar" data-iconpos="top">\n\t<ul>\n        ';
  for(var view in controllers) { ;
-__p += '\n\t\t<li>\n            <a href="#tour/' +
-((__t = ( tourID )) == null ? '' : __t) +
-'/controller/' +
-((__t = ( view )) == null ? '' : __t) +
+__p += '\n\t\t<li>\n            <a href="' +
+((__t = ( TapAPI.router.getControllerRoute(tourID, view) )) == null ? '' : __t) +
 '"\n            data-icon="' +
 ((__t = ( view.toLowerCase() )) == null ? '' : __t) +
 '"\n            data-iconshadow="true"\n            class="' +
@@ -100,6 +104,12 @@ __p += '\n\t<li>\n\t\t<a href="' +
 ((__t = ( image.title )) == null ? '' : __t) +
 '" />\n\t\t</a>\n\t</li>\n';
  }) ;
+__p += '\n';
+ if (!_.isUndefined(nextStopPath)) { ;
+__p += '\n    <a href="' +
+((__t = ( nextStopPath )) == null ? '' : __t) +
+'" data-role="button">next</a>\n';
+ } ;
 
 
 }
@@ -127,14 +137,10 @@ obj || (obj = {});
 var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-__p += '<div class="marker-bubble-content">\n    <a href="#tour/' +
-((__t = ( tourID )) == null ? '' : __t) +
-'/stop/' +
-((__t = ( stopID )) == null ? '' : __t) +
-'" class="goto-stop ui-btn ui-shadow ui-btn-corner-all ui-btn-inline ui-btn-icon-notext ui-btn-up-c">\n        <span class="ui-btn-inner">\n            <span class="ui-btn-text">View Stop</span>\n            <span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span>\n        </span>\n    </a>\n\t<div class="title"><a href="#tour/' +
-((__t = ( tourID )) == null ? '' : __t) +
-'/stop/' +
-((__t = ( stopID )) == null ? '' : __t) +
+__p += '<div class="marker-bubble-content">\n    <a href="' +
+((__t = ( route )) == null ? '' : __t) +
+'" class="goto-stop ui-btn ui-shadow ui-btn-corner-all ui-btn-inline ui-btn-icon-notext ui-btn-up-c">\n        <span class="ui-btn-inner">\n            <span class="ui-btn-text">View Stop</span>\n            <span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span>\n        </span>\n    </a>\n\t<div class="title"><a href="' +
+((__t = ( route )) == null ? '' : __t) +
 '">' +
 ((__t = ( title )) == null ? '' : __t) +
 '</a></div>\n\t<div class="distance">\n        ' +
@@ -253,10 +259,8 @@ __p += '\n<h3 class="stop-title">' +
 ((__t = ( description )) == null ? '' : __t) +
 '</div>\n<ul id="stop-list" data-role="listview" data-inset="true">\n';
  _.each(stops, function(stop) { ;
-__p += '\n    <li>\n        <a href="#tour/' +
-((__t = ( tourID )) == null ? '' : __t) +
-'/stop/' +
-((__t = ( stop.id )) == null ? '' : __t) +
+__p += '\n    <li>\n        <a href="' +
+((__t = ( stop.route )) == null ? '' : __t) +
 '">\n            <img src="' +
 ((__t = ( stop.icon )) == null ? '' : __t) +
 '" class="ui-li-icon ui-li-thumb" />\n            ' +
@@ -276,22 +280,24 @@ function print() { __p += __j.call(arguments, '') }
 with (obj) {
 __p += '<ul  data-role="listview" data-filter="true">\n    ';
  _.each(stops, function(stop) { ;
-__p += '\n    <li>\n        <a href=\'#tour/' +
-((__t = ( tourID )) == null ? '' : __t) +
-'/stop/' +
-((__t = ( stop.get('id') )) == null ? '' : __t) +
+__p += '\n    <li>\n        <a href=\'' +
+((__t = ( stop.model.getRoute() )) == null ? '' : __t) +
 '\'>\n            ';
- if (displayCodes && stop.getProperty('code')) { ;
+ if (displayCodes && stop.model.getProperty('code')) { ;
 __p += '\n            <span class="stop-code">' +
-((__t = ( stop.getProperty('code') )) == null ? '' : __t) +
+((__t = ( stop.model.getProperty('code') )) == null ? '' : __t) +
 '</span>\n            <span class="title-with-code">\n            ';
+ } else if (displayThumbnails && stop.thumbnail) { ;
+__p += '\n            <img src="' +
+((__t = ( stop.thumbnail )) == null ? '' : __t) +
+'" class="ui-li-thumb" />\n            <span class="title-with-thumbnail">\n            ';
  } else { ;
 __p += '\n            <img src="' +
-((__t = ( stop.get('icon') )) == null ? '' : __t) +
+((__t = ( stop.icon )) == null ? '' : __t) +
 '" class="ui-li-icon ui-li-thumb" />\n            <span>\n            ';
  } ;
 __p += '\n                ' +
-((__t = ( stop.get('title') )) == null ? '' : __t) +
+((__t = ( stop.title )) == null ? '' : __t) +
 '\n            </span>\n        </a>\n    </li>\n    ';
  }); ;
 __p += '\n</ul>';
@@ -375,6 +381,12 @@ __p += '\n<div id="transcription" data-role="collapsible" data-content-theme="c"
 ((__t = ( transcription )) == null ? '' : __t) +
 '</p>\n';
  } ;
+__p += '\n';
+ if (!_.isUndefined(nextStopPath)) { ;
+__p += '\n    <a href="' +
+((__t = ( nextStopPath )) == null ? '' : __t) +
+'" data-role="button">next</a>\n';
+ } ;
 
 
 }
@@ -383,11 +395,21 @@ return __p
 
 TapAPI.templates['web'] = function(obj) {
 obj || (obj = {});
-var __t, __p = '', __e = _.escape, __d = obj.obj || obj;
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
 __p += '<h3 class="stop-title">' +
-((__t = ( obj.title )) == null ? '' : __t) +
+((__t = ( title )) == null ? '' : __t) +
 '</h3>\n<div id="html-container">' +
-((__t = ( obj.html )) == null ? '' : __t) +
-'</div>';
+((__t = ( html )) == null ? '' : __t) +
+'</div>\n';
+ if (!_.isUndefined(nextStopPath)) { ;
+__p += '\n    <a href="' +
+((__t = ( nextStopPath )) == null ? '' : __t) +
+'" data-role="button">next</a>\n';
+ } ;
+
+
+}
 return __p
 }

@@ -1,5 +1,5 @@
 /*
- * TAP - v1.1.0 - 2013-07-02
+ * TAP - v1.1.0 - 2013-08-22
  * http://tapintomuseums.org/
  * Copyright (c) 2011-2013 Indianapolis Museum of Art
  * GPLv3
@@ -9,7 +9,8 @@ var TapAPI = {
         models: {},
         views: {},
         collections: {},
-        routers: {}
+        routers: {},
+        utility: {}
     },
     tours: {},
     tourAssets: {},
@@ -24,6 +25,7 @@ var TapAPI = {
     tracker: null,
     trackerID: _.isUndefined(TapConfig.trackerID) ? '' : TapConfig.trackerID,
     trackerClass: _.isUndefined(TapConfig.trackerClass) ? 'GAModel' : TapConfig.trackerClass,
+    primaryRouter: _.isUndefined(TapConfig.primaryRouter) ? 'Default' : TapConfig.primaryRouter,
     navigationControllers: {
         'StopListView': {
             label: 'Stop Menu',
@@ -41,7 +43,7 @@ var TapAPI = {
     },
     tourSettings: TapConfig.tourSettings,
     viewRegistry: {
-       'audio_stop': {
+        'audio_stop': {
             view: 'AudioStopView',
             icon: 'images/audio.png'
         },
@@ -116,9 +118,18 @@ TapAPI.helper = {
      */
     loadXMLDoc: function(url) {
         xhttp = new XMLHttpRequest();
-        xhttp.open('GET', url, false);
+        xhttp.onreadystatechange = this.onreadystatechange;
+        xhttp.open('GET', url, true);
         xhttp.send();
-        return xhttp.responseXML;
+    },
+    onreadystatechange: function() {
+        if (this.readyState === 4) {
+            if (this.status === 200) {
+                var response = TapAPI.helper.xmlToJson(this.responseXML);
+                response.uri = this.responseXML.URL;
+                Backbone.trigger('tap.tourml.loaded', response);
+            }
+        }
     },
     /*
      * Attempt to make the variable an array
@@ -182,7 +193,7 @@ TapAPI.helper = {
 /*
  * The Primary router for TAP
  */
-TapAPI.classes.routers.Primary = Backbone.Router.extend({
+TapAPI.classes.routers.Default = Backbone.Router.extend({
     routes: {
         '': 'tourSelection',
         'tour/:tourID/details': 'tourDetails',
@@ -211,6 +222,12 @@ TapAPI.classes.routers.Primary = Backbone.Router.extend({
      */
     tourDetails: function(tourID) {
         TapAPI.tours.selectTour(tourID);
+        if (_.isUndefined(TapAPI.currentTour)) {
+            Backbone.on("tap.tour.loaded." + tourID, this.tourDetails, this);
+            return;
+        } else {
+            Backbone.off("tap.tour.loaded." + tourID);
+        }
         TapAPI.currentStop = null;
 
         this.changePage(new TapAPI.classes.views.TourDetailsView());
@@ -219,6 +236,18 @@ TapAPI.classes.routers.Primary = Backbone.Router.extend({
         var that = this;
 
         TapAPI.tours.selectTour(tourID);
+        if (_.isUndefined(TapAPI.currentTour)) {
+            Backbone.on("tap.tour.loaded." + tourID, this.routeToController, this);
+            return;
+        } else {
+            Backbone.off("tap.tour.loaded." + tourID);
+        }
+
+        if (_.isUndefined(view)) {
+            var parts = Backbone.history.getFragment().split("/");
+            view = parts[parts.length - 1];
+        }
+
         TapAPI.currentStop = null;
 
         that.changePage(new TapAPI.classes.views[view]());
@@ -230,6 +259,19 @@ TapAPI.classes.routers.Primary = Backbone.Router.extend({
         var that = this;
 
         TapAPI.tours.selectTour(tourID);
+
+        if (_.isUndefined(TapAPI.currentTour)) {
+            Backbone.on("tap.tour.loaded." + tourID, this.tourStop, this);
+            return;
+        } else {
+            Backbone.off("tap.tour.loaded." + tourID);
+        }
+
+        if (_.isUndefined(stopID)) {
+            var parts = Backbone.history.getFragment().split("/");
+            stopID = parts[parts.length - 1];
+        }
+
         TapAPI.currentStop = TapAPI.tourStops.get(stopID);
 
         var stopType = TapAPI.currentStop.get('view');
@@ -240,11 +282,18 @@ TapAPI.classes.routers.Primary = Backbone.Router.extend({
     changePage: function(view) {
         TapAPI.tracker.trackPageView('/#' + Backbone.history.getFragment());
         //_gaq.push(['_trackPageview', '/#' + Backbone.history.getFragment()]);
+        window.scrollTo(0, 0);
         Backbone.trigger('tap.router.routed', view);
         Backbone.trigger('app.widgets.refresh');
     },
     getTourDefaultRoute: function(tourId) {
         var defaultController, controller;
+        var baseRoute = this.getBaseRoute();
+
+        var rootStop = TapAPI.tours.get(tourId).get('rootStopRef');
+        if (!_.isUndefined(rootStop)) {
+            return '#' + baseRoute + '/' + tourId + '/stop/' + rootStop.id;
+        }
 
         // get tour specific default navigation controller
         if (!_.isUndefined(TapAPI.tourSettings[tourId]) &&
@@ -260,51 +309,131 @@ TapAPI.classes.routers.Primary = Backbone.Router.extend({
             }
         }
 
-        return '#tour/' + tourId + '/controller/' + defaultController;
+        return '#' + baseRoute + '/' + tourId + '/controller/' + defaultController;
+    },
+    getStopRoute: function(tourId, stopId, withHash) {
+        if (_.isUndefined(withHash) || withHash === true) {
+            withHash = '#';
+        } else {
+            withHash = '';
+        }
+        var baseRoute = this.getBaseRoute();
+        return withHash + baseRoute + '/' + tourId + '/stop/' + stopId;
+    },
+    getFragmentParts: function() {
+        return Backbone.history.fragment.split("/");
+    },
+    getBaseRoute: function() {
+        var parts = this.getFragmentParts();
+        if (parts[0].length === 0) {
+            return 'tour';
+        }
+        return parts[0];
+    },
+    getControllerRoute: function(tourId, viewName, withHash) {
+        if (_.isUndefined(withHash) || withHash === true) {
+            withHash = '#';
+        } else {
+            withHash = '';
+        }
+        var baseRoute = this.getBaseRoute();
+        return withHash + baseRoute + '/' + tourId + '/controller/' + viewName;
     }
 });
-TapAPI.templateManager = {
-    get : function(templateName) {
-        if (TapAPI.templates[templateName] === undefined) {
-            $.ajax({
-                async : false,
-                dataType : 'html',
-                url : 'templates/' + templateName + '.tpl.html',
-                success : function(data, textStatus, jqXHR) {
-                    TapAPI.templates[templateName] = _.template(data);
-                }
-            });
-        }
-        return TapAPI.templates[templateName];
+TapAPI.classes.utility.TemplateManager = function() {
+    this.templateUrls = ['templates/'];
+
+    if (!_.isUndefined(TapConfig.templateUrls)) {
+        this.templateUrls = _.uniq(TapConfig.templateUrls.concat(this.templateUrls));
     }
+
+    this.get = function(templateName) {
+        var that = this;
+        return function(data) {
+            return that.useTemplate(templateName, data);
+        };
+    };
+
+    this.useTemplate = function(templateName, templateData) {
+        if (TapAPI.templates[templateName] === undefined) {
+            var found = false;
+            var numUrls = this.templateUrls.length;
+            for(var i=0; i < numUrls; i++) {
+                $.ajax({
+                    async : false,
+                    dataType : 'html',
+                    url : this.templateUrls[i] + templateName + '.tpl.html',
+                    success : function(data, textStatus, jqXHR) {
+                        TapAPI.templates[templateName] = _.template(data);
+                        found = true;
+                    }
+                });
+                if (found) break;
+            }
+        }
+        return TapAPI.templates[templateName](templateData);
+    };
 };
+
+TapAPI.templateManager = new TapAPI.classes.utility.TemplateManager();
 TapAPI.tourMLParser = {
-    process: function(url) {
-        var tours = [];
-        var i, len;
+    initialized: false,
+    initialize: function() {
+        // bind pre and post processing events
+        this.on('willParseTour', $.proxy(this.onWillParseTour, this));
+        this.on('didParseTour', $.proxy(this.onDidParseTour, this));
+        this.on('willParseStop', $.proxy(this.onWillParseStop, this));
+        this.on('didParseStop', $.proxy(this.onDidParseStop, this));
+        this.on('willParseAsset', $.proxy(this.onWillParseAsset, this));
+        this.on('didParseAsset', $.proxy(this.onDidParseAsset, this));
+
+        this.tourMap = {};
+
+        this.listenTo(Backbone, 'tap.tourml.loaded', this.parseTourML);
+
+        this.initialized = true;
+    },
+    process: function(uri) {
+        if (!this.initialized) {
+            this.initialize();
+        }
 
         // load tourML
-        var tourML = TapAPI.helper.xmlToJson(TapAPI.helper.loadXMLDoc(url));
+        TapAPI.helper.loadXMLDoc(uri);
+    },
+    parseTourML: function(tourML) {
+        var tours = [];
         if(tourML.tour) { // Single tour
-            tours.push(this.parseTourML(tourML.tour));
+            this.addTourToMap(tourML.uri);
+            tours.push(this.parseTour(tourML.tour, tourML.uri));
         } else if(tourML.tourSet && tourML.tourSet.tourMLRef) { // TourSet w/ external tours
-            len = tourML.tourSet.tourMLRef.length;
+            var tourRefs = TapAPI.helper.objectToArray(tourML.tourSet.tourMLRef);
+            len = tourRefs.length;
             for(i = 0; i < len; i++) {
-                var data = TapAPI.helper.xmlToJson(TapAPI.helper.loadXMLDoc(tourML.tourSet.tourMLRef[i].uri));
-                tours.push(this.parseTourML(data.tour));
+                this.addTourToMap(tourRefs[i].uri, tourML.uri);
+                //check modified date before requesting tourml from server
+                var tour = TapAPI.tours.cache.where({tourUri:tourRefs[i].uri});
+                if (tour.length > 0 && Date.parse(tourRefs[i].lastModified) <= Date.parse(tour[0].get('lastModified'))) {
+                    tours.push(tour[0]);
+                } else {
+                    TapAPI.helper.loadXMLDoc(tourRefs[i].uri);
+                }
             }
         } else if(tourML.tourSet && tourML.tourSet.tour) { // TourSet w/ tours as children elements
             len = tourML.tourSet.tour.length;
             for(i = 0; i < len; i++) {
-               tours.push(this.parseTourML(tourML.tourSet.tour[i]));
+               tours.push(this.parseTour(tourML.tourSet.tour[i], tourML.uri));
             }
         }
-
-        return tours;
+        Backbone.trigger('tap.tourml.parsed', tours);
     },
-    parseTourML: function(data) {
+    parseTour: function(data, tourUri) {
+        this.trigger('willParseTour');
+
+        var toursetUri = this.tourMap[tourUri];
+
         // check to see if the tour has been updated
-        var tour = TapAPI.tours.get(data.id);
+        var tour = TapAPI.tours.cache.get(data.id);
         if (tour && Date.parse(data.lastModified) <= Date.parse(tour.get('lastModified'))) return tour;
 
         var stops = [],
@@ -313,10 +442,12 @@ TapAPI.tourMLParser = {
         // create new tour
         tour = new TapAPI.classes.models.TourModel({
             id: data.id,
+            toursetUri: toursetUri,
+            tourUri: tourUri,
             appResource: data.tourMetadata && data.tourMetadata.appResource ? TapAPI.helper.objectToArray(data.tourMetadata.appResource) : undefined,
             connection: data.connection ? TapAPI.helper.objectToArray(data.connection) : undefined,
             description: data.tourMetadata && data.tourMetadata.description ? TapAPI.helper.objectToArray(data.tourMetadata.description) : undefined,
-            lastModified: data.tourMetadata && data.tourMetadata.lastModified ? data.tourMetadata.lastModified : undefined,
+            lastModified: data.lastModified ? data.lastModified : undefined,
             propertySet: data.tourMetadata && data.tourMetadata.propertySet ? TapAPI.helper.objectToArray(data.tourMetadata.propertySet.property) : undefined,
             publishDate: data.tourMetadata && data.tourMetadata.publishDate ? TapAPI.helper.objectToArray(data.tourMetadata.publishDate) : undefined,
             rootStopRef: data.tourMetadata && data.tourMetadata.rootStopRef ? data.tourMetadata.rootStopRef : undefined,
@@ -335,6 +466,7 @@ TapAPI.tourMLParser = {
         data.stop = TapAPI.helper.objectToArray(data.stop);
         var numStops = data.stop.length;
         for (i = 0; i < numStops; i++) {
+            this.trigger('willParseStop');
             var stop,
                 connections = [];
 
@@ -345,7 +477,7 @@ TapAPI.tourMLParser = {
                     }
                 }
             }
-
+            
             stop = new TapAPI.classes.models.StopModel({
                 id: data.stop[i].id,
                 connection: connections,
@@ -358,12 +490,14 @@ TapAPI.tourMLParser = {
             });
             stopCollection.create(stop);
             stops.push(stop);
+            this.trigger('didParseStop', stop, tour);
         }
 
         // load asset models
         data.asset = TapAPI.helper.objectToArray(data.asset);
         var numAssets = data.asset.length;
         for (i = 0; i < numAssets; i++) {
+            this.trigger('willParseAsset');
             var asset;
 
             // modifiy source propertySet child to match similar elements
@@ -396,6 +530,7 @@ TapAPI.tourMLParser = {
             });
             assetCollection.create(asset);
             assets.push(asset);
+            this.trigger('didParseAsset', asset, tour);
         }
 
         // clear out the temporary models
@@ -413,19 +548,41 @@ TapAPI.tourMLParser = {
         // clear out the temporary models
         stopCollection.reset();
         assetCollection.reset();
-
+        
+        // announce we're done parsing the tour
+        this.trigger('didParseTour', tour);
+        
         return tour;
-    }
-};
-// Check for geolocation support
-if (!navigator.geolocation) return;
+    },
 
+    addTourToMap: function(tourUri, tourSetUri) {
+        if (_.isUndefined(this.tourMap[tourUri])) {
+            this.tourMap[tourUri] = [];
+        }
+
+        if (!_.isUndefined(tourSetUri)) {
+            this.tourMap[tourUri].push(tourSetUri);
+        }
+    },
+    
+    // stubs for local parse event handlers
+    onWillParseTour: (TapConfig.willParseTour) ? TapConfig.willParseTour : function () {},
+    onDidParseTour: (TapConfig.didParseTour) ? TapConfig.didParseTour : function (tour) {},
+    onWillParseStop: (TapConfig.willParseStop) ? TapConfig.willParseStop : function () {},
+    onDidParseStop: (TapConfig.didParseStop) ? TapConfig.didParseStop : function (stop, tour) {},
+    onWillParseAsset: (TapConfig.willParseAsset) ? TapConfig.willParseAsset : function () {},
+    onDidParseAsset: (TapConfig.didParseAsset) ? TapConfig.didParseAsset : function (asset, tour) {}
+};
+
+_.extend(TapAPI.tourMLParser, Backbone.Events);
 TapAPI.geoLocation = {
     latestLocation: null,
     watch: null,
     nearestStop: null,
 
     locate: function() {
+        if (!navigator.geolocation) return;
+
         var that = this;
         navigator.geolocation.getCurrentPosition(
             function(position) {
@@ -493,6 +650,8 @@ TapAPI.geoLocation = {
     },
 
     startLocating: function(delay) {
+        if (!navigator.geolocation) return;
+
         var that = this;
         this.watch = navigator.geolocation.watchPosition(
             function(position) {
@@ -505,6 +664,8 @@ TapAPI.geoLocation = {
     },
 
     stopLocating: function() {
+        if (!navigator.geolocation) return;
+        
         navigator.geolocation.clearWatch(this.watch);
 
         if (this.nearestStop !== null) {
@@ -568,6 +729,12 @@ __p += '\n<div id="transcription" data-role="collapsible" data-content-theme="c"
 ((__t = ( transcription )) == null ? '' : __t) +
 '</p>\n</div>\n';
  } ;
+__p += '\n';
+ if (!_.isUndefined(nextStopPath)) { ;
+__p += '\n    <a href="' +
+((__t = ( nextStopPath )) == null ? '' : __t) +
+'" data-role="button">next</a>\n';
+ } ;
 
 
 }
@@ -581,10 +748,8 @@ function print() { __p += __j.call(arguments, '') }
 with (obj) {
 __p += '<div data-role="navbar" data-iconpos="top">\n\t<ul>\n        ';
  for(var view in controllers) { ;
-__p += '\n\t\t<li>\n            <a href="#tour/' +
-((__t = ( tourID )) == null ? '' : __t) +
-'/controller/' +
-((__t = ( view )) == null ? '' : __t) +
+__p += '\n\t\t<li>\n            <a href="' +
+((__t = ( TapAPI.router.getControllerRoute(tourID, view) )) == null ? '' : __t) +
 '"\n            data-icon="' +
 ((__t = ( view.toLowerCase() )) == null ? '' : __t) +
 '"\n            data-iconshadow="true"\n            class="' +
@@ -639,6 +804,12 @@ __p += '\n\t<li>\n\t\t<a href="' +
 ((__t = ( image.title )) == null ? '' : __t) +
 '" />\n\t\t</a>\n\t</li>\n';
  }) ;
+__p += '\n';
+ if (!_.isUndefined(nextStopPath)) { ;
+__p += '\n    <a href="' +
+((__t = ( nextStopPath )) == null ? '' : __t) +
+'" data-role="button">next</a>\n';
+ } ;
 
 
 }
@@ -666,14 +837,10 @@ obj || (obj = {});
 var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-__p += '<div class="marker-bubble-content">\n    <a href="#tour/' +
-((__t = ( tourID )) == null ? '' : __t) +
-'/stop/' +
-((__t = ( stopID )) == null ? '' : __t) +
-'" class="goto-stop ui-btn ui-shadow ui-btn-corner-all ui-btn-inline ui-btn-icon-notext ui-btn-up-c">\n        <span class="ui-btn-inner">\n            <span class="ui-btn-text">View Stop</span>\n            <span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span>\n        </span>\n    </a>\n\t<div class="title"><a href="#tour/' +
-((__t = ( tourID )) == null ? '' : __t) +
-'/stop/' +
-((__t = ( stopID )) == null ? '' : __t) +
+__p += '<div class="marker-bubble-content">\n    <a href="' +
+((__t = ( route )) == null ? '' : __t) +
+'" class="goto-stop ui-btn ui-shadow ui-btn-corner-all ui-btn-inline ui-btn-icon-notext ui-btn-up-c">\n        <span class="ui-btn-inner">\n            <span class="ui-btn-text">View Stop</span>\n            <span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span>\n        </span>\n    </a>\n\t<div class="title"><a href="' +
+((__t = ( route )) == null ? '' : __t) +
 '">' +
 ((__t = ( title )) == null ? '' : __t) +
 '</a></div>\n\t<div class="distance">\n        ' +
@@ -792,10 +959,8 @@ __p += '\n<h3 class="stop-title">' +
 ((__t = ( description )) == null ? '' : __t) +
 '</div>\n<ul id="stop-list" data-role="listview" data-inset="true">\n';
  _.each(stops, function(stop) { ;
-__p += '\n    <li>\n        <a href="#tour/' +
-((__t = ( tourID )) == null ? '' : __t) +
-'/stop/' +
-((__t = ( stop.id )) == null ? '' : __t) +
+__p += '\n    <li>\n        <a href="' +
+((__t = ( stop.route )) == null ? '' : __t) +
 '">\n            <img src="' +
 ((__t = ( stop.icon )) == null ? '' : __t) +
 '" class="ui-li-icon ui-li-thumb" />\n            ' +
@@ -815,22 +980,24 @@ function print() { __p += __j.call(arguments, '') }
 with (obj) {
 __p += '<ul  data-role="listview" data-filter="true">\n    ';
  _.each(stops, function(stop) { ;
-__p += '\n    <li>\n        <a href=\'#tour/' +
-((__t = ( tourID )) == null ? '' : __t) +
-'/stop/' +
-((__t = ( stop.get('id') )) == null ? '' : __t) +
+__p += '\n    <li>\n        <a href=\'' +
+((__t = ( stop.model.getRoute() )) == null ? '' : __t) +
 '\'>\n            ';
- if (displayCodes && stop.getProperty('code')) { ;
+ if (displayCodes && stop.model.getProperty('code')) { ;
 __p += '\n            <span class="stop-code">' +
-((__t = ( stop.getProperty('code') )) == null ? '' : __t) +
+((__t = ( stop.model.getProperty('code') )) == null ? '' : __t) +
 '</span>\n            <span class="title-with-code">\n            ';
+ } else if (displayThumbnails && stop.thumbnail) { ;
+__p += '\n            <img src="' +
+((__t = ( stop.thumbnail )) == null ? '' : __t) +
+'" class="ui-li-thumb" />\n            <span class="title-with-thumbnail">\n            ';
  } else { ;
 __p += '\n            <img src="' +
-((__t = ( stop.get('icon') )) == null ? '' : __t) +
+((__t = ( stop.icon )) == null ? '' : __t) +
 '" class="ui-li-icon ui-li-thumb" />\n            <span>\n            ';
  } ;
 __p += '\n                ' +
-((__t = ( stop.get('title') )) == null ? '' : __t) +
+((__t = ( stop.title )) == null ? '' : __t) +
 '\n            </span>\n        </a>\n    </li>\n    ';
  }); ;
 __p += '\n</ul>';
@@ -914,6 +1081,12 @@ __p += '\n<div id="transcription" data-role="collapsible" data-content-theme="c"
 ((__t = ( transcription )) == null ? '' : __t) +
 '</p>\n';
  } ;
+__p += '\n';
+ if (!_.isUndefined(nextStopPath)) { ;
+__p += '\n    <a href="' +
+((__t = ( nextStopPath )) == null ? '' : __t) +
+'" data-role="button">next</a>\n';
+ } ;
 
 
 }
@@ -922,12 +1095,22 @@ return __p
 
 TapAPI.templates['web'] = function(obj) {
 obj || (obj = {});
-var __t, __p = '', __e = _.escape, __d = obj.obj || obj;
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
 __p += '<h3 class="stop-title">' +
-((__t = ( obj.title )) == null ? '' : __t) +
+((__t = ( title )) == null ? '' : __t) +
 '</h3>\n<div id="html-container">' +
-((__t = ( obj.html )) == null ? '' : __t) +
-'</div>';
+((__t = ( html )) == null ? '' : __t) +
+'</div>\n';
+ if (!_.isUndefined(nextStopPath)) { ;
+__p += '\n    <a href="' +
+((__t = ( nextStopPath )) == null ? '' : __t) +
+'" data-role="button">next</a>\n';
+ } ;
+
+
+}
 return __p
 }
 /*
@@ -1288,13 +1471,17 @@ TapAPI.classes.models.StopModel = Backbone.Model.extend({
     * @return array The connection array ordered by priority in ascending order
     */
     getSortedConnections: function() {
-        if(_.isUndefined(this.get('connections'))) return undefined;
-        return _.sortBy(this.get('connection'), function(connection) {
+        if(_.isUndefined(this.get('connection'))) return undefined;
+        var connections = _.sortBy(this.get('connection'), function(connection) {
             return parseInt(connection.priority, 10);
         });
+        return connections.length ? connections : undefined;
     },
     getProperty: function(propertyName) {
         return this.get('propertySet').getValueByName(propertyName);
+    },
+    getRoute: function(withHash) {
+        return TapAPI.router.getStopRoute(this.collection.tourId, this.get('id'), withHash);
     }
 });
 /*
@@ -1415,6 +1602,7 @@ TapAPI.classes.collections.StopCollection = Backbone.Collection.extend({
     model: TapAPI.classes.models.StopModel,
     initialize: function(models, id) {
         this.localStorage = new Backbone.LocalStorage(id + '-stop');
+        this.tourId = id;
     },
     // retrieve the stop id of a given key code
     getStopByKeycode: function(key) {
@@ -1433,23 +1621,38 @@ TapAPI.classes.collections.StopCollection = Backbone.Collection.extend({
 TapAPI.classes.collections.TourCollection = Backbone.Collection.extend({
     model: TapAPI.classes.models.TourModel,
     localStorage: new Backbone.LocalStorage('tours'),
+    initialize: function() {
+        this.listenTo(Backbone, 'tap.tourml.parsed', this.tourMLParsed);
+    },
     syncTourML: function(url) {
         var tours = [],
             tourML, i, len;
 
         // populate the tour collection
-        this.fetch();
+        this.fetch({
+            success: this.fetchCache
+        });
 
         // load tourML
-        tours = TapAPI.tourMLParser.process(url);
+        TapAPI.tourMLParser.process(url);
 
-        this.set(tours);
+        //clear the models
+        this.set([]);
+    },
+    fetchCache: function(collection, response, options) {
+        collection.cache = collection.clone();
+    },
+    tourMLParsed: function(tours) {
+        this.set(tours, {remove: false});
+        for (var i = 0, len = tours.length; i < len; i++) {
+            Backbone.trigger("tap.tour.loaded." + tours[i].get("id"), tours[i].get("id"));
+        }
     },
     selectTour: function(tourID) {
         if (TapAPI.currentTour == tourID) return;
 
         if (!TapAPI.tours.get(tourID)) {
-            console.log('Unable to load tour.');
+            TapAPI.currentTour = undefined;
             return;
         }
 
@@ -1479,7 +1682,7 @@ TapAPI.classes.collections.TourCollection = Backbone.Collection.extend({
  * All STOP views in TAP should extend from this
  */
 TapAPI.classes.views.BaseView = Backbone.View.extend({
-	initialize: function() {
+	initialize: function(options) {
 		this.title = '';
 		this.displayHeader = true;
 		this.displayFooter = true;
@@ -1503,6 +1706,15 @@ TapAPI.classes.views.BaseView = Backbone.View.extend({
 			});
 		}
 		return this;
+	},
+	getNextStopPath: function () {
+		var nextStopId = this.getNextStopId();
+		var fragments = Backbone.history.fragment.split("/");
+		return !_.isUndefined(nextStopId) ? '#' + fragments[0] + '/' + TapAPI.currentTour + '/stop/' + nextStopId : undefined;
+	},
+	getNextStopId : function () {
+		var nextStop = this.model.getSortedConnections();
+		return !_.isUndefined(nextStop) ? nextStop[0].destId : undefined;
 	}
 });
 /*
@@ -1511,9 +1723,12 @@ TapAPI.classes.views.BaseView = Backbone.View.extend({
  * All Navigation Views should extend from thie View
  */
 TapAPI.classes.views.StopSelectionView = TapAPI.classes.views.BaseView.extend({
-    initialize: function() {
-        this._super('initialize');
+    initialize: function(options) {
+        this._super(options);
         this.activeToolbarButton = '';
+    },
+    getRoute: function(withHash) {
+        return TapAPI.router.getControllerRoute(TapAPI.currentTour, this.activeToolbarButton, withHash);
     }
 });
 /*
@@ -1549,6 +1764,8 @@ TapAPI.classes.views.AppView = Backbone.View.extend({
 
         // trigger jquery mobile to initialize new widgets
         Backbone.trigger('app.widgets.refresh');
+
+        return this;
     },
     runApp: function() {
         Backbone.trigger('tap.app.loading');
@@ -1557,7 +1774,11 @@ TapAPI.classes.views.AppView = Backbone.View.extend({
         TapAPI.language = browserLanguage.split('-')[0];
 
         //Load up the Router
-        TapAPI.router = new TapAPI.classes.routers.Primary();
+        if (!_.isUndefined(TapAPI.classes.routers[TapAPI.primaryRouter])) {
+            TapAPI.router = new TapAPI.classes.routers[TapAPI.primaryRouter]();
+        } else {
+            TapAPI.router = new TapAPI.classes.routers.Default();
+        }
 
         // initialize Analytics
         if (!_.isUndefined(TapAPI.classes.models[TapAPI.trackerClass])) {
@@ -1589,8 +1810,8 @@ TapAPI.classes.views.AppView = Backbone.View.extend({
  */
 TapAPI.classes.views.AudioStopView = TapAPI.classes.views.BaseView.extend({
     id: 'audio-stop',
-    initialize: function() {
-        this._super('initialize');
+    initialize: function(options) {
+        this._super(options);
 
         TapAPI.tracker.createTimer('AudioStop', 'played_for', TapAPI.currentStop.id);
     },
@@ -1640,7 +1861,8 @@ TapAPI.classes.views.AudioStopView = TapAPI.classes.views.BaseView.extend({
             transcription: transcription,
             imagePath: posterImagePath,
             sources: sources,
-            description: description
+            description: description,
+            nextStopPath: this.getNextStopPath()
         }));
 
         return this;
@@ -1745,6 +1967,9 @@ TapAPI.classes.views.FooterView = Backbone.View.extend({
             if (!_.isUndefined(TapAPI.tourSettings[TapAPI.currentTour]) &&
                 TapAPI.tourSettings[TapAPI.currentTour].enabledNavigationControllers) {
                 controllers = _.pick(TapAPI.navigationControllers, TapAPI.tourSettings[TapAPI.currentTour].enabledNavigationControllers);
+            } else if (!_.isUndefined(TapAPI.tourSettings['default']) &&
+                TapAPI.tourSettings['default'].enabledNavigationControllers) {
+                controllers = _.pick(TapAPI.navigationControllers, TapAPI.tourSettings['default'].enabledNavigationControllers);
             } else {
                 controllers = TapAPI.navigationControllers;
             }
@@ -1753,7 +1978,8 @@ TapAPI.classes.views.FooterView = Backbone.View.extend({
             this.$el.html(this.template({
                 activeToolbarButton: view.activeToolbarButton,
                 tourID: TapAPI.currentTour,
-                controllers: controllers
+                controllers: controllers,
+                baseRoute: TapAPI.router.getBaseRoute()
             }));
         } else {
             this.$el.hide();
@@ -1820,8 +2046,8 @@ TapAPI.classes.views.ImageStopView = TapAPI.classes.views.BaseView.extend({
     id: 'gallery',
     className: 'ui-grid-b',
     template: TapAPI.templateManager.get('image-stop'),
-    initialize: function() {
-        this._super('initialize');
+    initialize: function(options) {
+        this._super(options);
     },
     render: function() {
         var assetRefs = this.model.get('assetRef');
@@ -1850,7 +2076,8 @@ TapAPI.classes.views.ImageStopView = TapAPI.classes.views.BaseView.extend({
 
         this.$el.html(this.template({
             title: this.model.get('title'),
-            images: images
+            images: images,
+            nextStopPath: this.getNextStopPath()
         }));
 
         this.gallery = this.$el.find('a').photoSwipe({
@@ -1879,8 +2106,8 @@ TapAPI.classes.views.ImageStopView = TapAPI.classes.views.BaseView.extend({
 TapAPI.classes.views.KeypadView = TapAPI.classes.views.StopSelectionView.extend({
     id: 'keypad',
     template: TapAPI.templateManager.get('keypad'),
-    initialize: function() {
-        this._super('initialize');
+    initialize: function(options) {
+        this._super(options);
         this.title = 'Enter a Stop Code';
         this.activeToolbarButton = 'KeypadView';
         this.code = '';
@@ -1910,7 +2137,7 @@ TapAPI.classes.views.KeypadView = TapAPI.classes.views.StopSelectionView.extend(
             this.code = '';
             return false;
         } else {
-            Backbone.history.navigate('tour/' + TapAPI.currentTour + '/stop/' + stop.get('id'), {trigger: true});
+            Backbone.history.navigate(stop.getRoute(false), {trigger: true});
         }
     },
     inputKeyCode: function(e) {
@@ -1936,10 +2163,10 @@ TapAPI.classes.views.KeypadView = TapAPI.classes.views.StopSelectionView.extend(
  */
 TapAPI.classes.views.MapView = TapAPI.classes.views.StopSelectionView.extend({
     id: 'tour-map',
-    initialize: function() {
+    initialize: function(options) {
         var that = this;
 
-        this._super('initialize');
+        this._super(options);
 
         this.title = '';
         this.activeToolbarButton = 'MapView';
@@ -2068,7 +2295,8 @@ TapAPI.classes.views.MapView = TapAPI.classes.views.StopSelectionView.extend({
             distance: (formattedDistance === undefined) ? '' : 'Distance: ' + formattedDistance,
             stopLat: stop.get('location').lat,
             stopLong: stop.get('location').lng,
-            showDirections: TapAPI.navigationControllers.MapView.showDirections
+            showDirections: TapAPI.navigationControllers.MapView.showDirections,
+            route: stop.getRoute()
         });
     },
     // Plot a single tour stop marker on the map
@@ -2296,8 +2524,8 @@ TapAPI.classes.views.SocialPopupView = Backbone.View.extend({
 TapAPI.classes.views.StopGroupView = TapAPI.classes.views.BaseView.extend({
     id: 'stop-group',
     template: TapAPI.templateManager.get('stop-group'),
-    initialize: function() {
-        this._super('initialize');
+    initialize: function(options) {
+        this._super(options);
     },
     render: function() {
         var stops = [],
@@ -2315,7 +2543,8 @@ TapAPI.classes.views.StopGroupView = TapAPI.classes.views.BaseView.extend({
                 stops.push({
                     id: stop.get('id'),
                     title: stop.get('title'),
-                    icon: TapAPI.viewRegistry[stop.get('view')].icon
+                    icon: TapAPI.viewRegistry[stop.get('view')].icon,
+                    route: stop.getRoute()
                 });
             }
         });
@@ -2337,26 +2566,48 @@ TapAPI.classes.views.StopGroupView = TapAPI.classes.views.BaseView.extend({
 TapAPI.classes.views.StopListView = TapAPI.classes.views.StopSelectionView.extend({
     id: 'tour-stop-list',
     template: TapAPI.templateManager.get('stop-list'),
-    initialize: function() {
-        this._super('initialize');
+    initialize: function(options) {
+        this._super(options);
         this.title = 'Select a Stop';
         this.activeToolbarButton = 'StopListView';
+        this.filterBy = TapAPI.navigationControllers.StopListView.filterBy;
+        if (!_.isUndefined(options) && options.filterBy) {
+            this.filterBy = options.filterBy;
+        }
+        this.sortBy = TapAPI.navigationControllers.StopListView.sortBy;
+        if (!_.isUndefined(options) && options.sortBy) {
+            this.filterBy = options.sortBy;
+        }
+        this.displayCodes = TapAPI.navigationControllers.StopListView.displayCodes;
+        this.displayThumbnails = TapAPI.navigationControllers.StopListView.displayThumbnails;
 
         // apply filter
-        if (TapAPI.navigationControllers.StopListView.filterBy === 'stopGroup') {
-            // retrieve all stops that are stop groups
-            this.stops = _.filter(TapAPI.tourStops.models, function(stop) {
-                return stop.get('view') === 'stop_group';
-            });
-        } else {
-            // retrieve all stops that have a code associated with it
-            this.stops = _.filter(TapAPI.tourStops.models, function(stop) {
-                return stop.get('propertySet').where({'name': 'code'}) !== undefined;
-            });
+        switch (this.filterBy) {
+            case 'stopGroup':
+                // retrieve all stops that are stop groups
+                this.stops = _.filter(TapAPI.tourStops.models, function(stop) {
+                    return stop.get('view') === 'stop_group';
+                });
+                break;
+
+            case 'code':
+                // retrieve all stops that have a code associated with it
+                this.stops = _.filter(TapAPI.tourStops.models, function(stop) {
+                    var code = parseInt(stop.getProperty('code'), 10);
+                    if (isNaN(code)) {
+                        return false;
+                    } else {
+                        return true;
+                    }
+                });
+                break;
+
+            default:
+                this.stops = TapAPI.tourStops.models;
         }
 
         // apply sorting
-        if (TapAPI.navigationControllers.StopListView.sortBy === 'title') {
+        if (this.sortBy === 'title') {
             // sort by title
             this.stops = _.sortBy(this.stops, function(stop) {
                 return stop.get('title');
@@ -2368,20 +2619,40 @@ TapAPI.classes.views.StopListView = TapAPI.classes.views.StopSelectionView.exten
             });
         }
 
+        var stops = [];
         _.each(this.stops, function(stop) {
-            var stopConfig = TapAPI.viewRegistry[stop.get('view')];
-            if (stopConfig) {
-                stop.set('icon', stopConfig.icon);
-            }
+            stops.push({
+                model: stop,
+                title: this.getStopTitle(stop),
+                icon: this.getStopIcon(stop),
+                thumbnail: this.getStopThumbnail(stop)
+            });
         }, this);
+
+        this.stops = stops;
     },
     render: function() {
         this.$el.html(this.template({
             tourID: TapAPI.currentTour,
             stops: this.stops,
-            displayCodes: TapAPI.navigationControllers.StopListView.displayCodes
+            displayCodes: this.displayCodes,
+            displayThumbnails: this.displayThumbnails
         }));
         return this;
+    },
+    getStopTitle: function(stop) {
+        return stop.get('title');
+    },
+    getStopIcon: function(stop) {
+        var stopConfig = TapAPI.viewRegistry[stop.get('view')];
+        var icon;
+        if (stopConfig) {
+            icon = stopConfig.icon;
+        }
+        return icon;
+    },
+    getStopThumbnail: function(stop) {
+        return undefined;
     }
 });
 /*
@@ -2390,8 +2661,8 @@ TapAPI.classes.views.StopListView = TapAPI.classes.views.StopSelectionView.exten
 TapAPI.classes.views.TourDetailsView = TapAPI.classes.views.BaseView.extend({
 	id: 'tour-details',
 	template: TapAPI.templateManager.get('tour-details'),
-	initialize: function() {
-		this._super('initialize');
+	initialize: function(options) {
+		this._super(options);
 
 		this.tour = TapAPI.tours.get(TapAPI.currentTour);
 
@@ -2422,17 +2693,24 @@ TapAPI.classes.views.TourDetailsView = TapAPI.classes.views.BaseView.extend({
 TapAPI.classes.views.TourListView = TapAPI.classes.views.BaseView.extend({
 	id: 'tour-list',
 	template: TapAPI.templateManager.get('tour-list'),
-	initialize: function() {
-		this._super('initialize');
+	initialize: function(options) {
+		this._super(options);
 		this.title = 'Select a Tour';
 
 		this.displayHeader = false;
 		this.displayFooter = false;
+
+		//update the view when tours are added to the collection
+		Backbone.on('tap.tourml.parsed', this.render, this);
 	},
 	events: {
 		'tap .tour-info' : 'tourInfoPopup'
 	},
 	render: function() {
+		if (TapAPI.tours.length === 0) {
+			return this;
+		}
+
 		var headers = [];
 		TapAPI.tours.each(function(tour) {
 			TapAPI.tours.selectTour(tour.get('id'));
@@ -2443,6 +2721,9 @@ TapAPI.classes.views.TourListView = TapAPI.classes.views.BaseView.extend({
 			tours: TapAPI.tours.models,
 			headers: headers
 		}));
+
+		Backbone.trigger('app.widgets.refresh');
+
 		return this;
 	},
 	tourInfoPopup: function(e) {
@@ -2466,8 +2747,8 @@ TapAPI.classes.views.TourListView = TapAPI.classes.views.BaseView.extend({
 TapAPI.classes.views.VideoStopView = TapAPI.classes.views.BaseView.extend({
     id: 'video-stop',
     template: TapAPI.templateManager.get('video'),
-    initialize: function() {
-        this._super('initialize');
+    initialize: function(options) {
+        this._super(options);
 
         this.mediaOptions = {
             defaultVideoWidth: '220',
@@ -2512,7 +2793,8 @@ TapAPI.classes.views.VideoStopView = TapAPI.classes.views.BaseView.extend({
             transcription: transcription,
             imagePath: posterImagePath,
             sources: sources,
-            description: description
+            description: description,
+            nextStopPath: this.getNextStopPath()
         }));
 
         return this;
@@ -2577,8 +2859,8 @@ TapAPI.classes.views.VideoStopView = TapAPI.classes.views.BaseView.extend({
 TapAPI.classes.views.WebStopView = TapAPI.classes.views.BaseView.extend({
     id: 'web-stop',
     template: TapAPI.templateManager.get('web'),
-    initialize: function() {
-        this._super('initialize');
+    initialize: function(options) {
+        this._super(options);
         this.title = this.model.get('title');
     },
     render: function() {
@@ -2589,7 +2871,8 @@ TapAPI.classes.views.WebStopView = TapAPI.classes.views.BaseView.extend({
         }
         this.$el.html(this.template({
             title: this.model.get('title'),
-            html: html
+            html: html,
+            nextStopPath: this.getNextStopPath()
         }));
         return this;
     }
