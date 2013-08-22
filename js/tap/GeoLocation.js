@@ -1,12 +1,11 @@
-// Check for geolocation support
-if (!navigator.geolocation) return;
-
 TapAPI.geoLocation = {
     latestLocation: null,
     watch: null,
     nearestStop: null,
 
     locate: function() {
+        if (!navigator.geolocation) return;
+
         var that = this;
         navigator.geolocation.getCurrentPosition(
             function(position) {
@@ -74,6 +73,8 @@ TapAPI.geoLocation = {
     },
 
     startLocating: function(delay) {
+        if (!navigator.geolocation) return;
+
         var that = this;
         this.watch = navigator.geolocation.watchPosition(
             function(position) {
@@ -86,6 +87,8 @@ TapAPI.geoLocation = {
     },
 
     stopLocating: function() {
+        if (!navigator.geolocation) return;
+        
         navigator.geolocation.clearWatch(this.watch);
 
         if (this.nearestStop !== null) {
