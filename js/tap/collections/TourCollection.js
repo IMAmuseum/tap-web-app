@@ -35,7 +35,6 @@ TapAPI.classes.collections.TourCollection = Backbone.Collection.extend({
         if (TapAPI.currentTour == tourID) return;
 
         if (!TapAPI.tours.get(tourID)) {
-            console.log('Unable to load tour.');
             TapAPI.currentTour = undefined;
             return;
         }
