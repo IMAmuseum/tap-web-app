@@ -90,19 +90,24 @@ TapAPI.tourMLParser = {
         for (i = 0; i < numStops; i++) {
             this.trigger('willParseStop');
             var stop,
-                connections = [];
+                outgoingConnections = [],
+                incomingConnections = [];
 
             if(!_.isUndefined(data.connection)) {
                 for(j = 0; j < connectionData.length; j++) {
                     if(connectionData[j].srcId == data.stop[i].id) {
-                        connections.push({priority: connectionData[j].priority, destId: connectionData[j].destId});
+                        outgoingConnections.push({priority: connectionData[j].priority, destId: connectionData[j].destId});
+                    }
+                    if (connectionData[j].destId == data.stop[i].id) {
+                        incomingConnections.push({srcId: connectionData[j].srcId});
                     }
                 }
             }
             
             stop = new TapAPI.classes.models.StopModel({
                 id: data.stop[i].id,
-                connection: connections,
+                connection: outgoingConnections,
+                incomingConnection: incomingConnections,
                 view: data.stop[i].view,
                 description: TapAPI.helper.objectToArray(data.stop[i].description),
                 propertySet: data.stop[i].propertySet ? TapAPI.helper.objectToArray(data.stop[i].propertySet.property) : undefined,
