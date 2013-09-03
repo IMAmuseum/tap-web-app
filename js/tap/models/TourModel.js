@@ -58,5 +58,17 @@ TapAPI.classes.models.TourModel = Backbone.Model.extend({
         });
 
         return appResource;
+    },
+    getAppResourceModelByUsage: function(usage) {
+        var appResources = [];
+
+        _.each(this.get('appResource'), function(resource) {
+            if (!_.isUndefined(resource) && resource.usage === usage) {
+                var asset = TapAPI.tourAssets.get(resource.id);
+                appResources.push(asset);
+            }
+        });
+
+        return appResources;
     }
 });
