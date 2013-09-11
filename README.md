@@ -15,7 +15,7 @@ this step you will need to change at the minimal, the following line of code.
 Set the endpoint to your tour or tourset's tourml file.
 
 Optionally you can change the settings to control which views are displayed on your application.  This section can
-Also be used to add custom views to the web app.
+Also be used to add custom views to the web app. 
 
     tourSettings: {
         'tour-1': {
@@ -23,3 +23,10 @@ Also be used to add custom views to the web app.
             'enabledNavigationControllers': ['StopListView', 'MapView']
         }   
     },  
+
+By default you can have any combination of the three following options
+
+-KeypadView
+-StopListView
+-MapView
+
