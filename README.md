@@ -10,16 +10,16 @@ bundle.
 To begin copy the example configuration file "dist/ExampleConfig.js" to "dist/Config.js".  Once you have completed
 this step you will need to change at the minimal, the following line of code.
 
->    tourMLEndpoint: '/node/1/tourml.xml',
+    tourMLEndpoint: '/node/1/tourml.xml',
 
 Set the endpoint to your tour or tourset's tourml file.
 
 Optionally you can change the settings to control which views are displayed on your application.  This section can
 Also be used to add custom views to the web app.
 
->    tourSettings: {
->        'tour-1': {
->            'defaultNavigationController': 'StopListView',
->            'enabledNavigationControllers': ['StopListView', 'MapView']
->        }   
->    },  
+    tourSettings: {
+        'tour-1': {
+            'defaultNavigationController': 'StopListView',
+            'enabledNavigationControllers': ['StopListView', 'MapView']
+        }   
+    },  
