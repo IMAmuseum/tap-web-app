@@ -91,7 +91,7 @@ module.exports = function(grunt) {
                         'vendor/photoswipe/code.photoswipe.jquery.js',
                         'js/tap/JQMConfig.js',
                         'vendor/jqmobile/jquery.mobile.js',
-                        'js/tap/TapApi.js',
+                        'js/tap/TapAPI.js',
                         'js/tap/Helper.js',
                         'js/tap/Router.js',
                         'js/tap/TemplateManager.js',

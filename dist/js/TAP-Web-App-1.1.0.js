@@ -481,7 +481,7 @@ TapAPI.tourMLParser = {
                     }
                 }
             }
-
+            
             stop = new TapAPI.classes.models.StopModel({
                 id: data.stop[i].id,
                 connection: outgoingConnections,
@@ -553,10 +553,10 @@ TapAPI.tourMLParser = {
         // clear out the temporary models
         stopCollection.reset();
         assetCollection.reset();
-
+        
         // announce we're done parsing the tour
         this.trigger('didParseTour', tour);
-
+        
         return tour;
     },
 
@@ -569,7 +569,7 @@ TapAPI.tourMLParser = {
             this.tourMap[tourUri].push(tourSetUri);
         }
     },
-
+    
     // stubs for local parse event handlers
     onWillParseTour: (TapConfig.willParseTour) ? TapConfig.willParseTour : function () {},
     onDidParseTour: (TapConfig.didParseTour) ? TapConfig.didParseTour : function (tour) {},
@@ -670,7 +670,7 @@ TapAPI.geoLocation = {
 
     stopLocating: function() {
         if (!navigator.geolocation) return;
-
+        
         navigator.geolocation.clearWatch(this.watch);
 
         if (this.nearestStop !== null) {
@@ -2117,6 +2117,7 @@ TapAPI.classes.views.ImageStopView = TapAPI.classes.views.BaseView.extend({
         return this;
     }
 });
+
 /*
  * Backbone View for displaying the KeyPad navigation
  */
