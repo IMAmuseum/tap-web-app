@@ -1,5 +1,5 @@
 /*
- * TAP - v1.1.0 - 2013-08-22
+ * TAP - v1.1.0 - 2013-09-11
  * http://tapintomuseums.org/
  * Copyright (c) 2011-2013 Indianapolis Museum of Art
  * GPLv3
@@ -44650,19 +44650,24 @@ TapAPI.tourMLParser = {
         for (i = 0; i < numStops; i++) {
             this.trigger('willParseStop');
             var stop,
-                connections = [];
+                outgoingConnections = [],
+                incomingConnections = [];
 
             if(!_.isUndefined(data.connection)) {
                 for(j = 0; j < connectionData.length; j++) {
                     if(connectionData[j].srcId == data.stop[i].id) {
-                        connections.push({priority: connectionData[j].priority, destId: connectionData[j].destId});
+                        outgoingConnections.push({priority: connectionData[j].priority, destId: connectionData[j].destId});
+                    }
+                    if (connectionData[j].destId == data.stop[i].id) {
+                        incomingConnections.push({srcId: connectionData[j].srcId});
                     }
                 }
             }
             
             stop = new TapAPI.classes.models.StopModel({
                 id: data.stop[i].id,
-                connection: connections,
+                connection: outgoingConnections,
+                incomingConnection: incomingConnections,
                 view: data.stop[i].view,
                 description: TapAPI.helper.objectToArray(data.stop[i].description),
                 propertySet: data.stop[i].propertySet ? TapAPI.helper.objectToArray(data.stop[i].propertySet.property) : undefined,
@@ -45255,13 +45260,13 @@ __p += '\n</video>\n';
  if (!_.isEmpty(description)) { ;
 __p += '\n<div id="description" data-role="collapsible" data-content-theme="c">\n\t<h3>Description</h3>\n\t<p>' +
 ((__t = ( description )) == null ? '' : __t) +
-'</p>\n';
+'</p>\n</div>\n';
  } ;
 __p += '\n';
  if (!_.isEmpty(transcription)) { ;
 __p += '\n<div id="transcription" data-role="collapsible" data-content-theme="c">\n\t<h3>Transcript</h3>\n\t<p>' +
 ((__t = ( transcription )) == null ? '' : __t) +
-'</p>\n';
+'</p>\n</div>\n';
  } ;
 __p += '\n';
  if (!_.isUndefined(nextStopPath)) { ;
@@ -45269,7 +45274,7 @@ __p += '\n    <a href="' +
 ((__t = ( nextStopPath )) == null ? '' : __t) +
 '" data-role="button">next</a>\n';
  } ;
-
+__p += '\n';
 
 }
 return __p
@@ -45726,6 +45731,18 @@ TapAPI.classes.models.TourModel = Backbone.Model.extend({
         });
 
         return appResource;
+    },
+    getAppResourceModelByUsage: function(usage) {
+        var appResources = [];
+
+        _.each(this.get('appResource'), function(resource) {
+            if (!_.isUndefined(resource) && resource.usage === usage) {
+                var asset = TapAPI.tourAssets.get(resource.id);
+                appResources.push(asset);
+            }
+        });
+
+        return appResources;
     }
 });
 /*

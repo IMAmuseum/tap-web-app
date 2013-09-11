@@ -373,13 +373,13 @@ __p += '\n</video>\n';
  if (!_.isEmpty(description)) { ;
 __p += '\n<div id="description" data-role="collapsible" data-content-theme="c">\n\t<h3>Description</h3>\n\t<p>' +
 ((__t = ( description )) == null ? '' : __t) +
-'</p>\n';
+'</p>\n</div>\n';
  } ;
 __p += '\n';
  if (!_.isEmpty(transcription)) { ;
 __p += '\n<div id="transcription" data-role="collapsible" data-content-theme="c">\n\t<h3>Transcript</h3>\n\t<p>' +
 ((__t = ( transcription )) == null ? '' : __t) +
-'</p>\n';
+'</p>\n</div>\n';
  } ;
 __p += '\n';
  if (!_.isUndefined(nextStopPath)) { ;
@@ -387,7 +387,7 @@ __p += '\n    <a href="' +
 ((__t = ( nextStopPath )) == null ? '' : __t) +
 '" data-role="button">next</a>\n';
  } ;
-
+__p += '\n';
 
 }
 return __p
