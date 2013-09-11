@@ -64,7 +64,7 @@ module.exports = function(grunt) {
             dist: {
                 files: {
                     'dist/js/<%= pkg.name %>-<%= pkg.version %>.js': [
-                        'js/tap/TapApi.js',
+                        'js/tap/TapAPI.js',
                         'js/tap/Helper.js',
                         'js/tap/Router.js',
                         'js/tap/TemplateManager.js',
