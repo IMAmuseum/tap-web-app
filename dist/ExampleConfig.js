@@ -1,5 +1,5 @@
 var TapConfig = {
-    tourMLEndpoint: '../../tour.xml',
+    tourMLEndpoint: '/node/1/tourml.xml',
     trackerID: '',
     media: {
         pluginPath: 'dist/vendor/mediaelement/'
