@@ -25,16 +25,20 @@ TapAPI.tourMLParser = {
     },
     parseTourML: function(tourML) {
         var tours = [];
+        var tour;
         if(tourML.tour) { // Single tour
             this.addTourToMap(tourML.uri);
-            tours.push(this.parseTour(tourML.tour, tourML.uri));
+            tour = this.parseTour(tourML.tour, tourML.uri);
+            if (!_.isUndefined(tour)) {
+                tours.push(tour);
+            }
         } else if(tourML.tourSet && tourML.tourSet.tourMLRef) { // TourSet w/ external tours
             var tourRefs = TapAPI.helper.objectToArray(tourML.tourSet.tourMLRef);
             len = tourRefs.length;
             for(i = 0; i < len; i++) {
                 this.addTourToMap(tourRefs[i].uri, tourML.uri);
                 //check modified date before requesting tourml from server
-                var tour = TapAPI.tours.cache.where({tourUri:tourRefs[i].uri});
+                tour = TapAPI.tours.cache.where({tourUri:tourRefs[i].uri});
                 if (tour.length > 0 && Date.parse(tourRefs[i].lastModified) <= Date.parse(tour[0].get('lastModified'))) {
                     tours.push(tour[0]);
                 } else {
@@ -44,7 +48,10 @@ TapAPI.tourMLParser = {
         } else if(tourML.tourSet && tourML.tourSet.tour) { // TourSet w/ tours as children elements
             len = tourML.tourSet.tour.length;
             for(i = 0; i < len; i++) {
-               tours.push(this.parseTour(tourML.tourSet.tour[i], tourML.uri));
+                tour = this.parseTour(tourML.tourSet.tour[i], tourML.uri);
+                if (!_.isUndefined(tour)) {
+                    tours.push(tour);
+                }
             }
         }
         Backbone.trigger('tap.tourml.parsed', tours);
@@ -60,6 +67,13 @@ TapAPI.tourMLParser = {
 
         var stops = [],
             assets = [];
+
+        //clean stop data for consistant formatting
+        data.stop = TapAPI.helper.objectToArray(data.stop);
+        //if no stops do not continue with this tour
+        if (_.isUndefined(data.stop)) {
+            return undefined;
+        }
 
         // create new tour
         tour = new TapAPI.classes.models.TourModel({
@@ -85,7 +99,6 @@ TapAPI.tourMLParser = {
         var i, j;
         // load tour models
         var connectionData = TapAPI.helper.objectToArray(data.connection);
-        data.stop = TapAPI.helper.objectToArray(data.stop);
         var numStops = data.stop.length;
         for (i = 0; i < numStops; i++) {
             this.trigger('willParseStop');
@@ -103,7 +116,7 @@ TapAPI.tourMLParser = {
                     }
                 }
             }
-            
+
             stop = new TapAPI.classes.models.StopModel({
                 id: data.stop[i].id,
                 connection: outgoingConnections,
@@ -175,10 +188,10 @@ TapAPI.tourMLParser = {
         // clear out the temporary models
         stopCollection.reset();
         assetCollection.reset();
-        
+
         // announce we're done parsing the tour
         this.trigger('didParseTour', tour);
-        
+
         return tour;
     },
 
@@ -191,7 +204,7 @@ TapAPI.tourMLParser = {
             this.tourMap[tourUri].push(tourSetUri);
         }
     },
-    
+
     // stubs for local parse event handlers
     onWillParseTour: (TapConfig.willParseTour) ? TapConfig.willParseTour : function () {},
     onDidParseTour: (TapConfig.didParseTour) ? TapConfig.didParseTour : function (tour) {},
