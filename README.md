@@ -18,7 +18,7 @@ Optionally you can change the settings to control which views are displayed on y
 Also be used to add custom views to the web app. 
 
     tourSettings: {
-        'tour-1': {
+        'default': {
             'defaultNavigationController': 'StopListView',
             'enabledNavigationControllers': ['StopListView', 'MapView']
         }   
