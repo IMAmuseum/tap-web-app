@@ -1,4 +1,6 @@
 <h3 class="stop-title"><%= title %></h3>
+<%= description %>
+<ul class="ui-grid-b" id="gallery">
 <% _.each(images, function(image) { %>
 	<li>
 		<a href="<%= image.originalUri %>" rel="external">
@@ -6,6 +8,7 @@
 		</a>
 	</li>
 <% }) %>
+</ul>
 <% if (!_.isUndefined(nextStopPath)) { %>
-    <a href="<%= nextStopPath %>" data-role="button">next</a>
+    <a href="<%= nextStopPath %>" data-role="button" class="next-button">next</a>
 <% } %>

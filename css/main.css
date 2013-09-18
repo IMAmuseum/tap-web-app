@@ -300,3 +300,6 @@ div.tour-title {
     height: auto;
     padding: 10px 0;
 }
+a.next-button {
+    clear: both;
+}

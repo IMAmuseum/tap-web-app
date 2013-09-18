@@ -3,15 +3,14 @@
  * Relies on the PhotoSwipe jquery plugin
  */
 TapAPI.classes.views.ImageStopView = TapAPI.classes.views.BaseView.extend({
-    tagName: 'ul',
-    id: 'gallery',
-    className: 'ui-grid-b',
+    id: 'gallery-container',
     template: TapAPI.templateManager.get('image-stop'),
     initialize: function(options) {
         this._super(options);
     },
     render: function() {
         var assetRefs = this.model.get('assetRef');
+        var description = this.model.get('description');
 
         if (_.isEmpty(assetRefs)) return this;
 
@@ -38,7 +37,8 @@ TapAPI.classes.views.ImageStopView = TapAPI.classes.views.BaseView.extend({
         this.$el.html(this.template({
             title: this.model.get('title'),
             images: images,
-            nextStopPath: this.getNextStopPath()
+            nextStopPath: this.getNextStopPath(),
+            description: description
         }));
 
         this.gallery = this.$el.find('a').photoSwipe({
