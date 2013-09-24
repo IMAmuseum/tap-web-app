@@ -41,7 +41,7 @@ TapAPI.classes.views.ImageStopView = TapAPI.classes.views.BaseView.extend({
             description: description
         }));
 
-        this.gallery = this.$el.find('a').photoSwipe({
+        this.gallery = this.$el.find('a.gallery-link').photoSwipe({
             enableMouseWheel: false,
             enableKeyboard: true,
             doubleTapZoomLevel : 0,

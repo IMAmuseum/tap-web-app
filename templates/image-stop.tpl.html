@@ -3,7 +3,7 @@
 <ul class="ui-grid-b" id="gallery">
 <% _.each(images, function(image) { %>
 	<li>
-		<a href="<%= image.originalUri %>" rel="external">
+		<a href="<%= image.originalUri %>" rel="external" class="gallery-link">
 			<img src="<%= image.thumbnailUri %>" data-caption="<%= image.caption %>" title="<%= image.title %>" />
 		</a>
 	</li>
