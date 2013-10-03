@@ -91,3 +91,8 @@ if (!_.isUndefined(TapConfig.viewRegistry)) {
 if (!_.isUndefined(TapConfig.navigationControllers)) {
     _.extend(TapAPI.navigationControllers, TapConfig.navigationControllers);
 }
+
+// attempt to get user defiend social settings
+if (!_.isUndefined(TapConfig.social)) {
+    _.extend(TapAPI.social, TapConfig.social);
+}
