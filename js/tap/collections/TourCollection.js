@@ -57,5 +57,8 @@ TapAPI.classes.collections.TourCollection = Backbone.Collection.extend({
         TapAPI.tourStops.fetch();
 
         Backbone.trigger('tap.tour.selected');
+    },
+    comparator: function(tour) {
+        return tour.get('tourOrder');
     }
 });

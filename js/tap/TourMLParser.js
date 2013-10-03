@@ -10,6 +10,7 @@ TapAPI.tourMLParser = {
         this.on('didParseAsset', $.proxy(this.onDidParseAsset, this));
 
         this.tourMap = {};
+        this.tourOrder = [];
 
         this.listenTo(Backbone, 'tap.tourml.loaded', this.parseTourML);
 
@@ -60,6 +61,7 @@ TapAPI.tourMLParser = {
         this.trigger('willParseTour');
 
         var toursetUri = this.tourMap[tourUri];
+        var tourOrder = _.indexOf(this.tourOrder, tourUri);
 
         // check to see if the tour has been updated
         var tour = TapAPI.tours.cache.get(data.id);
@@ -80,6 +82,7 @@ TapAPI.tourMLParser = {
             id: data.id,
             toursetUri: toursetUri,
             tourUri: tourUri,
+            tourOrder: tourOrder,
             appResource: data.tourMetadata && data.tourMetadata.appResource ? TapAPI.helper.objectToArray(data.tourMetadata.appResource) : undefined,
             connection: data.connection ? TapAPI.helper.objectToArray(data.connection) : undefined,
             description: data.tourMetadata && data.tourMetadata.description ? TapAPI.helper.objectToArray(data.tourMetadata.description) : undefined,
@@ -202,6 +205,10 @@ TapAPI.tourMLParser = {
 
         if (!_.isUndefined(tourSetUri)) {
             this.tourMap[tourUri].push(tourSetUri);
+        }
+
+        if (_.indexOf(this.tourOrder, tourUri) === -1) {
+            this.tourOrder.push(tourUri);
         }
     },
 
