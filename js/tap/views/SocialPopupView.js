@@ -16,6 +16,7 @@ TapAPI.classes.views.SocialPopupView = Backbone.View.extend({
     },
     render: function() {
         this.$el.html(this.template({
+            title: TapAPI.social.title,
             FBAppID: TapAPI.social.facebook.appID,
             url: escape(document.URL)
         }));

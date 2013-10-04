@@ -66,6 +66,7 @@ var TapAPI = {
     },
     social: {
         enabled: false,
+        title: 'Share TAP',
         facebook: {
             appID: ''
         }
