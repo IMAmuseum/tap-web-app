@@ -22,14 +22,18 @@ TapAPI.classes.views.TourListView = TapAPI.classes.views.BaseView.extend({
 			return this;
 		}
 
+		var tours = TapAPI.tours.sortBy(function(tour) {
+			tour.get("title");
+		});
+
 		var headers = [];
-		TapAPI.tours.each(function(tour) {
+		tours.each(function(tour) {
 			TapAPI.tours.selectTour(tour.get('id'));
 			headers.push(tour.getAppResourceByUsage('image'));
 		});
 
 		this.$el.html(this.template({
-			tours: TapAPI.tours.models,
+			tours: tours,
 			headers: headers
 		}));
 
