@@ -27,7 +27,7 @@ TapAPI.classes.views.TourListView = TapAPI.classes.views.BaseView.extend({
 		});
 
 		var headers = [];
-		tours.each(function(tour) {
+		_.each(tours, function(tour) {
 			TapAPI.tours.selectTour(tour.get('id'));
 			headers.push(tour.getAppResourceByUsage('image'));
 		});
