@@ -303,3 +303,31 @@ div.tour-title {
 a.next-button {
     clear: both;
 }
+
+/* Audio Slideshow Stop */
+.slideshow-images {
+    width: 100%;
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+}
+
+.slideshow-images img {
+    position:absolute;
+    left:0;
+    -webkit-transition: opacity 1s ease-in-out;
+    -moz-transition: opacity 1s ease-in-out;
+    -o-transition: opacity 1s ease-in-out;
+    transition: opacity 1s ease-in-out;
+    opacity:0;
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    filter: alpha(opacity=0);
+    max-height: 300px;
+    display: block;
+}
+
+.slideshow-images img.opaque {
+    opacity:1;
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    filter: alpha(opacity=1);
+}
