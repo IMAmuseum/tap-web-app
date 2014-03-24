@@ -1,0 +1,23 @@
+<h3 class="stop-title"><%= title %></h3>
+<audio id="audio-player" class="player" controls="controls">
+    <p>Your browser does not support HTML 5 audio.</p>
+    <% _.each(sources, function(source) { %>
+    <%= source %>
+    <% }); %>
+</audio>
+<% if (!_.isEmpty(imageSources)) { %>
+<div class="slideshow-images">
+<% _.each(imageSources, function(imageSource) { %>
+    <img class="slideshow-image" id="<%= imageSource.id %>" src="<%= imageSource.uri %>" />
+<% }); %>
+</div>
+<% } %>
+<% if (!_.isEmpty(description)) { %>
+<div class="description" data-role="collapsible" data-content-theme="c">
+    <h3>Description</h3>
+    <%= description %>
+</div>
+<% } %>
+<% if (!_.isUndefined(nextStopPath)) { %>
+    <a href="<%= nextStopPath %>" data-role="button" class="next-button">next</a>
+<% } %>
