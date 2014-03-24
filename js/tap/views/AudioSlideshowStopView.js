@@ -31,9 +31,9 @@ TapAPI.classes.views.AudioSlideshowStopView = TapAPI.classes.views.BaseView.exte
         var offset = 0;
         if (!_.isEmpty(imageAssets)) {
             for (var i = 0, numImages = imageAssets.length; i < numImages; i++) {
-                var imageSource = imageAssets[i].getSourcesByPart('image').at(0);
-                var imageUri = imageSource.get('uri');
-                var imageProperties = imageSource.get('propertySet');
+                var imageSource = imageAssets[i].getSourcesByPart('image');
+                var imageUri = imageSource[0].get('uri');
+                var imageProperties = imageSource[0].get('propertySet');
                 var imageDimensions = {width:0, height:0, aspect:1};
                 imageProperties.each(function(imgProp) {
                     if (imgProp.get('name') == 'width') {
