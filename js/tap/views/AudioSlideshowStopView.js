@@ -26,12 +26,12 @@ TapAPI.classes.views.AudioSlideshowStopView = TapAPI.classes.views.BaseView.exte
 
         // Find the images
         var posterImagePath = '';
-        var imageAssets = this.model.getAssetsByUsage('image');
+        var imageAssets = this.model.getAssetsByUsage('image_asset');
         var imageSources = {};
         var offset = 0;
         if (!_.isEmpty(imageAssets)) {
             for (var i = 0, numImages = imageAssets.length; i < numImages; i++) {
-                var imageSource = imageAssets[i].get('source').at(0);
+                var imageSource = imageAssets[i].getSourcesByPart('image').at(0);
                 var imageUri = imageSource.get('uri');
                 var imageProperties = imageSource.get('propertySet');
                 var imageDimensions = {width:0, height:0, aspect:1};
