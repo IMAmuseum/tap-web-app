@@ -1,4 +1,4 @@
-var tourMLEndpoint = 'http://localhost/tap/node/7/tourml.xml';
+var tourMLEndpoint = 'http://mw2014.imalab.us/author/node/15/tourml.xml';
 
 //check for query parameters
 var queryParameters = function() {
@@ -21,7 +21,7 @@ if (queryParameters["tourml"] !== undefined) {
 var qPosition = window.location.href.indexOf('?');
 if (qPosition > 0) {
     var url = window.location.href.slice(0, qPosition);
-    // set the url 
+    // set the url
     window.history.replaceState(null, null, url);
     //window.location.hash = url;
 }
@@ -40,5 +40,6 @@ var TapConfig = {
     },
     navigationControllers: {},
     viewRegistry: {},
-    primaryRouter: "Default"
+    primaryRouter: "Default",
+    bundleHomeHeaderImageUri: "http://3.bp.blogspot.com/-631cCr0BZJ8/TdrKbLHvOqI/AAAAAAAAAWk/iXtjmFRdweM/s1600/mcnultyfinale.jpg"
 };

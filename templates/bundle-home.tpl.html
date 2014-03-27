@@ -1,0 +1,30 @@
+<style>
+	/*.bundle-home,*/
+	header, header img {
+		margin: 0 !important;
+		padding: 0 !important;
+	}
+	header img {
+		max-width: 100%;
+	}
+	.ui-title {
+		font-size: 13px !important;
+	}
+</style>
+<header>
+	<img src="<%= headerImageUri %>">
+</header>
+<ul id="tour-list" class="ui-listview" data-split-icon="info" data-split-theme="d" data-role="listview">
+	<% _.each(tours, function(tour, i) { %>
+	<li data-icon="false">
+		<a href="#" data-tour-id="<%= tour.get('id') %>" class="tour-info">
+			<div class="tour-wrapper">
+				<% if (headers[i] !== undefined) { %>
+				<div class="tour-image"><img src="<%= headers[i] %>" /></div>
+				<% } %>
+				<div class="tour-title"><span><%= tour.get('title') %></span></div>
+			</div>
+		</a>
+	</li>
+	<% }); %>
+</ul>

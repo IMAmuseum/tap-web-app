@@ -1,0 +1,15 @@
+<h3 class="stop-title"><%= title %></h3>
+<p class="quiz-correct quiz-result">Correct Answer</p>
+<p class="quiz-wrong quiz-result">Incorrect Answer</p>
+<p><%= question %></p>
+<form>
+	<fieldset data-role="controlgroup">
+	<legend>Select your answer:</legend>
+	<% _.each(choices, function(choice) { %>
+		<input type="radio" name="radio-choice" id="radio-choice-<%= choice.value %>" value="choice-<%= choice.value %>" />
+		<label for="radio-choice-<%= choice.value %>"><%= choice.text %></label>
+	<% }) %>
+	</fieldset>
+	<input type="hidden" name="answer" value="choice-<%= answer %>">
+	<input type="submit" value="Submit">
+</form>

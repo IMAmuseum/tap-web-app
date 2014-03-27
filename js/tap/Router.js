@@ -21,7 +21,7 @@ TapAPI.classes.routers.Default = Backbone.Router.extend({
             // navigate them directly to that tours details page
             this.navigate('tour/' + TapAPI.tours.at(0).get('id') + '/details', {trigger: true});
         } else {
-            this.changePage(new TapAPI.classes.views.TourListView());
+            this.changePage(new TapAPI.classes.views.BundleHomeView());
         }
     },
     /**
