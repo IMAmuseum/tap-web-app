@@ -45,7 +45,7 @@ TapAPI.classes.views.BundleHomeView = TapAPI.classes.views.BaseView.extend({
 	},
 	tourSelected: function(e) {
 		e.preventDefault();
-		var target = $(e.target).parents('a.tour-info').data('tour-id');
+		var target = $(e.target).data('tour-id');
 		var tour = TapAPI.tours.get(target);
 		TapAPI.router.navigate(TapAPI.router.getTourDefaultRoute(tour.get('id')), {trigger: true});
 	}

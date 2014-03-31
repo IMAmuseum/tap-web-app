@@ -1,5 +1,5 @@
 /*
- * TAP - v1.1.0 - 2014-03-28
+ * TAP - v1.1.0 - 2014-03-31
  * http://tapintomuseums.org/
  * Copyright (c) 2011-2014 Indianapolis Museum of Art
  * GPLv3
@@ -33481,13 +33481,9 @@ Gets the percentage of the click on the slider to set the song position accordin
 Source for Object event and offset: http://website-engineering.blogspot.com/2011/04/get-x-y-coordinates-relative-to-div-on.html
 */
 CustomAudio.prototype.setAudioPosition = function(e) {
-    console.log(e, 'e');
-    console.log(obj, 'obj');
     //Gets the offset from the left so it gets the exact location.
-    var audioSliderWidth = obj.offsetWidth;
-    var evtobj = window.event ? event : e;
-    clickLocation =  evtobj.layerX - obj.offsetLeft;
-console.log(evtobj);
+    var audioSliderWidth = this.ui.audioSlider.offsetWidth;
+    var clickLocation =  e.layerX;
     var percentage = (clickLocation/audioSliderWidth);
     //Sets the song location with the percentage.
     this.setLocation(percentage);
@@ -46047,17 +46043,11 @@ function print() { __p += __j.call(arguments, '') }
 with (obj) {
 __p += '<style>\n\t/*.bundle-home,*/\n\theader, header img {\n\t\tmargin: 0 !important;\n\t\tpadding: 0 !important;\n\t}\n\theader img {\n\t\tmax-width: 100%;\n\t}\n\t.ui-title {\n\t\tfont-size: 13px !important;\n\t}\n\t.homeHeader {\n\t\theight: 200px;\n\t\twidth: 100%;\n\t\tbackground-image: url(' +
 ((__t = ( headerImageUri )) == null ? '' : __t) +
-');\n\t\tbackground-size: 160% auto;\n\t\tbackground-position: center center;\n\t}\n</style>\n<script>\n\t$(function() {\n\n\n\n\t});\n</script>\n<header>\n\t<div class="homeHeader"></div>\n\t<img src="">\n</header>\n<ul id="tour-list" class="ui-listview" data-split-icon="info" data-split-theme="d" data-role="listview">\n\t';
+');\n\t\tbackground-size: 160% auto;\n\t\tbackground-position: center center;\n\t}\n</style>\n<script>\n\t// $(function() {\n\n\t// \tfunction setupBackgroundImage\n\n\t// });\n</script>\n<header>\n\t<div class="homeHeader"></div>\n\t<img src="">\n</header>\n<ul id="tour-list" class="ui-listview" data-split-icon="info" data-split-theme="d" data-role="listview">\n\t';
  _.each(tours, function(tour, i) { ;
 __p += '\n\t<li data-icon="false">\n\t\t<a href="#" data-tour-id="' +
 ((__t = ( tour.get('id') )) == null ? '' : __t) +
-'" class="tour-info">\n\t\t\t<div class="tour-wrapper">\n\t\t\t\t';
- if (headers[i] !== undefined) { ;
-__p += '\n\t\t\t\t<div class="tour-image"><img src="' +
-((__t = ( headers[i] )) == null ? '' : __t) +
-'" /></div>\n\t\t\t\t';
- } ;
-__p += '\n\t\t\t\t<div class="tour-title"><span>' +
+'" class="tour-info">\n\t\t\t<div class="tour-wrapper">\n\t\t\t\t<div class="tour-title"><span>' +
 ((__t = ( tour.get('title') )) == null ? '' : __t) +
 '</span></div>\n\t\t\t</div>\n\t\t</a>\n\t</li>\n\t';
  }); ;
@@ -46264,7 +46254,7 @@ function print() { __p += __j.call(arguments, '') }
 with (obj) {
 __p += '<h3 class="stop-title">' +
 ((__t = ( title )) == null ? '' : __t) +
-'</h3>\n<p class="quiz-correct quiz-result">Correct Answer</p>\n<p class="quiz-wrong quiz-result">Incorrect Answer</p>\n<p>' +
+'</h3>\n<p>' +
 ((__t = ( question )) == null ? '' : __t) +
 '</p>\n<form>\n\t<fieldset data-role="controlgroup">\n\t<legend>Select your answer:</legend>\n\t';
  _.each(choices, function(choice) { ;
@@ -46280,7 +46270,9 @@ __p += '\n\t\t<input type="radio" name="radio-choice" id="radio-choice-' +
  }) ;
 __p += '\n\t</fieldset>\n\t<input type="hidden" name="answer" value="choice-' +
 ((__t = ( answer )) == null ? '' : __t) +
-'">\n\t<input type="submit" value="Submit">\n</form>\n';
+'">\n\t<input type="hidden" name="note" value="' +
+((__t = ( note )) == null ? '' : __t) +
+'">\n\t<input type="submit" class="js-action" value="Submit">\n</form>\n';
 
 }
 return __p
@@ -48172,11 +48164,18 @@ TapAPI.classes.views.QuizStopView = TapAPI.classes.views.BaseView.extend({
     initialize: function(options) {
         this._super(options);
     },
+    overlay: $('quiz-result'),
     // Render from the template
     render: function() {
         var question = this.model.getAssetsByUsage('body');
         var choiceAssets = this.model.getAssetsByUsage('quiz_choices');
         var answer = this.model.getAssetsByUsage('quiz_answer');
+        var note = this.model.getAssetsByUsage('quiz_note');
+        if (note) {
+            note = note[0].get('content').at(0).get('data');
+        } else {
+            note = '';
+        }
 
         if (!_.isEmpty(choiceAssets)) {
             var choice = choiceAssets[0].get('content');
@@ -48194,6 +48193,7 @@ TapAPI.classes.views.QuizStopView = TapAPI.classes.views.BaseView.extend({
             question: question[0].get('content').at(0).get('data'),
             choices: choices,
             answer: answer[0].get('content').at(0).get('data'),
+            note: note,
             nextStopPath: this.getNextStopPath()
         }));
         return this;
@@ -48202,15 +48202,22 @@ TapAPI.classes.views.QuizStopView = TapAPI.classes.views.BaseView.extend({
         e.preventDefault();
         var selectedAnswer = $('input:radio[name=radio-choice]:checked').val();
         var answer = $('input:hidden[name=answer]').val();
+        var note = $('input:hidden[name=note]').val();
         if (selectedAnswer) {
             if(selectedAnswer == answer) {
                 console.log('Correct');
-                $('.quiz-wrong').addClass('quiz-result');
-                $('.quiz-correct').removeClass('quiz-result');
+                Backbone.trigger('tap.popup.dislay', {
+                    title: 'Your Result',
+                    message: 'Correct Answer<p>' + note + '</p>',
+                    cancelButtonTitle: 'Okay'
+                });
             } else {
                 console.log('Wrong');
-                $('.quiz-correct').addClass('quiz-result');
-                $('.quiz-wrong').removeClass('quiz-result');
+                Backbone.trigger('tap.popup.dislay', {
+                    title: 'Your Result',
+                    message: 'Incorrect Answer<p>' + note + '</p>',
+                    cancelButtonTitle: 'Okay'
+                });
             }
         } else {
             console.log('nothing selected');
@@ -48712,6 +48719,98 @@ TapAPI.classes.views.WebStopView = TapAPI.classes.views.BaseView.extend({
         return this;
     }
 });
+// /*
+//  * Backbone View for displaying the Map navigation interface
+//  * Relies on leaflet
+//  */
+// TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.extend({
+//     id: 'tour-zooming',
+//     initialize: function(options) {
+//         var that = this;
+//         this._super(options);
+
+//         // this.title = '';
+//         // temp = this.model;
+//         // this.imageWidth = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[0].attributes.value;
+//         // this.imageHeight = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[1].attributes.value;
+//         // this.description = this.model.get('description');
+//         // this.assetUri = this.model.getAssets()[0].get('source').at(0).get('uri');
+
+//         $(':jqmData(role="page")').on('pageinit', {context: this}, this.resizeMapViewport);
+//         $(window).on('orientationchange resize', {context: this}, this.resizeMapViewport);
+//     },
+//     render: function() {
+//         return this;
+//     },
+//     finishedAddingContent: function() {
+//         var url = this.model.getAssets()[0].get('source').at(0).get('uri');
+//         var url = url + '/';
+//         var imageWidth = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[0].attributes.value;
+//         var imageHeight = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[1].attributes.value;
+//         var attribution = this.model.get('description');
+
+//         // create map
+//         this.map = L.map('content-wrapper', {
+//             maxZoom: 3,
+//             minZoom: 0
+//         }).setView(new L.LatLng(0,0), 0);
+
+//         L.tileLayer.zoomify(url, {
+//             width: imageHeight,
+//             height: imageWidth,
+//             tolerance: 0.8,
+//             attribution: attribution.replace(/(<([^>]+)>)/ig,"")
+//         }).addTo(this.map);
+//         // this.map = L.map('tour-zooming', {attributionControl: false}).setView([0, 0], 0);
+
+//         // this.tileLayer = L.tileLayer(this.assetUri + '/zoom{z}/row{y}/col{x}.png', {
+//         //     continuousWorld: true,
+//         //     nowrap: true,
+//         //     reuseTiles: true
+//         // }).addTo(this.map);
+//         // // add description
+//         // var desc = $('<div class="zoomingImageDescription"></div>')
+//         //     .append('<div class="zoomingImageDescriptionHandle">Description</div>')
+//         //     .append($('<div class="zoomingImageDescriptionText">'+this.description+'</div>').css({
+//         //         // @TODO temporary, move this into css
+//         //         'height': '100px',
+//         //         'width': '100px',
+//         //         'background-color': 'red',
+//         //         'position': 'absolute',
+//         //         'bottom': '0px',
+//         //         'left': '0px',
+//         //         'display': 'none'
+//         //     }))
+//         //     .appendTo(this.$el);
+//         // $('.zoomingImageDescription, .zoomingImageDescriptionText').click(function(e) {
+//         //     e.preventDefault(); // don't pass the event through
+//         //     $('.zoomingImageDescriptionText').toggle();
+//         // });
+//     },
+//     resizeMapViewport: function(e) {
+//         var footer, header, viewport;
+
+//         viewport = $('html').height();
+//         header = $('[data-role="header"]').outerHeight();
+//         footer = $('[data-role="footer"]').outerHeight();
+
+//         //$('#content-wrapper').height(viewport - header - footer);
+//         $('#content-wrapper').height(viewport - header - footer - (parseInt($('#content-wrapper').css('padding-top'), 10) * 2));
+
+//         if (e.data.context.map !== null) {
+//             e.data.context.map.invalidateSize();
+//         }
+//         window.scroll(0, 0);
+//     },
+//     onClose: function() {
+//         // remove event handlers
+//         $(':jqmData(role="page")').off('pageinit', this.resizeMapViewport);
+//         $(window).off('orientationchange resize', this.resizeMapViewport);
+
+//         $('#content-wrapper').removeAttr('style');
+//     }
+// });
+
 /*
  * Backbone View for displaying the Map navigation interface
  * Relies on leaflet
@@ -48724,8 +48823,8 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
 
         this.title = '';
         temp = this.model;
-        this.imageWidth = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[0].attributes.value;
-        this.imageHeight = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[1].attributes.value;
+        this.imageWidth = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[1].attributes.value;
+        this.imageHeight = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[0].attributes.value;
         this.description = this.model.get('description');
         this.assetUri = this.model.getAssets()[0].get('source').at(0).get('uri');
 
@@ -48746,14 +48845,14 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
             reuseTiles: true
         }).addTo(this.map);
         // add description
-        var desc = $('<div class="zoomingImageDescription"></div>')
-            .append('<div class="zoomingImageDescriptionHandle">Description</div>')
-            .append('<div class="zoomingImageDescriptionText">'+this.description+'</div>')
-            .appendTo(this.$el);
-        desc.on('click', function(e) {
-            console.log(e);
+        // var desc = $('<div class="zoomingImageDescription"></div>')
+        //     .append('<div class="zoomingImageDescriptionHandle">Description</div>')
+        //     .append('<div class="zoomingImageDescriptionText">'+this.description+'</div>')
+        //     .appendTo(this.$el);
+        // desc.on('click', function(e) {
+        //     console.log(e);
 
-        });
+        // });
     },
     resizeMapViewport: function(e) {
         var footer, header, viewport;

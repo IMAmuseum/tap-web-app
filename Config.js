@@ -36,10 +36,12 @@ var TapConfig = {
         'default': {
             'defaultNavigationController': 'StopListView',
             'enabledNavigationControllers': ['KeypadView', 'StopListView', 'MapView']
+        },
+        'tour-7': {
+            'defaultNavigationController': 'MapView'
         }
     },
     navigationControllers: {},
     viewRegistry: {},
-    primaryRouter: "Default",
-    bundleHomeHeaderImageUri: "http://3.bp.blogspot.com/-631cCr0BZJ8/TdrKbLHvOqI/AAAAAAAAAWk/iXtjmFRdweM/s1600/mcnultyfinale.jpg"
+    primaryRouter: "Default"
 };

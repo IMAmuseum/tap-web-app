@@ -17,7 +17,8 @@
   padding-top:40px;
 }
 body {
-  font-family: 'Open Sans', sans-serif;
+  /*font-family: 'Open Sans', sans-serif;*/
+  font-family:Arial, Helvetica,
   font-weight:400;
 }
 
@@ -27,6 +28,9 @@ body {
 .ui-bar-a .ui-shadow {
   -webkit-box-shadow:none;
   box-shadow:none;
+}
+#header .ui-title {
+  text-shadow:none;
 }
 #header .ui-btn-up-a {
   border:none;background:none;
@@ -57,14 +61,14 @@ body {
 /* footer bar button */
 #footer {
   border:none;
-  background:#999;
+  background:#8CC5BF;
 }
 #footer .ui-btn-up-a {
   background:none;border:none;
 }
 #footer .ui-btn-active {
-    border: 1px solid #df5b2d /*{global-active-border}*/;
-    background: #df5b2d /*{global-active-background-color}*/;
+    border: 1px solid #7AAEAA;
+    background: #7AAEAA /*{global-active-background-color}*/;
 }
 #footer .ui-btn-inner {
   border:none;
@@ -74,6 +78,13 @@ body {
   text-shadow:none;
   text-transform:uppercase;
   color:#fff;
+  font-weight:normal;
+}
+#footer .ui-btn-hover-a {
+  text-shadow:none;
+  text-transform:uppercase;
+  color:#fff;
+  font-weight:normal;
 }
 
 /* content area bg */
@@ -84,6 +95,9 @@ body {
 
 /* gets rid of menu background image fade */
 .ui-btn-up-c {
+  background-image:none;
+}
+.ui-btn-hover-c {
   background-image:none;
 }
 
@@ -246,7 +260,15 @@ body {
   width:40px;
   color:#fff;
   box-sizing:border-box;
-  padding-left:5px;
+  color:rgba(255,255,255,0);
+}
+.play-pause.play {
+  background: url('../images/icon-play.png') no-repeat center center transparent;
+  background-size:8px 6px;
+}
+.play-pause.pause {
+  background: url('../images/icon-pause.png') no-repeat center center transparent;
+  background-size:8px 6px;
 }
 .audio-slider {
   display:table-cell;
@@ -291,7 +313,7 @@ body {
 /* home header */
 .homeHeader {
   background-image: url('../images/tap-into-baltimore-title.jpg') !important;
-  background-image: url('../images/tap-baltimore-crab.gif') !important;
+  background-image: url('../images/splashmap.jpg') !important;
   background-size: 100% auto!important;
   background-position:center center!important;
 
@@ -304,5 +326,72 @@ body {
 }
 
 
+/* no more hover please */
+.ui-btn-hover-a {
+  border: none;
+  background-color: transparent;
+  color: #fff;
+  text-shadow: none;
+  background-image: none!important;
+}
 
-/* footer on inner pages, unfixed */
+
+/* tour stop list */
+.tour-stop-list {
+
+}
+.tour-stop-list .ui-icon {
+  box-shadow:none!important;
+}
+.tour-stop-list .ui-listview {
+  background:#888;
+}
+.tour-stop-list .ui-listview li {
+  background:#888;
+  border-bottom:none;
+}
+.tour-stop-list .ui-listview li .ui-btn-inner {
+  border-top:none;
+  text-shadow:none;
+}
+.tour-stop-list .ui-listview li .ui-btn-inner .title-with-code {
+  text-shadow:none;
+  color:#fff;
+}
+
+
+/* insent list */
+.ui-listview-inset {
+  box-shadow:none;
+}
+.ui-listview-inset .ui-icon-arrow-r {
+  background: url('../images/icon-inset-arrow.png') no-repeat center center transparent;
+  background-size: 9px 14px;
+}
+.ui-listview .ui-li-icon {
+  top: .8em;
+}
+
+
+/* KEYPAD */
+#keypad {
+
+}
+#keypad .keypad-button {
+  box-shadow:none;
+  border-radius:0px;
+}
+#keypad .keypad-button.ui-btn-hover-a {
+  background:#ccc;
+}
+#keypad .action-button {
+  background:#DF5B2D;
+  border:1px solid #DF5B2D;
+  border-radius:0px;
+  text-shadow:none;
+  text-transform:uppercase;
+}
+#keypad .action-button.ui-btn-hover-a {
+  background:#C7512A;
+  border:1px solid #C7512A;
+}

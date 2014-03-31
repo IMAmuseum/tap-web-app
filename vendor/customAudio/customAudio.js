@@ -139,13 +139,9 @@ Gets the percentage of the click on the slider to set the song position accordin
 Source for Object event and offset: http://website-engineering.blogspot.com/2011/04/get-x-y-coordinates-relative-to-div-on.html
 */
 CustomAudio.prototype.setAudioPosition = function(e) {
-    console.log(e, 'e');
-    console.log(obj, 'obj');
     //Gets the offset from the left so it gets the exact location.
-    var audioSliderWidth = obj.offsetWidth;
-    var evtobj = window.event ? event : e;
-    clickLocation =  evtobj.layerX - obj.offsetLeft;
-console.log(evtobj);
+    var audioSliderWidth = this.ui.audioSlider.offsetWidth;
+    var clickLocation =  e.layerX;
     var percentage = (clickLocation/audioSliderWidth);
     //Sets the song location with the percentage.
     this.setLocation(percentage);

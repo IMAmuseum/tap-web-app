@@ -14,8 +14,8 @@
 /* A
 -----------------------------------------------------------------------------------------------------------*/
 .ui-bar-a {
-	border: 1px solid #8cc5bf /*{a-bar-border}*/;
-	background: #8cc5bf /*{a-bar-background-color}*/;
+	border: 1px solid #00B1B0 /*{a-bar-border}*/;
+	background: #00B1B0 /*{a-bar-background-color}*/;
 	color: #fff /*{a-bar-color}*/;
 	font-weight: bold;
 	text-shadow: 0 /*{a-bar-shadow-x}*/ 1px /*{a-bar-shadow-y}*/ 0 /*{a-bar-shadow-radius}*/ #719e97 /*{a-bar-shadow-color}*/;

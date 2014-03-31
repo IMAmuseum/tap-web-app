@@ -228,10 +228,14 @@ div.tour-title {
     margin: 10px;
 }
 
-#tour-zooming {
+#tour-zooming,
+.tour-zooming {
     height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
 }
-#tour-zooming .zoomingImageDescription {
+#tour-zooming.zoomingImageDescription {
     position: absolute;
     color: white;
     bottom: 0;

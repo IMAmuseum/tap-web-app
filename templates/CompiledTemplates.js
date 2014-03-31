@@ -97,17 +97,11 @@ function print() { __p += __j.call(arguments, '') }
 with (obj) {
 __p += '<style>\n\t/*.bundle-home,*/\n\theader, header img {\n\t\tmargin: 0 !important;\n\t\tpadding: 0 !important;\n\t}\n\theader img {\n\t\tmax-width: 100%;\n\t}\n\t.ui-title {\n\t\tfont-size: 13px !important;\n\t}\n\t.homeHeader {\n\t\theight: 200px;\n\t\twidth: 100%;\n\t\tbackground-image: url(' +
 ((__t = ( headerImageUri )) == null ? '' : __t) +
-');\n\t\tbackground-size: 160% auto;\n\t\tbackground-position: center center;\n\t}\n</style>\n<script>\n\t$(function() {\n\n\n\n\t});\n</script>\n<header>\n\t<div class="homeHeader"></div>\n\t<img src="">\n</header>\n<ul id="tour-list" class="ui-listview" data-split-icon="info" data-split-theme="d" data-role="listview">\n\t';
+');\n\t\tbackground-size: 160% auto;\n\t\tbackground-position: center center;\n\t}\n</style>\n<script>\n\t// $(function() {\n\n\t// \tfunction setupBackgroundImage\n\n\t// });\n</script>\n<header>\n\t<div class="homeHeader"></div>\n\t<img src="">\n</header>\n<ul id="tour-list" class="ui-listview" data-split-icon="info" data-split-theme="d" data-role="listview">\n\t';
  _.each(tours, function(tour, i) { ;
 __p += '\n\t<li data-icon="false">\n\t\t<a href="#" data-tour-id="' +
 ((__t = ( tour.get('id') )) == null ? '' : __t) +
-'" class="tour-info">\n\t\t\t<div class="tour-wrapper">\n\t\t\t\t';
- if (headers[i] !== undefined) { ;
-__p += '\n\t\t\t\t<div class="tour-image"><img src="' +
-((__t = ( headers[i] )) == null ? '' : __t) +
-'" /></div>\n\t\t\t\t';
- } ;
-__p += '\n\t\t\t\t<div class="tour-title"><span>' +
+'" class="tour-info">\n\t\t\t<div class="tour-wrapper">\n\t\t\t\t<div class="tour-title"><span>' +
 ((__t = ( tour.get('title') )) == null ? '' : __t) +
 '</span></div>\n\t\t\t</div>\n\t\t</a>\n\t</li>\n\t';
  }); ;
@@ -314,7 +308,7 @@ function print() { __p += __j.call(arguments, '') }
 with (obj) {
 __p += '<h3 class="stop-title">' +
 ((__t = ( title )) == null ? '' : __t) +
-'</h3>\n<p class="quiz-correct quiz-result">Correct Answer</p>\n<p class="quiz-wrong quiz-result">Incorrect Answer</p>\n<p>' +
+'</h3>\n<p>' +
 ((__t = ( question )) == null ? '' : __t) +
 '</p>\n<form>\n\t<fieldset data-role="controlgroup">\n\t<legend>Select your answer:</legend>\n\t';
  _.each(choices, function(choice) { ;
@@ -330,7 +324,9 @@ __p += '\n\t\t<input type="radio" name="radio-choice" id="radio-choice-' +
  }) ;
 __p += '\n\t</fieldset>\n\t<input type="hidden" name="answer" value="choice-' +
 ((__t = ( answer )) == null ? '' : __t) +
-'">\n\t<input type="submit" value="Submit">\n</form>\n';
+'">\n\t<input type="hidden" name="note" value="' +
+((__t = ( note )) == null ? '' : __t) +
+'">\n\t<input type="submit" class="js-action" value="Submit">\n</form>\n';
 
 }
 return __p
