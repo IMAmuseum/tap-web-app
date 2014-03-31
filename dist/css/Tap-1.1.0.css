@@ -672,14 +672,14 @@ a.ui-link-inherit {
 	.ui-icon-grid, .ui-icon-star, .ui-icon-alert, .ui-icon-info, .ui-icon-home, .ui-icon-bars, .ui-icon-edit,
 	.ui-icon-search, .ui-icon-searchfield:after,
 	.ui-icon-checkbox-off, .ui-icon-checkbox-on, .ui-icon-radio-off, .ui-icon-radio-on {
-		background-image: url(images/icons-36-white.png);
+		background-image: url(../vendor/jqmobile/images/icons-36-white.png);
 		-moz-background-size: 864px 18px;
 		-o-background-size: 864px 18px;
 		-webkit-background-size: 864px 18px;
 		background-size: 864px 18px;
 	}
 	.ui-icon-alt .ui-icon {
-		background-image: url(images/icons-36-black.png);
+		background-image: url(../vendor/jqmobile/images/icons-36-black.png);
 	}
 	.ui-icon-plus {
 		background-position: 	0 50%;
@@ -771,7 +771,7 @@ a.ui-link-inherit {
 }
 /* loading icon */
 .ui-icon-loading {
-	background: url(images/ajax-loader.gif);
+	background: url(../vendor/jqmobile/images/ajax-loader.gif);
 	background-size: 46px 46px;
 }
 /* Button corner class
@@ -899,7 +899,9 @@ a.ui-link-inherit {
 }
 
 /* styles in here so we don't overrite each other */
-
+#page {
+  background:#eee;
+}
 #content-wrapper.bundle-home header {
   margin:-15px -15px 0 -15px !important;
 }
@@ -989,7 +991,7 @@ body {
 /* content area bg */
 .ui-body-c, .ui-overlay-c {
   background-image:none;
-  background-color:#fff;
+  background-color:#eee;
 }
 
 /* gets rid of menu background image fade */
@@ -1139,7 +1141,7 @@ body {
 
 /* custom audio player */
 .custom-audio {
-  display:table;
+  /*display:table;*/
   width:100%;
   background:#444;
   font-family: 'Open Sans', sans-serif;
@@ -1153,13 +1155,16 @@ body {
   left:0;right:0;
   top:40px;
   z-index:999;
+  height:40px;
+
 }
 .play-pause {
-  display:table-cell;
-  width:40px;
+  width:10%;
   color:#fff;
   box-sizing:border-box;
   color:rgba(255,255,255,0);
+  float:left;
+  margin-top:7px;
 }
 .play-pause.play {
   background: url('../images/icon-play.png') no-repeat center center transparent;
@@ -1170,21 +1175,25 @@ body {
   background-size:8px 6px;
 }
 .audio-slider {
-  display:table-cell;
   background-color:#999;
   position:relative;
   font-family: 'Open Sans', sans-serif;
   font-weight:400!important;
   font-style:normal!important;
+  height:10px;
+  width:66%;
+  float:left;
+  margin-top:10px;
 }
 .audio-slider .audio-progress {
   background-color:#df5b2d;
   position:absolute;
   left:0;top:0;bottom:0;
+  height:10px;
 }
 .audio-time {
   display:table-cell;
-  width:70px;
+  width:22%;
   color:#fff;
   font-family: 'Open Sans', sans-serif;
   font-weight:400!important;
@@ -1192,6 +1201,8 @@ body {
   box-sizing:border-box;
   text-align:right;
   padding-right:5px;
+  float:left;
+  margin-top:7px;
 }
 .slideshow-images {
   background:#ccc;
@@ -1238,6 +1249,20 @@ body {
     background:#C7512A;
     color:#fff;
     text-shadow:none;
+    position:relative;
+}
+#bundle-home #tour-list li a:after {
+  content:"";
+  width:9px;
+  height:14px;
+  overflow:hidden;
+  display:block;
+  background: url('../images/icon-inset-arrow-white.png') no-repeat center center;
+  background-size: 9px 14px;
+  position:absolute;
+  right:10px;
+  top:50%;
+  margin-top:-8px;
 }
 
 /* no more hover please */
@@ -1331,4 +1356,10 @@ body {
 .ui-icon-plus {
   background: url('../images/icon-inset-plus.png') no-repeat center center transparent;
   background-size:13px 13px;;
+}
+
+/* search icon */
+.ui-icon-search, .ui-icon-searchfield:after {
+  background: url('../images/icon-search.png') no-repeat center center transparent;
+  background-size:14px 14px;
 }

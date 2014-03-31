@@ -241,7 +241,7 @@ body {
 
 /* custom audio player */
 .custom-audio {
-  display:table;
+  /*display:table;*/
   width:100%;
   background:#444;
   font-family: 'Open Sans', sans-serif;
@@ -255,13 +255,16 @@ body {
   left:0;right:0;
   top:40px;
   z-index:999;
+  height:40px;
+
 }
 .play-pause {
-  display:table-cell;
-  width:40px;
+  width:10%;
   color:#fff;
   box-sizing:border-box;
   color:rgba(255,255,255,0);
+  float:left;
+  margin-top:7px;
 }
 .play-pause.play {
   background: url('../images/icon-play.png') no-repeat center center transparent;
@@ -272,21 +275,25 @@ body {
   background-size:8px 6px;
 }
 .audio-slider {
-  display:table-cell;
   background-color:#999;
   position:relative;
   font-family: 'Open Sans', sans-serif;
   font-weight:400!important;
   font-style:normal!important;
+  height:10px;
+  width:66%;
+  float:left;
+  margin-top:10px;
 }
 .audio-slider .audio-progress {
   background-color:#df5b2d;
   position:absolute;
   left:0;top:0;bottom:0;
+  height:10px;
 }
 .audio-time {
   display:table-cell;
-  width:70px;
+  width:22%;
   color:#fff;
   font-family: 'Open Sans', sans-serif;
   font-weight:400!important;
@@ -294,6 +301,8 @@ body {
   box-sizing:border-box;
   text-align:right;
   padding-right:5px;
+  float:left;
+  margin-top:7px;
 }
 .slideshow-images {
   background:#ccc;

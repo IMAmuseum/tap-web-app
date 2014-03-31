@@ -103,7 +103,7 @@ __p += '\n\t<li data-icon="false">\n\t\t<a href="#" data-tour-id="' +
 ((__t = ( tour.get('title') )) == null ? '' : __t) +
 '\n\t\t</a>\n\t</li>\n\t';
  }); ;
-__p += '\n</ul>';
+__p += '\n</ul>\n<footer class="brand-footer">\n    <img src=""><!-- IMA LOGO -->\n    <p>Powered by TAP.</p>\n    <p>Built by IMA Lab for MW 2014.</p>\n</footer>';
 
 }
 return __p
