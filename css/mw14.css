@@ -310,14 +310,14 @@ a.ui-link-inherit {
 	.ui-icon-grid, .ui-icon-star, .ui-icon-alert, .ui-icon-info, .ui-icon-home, .ui-icon-bars, .ui-icon-edit,
 	.ui-icon-search, .ui-icon-searchfield:after,
 	.ui-icon-checkbox-off, .ui-icon-checkbox-on, .ui-icon-radio-off, .ui-icon-radio-on {
-		background-image: url(../images/icons-36-white.png);
+		background-image: url(../vendor/jqmobile/images/icons-36-white.png);
 		-moz-background-size: 864px 18px;
 		-o-background-size: 864px 18px;
 		-webkit-background-size: 864px 18px;
 		background-size: 864px 18px;
 	}
 	.ui-icon-alt .ui-icon {
-		background-image: url(../images/icons-36-black.png);
+		background-image: url(../vendor/jqmobile/images/icons-36-black.png);
 	}
 	.ui-icon-plus {
 		background-position: 	0 50%;
@@ -409,7 +409,7 @@ a.ui-link-inherit {
 }
 /* loading icon */
 .ui-icon-loading {
-	background: url(../images/ajax-loader.gif);
+	background: url(../vendor/jqmobile/images/ajax-loader.gif);
 	background-size: 46px 46px;
 }
 /* Button corner class
