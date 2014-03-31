@@ -122,22 +122,38 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
         var imageHeight = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[1].attributes.value;
         var attribution = this.model.get('description');
 
-        // center = L.point(imageSize.x / 2, imageSize.y / 2)
+        var imageSize = L.point(imageWidth, imageHeight),
+            tileSize = 256;
+        this._imageSize = [imageSize];
+        this._gridSize = [this._getGridSize(imageSize)];
+
+        while (parseInt(imageSize.x) > tileSize || parseInt(imageSize.y) > tileSize) {
+            imageSize = imageSize.divideBy(2).floor();
+            this._imageSize.push(imageSize);
+            this._gridSize.push(this._getGridSize(imageSize));
+        }
 
         this.map = L.map('tour-zooming', {
             maxZoom: 3,
-            continuousWorld: true,
-            tolerance: tolerance,
             minZoom: 0,
-            attribution: attribution
-        }).setView([0, -50], 0);
+            tolerance: tolerance,
+        }).setView([0, 0], 0);
         // setup tile layer
-        console.log(this.assetUri + '/zoom{z}/row{y}/col{x}.png', 'url');
+        //console.log(this.assetUri + '/zoom{z}/row{y}/col{x}.png', 'url');
         this.tileLayer = L.tileLayer(this.assetUri + '/zoom{z}/row{y}/col{x}.png', {
             continuousWorld: true,
             nowrap: true,
             reuseTiles: true
         }).addTo(this.map);
+
+        this.map.attributionControl.addAttribution(attribution.replace(/(<([^>]+)>)/ig,""));
+
+        var mapSize = this.map.getSize();
+        var zoom = this._getBestFitZoom(mapSize);
+        var center = this.map.options.crs.pointToLatLng(L.point(imageSize.x / 2, imageSize.y / 2), zoom);
+        console.log(zoom + center);
+
+        this.map.setView(center, zoom, true);
         // add description
         // var desc = $('<div class="zoomingImageDescription"></div>')
         //     .append('<div class="zoomingImageDescriptionHandle">Description</div>')
@@ -168,5 +184,24 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
         $(window).off('orientationchange resize', this.resizeMapViewport);
 
         $('#content-wrapper').removeAttr('style');
+    },
+    _getBestFitZoom: function (mapSize) {
+        var tolerance = 0.8,
+            zoom = this._imageSize.length - 1,
+            imageSize, zoom;
+
+        while (zoom) {
+            imageSize = this._imageSize[zoom];
+            if (imageSize.x * tolerance < mapSize.x && imageSize.y * tolerance < mapSize.y) {
+                return zoom;
+            }
+            zoom--;
+        }
+
+        return zoom;
+    },
+    _getGridSize: function (imageSize) {
+        var tileSize = 256;
+        return L.point(Math.ceil(imageSize.x / tileSize), Math.ceil(imageSize.y / tileSize));
     }
 });

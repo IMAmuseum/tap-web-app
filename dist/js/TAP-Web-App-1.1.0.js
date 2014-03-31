@@ -314,6 +314,7 @@ TapAPI.classes.routers.Default = Backbone.Router.extend({
         }
 
         // get tour specific default navigation controller
+        debugger;
         if (!_.isUndefined(TapAPI.tourSettings[tourId]) &&
             TapAPI.tourSettings[tourId].defaultNavigationController) {
             defaultController = TapAPI.tourSettings[tourId].defaultNavigationController;
@@ -838,15 +839,13 @@ obj || (obj = {});
 var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-__p += '<style>\n\t/*.bundle-home,*/\n\theader, header img {\n\t\tmargin: 0 !important;\n\t\tpadding: 0 !important;\n\t}\n\theader img {\n\t\tmax-width: 100%;\n\t}\n\t.ui-title {\n\t\tfont-size: 13px !important;\n\t}\n\t.homeHeader {\n\t\theight: 200px;\n\t\twidth: 100%;\n\t\tbackground-image: url(' +
-((__t = ( headerImageUri )) == null ? '' : __t) +
-');\n\t\tbackground-size: 160% auto;\n\t\tbackground-position: center center;\n\t}\n</style>\n<script>\n\t// $(function() {\n\n\t// \tfunction setupBackgroundImage\n\n\t// });\n</script>\n<header>\n\t<div class="homeHeader"></div>\n\t<img src="">\n</header>\n<ul id="tour-list" class="ui-listview" data-split-icon="info" data-split-theme="d" data-role="listview">\n\t';
+__p += '<header>\n\t<div class="homeHeader"></div>\n</header>\n<ul id="tour-list" class="ui-listview" data-role="listview">\n\t';
  _.each(tours, function(tour, i) { ;
 __p += '\n\t<li data-icon="false">\n\t\t<a href="#" data-tour-id="' +
 ((__t = ( tour.get('id') )) == null ? '' : __t) +
-'" class="tour-info">\n\t\t\t<div class="tour-wrapper">\n\t\t\t\t<div class="tour-title"><span>' +
+'" class="tour-info">\n\t\t\t' +
 ((__t = ( tour.get('title') )) == null ? '' : __t) +
-'</span></div>\n\t\t\t</div>\n\t\t</a>\n\t</li>\n\t';
+'\n\t\t</a>\n\t</li>\n\t';
  }); ;
 __p += '\n</ul>';
 
@@ -2373,7 +2372,7 @@ TapAPI.classes.views.BundleHomeView = TapAPI.classes.views.BaseView.extend({
 	},
 	tourSelected: function(e) {
 		e.preventDefault();
-		var target = $(e.target).parents('a.tour-info').data('tour-id');
+		var target = $(e.target).data('tour-id');
 		var tour = TapAPI.tours.get(target);
 		TapAPI.router.navigate(TapAPI.router.getTourDefaultRoute(tour.get('id')), {trigger: true});
 	}
@@ -3620,8 +3619,8 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
 
         this.title = '';
         temp = this.model;
-        this.imageWidth = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[1].attributes.value;
-        this.imageHeight = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[0].attributes.value;
+        this.imageWidth = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[0].attributes.value;
+        this.imageHeight = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[1].attributes.value;
         this.description = this.model.get('description');
         this.assetUri = this.model.getAssets()[0].get('source').at(0).get('uri');
 
@@ -3633,14 +3632,31 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
     },
     finishedAddingContent: function() {
         // create map
-        this.map = L.map('tour-zooming').setView([0, 0], 0);
+        var tolerance = 0.8;
+        var url = this.model.getAssets()[0].get('source').at(0).get('uri');
+        var url = url + '/';
+        var imageWidth = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[0].attributes.value;
+        var imageHeight = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[1].attributes.value;
+        var attribution = this.model.get('description');
+
+        var imageSize = L.point(imageWidth, imageHeight),
+            tileSize = 256;
+        this._imageSize = [imageSize];
+
+        this.map = L.map('tour-zooming', {
+            maxZoom: 3,
+            minZoom: 0,
+            tolerance: tolerance,
+        }).setView([-20, -50], 0);
         // setup tile layer
-        console.log(this.assetUri + '/zoom{z}/row{y}/col{x}.png', 'url');
+        //console.log(this.assetUri + '/zoom{z}/row{y}/col{x}.png', 'url');
         this.tileLayer = L.tileLayer(this.assetUri + '/zoom{z}/row{y}/col{x}.png', {
             continuousWorld: true,
             nowrap: true,
             reuseTiles: true
         }).addTo(this.map);
+
+        this.map.attributionControl.addAttribution(attribution.replace(/(<([^>]+)>)/ig,""));
         // add description
         // var desc = $('<div class="zoomingImageDescription"></div>')
         //     .append('<div class="zoomingImageDescriptionHandle">Description</div>')
@@ -3648,7 +3664,6 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
         //     .appendTo(this.$el);
         // desc.on('click', function(e) {
         //     console.log(e);
-
         // });
     },
     resizeMapViewport: function(e) {
@@ -3658,7 +3673,8 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
         header = $('[data-role="header"]').outerHeight();
         footer = $('[data-role="footer"]').outerHeight();
 
-        $('#content-wrapper').height(viewport - header - footer - (parseInt($('#content-wrapper').css('padding-top'), 10) * 2));
+        //$('#content-wrapper').height(viewport - header - footer - (parseInt($('#content-wrapper').css('padding-top'), 10) * 2));
+        $('#content-wrapper').height(viewport - header - footer + 6);
 
         if (e.data.context.map !== null) {
             e.data.context.map.invalidateSize();

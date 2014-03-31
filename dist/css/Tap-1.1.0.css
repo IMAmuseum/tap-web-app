@@ -234,10 +234,14 @@ div.tour-title {
     margin: 10px;
 }
 
-#tour-zooming {
+#tour-zooming,
+.tour-zooming {
     height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
 }
-#tour-zooming .zoomingImageDescription {
+#tour-zooming.zoomingImageDescription {
     position: absolute;
     color: white;
     bottom: 0;
@@ -400,7 +404,7 @@ a.next-button {
 .ui-bar-a select,
 .ui-bar-a textarea,
 .ui-bar-a button {
-	    font-family: Open Sans, Helvetica, Arial, sans-serif /*{global-font-family}*/;
+	    font-family: 'Open Sans', Helvetica, Arial, sans-serif /*{global-font-family}*/;
 }
 .ui-body-a,
 .ui-overlay-a {
@@ -424,7 +428,7 @@ a.next-button {
 .ui-body-a select,
 .ui-body-a textarea,
 .ui-body-a button {
-	    font-family: Open Sans, Helvetica, Arial, sans-serif /*{global-font-family}*/;
+	    font-family: 'Open Sans', Helvetica, Arial, sans-serif /*{global-font-family}*/;
 }
 .ui-body-a .ui-link-inherit {
 	color: #333333 /*{a-body-color}*/;
@@ -483,7 +487,7 @@ a.next-button {
 .ui-btn-up-a,
 .ui-btn-hover-a,
 .ui-btn-down-a {
-	    font-family: Open Sans, Helvetica, Arial, sans-serif /*{global-font-family}*/;
+	    font-family: 'Open Sans', Helvetica, Arial, sans-serif /*{global-font-family}*/;
 	text-decoration: none;
 }
 /* Structure */
@@ -956,14 +960,14 @@ body {
 /* footer bar button */
 #footer {
   border:none;
-  background:#00B1B0;
+  background:#8CC5BF;
 }
 #footer .ui-btn-up-a {
   background:none;border:none;
 }
 #footer .ui-btn-active {
-    border: 1px solid #df5b2d /*{global-active-border}*/;
-    background: #df5b2d /*{global-active-background-color}*/;
+    border: 1px solid #7AAEAA;
+    background: #7AAEAA /*{global-active-background-color}*/;
 }
 #footer .ui-btn-inner {
   border:none;
@@ -1208,18 +1212,33 @@ body {
 /* home header */
 .homeHeader {
   background-image: url('../images/tap-into-baltimore-title.jpg') !important;
-  background-image: url('../images/tap-baltimore-crab.gif') !important;
+  background-image: url('../images/splashmap.jpg') !important;
   background-size: 100% auto!important;
   background-position:center center!important;
-
+  height:220px;
 }
 #bundle-home header {
   display:block;
 }
 #bundle-home #tour-list {
-  margin: -20px -15px -15px -15px;
+  /*margin: -20px -15px -15px -15px;*/
+  margin:15px 0 0 0;
 }
-
+#bundle-home #tour-list li {
+  border:none;background:none;
+  margin:0 0 10px 0;
+}
+#bundle-home #tour-list li .ui-btn-inner {
+  border:none;background:none;
+}
+#bundle-home #tour-list li .ui-btn-inner .ui-btn-text {
+  border:none;background:none;
+}
+#bundle-home #tour-list li a {
+    background:#C7512A;
+    color:#fff;
+    text-shadow:none;
+}
 
 /* no more hover please */
 .ui-btn-hover-a {
@@ -1239,10 +1258,10 @@ body {
   box-shadow:none!important;
 }
 .tour-stop-list .ui-listview {
-  background:#666;
+  background:#888;
 }
 .tour-stop-list .ui-listview li {
-  background:#666;
+  background:#888;
   border-bottom:none;
 }
 .tour-stop-list .ui-listview li .ui-btn-inner {
@@ -1289,4 +1308,27 @@ body {
 #keypad .action-button.ui-btn-hover-a {
   background:#C7512A;
   border:1px solid #C7512A;
+}
+
+
+/* these buttons are leaflet related */
+.leaflet-bar {
+  box-shadow:none;
+}
+.ui-body-c .ui-link,
+.ui-body-c .ui-link:visited {
+  color:#888;
+}
+.ui-body-c .ui-link:hover {
+
+}
+
+/* minus plus icon overrides */
+.ui-icon-minus {
+  background: url('../images/icon-inset-minus.png') no-repeat center center transparent;
+  background-size:13px 13px;;
+}
+.ui-icon-plus {
+  background: url('../images/icon-inset-plus.png') no-repeat center center transparent;
+  background-size:13px 13px;;
 }
