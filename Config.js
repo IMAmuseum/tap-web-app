@@ -29,7 +29,7 @@ if (qPosition > 0) {
 var TapConfig = {
     //customize these variables for your install
     tourMLEndpoint: tourMLEndpoint,
-    trackerID: '',
+    trackerID: 'UA-1868672-40',
     geo: {},
     social: {},
     tourSettings: {
