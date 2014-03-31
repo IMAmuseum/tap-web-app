@@ -6,7 +6,7 @@ TapAPI.classes.views.BundleHomeView = TapAPI.classes.views.BaseView.extend({
 	template: TapAPI.templateManager.get('bundle-home'),
 	initialize: function(options) {
 		this._super(options);
-		this.title = 'Welcome, Weary Traveler';
+		this.title = 'WELCOME';
 		this.headerImageUri = TapConfig.bundleHomeHeaderImageUri;
 
 		this.displayHeader = false;
