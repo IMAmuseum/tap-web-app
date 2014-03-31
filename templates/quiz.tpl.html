@@ -1,6 +1,4 @@
 <h3 class="stop-title"><%= title %></h3>
-<p class="quiz-correct quiz-result">Correct Answer</p>
-<p class="quiz-wrong quiz-result">Incorrect Answer</p>
 <p><%= question %></p>
 <form>
 	<fieldset data-role="controlgroup">
@@ -11,5 +9,6 @@
 	<% }) %>
 	</fieldset>
 	<input type="hidden" name="answer" value="choice-<%= answer %>">
-	<input type="submit" value="Submit">
+	<input type="hidden" name="note" value="<%= note %>">
+	<input type="submit" class="js-action" value="Submit">
 </form>

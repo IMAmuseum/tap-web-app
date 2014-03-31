@@ -33,9 +33,85 @@ __p += '\n';
  if (!_.isUndefined(nextStopPath)) { ;
 __p += '\n    <a href="' +
 ((__t = ( nextStopPath )) == null ? '' : __t) +
-'" data-role="button">next</a>\n';
+'" data-role="button" class="next-button">next</a>\n';
  } ;
 
+
+}
+return __p
+};
+
+TapAPI.templates['audioSlideshow'] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<h3 class="stop-title">' +
+((__t = ( title )) == null ? '' : __t) +
+'</h3>\n<audio id="audio-player" class="player">\n    <p>Your browser does not support HTML 5 audio.</p>\n    ';
+ _.each(sources, function(source) { ;
+__p += '\n    ' +
+((__t = ( source )) == null ? '' : __t) +
+'\n    ';
+ }); ;
+__p += '\n</audio>\n';
+ if (!_.isEmpty(imageSources)) { ;
+__p += '\n<div class="slideshow-images">\n';
+ _.each(imageSources, function(imageSource) { ;
+__p += '\n    <img class="slideshow-image" id="' +
+((__t = ( imageSource.id )) == null ? '' : __t) +
+'" src="' +
+((__t = ( imageSource.uri )) == null ? '' : __t) +
+'" />\n';
+ }); ;
+__p += '\n</div>\n';
+ } ;
+__p += '\n';
+ if (!_.isEmpty(description)) { ;
+__p += '\n<div class="description" data-role="collapsible" data-content-theme="c">\n    <h3>Description</h3>\n    ' +
+((__t = ( description )) == null ? '' : __t) +
+'\n</div>\n';
+ } ;
+__p += '\n';
+ if (!_.isEmpty(transcription)) { ;
+__p += '\n<div id="transcription" data-role="collapsible" data-content-theme="c">\n    <h3>Transcript</h3>\n    <p>' +
+((__t = ( transcription )) == null ? '' : __t) +
+'</p>\n</div>\n';
+ } ;
+__p += '\n';
+ if (!_.isUndefined(nextStopPath)) { ;
+__p += '\n    <a href="' +
+((__t = ( nextStopPath )) == null ? '' : __t) +
+'" data-role="button" class="next-button">next</a>\n';
+ } ;
+
+
+}
+return __p
+};
+
+TapAPI.templates['bundle-home'] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<style>\n\t/*.bundle-home,*/\n\theader, header img {\n\t\tmargin: 0 !important;\n\t\tpadding: 0 !important;\n\t}\n\theader img {\n\t\tmax-width: 100%;\n\t}\n\t.ui-title {\n\t\tfont-size: 13px !important;\n\t}\n\t.homeHeader {\n\t\theight: 200px;\n\t\twidth: 100%;\n\t\tbackground-image: url(' +
+((__t = ( headerImageUri )) == null ? '' : __t) +
+');\n\t\tbackground-size: 160% auto;\n\t\tbackground-position: center center;\n\t}\n</style>\n<script>\n\t$(function() {\n\n\n\n\t});\n</script>\n<header>\n\t<div class="homeHeader"></div>\n\t<img src="">\n</header>\n<ul id="tour-list" class="ui-listview" data-split-icon="info" data-split-theme="d" data-role="listview">\n\t';
+ _.each(tours, function(tour, i) { ;
+__p += '\n\t<li data-icon="false">\n\t\t<a href="#" data-tour-id="' +
+((__t = ( tour.get('id') )) == null ? '' : __t) +
+'" class="tour-info">\n\t\t\t<div class="tour-wrapper">\n\t\t\t\t';
+ if (headers[i] !== undefined) { ;
+__p += '\n\t\t\t\t<div class="tour-image"><img src="' +
+((__t = ( headers[i] )) == null ? '' : __t) +
+'" /></div>\n\t\t\t\t';
+ } ;
+__p += '\n\t\t\t\t<div class="tour-title"><span>' +
+((__t = ( tour.get('title') )) == null ? '' : __t) +
+'</span></div>\n\t\t\t</div>\n\t\t</a>\n\t</li>\n\t';
+ }); ;
+__p += '\n</ul>';
 
 }
 return __p
@@ -92,11 +168,13 @@ function print() { __p += __j.call(arguments, '') }
 with (obj) {
 __p += '<h3 class="stop-title">' +
 ((__t = ( title )) == null ? '' : __t) +
-'</h3>\n';
+'</h3>\n' +
+((__t = ( description )) == null ? '' : __t) +
+'\n<ul class="ui-grid-b" id="gallery">\n';
  _.each(images, function(image) { ;
 __p += '\n\t<li>\n\t\t<a href="' +
 ((__t = ( image.originalUri )) == null ? '' : __t) +
-'" rel="external">\n\t\t\t<img src="' +
+'" rel="external" class="gallery-link">\n\t\t\t<img src="' +
 ((__t = ( image.thumbnailUri )) == null ? '' : __t) +
 '" data-caption="' +
 ((__t = ( image.caption )) == null ? '' : __t) +
@@ -104,11 +182,11 @@ __p += '\n\t<li>\n\t\t<a href="' +
 ((__t = ( image.title )) == null ? '' : __t) +
 '" />\n\t\t</a>\n\t</li>\n';
  }) ;
-__p += '\n';
+__p += '\n</ul>\n';
  if (!_.isUndefined(nextStopPath)) { ;
 __p += '\n    <a href="' +
 ((__t = ( nextStopPath )) == null ? '' : __t) +
-'" data-role="button">next</a>\n';
+'" data-role="button" class="next-button">next</a>\n';
  } ;
 
 
@@ -229,10 +307,41 @@ __p += '\n<div data-role="content" data-theme="d" role="main">\n\t<p>' +
 return __p
 };
 
+TapAPI.templates['quiz'] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<h3 class="stop-title">' +
+((__t = ( title )) == null ? '' : __t) +
+'</h3>\n<p class="quiz-correct quiz-result">Correct Answer</p>\n<p class="quiz-wrong quiz-result">Incorrect Answer</p>\n<p>' +
+((__t = ( question )) == null ? '' : __t) +
+'</p>\n<form>\n\t<fieldset data-role="controlgroup">\n\t<legend>Select your answer:</legend>\n\t';
+ _.each(choices, function(choice) { ;
+__p += '\n\t\t<input type="radio" name="radio-choice" id="radio-choice-' +
+((__t = ( choice.value )) == null ? '' : __t) +
+'" value="choice-' +
+((__t = ( choice.value )) == null ? '' : __t) +
+'" />\n\t\t<label for="radio-choice-' +
+((__t = ( choice.value )) == null ? '' : __t) +
+'">' +
+((__t = ( choice.text )) == null ? '' : __t) +
+'</label>\n\t';
+ }) ;
+__p += '\n\t</fieldset>\n\t<input type="hidden" name="answer" value="choice-' +
+((__t = ( answer )) == null ? '' : __t) +
+'">\n\t<input type="submit" value="Submit">\n</form>\n';
+
+}
+return __p
+};
+
 TapAPI.templates['social-popup'] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape, __d = obj.obj || obj;
-__p += '<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>\n<div data-role="header" data-theme="a" class="ui-corner-top">\n    <h1>Share TAP</h1>\n</div>\n<div data-role="content" data-theme="d" role="main">\n    <div id="twitter-share-button" class="share-button">\n        <iframe allowtransparency="true" frameborder="0" scrolling="no"\n                src="http://platform.twitter.com/widgets/tweet_button.html?url=' +
+__p += '<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>\n<div data-role="header" data-theme="a" class="ui-corner-top">\n    <h1>' +
+((__t = ( obj.title )) == null ? '' : __t) +
+'</h1>\n</div>\n<div data-role="content" data-theme="d" role="main">\n    <div id="twitter-share-button" class="share-button">\n        <iframe allowtransparency="true" frameborder="0" scrolling="no"\n                src="http://platform.twitter.com/widgets/tweet_button.html?url=' +
 ((__t = ( obj.url )) == null ? '' : __t) +
 '"\n                style="width:100px; height:20px;"></iframe>\n    </div>\n    <div id="facebook-share-button" class="share-button">\n        <iframe src="http://www.facebook.com/plugins/like.php?href=' +
 ((__t = ( obj.url )) == null ? '' : __t) +
@@ -248,10 +357,38 @@ var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
 
- if (!_.isUndefined(header)) { ;
+ if (audioSources.length > 0) { ;
+__p += '\n<audio id="audio-player" class="player" controls="controls">\n    <p>Your browser does not support HTML 5 audio.</p>\n    ';
+ _.each(audioSources, function(source) { ;
+__p += '\n    ' +
+((__t = ( source )) == null ? '' : __t) +
+'\n    ';
+ }); ;
+__p += '\n</audio>\n';
+ } ;
+__p += '\n';
+ if (!_.isUndefined(header) || images.length > 0) { ;
 __p += '\n<div id="header-wrapper">\n    <img src="' +
 ((__t = ( header )) == null ? '' : __t) +
-'" />\n</div>\n';
+'" />\n    ';
+ if (images.length > 0) { ;
+__p += '\n    <ul class="rslides">\n    ';
+ _.each(images, function(image) { ;
+__p += '\n    <li class="image-slide">\n        <img src="' +
+((__t = ( image.originalUri )) == null ? '' : __t) +
+'" data-caption="' +
+((__t = ( image.caption )) == null ? '' : __t) +
+'" title="' +
+((__t = ( image.title )) == null ? '' : __t) +
+'" />\n        <p class="caption">' +
+((__t = ( image.title )) == null ? '' : __t) +
+'<br />' +
+((__t = ( image.caption )) == null ? '' : __t) +
+'</p>\n    </li>\n    ';
+ }); ;
+__p += '\n    </ul>\n    ';
+ } ;
+__p += '\n</div>\n';
  } ;
 __p += '\n<h3 class="stop-title">' +
 ((__t = ( title )) == null ? '' : __t) +
@@ -267,7 +404,13 @@ __p += '\n    <li>\n        <a href="' +
 ((__t = ( stop.title )) == null ? '' : __t) +
 '\n        </a>\n    </li>\n';
  }); ;
-__p += '\n</ul>';
+__p += '\n</ul>\n';
+ if (!_.isEmpty(transcription)) { ;
+__p += '\n<div id="transcription" data-role="collapsible" data-content-theme="c" data-inset="true">\n    <h3>Audio Transcript</h3>\n    <p>' +
+((__t = ( transcription )) == null ? '' : __t) +
+'</p>\n</div>\n';
+ } ;
+
 
 }
 return __p
@@ -385,7 +528,7 @@ __p += '\n';
  if (!_.isUndefined(nextStopPath)) { ;
 __p += '\n    <a href="' +
 ((__t = ( nextStopPath )) == null ? '' : __t) +
-'" data-role="button">next</a>\n';
+'" data-role="button" class="next-button">next</a>\n';
  } ;
 __p += '\n';
 
@@ -406,7 +549,7 @@ __p += '<h3 class="stop-title">' +
  if (!_.isUndefined(nextStopPath)) { ;
 __p += '\n    <a href="' +
 ((__t = ( nextStopPath )) == null ? '' : __t) +
-'" data-role="button">next</a>\n';
+'" data-role="button" class="next-button">next</a>\n';
  } ;
 
 

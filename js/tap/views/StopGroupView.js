@@ -93,28 +93,29 @@ TapAPI.classes.views.StopGroupView = TapAPI.classes.views.BaseView.extend({
         }
 
         if (this.hasAudio) {
-            var that = this,
-            mediaElement = $('.player')[0];
+            var that = this;
+            //mediaElement = $('.player')[0];
+            that.customAudio = new CustomAudio("audio-player");
 
             // add event handlers for media player events
-            mediaElement.addEventListener('loadedmetadata', function() {
-                TapAPI.tracker.setTimerOption('maxThreshold', mediaElement.duration * 1000);
+            that.customAudio.audioElement.addEventListener('loadedmetadata', function() {
+                TapAPI.tracker.setTimerOption('maxThreshold', that.customAudio.audioElement.duration * 1000);
             });
 
-            mediaElement.addEventListener('play', function() {
+            that.customAudio.audioElement.addEventListener('play', function() {
                 var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
                 TapAPI.tracker.trackEvent('AudioStop', 'media_started', label, null);
                 TapAPI.tracker.startTimer();
             });
 
-            mediaElement.addEventListener('pause', function() {
+            that.customAudio.audioElement.addEventListener('pause', function() {
                 var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
                 TapAPI.tracker.stopTimer();
                 var timer = TapAPI.tracker.get('timer');
                 TapAPI.tracker.trackEvent('AudioStop', 'media_paused', label, timer.elapsed);
             });
 
-            mediaElement.addEventListener('ended', function() {
+            that.customAudio.audioElement.addEventListener('ended', function() {
                 var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
                 TapAPI.tracker.stopTimer();
                 var timer = TapAPI.tracker.get('timer');
@@ -127,12 +128,12 @@ TapAPI.classes.views.StopGroupView = TapAPI.classes.views.BaseView.extend({
                 TapAPI.tracker.trackEvent('AudioStop', 'show_transcription', label, null);
             });
 
-            this.player = new MediaElementPlayer('.player', {
-                pluginPath: TapAPI.media.pluginPath,
-                flashName: 'flashmediaelement.swf',
-                silverlightName: 'silverlightmediaelement.xap'
-            });
-            this.player.play();
+            // this.player = new MediaElementPlayer('.player', {
+            //     pluginPath: TapAPI.media.pluginPath,
+            //     flashName: 'flashmediaelement.swf',
+            //     silverlightName: 'silverlightmediaelement.xap'
+            // });
+            that.customAudio.play();
         }
     }
 });
