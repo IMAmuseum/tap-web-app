@@ -1,5 +1,7 @@
 /* styles in here so we don't overrite each other */
-
+#page {
+  background:#eee;
+}
 #content-wrapper.bundle-home header {
   margin:-15px -15px 0 -15px !important;
 }
@@ -17,8 +19,7 @@
   padding-top:40px;
 }
 body {
-  /*font-family: 'Open Sans', sans-serif;*/
-  font-family:Arial, Helvetica,
+  font-family: 'Open Sans', sans-serif;
   font-weight:400;
 }
 
@@ -90,7 +91,7 @@ body {
 /* content area bg */
 .ui-body-c, .ui-overlay-c {
   background-image:none;
-  background-color:#fff;
+  background-color:#eee;
 }
 
 /* gets rid of menu background image fade */
@@ -316,15 +317,44 @@ body {
   background-image: url('../images/splashmap.jpg') !important;
   background-size: 100% auto!important;
   background-position:center center!important;
-
+  height:220px;
 }
 #bundle-home header {
   display:block;
 }
 #bundle-home #tour-list {
-  margin: -20px -15px -15px -15px;
+  /*margin: -20px -15px -15px -15px;*/
+  margin:15px 0 0 0;
 }
-
+#bundle-home #tour-list li {
+  border:none;background:none;
+  margin:0 0 10px 0;
+}
+#bundle-home #tour-list li .ui-btn-inner {
+  border:none;background:none;
+}
+#bundle-home #tour-list li .ui-btn-inner .ui-btn-text {
+  border:none;background:none;
+}
+#bundle-home #tour-list li a {
+    background:#C7512A;
+    color:#fff;
+    text-shadow:none;
+    position:relative;
+}
+#bundle-home #tour-list li a:after {
+  content:"";
+  width:9px;
+  height:14px;
+  overflow:hidden;
+  display:block;
+  background: url('../images/icon-inset-arrow-white.png') no-repeat center center;
+  background-size: 9px 14px;
+  position:absolute;
+  right:10px;
+  top:50%;
+  margin-top:-8px;
+}
 
 /* no more hover please */
 .ui-btn-hover-a {
@@ -394,4 +424,33 @@ body {
 #keypad .action-button.ui-btn-hover-a {
   background:#C7512A;
   border:1px solid #C7512A;
+}
+
+
+/* these buttons are leaflet related */
+.leaflet-bar {
+  box-shadow:none;
+}
+.ui-body-c .ui-link,
+.ui-body-c .ui-link:visited {
+  color:#888;
+}
+.ui-body-c .ui-link:hover {
+
+}
+
+/* minus plus icon overrides */
+.ui-icon-minus {
+  background: url('../images/icon-inset-minus.png') no-repeat center center transparent;
+  background-size:13px 13px;;
+}
+.ui-icon-plus {
+  background: url('../images/icon-inset-plus.png') no-repeat center center transparent;
+  background-size:13px 13px;;
+}
+
+/* search icon */
+.ui-icon-search, .ui-icon-searchfield:after {
+  background: url('../images/icon-search.png') no-repeat center center transparent;
+  background-size:14px 14px;
 }
