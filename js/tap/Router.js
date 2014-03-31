@@ -104,7 +104,6 @@ TapAPI.classes.routers.Default = Backbone.Router.extend({
         }
 
         // get tour specific default navigation controller
-        debugger;
         if (!_.isUndefined(TapAPI.tourSettings[tourId]) &&
             TapAPI.tourSettings[tourId].defaultNavigationController) {
             defaultController = TapAPI.tourSettings[tourId].defaultNavigationController;
