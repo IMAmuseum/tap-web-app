@@ -53,7 +53,7 @@ module.exports = function(grunt) {
                 banner: '<%= meta.banner %>'
             },
             dist: {
-                src: ['css/main.css'],
+                src: ['dist/css/Tap-<%= meta.version %>.css'],
                 dest: 'dist/css/Tap-<%= meta.version %>.min.css'
             }
         },
@@ -63,6 +63,11 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: {
+                    'dist/css/Tap-<%= meta.version %>.css': [
+                        'css/main.css',
+                        'css/mw14.css',
+                        'css/mw14-matt-style.css'
+                    ],
                     'dist/js/<%= pkg.name %>-<%= pkg.version %>.js': [
                         'js/tap/TapAPI.js',
                         'js/tap/Helper.js',
@@ -83,12 +88,14 @@ module.exports = function(grunt) {
                         'vendor/underscore.js',
                         'vendor/backbone.js',
                         'vendor/backbone-super.js',
-                        'vendor/backbone.localstorage.js',
+                        'vendor/backbone.localStorage.js',
                         'vendor/json2.js',
                         'vendor/klass.js',
                         'vendor/leaflet/leaflet-src.js',
                         'vendor/mediaelement/mediaelement-and-player.js',
                         'vendor/photoswipe/code.photoswipe.jquery.js',
+                        'vendor/customAudio/customAudio.js',
+                        'vendor/responsiveSlides/responsiveSlides.js',
                         'js/tap/JQMConfig.js',
                         'vendor/jqmobile/jquery.mobile.js',
                         'js/tap/TapAPI.js',
@@ -104,6 +111,27 @@ module.exports = function(grunt) {
                         'js/tap/views/StopSelectionView.js',
                         'js/tap/views/**/*.js'
                     ]
+                }
+            }
+        },
+        'string-replace': {
+            'dist': {
+                files: {
+                    'dist/js/<%= pkg.name %>-<%= pkg.version %>-with-dependencies.js': [
+                        'dist/js/<%= pkg.name %>-<%= pkg.version %>-with-dependencies.js'
+                    ],
+                    'dist/js/<%= pkg.name %>-<%= pkg.version %>.js': [
+                        'dist/js/<%= pkg.name %>-<%= pkg.version %>.js'
+                    ],
+                    'dist/css/Tap-<%= pkg.version %>.min.css': [
+                        'dist/css/Tap-<%= pkg.version %>.min.css'
+                    ]
+                },
+                'options': {
+                    'replacements': [{
+                        'pattern': /["'][-_\/a-z0-9]+(images\/[-_\/a-z0-9\.]+)["']/ig,
+                        'replacement': '"$1"'
+                    }]
                 }
             }
         }
@@ -145,7 +173,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-css');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-string-replace');
 
     // Default task.
-    grunt.registerTask('default', ['precompileTemplates', 'copy', 'jshint', 'concat', 'cssmin']);
+    grunt.registerTask('default', ['precompileTemplates', 'copy', 'jshint', 'concat', 'cssmin', 'string-replace']);
 };

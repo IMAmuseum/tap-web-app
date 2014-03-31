@@ -124,11 +124,8 @@ TapAPI.classes.views.AudioSlideshowStopView = TapAPI.classes.views.BaseView.exte
 
         that.audioPlayer = document.getElementById("audio-player");
 
-        // this.player = new MediaElementPlayer('#audio-player', {
-        //     pluginPath: TapAPI.media.pluginPath,
-        //     flashName: 'flashmediaelement.swf',
-        //     silverlightName: 'silverlightmediaelement.xap'
-        // });
+        that.customAudio = new CustomAudio("audio-player");
+
         that.audioPlayer.addEventListener('pause', function() {
             that.images.stop();
         });

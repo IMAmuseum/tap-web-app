@@ -64,6 +64,10 @@ var TapAPI = {
         'audio_slideshow_stop': {
             view: 'AudioSlideshowStopView',
             icon: 'images/audio.png'
+        },
+        'zooming_image_stop': {
+            view: 'ZoomingImageView',
+            icon: 'images/web.png'
         }
     },
     media: {
