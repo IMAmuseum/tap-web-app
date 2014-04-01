@@ -59,7 +59,7 @@ var TapAPI = {
         },
         'quiz_stop': {
             view: 'QuizStopView',
-            icon: 'images/web.png'
+            icon: 'images/quiz.png'
         },
         'audio_slideshow_stop': {
             view: 'AudioSlideshowStopView',
@@ -67,7 +67,7 @@ var TapAPI = {
         },
         'zooming_image_stop': {
             view: 'ZoomingImageView',
-            icon: 'images/web.png'
+            icon: 'images/zoom.png'
         }
     },
     media: {

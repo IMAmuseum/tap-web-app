@@ -134,7 +134,7 @@ TapAPI.classes.views.StopGroupView = TapAPI.classes.views.BaseView.extend({
             //     flashName: 'flashmediaelement.swf',
             //     silverlightName: 'silverlightmediaelement.xap'
             // });
-            that.customAudio.play();
+            // that.customAudio.play();
         }
     }
 });

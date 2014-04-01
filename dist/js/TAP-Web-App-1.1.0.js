@@ -65,7 +65,7 @@ var TapAPI = {
         },
         'quiz_stop': {
             view: 'QuizStopView',
-            icon: 'images/web.png'
+            icon: 'images/quiz.png'
         },
         'audio_slideshow_stop': {
             view: 'AudioSlideshowStopView',
@@ -73,7 +73,7 @@ var TapAPI = {
         },
         'zooming_image_stop': {
             view: 'ZoomingImageView',
-            icon: 'images/web.png'
+            icon: 'images/zoom.png'
         }
     },
     media: {
@@ -1097,7 +1097,7 @@ obj || (obj = {});
 var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-
+__p += '<style>\n    .caption-inner {\n        display: block;\n    }\n</style>\n<script>\n    $(document).ready(function () {\n        $(\'.caption-inner-overflow-link-show\').on(\'click tap\', function (evt) {\n            $(this).hide();\n            $(this).siblings(\'.caption-inner-overflow\').show();\n        });\n        $(\'.caption-inner-overflow-link-hide\').on(\'click touchstart\', function (evt) {\n            $(this).parent().siblings(\'.caption-inner-overflow-link-show\').show();\n            $(this).parent().hide();\n        });\n    });\n</script>\n';
  if (audioSources.length > 0) { ;
 __p += '\n<audio id="audio-player" class="player" controls="controls">\n    <p>Your browser does not support HTML 5 audio.</p>\n    ';
  _.each(audioSources, function(source) { ;
@@ -1125,11 +1125,21 @@ __p += '\n    <li class="image-slide">\n        <img src="' +
 ((__t = ( image.caption )) == null ? '' : __t) +
 '" title="' +
 ((__t = ( image.title )) == null ? '' : __t) +
-'" />\n        <p class="caption">' +
+'" />\n        <div class="caption-wrap">\n            <p class="caption">\n                ' +
 ((__t = ( image.title )) == null ? '' : __t) +
-'<br />' +
+'<br />\n                <span class="caption-inner">\n                    ';
+ if (image.caption.length > 75) { ;
+__p += '\n                        ' +
+((__t = ( image.caption.substr(0,75) )) == null ? '' : __t) +
+'<a class="caption-inner-overflow-link-show"> (MORE)</a><span class="caption-inner-overflow" style="display: none;">' +
+((__t = ( image.caption.substr(75,image.caption.length) )) == null ? '' : __t) +
+'<a class="caption-inner-overflow-link-hide"> (LESS)</a></span>\n                    ';
+ } else { ;
+__p += '\n                        ' +
 ((__t = ( image.caption )) == null ? '' : __t) +
-'</p>\n    </li>\n    ';
+'\n                    ';
+ } ;
+__p += '\n                </span>\n            </p>\n        </div>\n    </li>\n    ';
  }); ;
 __p += '\n    </ul>\n    ';
  } ;
@@ -1171,6 +1181,14 @@ var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
 __p += '<ul  data-role="listview" data-filter="true">\n    ';
+ if (!_.isUndefined(headerImageUri)) { ;
+__p += '\n        <div id="header-wrapper">\n            <img src="' +
+((__t = ( headerImageUri )) == null ? '' : __t) +
+'">\n            <p class="caption">' +
+((__t = ( tourTitle )) == null ? '' : __t) +
+'</p>\n        </div>\n    ';
+ } ;
+__p += '\n    ';
  _.each(stops, function(stop) { ;
 __p += '\n    <li>\n        <a href=\'' +
 ((__t = ( stop.model.getRoute() )) == null ? '' : __t) +
@@ -3087,7 +3105,6 @@ TapAPI.classes.views.StopGroupView = TapAPI.classes.views.BaseView.extend({
         this._super(options);
         this.hasAudio = false;
         this.hasMultiImage = false;
-        TapAPI.tracker.createTimer('StopGroup', 'played_for', TapAPI.currentStop.id);
     },
     render: function() {
         var stops = [],
@@ -3185,7 +3202,7 @@ TapAPI.classes.views.StopGroupView = TapAPI.classes.views.BaseView.extend({
 
             that.customAudio.audioElement.addEventListener('play', function() {
                 var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
-                TapAPI.tracker.trackEvent('StopGroup', 'media_started', label, null);
+                TapAPI.tracker.trackEvent('AudioStop', 'media_started', label, null);
                 TapAPI.tracker.startTimer();
             });
 
@@ -3193,28 +3210,29 @@ TapAPI.classes.views.StopGroupView = TapAPI.classes.views.BaseView.extend({
                 var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
                 TapAPI.tracker.stopTimer();
                 var timer = TapAPI.tracker.get('timer');
-                TapAPI.tracker.trackEvent('StopGroup', 'media_paused', label, timer.elapsed);
+                TapAPI.tracker.trackEvent('AudioStop', 'media_paused', label, timer.elapsed);
             });
 
             that.customAudio.audioElement.addEventListener('ended', function() {
                 var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
                 TapAPI.tracker.stopTimer();
                 var timer = TapAPI.tracker.get('timer');
-                TapAPI.tracker.trackEvent('StopGroup', 'media_ended', label, timer.elapsed);
+                TapAPI.tracker.trackEvent('AudioStop', 'media_ended', label, timer.elapsed);
             });
 
             // Add expand handler on the transcription toggle button
             this.$el.find('#transcription').on('expand', function(e, ui) {
                 var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
-                TapAPI.tracker.trackEvent('StopGroup', 'show_transcription', label, null);
+                TapAPI.tracker.trackEvent('AudioStop', 'show_transcription', label, null);
             });
 
-            that.customAudio.play();
+            // this.player = new MediaElementPlayer('.player', {
+            //     pluginPath: TapAPI.media.pluginPath,
+            //     flashName: 'flashmediaelement.swf',
+            //     silverlightName: 'silverlightmediaelement.xap'
+            // });
+            // that.customAudio.play();
         }
-    },
-    close: function() {
-        //Send information about playback duration when the view closes
-        TapAPI.tracker.trackTime();
     }
 });
 /*
@@ -3237,6 +3255,7 @@ TapAPI.classes.views.StopListView = TapAPI.classes.views.StopSelectionView.exten
         }
         this.displayCodes = TapAPI.navigationControllers.StopListView.displayCodes;
         this.displayThumbnails = TapAPI.navigationControllers.StopListView.displayThumbnails;
+
 
         // apply filter
         switch (this.filterBy) {
@@ -3291,7 +3310,9 @@ TapAPI.classes.views.StopListView = TapAPI.classes.views.StopSelectionView.exten
     render: function() {
         this.$el.html(this.template({
             tourID: TapAPI.currentTour,
+            tourTitle: TapAPI.tours.get(TapAPI.currentTour).get('title'),
             stops: this.stops,
+            headerImageUri: TapAPI.tours.get(TapAPI.currentTour).getAppResourceByUsage('image'),
             displayCodes: this.displayCodes,
             displayThumbnails: this.displayThumbnails
         }));
@@ -3553,7 +3574,8 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
         this.imageWidth = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[0].attributes.value;
         this.imageHeight = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[1].attributes.value;
         this.description = this.model.get('description');
-        this.moreInfo = this.model.getAssetsByUsage('zoom_caption')[0].get('content').at(0).get('data');
+        var zoomAssetGet = this.model.getAssetsByUsage('zoom_caption');
+        this.moreInfo = (!_.isUndefined(zoomAssetGet)) ? zoomAssetGet[0].get('content').at(0).get('data') : '';
         this.assetUri = this.model.getAssets()[0].get('source').at(0).get('uri');
 
         $(':jqmData(role="page")').on('pageinit', {context: this}, this.resizeMapViewport);
@@ -3585,23 +3607,25 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
         this.map = L.map('tour-zooming', {
             maxZoom: 4,
             minZoom: 0,
-            tolerance: tolerance,
+            tolerance: tolerance
         }).setView([0, 0], 0);
+
         // setup tile layer
         //console.log(this.assetUri + '/zoom{z}/row{y}/col{x}.png', 'url');
         this.tileLayer = L.tileLayer(this.assetUri + '/zoom{z}/row{y}/col{x}.png', {
             continuousWorld: true,
-            nowrap: true,
+            nowrap: false,
+            unloadInvisibleTiles: true,
             reuseTiles: true
         }).addTo(this.map);
 
-        if (this.moreInfo !== undefined) {
+        if (!_.isUndefined(this.moreInfo) && this.moreInfo !== '') {
             var desc = $('<div class="zoomingImageDescription"></div>').css({
                 'position': 'absolute',
                 'bottom': '32px',// @TODO don't hardcode this ya dummy, get it from $('.leaflet-control-attribution')
                 'height': '20px',
             })
-            .append($('<div class="zoomingImageDescriptionHandle">(i)</div>').click(function (evt) {
+            .append($('<div class="zoomingImageDescriptionHandle">View Caption</div>').click(function (evt) {
                 evt.preventDefault();
                 $(this).siblings('.zoomingImageDescriptionText').toggle();
             }))
@@ -3610,18 +3634,14 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
             }));
             desc.appendTo(this.$el);
         }
-
-
         this.map.attributionControl.addAttribution(attribution.replace(/(<([^>]+)>)/ig,""));
 
         var mapSize = this.map.getSize();
         var zoom = this._getBestFitZoom(mapSize);
         var center = this.map.options.crs.pointToLatLng(L.point(imageSize.x / 2, imageSize.y / 2), zoom);
-        // console.log(zoom + center);
         var windowHeight = $( window ).height();
-        // console.log(windowHeight);
-        // console.log(imageSize.y);
-        if (windowHeight > imageSize.y * 4) {
+        var windowWidth = $( window ).width();
+        if (windowHeight > imageSize.y * 2  && windowWidth > imageSize.x * 2) {
             this.map.setView(center, zoom+1, true);
         } else {
             this.map.setView(center, zoom, true);

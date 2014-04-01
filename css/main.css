@@ -353,3 +353,9 @@ a.next-button {
 .quiz-result {
     display: none;
 }
+
+/* Zoom Stop */
+.zoomingImageDescriptionHandle {
+    padding-right: 10px;
+    font-weight: bold;
+}

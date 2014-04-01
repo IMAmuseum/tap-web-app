@@ -354,7 +354,7 @@ obj || (obj = {});
 var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-
+__p += '<style>\n    .caption-inner {\n        display: block;\n    }\n</style>\n<script>\n    $(document).ready(function () {\n        $(\'.caption-inner-overflow-link-show\').on(\'click tap\', function (evt) {\n            $(this).hide();\n            $(this).siblings(\'.caption-inner-overflow\').show();\n        });\n        $(\'.caption-inner-overflow-link-hide\').on(\'click touchstart\', function (evt) {\n            $(this).parent().siblings(\'.caption-inner-overflow-link-show\').show();\n            $(this).parent().hide();\n        });\n    });\n</script>\n';
  if (audioSources.length > 0) { ;
 __p += '\n<audio id="audio-player" class="player" controls="controls">\n    <p>Your browser does not support HTML 5 audio.</p>\n    ';
  _.each(audioSources, function(source) { ;
@@ -382,11 +382,21 @@ __p += '\n    <li class="image-slide">\n        <img src="' +
 ((__t = ( image.caption )) == null ? '' : __t) +
 '" title="' +
 ((__t = ( image.title )) == null ? '' : __t) +
-'" />\n        <p class="caption">' +
+'" />\n        <div class="caption-wrap">\n            <p class="caption">\n                ' +
 ((__t = ( image.title )) == null ? '' : __t) +
-'<br />' +
+'<br />\n                <span class="caption-inner">\n                    ';
+ if (image.caption.length > 75) { ;
+__p += '\n                        ' +
+((__t = ( image.caption.substr(0,75) )) == null ? '' : __t) +
+'<a class="caption-inner-overflow-link-show"> (MORE)</a><span class="caption-inner-overflow" style="display: none;">' +
+((__t = ( image.caption.substr(75,image.caption.length) )) == null ? '' : __t) +
+'<a class="caption-inner-overflow-link-hide"> (LESS)</a></span>\n                    ';
+ } else { ;
+__p += '\n                        ' +
 ((__t = ( image.caption )) == null ? '' : __t) +
-'</p>\n    </li>\n    ';
+'\n                    ';
+ } ;
+__p += '\n                </span>\n            </p>\n        </div>\n    </li>\n    ';
  }); ;
 __p += '\n    </ul>\n    ';
  } ;
@@ -428,6 +438,14 @@ var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
 __p += '<ul  data-role="listview" data-filter="true">\n    ';
+ if (!_.isUndefined(headerImageUri)) { ;
+__p += '\n        <div id="header-wrapper">\n            <img src="' +
+((__t = ( headerImageUri )) == null ? '' : __t) +
+'">\n            <p class="caption">' +
+((__t = ( tourTitle )) == null ? '' : __t) +
+'</p>\n        </div>\n    ';
+ } ;
+__p += '\n    ';
  _.each(stops, function(stop) { ;
 __p += '\n    <li>\n        <a href=\'' +
 ((__t = ( stop.model.getRoute() )) == null ? '' : __t) +

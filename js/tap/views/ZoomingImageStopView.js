@@ -46,13 +46,15 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
         this.map = L.map('tour-zooming', {
             maxZoom: 4,
             minZoom: 0,
-            tolerance: tolerance,
+            tolerance: tolerance
         }).setView([0, 0], 0);
+
         // setup tile layer
         //console.log(this.assetUri + '/zoom{z}/row{y}/col{x}.png', 'url');
         this.tileLayer = L.tileLayer(this.assetUri + '/zoom{z}/row{y}/col{x}.png', {
             continuousWorld: true,
-            nowrap: true,
+            nowrap: false,
+            unloadInvisibleTiles: true,
             reuseTiles: true
         }).addTo(this.map);
 
@@ -62,7 +64,7 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
                 'bottom': '32px',// @TODO don't hardcode this ya dummy, get it from $('.leaflet-control-attribution')
                 'height': '20px',
             })
-            .append($('<div class="zoomingImageDescriptionHandle">(i)</div>').click(function (evt) {
+            .append($('<div class="zoomingImageDescriptionHandle">View Caption</div>').click(function (evt) {
                 evt.preventDefault();
                 $(this).siblings('.zoomingImageDescriptionText').toggle();
             }))
@@ -71,18 +73,14 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
             }));
             desc.appendTo(this.$el);
         }
-
-
         this.map.attributionControl.addAttribution(attribution.replace(/(<([^>]+)>)/ig,""));
 
         var mapSize = this.map.getSize();
         var zoom = this._getBestFitZoom(mapSize);
         var center = this.map.options.crs.pointToLatLng(L.point(imageSize.x / 2, imageSize.y / 2), zoom);
-        // console.log(zoom + center);
         var windowHeight = $( window ).height();
-        // console.log(windowHeight);
-        // console.log(imageSize.y);
-        if (windowHeight > imageSize.y * 4) {
+        var windowWidth = $( window ).width();
+        if (windowHeight > imageSize.y * 2  && windowWidth > imageSize.x * 2) {
             this.map.setView(center, zoom+1, true);
         } else {
             this.map.setView(center, zoom, true);
