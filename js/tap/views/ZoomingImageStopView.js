@@ -12,7 +12,8 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
         temp = this.model;
         this.imageWidth = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[0].attributes.value;
         this.imageHeight = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[1].attributes.value;
-        this.description = this.model.get('description');
+        this.description = this.model.get('copyright');
+        this.moreInfo = this.model.get('description');
         this.assetUri = this.model.getAssets()[0].get('source').at(0).get('uri');
 
         $(':jqmData(role="page")').on('pageinit', {context: this}, this.resizeMapViewport);
@@ -28,7 +29,7 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
         var url = url + '/';
         var imageWidth = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[0].attributes.value;
         var imageHeight = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[1].attributes.value;
-        var attribution = this.model.get('description');
+        var attribution = this.description;
 
         var imageSize = L.point(imageWidth, imageHeight),
             tileSize = 256;
@@ -59,10 +60,10 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
         var mapSize = this.map.getSize();
         var zoom = this._getBestFitZoom(mapSize);
         var center = this.map.options.crs.pointToLatLng(L.point(imageSize.x / 2, imageSize.y / 2), zoom);
-        console.log(zoom + center);
+        // console.log(zoom + center);
         var windowHeight = $( window ).height();
-        console.log(windowHeight);
-        console.log(imageSize.y);
+        // console.log(windowHeight);
+        // console.log(imageSize.y);
         if (windowHeight > imageSize.y * 4) {
             this.map.setView(center, zoom+1, true);
         } else {

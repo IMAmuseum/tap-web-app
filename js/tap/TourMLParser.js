@@ -126,6 +126,7 @@ TapAPI.tourMLParser = {
                 incomingConnection: incomingConnections,
                 view: data.stop[i].view,
                 description: TapAPI.helper.objectToArray(data.stop[i].description),
+                copyright: TapAPI.helper.objectToArray(data.stop[i].copyright),
                 propertySet: data.stop[i].propertySet ? TapAPI.helper.objectToArray(data.stop[i].propertySet.property) : undefined,
                 assetRef: TapAPI.helper.objectToArray(data.stop[i].assetRef),
                 title: TapAPI.helper.objectToArray(data.stop[i].title),
