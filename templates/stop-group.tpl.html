@@ -8,7 +8,7 @@
 <% } %>
 <% if (!_.isUndefined(header) || images.length > 0) { %>
 <div id="header-wrapper">
-    <img src="<%= header %>" />
+    <% if (!_.isUndefined(header)) { %><img src="<%= header %>"><% } %>
     <% if (images.length > 0) { %>
     <ul class="rslides">
     <% _.each(images, function(image) { %>
@@ -26,7 +26,7 @@
 <ul id="stop-list" data-role="listview" data-inset="true">
 <% _.each(stops, function(stop) { %>
     <li>
-        <a href="<%= stop.route %>">
+        <a href="<%= stop.route %>"<% if (stop.view === "quiz_stop") { %> class="quiz-stop-list-item"<% } %>>
             <img src="<%= stop.icon %>" class="ui-li-icon ui-li-thumb" />
             <%= stop.title %>
         </a>

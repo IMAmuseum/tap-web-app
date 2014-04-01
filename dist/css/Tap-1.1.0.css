@@ -1165,6 +1165,8 @@ body {
   color:rgba(255,255,255,0);
   float:left;
   margin-top:7px;
+  background: url('../images/icon-play.png') no-repeat center center transparent;
+  background-size:8px 6px;
 }
 .play-pause.play {
   background: url('../images/icon-play.png') no-repeat center center transparent;
@@ -1217,7 +1219,7 @@ body {
 
 /* audio slideshow */
 #audio-slideshow-stop {
-  padding-top:20px;
+  padding-top:40px;
 }
 
 /* home header */
@@ -1319,9 +1321,14 @@ body {
 #keypad .keypad-button {
   box-shadow:none;
   border-radius:0px;
+  background:#999;
+  border:none;
+  text-shadow:none;
+  color:#fff;
 }
 #keypad .keypad-button.ui-btn-hover-a {
   background:#ccc;
+  color:#444;
 }
 #keypad .action-button {
   background:#DF5B2D;
@@ -1362,4 +1369,21 @@ body {
 .ui-icon-search, .ui-icon-searchfield:after {
   background: url('../images/icon-search.png') no-repeat center center transparent;
   background-size:14px 14px;
+}
+
+/* home footer */
+.brand-footer {
+  padding-top:10px;
+}
+.brand-footer ul li img {
+  height:40px; width:auto;
+}
+.brand-footer ul li p {
+  font-size:11px;
+  color:#888;
+}
+
+/* left right buttons fixed header */
+.ui-header-fixed .ui-btn-left, .ui-header-fixed .ui-btn-right {
+  top: 7px;
 }
