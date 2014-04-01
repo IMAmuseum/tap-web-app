@@ -55,6 +55,13 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
             reuseTiles: true
         }).addTo(this.map);
 
+        if (this.moreInfo !== undefined) {
+            var desc = $('<div class="zoomingImageDescription"></div>').append('<div class="zoomingImageDescriptionHandle">Description</div>').append($('<div class="zoomingImageDescriptionText">'+this.moreInfo+'</div>'));
+
+            desc.appendTo(this.$el);
+        }
+
+
         this.map.attributionControl.addAttribution(attribution.replace(/(<([^>]+)>)/ig,""));
 
         var mapSize = this.map.getSize();
