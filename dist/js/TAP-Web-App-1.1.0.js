@@ -522,6 +522,7 @@ TapAPI.tourMLParser = {
                 incomingConnection: incomingConnections,
                 view: data.stop[i].view,
                 description: TapAPI.helper.objectToArray(data.stop[i].description),
+                copyright: TapAPI.helper.objectToArray(data.stop[i].copyright),
                 propertySet: data.stop[i].propertySet ? TapAPI.helper.objectToArray(data.stop[i].propertySet.property) : undefined,
                 assetRef: TapAPI.helper.objectToArray(data.stop[i].assetRef),
                 title: TapAPI.helper.objectToArray(data.stop[i].title),
@@ -838,7 +839,7 @@ obj || (obj = {});
 var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-__p += '<header>\n\t<div class="homeHeader"></div>\n</header>\n<ul id="tour-list" class="ui-listview" data-role="listview">\n\t';
+__p += '<style>\n    .brand-footer {\n        height: 50px;\n    }\n    .brand-footer ul,\n    .brand-footer ul li,\n    .brand-footer ul li p {\n        margin: 0;\n        padding: 0;\n    }\n    .brand-footer ul,\n    .brand-footer ul li {\n        list-style: none;\n    }\n\n    .brand-footer ul li {\n        float: left;\n        padding-right: .7em;\n        height: 100%;\n    }\n    .brand-footer ul li img {\n        max-width: 35px;\n        opacity: .3;\n    }\n    .brand-footer ul li p {\n        font-size: 12px;\n    }\n</style>\n<header>\n\t<div class="homeHeader"></div>\n</header>\n<ul id="tour-list" class="ui-listview" data-role="listview">\n\t';
  _.each(tours, function(tour, i) { ;
 __p += '\n\t<li data-icon="false">\n\t\t<a href="#" data-tour-id="' +
 ((__t = ( tour.get('id') )) == null ? '' : __t) +
@@ -846,7 +847,7 @@ __p += '\n\t<li data-icon="false">\n\t\t<a href="#" data-tour-id="' +
 ((__t = ( tour.get('title') )) == null ? '' : __t) +
 '\n\t\t</a>\n\t</li>\n\t';
  }); ;
-__p += '\n</ul>\n<footer class="brand-footer">\n    <ul>\n        <li><img src=""><!-- MW LOGO --></li>\n        <li><img src=""><!-- IMA LOGO --></li>\n        <li>\n            <p>Powered by TAP.</p>\n            <p>Built by IMA Lab for MW 2014.</p>\n        </li>\n    </ul>\n</footer>';
+__p += '\n</ul>\n<footer class="brand-footer">\n    <ul>\n        <li><img src="images/logo-mw.png"></li>\n        <li><img src="images/logo-ima.png"></li>\n        <li>\n            <p>Powered by TAP.</p>\n            <p>Built by IMA Lab for MW 2014.</p>\n        </li>\n    </ul>\n</footer>';
 
 }
 return __p
@@ -1105,9 +1106,13 @@ __p += '\n</audio>\n';
  } ;
 __p += '\n';
  if (!_.isUndefined(header) || images.length > 0) { ;
-__p += '\n<div id="header-wrapper">\n    <img src="' +
+__p += '\n<div id="header-wrapper">\n    ';
+ if (!_.isUndefined(header)) { ;
+__p += '<img src="' +
 ((__t = ( header )) == null ? '' : __t) +
-'" />\n    ';
+'">';
+ } ;
+__p += '\n    ';
  if (images.length > 0) { ;
 __p += '\n    <ul class="rslides">\n    ';
  _.each(images, function(image) { ;
@@ -1135,7 +1140,11 @@ __p += '\n<h3 class="stop-title">' +
  _.each(stops, function(stop) { ;
 __p += '\n    <li>\n        <a href="' +
 ((__t = ( stop.route )) == null ? '' : __t) +
-'">\n            <img src="' +
+'"';
+ if (stop.view === "quiz_stop") { ;
+__p += ' class="quiz-stop-list-item"';
+ } ;
+__p += '>\n            <img src="' +
 ((__t = ( stop.icon )) == null ? '' : __t) +
 '" class="ui-li-icon ui-li-thumb" />\n            ' +
 ((__t = ( stop.title )) == null ? '' : __t) +
@@ -1147,7 +1156,7 @@ __p += '\n<div id="transcription" data-role="collapsible" data-content-theme="c"
 ((__t = ( transcription )) == null ? '' : __t) +
 '</p>\n</div>\n';
  } ;
-
+__p += '\n';
 
 }
 return __p
@@ -1567,6 +1576,7 @@ TapAPI.classes.models.StopModel = Backbone.Model.extend({
         if(!this.attributes[attr]) return this.attributes[attr];
         switch(attr) {  // retrieve attribute based on language
             case 'description':
+            case 'copyright':
             case 'title':
                 if (this.attributes[attr].length === 0) return undefined;
 
@@ -3083,6 +3093,7 @@ TapAPI.classes.views.StopGroupView = TapAPI.classes.views.BaseView.extend({
                     id: stop.get('id'),
                     title: stop.get('title'),
                     icon: TapAPI.viewRegistry[stop.get('view')].icon,
+                    view: stop.get('view'),
                     route: stop.getRoute()
                 });
             }
@@ -3528,7 +3539,8 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
         temp = this.model;
         this.imageWidth = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[0].attributes.value;
         this.imageHeight = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[1].attributes.value;
-        this.description = this.model.get('description');
+        this.description = this.model.get('copyright');
+        this.moreInfo = this.model.get('description');
         this.assetUri = this.model.getAssets()[0].get('source').at(0).get('uri');
 
         $(':jqmData(role="page")').on('pageinit', {context: this}, this.resizeMapViewport);
@@ -3544,7 +3556,7 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
         var url = url + '/';
         var imageWidth = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[0].attributes.value;
         var imageHeight = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[1].attributes.value;
-        var attribution = this.model.get('description');
+        var attribution = this.description;
 
         var imageSize = L.point(imageWidth, imageHeight),
             tileSize = 256;
@@ -3570,15 +3582,32 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
             reuseTiles: true
         }).addTo(this.map);
 
+        if (this.moreInfo !== undefined) {
+            var desc = $('<div class="zoomingImageDescription"></div>').css({
+                'position': 'absolute',
+                'bottom': '32px',// @TODO don't hardcode this ya dummy, get it from $('.leaflet-control-attribution')
+                'height': '20px',
+            })
+            .append($('<div class="zoomingImageDescriptionHandle">(i)</div>').click(function (evt) {
+                evt.preventDefault();
+                $(this).siblings('.zoomingImageDescriptionText').toggle();
+            }))
+            .append($('<div class="zoomingImageDescriptionText">'+this.moreInfo+'</div>').css({
+                'display': 'none'
+            }));
+            desc.appendTo(this.$el);
+        }
+
+
         this.map.attributionControl.addAttribution(attribution.replace(/(<([^>]+)>)/ig,""));
 
         var mapSize = this.map.getSize();
         var zoom = this._getBestFitZoom(mapSize);
         var center = this.map.options.crs.pointToLatLng(L.point(imageSize.x / 2, imageSize.y / 2), zoom);
-        console.log(zoom + center);
+        // console.log(zoom + center);
         var windowHeight = $( window ).height();
-        console.log(windowHeight);
-        console.log(imageSize.y);
+        // console.log(windowHeight);
+        // console.log(imageSize.y);
         if (windowHeight > imageSize.y * 4) {
             this.map.setView(center, zoom+1, true);
         } else {
