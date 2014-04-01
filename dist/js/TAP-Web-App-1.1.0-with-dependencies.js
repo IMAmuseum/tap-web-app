@@ -1,5 +1,5 @@
 /*
- * TAP - v1.1.0 - 2014-03-31
+ * TAP - v1.1.0 - 2014-04-01
  * http://tapintomuseums.org/
  * Copyright (c) 2011-2014 Indianapolis Museum of Art
  * GPLv3
@@ -45725,7 +45725,6 @@ TapAPI.tourMLParser = {
                 incomingConnection: incomingConnections,
                 view: data.stop[i].view,
                 description: TapAPI.helper.objectToArray(data.stop[i].description),
-                copyright: TapAPI.helper.objectToArray(data.stop[i].copyright),
                 propertySet: data.stop[i].propertySet ? TapAPI.helper.objectToArray(data.stop[i].propertySet.property) : undefined,
                 assetRef: TapAPI.helper.objectToArray(data.stop[i].assetRef),
                 title: TapAPI.helper.objectToArray(data.stop[i].title),
@@ -46005,11 +46004,15 @@ __p += '\n</audio>\n';
  if (!_.isEmpty(imageSources)) { ;
 __p += '\n<div class="slideshow-images">\n';
  _.each(imageSources, function(imageSource) { ;
-__p += '\n    <img class="slideshow-image" id="' +
+__p += '\n    <div class="image-container" id="' +
 ((__t = ( imageSource.id )) == null ? '' : __t) +
-'" src="' +
+'">\n        <img class="slideshow-image" src="' +
 ((__t = ( imageSource.uri )) == null ? '' : __t) +
-'" />\n';
+'" />\n        <p class="caption">' +
+((__t = ( imageSource.title )) == null ? '' : __t) +
+'<br />' +
+((__t = ( imageSource.caption )) == null ? '' : __t) +
+'</p>\n    </div>\n';
  }); ;
 __p += '\n</div>\n';
  } ;
@@ -46050,7 +46053,7 @@ __p += '\n\t<li data-icon="false">\n\t\t<a href="#" data-tour-id="' +
 ((__t = ( tour.get('title') )) == null ? '' : __t) +
 '\n\t\t</a>\n\t</li>\n\t';
  }); ;
-__p += '\n</ul>\n<footer class="brand-footer">\n    <ul>\n        <li><img src="images/logo-mw.png"></li>\n        <li><img src="images/logo-ima.png"></li>\n        <li>\n            <p>Powered by TAP.</p>\n            <p>Built by IMA Lab for MW 2014.</p>\n        </li>\n    </ul>\n</footer>';
+__p += '\n</ul>\n<footer class="brand-footer">\n    <ul>\n        <li><img src="images/logo-mw.png"></li>\n        <li><img src="images/logo-ima.png"></li>\n        <li>\n            <p>Powered by TAP.</p>\n            <p>Built by <a href="http://lab.imalab.us">IMA Lab</a> for <a href="http://mw2014.museumsandtheweb.com">MW 2014</a>.</p>\n        </li>\n    </ul>\n</footer>';
 
 }
 return __p
@@ -46779,7 +46782,6 @@ TapAPI.classes.models.StopModel = Backbone.Model.extend({
         if(!this.attributes[attr]) return this.attributes[attr];
         switch(attr) {  // retrieve attribute based on language
             case 'description':
-            case 'copyright':
             case 'title':
                 if (this.attributes[attr].length === 0) return undefined;
 
@@ -47223,8 +47225,9 @@ TapAPI.classes.views.AudioSlideshowStopView = TapAPI.classes.views.BaseView.exte
         this.audioPlayer = null;
         this.imageData = {};
         this.images = [];
+        this.captions = [];
         this.currentImage;
-        // TapAPI.tracker.createTimer('AudioStop', 'played_for', TapAPI.currentStop.id);
+        TapAPI.tracker.createTimer('AudioSlideshowStop', 'played_for', TapAPI.currentStop.id);
     },
     render: function() {
         var description = this.model.get('description');
@@ -47249,6 +47252,9 @@ TapAPI.classes.views.AudioSlideshowStopView = TapAPI.classes.views.BaseView.exte
                 var imageUri = imageSource[0].get('uri');
                 var imageProperties = imageSource[0].get('propertySet');
                 var imageDimensions = {width:0, height:0, aspect:1};
+                var title = imageAssets[i].getContentsByPart('title');
+                var caption = imageAssets[i].getContentsByPart('caption');
+
                 imageProperties.each(function(imgProp) {
                     if (imgProp.get('name') == 'width') {
                         imageDimensions.width = parseInt(imgProp.get('value'), 10);
@@ -47269,11 +47275,14 @@ TapAPI.classes.views.AudioSlideshowStopView = TapAPI.classes.views.BaseView.exte
                     uri: imageUri,
                     id: 'imageSlide_' + i,
                     dimensions: imageDimensions,
-                    orientation: landscape ? 'l' : 'p'
+                    orientation: landscape ? 'l' : 'p',
+                    title: _.isEmpty(title) ? '' : title[0].get('data'),
+                    caption: _.isEmpty(caption) ? '' : caption[0].get('data')
                 };
                 offset += timings[i];
             }
         }
+
         this.imageData = imageSources;
 
         var audioAsset = this.model.getAssetsByType(['audio']);
@@ -47285,7 +47294,6 @@ TapAPI.classes.views.AudioSlideshowStopView = TapAPI.classes.views.BaseView.exte
 
         // Get media element sources and determine template
         var sources = [];
-        var mediaTemplate = '';
         _.each(audioAsset[0].get('source').models, function(source) {
             sources.push('<source src="' + source.get('uri') + '" type="' + source.get('format') + '" />');
         });
@@ -47313,6 +47321,7 @@ TapAPI.classes.views.AudioSlideshowStopView = TapAPI.classes.views.BaseView.exte
         var that = this;
 
         that.images = that.$el.find("img");
+        that.captions = that.$el.find(".caption").hide();
 
         var imageContainer = that.$el.find(".slideshow-images");
         var imageContainerDimensions = {
@@ -47356,10 +47365,14 @@ TapAPI.classes.views.AudioSlideshowStopView = TapAPI.classes.views.BaseView.exte
                 var paused = that.audioPlayer.paused;
                 var sectionDuration = displayImage.end - audioTime;
 
-                var imageElem = that.$el.find("#" + displayImage.id);
+                var imageContainerElem = that.$el.find("#" + displayImage.id);
+                var imageElem = imageContainerElem.find("img");
+                var captionElem = imageContainerElem.find(".caption");
                 if (_.isUndefined(that.currentImage) || that.currentImage.id != displayImage.id || paused) {
                     that.images.removeClass("opaque");
                     imageElem.addClass("opaque");
+                    that.captions.hide();
+                    captionElem.show();
                     that.currentImage = displayImage;
                 }
 
@@ -47388,43 +47401,43 @@ TapAPI.classes.views.AudioSlideshowStopView = TapAPI.classes.views.BaseView.exte
         }, false);
         //     mediaElement = $('.player')[0];
 
-        // // add event handlers for media player events
-        // mediaElement.addEventListener('loadedmetadata', function() {
-        //     TapAPI.tracker.setTimerOption('maxThreshold', mediaElement.duration * 1000);
-        // });
+        // add event handlers for media player events
+        that.audioPlayer.addEventListener('loadedmetadata', function() {
+            TapAPI.tracker.setTimerOption('maxThreshold', that.audioPlayer.duration * 1000);
+        });
 
-        // mediaElement.addEventListener('play', function() {
-        //     var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
-        //     TapAPI.tracker.trackEvent('AudioStop', 'media_started', label, null);
-        //     TapAPI.tracker.startTimer();
-        // });
+        that.audioPlayer.addEventListener('play', function() {
+            var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
+            TapAPI.tracker.trackEvent('AudioSlideshowStop', 'media_started', label, null);
+            TapAPI.tracker.startTimer();
+        });
 
-        // mediaElement.addEventListener('pause', function() {
-        //     var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
-        //     TapAPI.tracker.stopTimer();
-        //     var timer = TapAPI.tracker.get('timer');
-        //     TapAPI.tracker.trackEvent('AudioStop', 'media_paused', label, timer.elapsed);
-        // });
+        that.audioPlayer.addEventListener('pause', function() {
+            var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
+            TapAPI.tracker.stopTimer();
+            var timer = TapAPI.tracker.get('timer');
+            TapAPI.tracker.trackEvent('AudioSlideshowStop', 'media_paused', label, timer.elapsed);
+        });
 
-        // mediaElement.addEventListener('ended', function() {
-        //     var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
-        //     TapAPI.tracker.stopTimer();
-        //     var timer = TapAPI.tracker.get('timer');
-        //     TapAPI.tracker.trackEvent('AudioStop', 'media_ended', label, timer.elapsed);
-        // });
+        that.audioPlayer.addEventListener('ended', function() {
+            var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
+            TapAPI.tracker.stopTimer();
+            var timer = TapAPI.tracker.get('timer');
+            TapAPI.tracker.trackEvent('AudioSlideshowStop', 'media_ended', label, timer.elapsed);
+        });
 
         // Add expand handler on the transcription toggle button
         this.$el.find('#transcription').on('expand', function(e, ui) {
             var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
-            TapAPI.tracker.trackEvent('AudioStop', 'show_transcription', label, null);
+            TapAPI.tracker.trackEvent('AudioSlideshowStop', 'show_transcription', label, null);
         });
 
 
-        // this.player.play();
+        that.customAudio.play();
     },
     close: function() {
         // Send information about playback duration when the view closes
-        // TapAPI.tracker.trackTime();
+        TapAPI.tracker.trackTime();
     }
 });
 /*
@@ -48277,6 +48290,7 @@ TapAPI.classes.views.StopGroupView = TapAPI.classes.views.BaseView.extend({
         this._super(options);
         this.hasAudio = false;
         this.hasMultiImage = false;
+        TapAPI.tracker.createTimer('StopGroup', 'played_for', TapAPI.currentStop.id);
     },
     render: function() {
         var stops = [],
@@ -48374,7 +48388,7 @@ TapAPI.classes.views.StopGroupView = TapAPI.classes.views.BaseView.extend({
 
             that.customAudio.audioElement.addEventListener('play', function() {
                 var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
-                TapAPI.tracker.trackEvent('AudioStop', 'media_started', label, null);
+                TapAPI.tracker.trackEvent('StopGroup', 'media_started', label, null);
                 TapAPI.tracker.startTimer();
             });
 
@@ -48382,29 +48396,28 @@ TapAPI.classes.views.StopGroupView = TapAPI.classes.views.BaseView.extend({
                 var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
                 TapAPI.tracker.stopTimer();
                 var timer = TapAPI.tracker.get('timer');
-                TapAPI.tracker.trackEvent('AudioStop', 'media_paused', label, timer.elapsed);
+                TapAPI.tracker.trackEvent('StopGroup', 'media_paused', label, timer.elapsed);
             });
 
             that.customAudio.audioElement.addEventListener('ended', function() {
                 var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
                 TapAPI.tracker.stopTimer();
                 var timer = TapAPI.tracker.get('timer');
-                TapAPI.tracker.trackEvent('AudioStop', 'media_ended', label, timer.elapsed);
+                TapAPI.tracker.trackEvent('StopGroup', 'media_ended', label, timer.elapsed);
             });
 
             // Add expand handler on the transcription toggle button
             this.$el.find('#transcription').on('expand', function(e, ui) {
                 var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
-                TapAPI.tracker.trackEvent('AudioStop', 'show_transcription', label, null);
+                TapAPI.tracker.trackEvent('StopGroup', 'show_transcription', label, null);
             });
 
-            // this.player = new MediaElementPlayer('.player', {
-            //     pluginPath: TapAPI.media.pluginPath,
-            //     flashName: 'flashmediaelement.swf',
-            //     silverlightName: 'silverlightmediaelement.xap'
-            // });
             that.customAudio.play();
         }
+    },
+    close: function() {
+        //Send information about playback duration when the view closes
+        TapAPI.tracker.trackTime();
     }
 });
 /*
@@ -48742,8 +48755,8 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
         temp = this.model;
         this.imageWidth = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[0].attributes.value;
         this.imageHeight = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[1].attributes.value;
-        this.description = this.model.get('copyright');
-        this.moreInfo = this.model.get('description');
+        this.description = this.model.get('description');
+        this.moreInfo = this.model.getAssetsByUsage('zoom_caption')[0].get('content').at(0).get('data');
         this.assetUri = this.model.getAssets()[0].get('source').at(0).get('uri');
 
         $(':jqmData(role="page")').on('pageinit', {context: this}, this.resizeMapViewport);

@@ -58,11 +58,15 @@ __p += '\n</audio>\n';
  if (!_.isEmpty(imageSources)) { ;
 __p += '\n<div class="slideshow-images">\n';
  _.each(imageSources, function(imageSource) { ;
-__p += '\n    <img class="slideshow-image" id="' +
+__p += '\n    <div class="image-container" id="' +
 ((__t = ( imageSource.id )) == null ? '' : __t) +
-'" src="' +
+'">\n        <img class="slideshow-image" src="' +
 ((__t = ( imageSource.uri )) == null ? '' : __t) +
-'" />\n';
+'" />\n        <p class="caption">' +
+((__t = ( imageSource.title )) == null ? '' : __t) +
+'<br />' +
+((__t = ( imageSource.caption )) == null ? '' : __t) +
+'</p>\n    </div>\n';
  }); ;
 __p += '\n</div>\n';
  } ;
@@ -103,7 +107,7 @@ __p += '\n\t<li data-icon="false">\n\t\t<a href="#" data-tour-id="' +
 ((__t = ( tour.get('title') )) == null ? '' : __t) +
 '\n\t\t</a>\n\t</li>\n\t';
  }); ;
-__p += '\n</ul>\n<footer class="brand-footer">\n    <ul>\n        <li><img src="images/logo-mw.png"></li>\n        <li><img src="images/logo-ima.png"></li>\n        <li>\n            <p>Powered by TAP.</p>\n            <p>Built by IMA Lab for MW 2014.</p>\n        </li>\n    </ul>\n</footer>';
+__p += '\n</ul>\n<footer class="brand-footer">\n    <ul>\n        <li><img src="images/logo-mw.png"></li>\n        <li><img src="images/logo-ima.png"></li>\n        <li>\n            <p>Powered by TAP.</p>\n            <p>Built by <a href="http://lab.imalab.us">IMA Lab</a> for <a href="http://mw2014.museumsandtheweb.com">MW 2014</a>.</p>\n        </li>\n    </ul>\n</footer>';
 
 }
 return __p

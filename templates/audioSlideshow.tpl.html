@@ -8,7 +8,10 @@
 <% if (!_.isEmpty(imageSources)) { %>
 <div class="slideshow-images">
 <% _.each(imageSources, function(imageSource) { %>
-    <img class="slideshow-image" id="<%= imageSource.id %>" src="<%= imageSource.uri %>" />
+    <div class="image-container" id="<%= imageSource.id %>">
+        <img class="slideshow-image" src="<%= imageSource.uri %>" />
+        <p class="caption"><%= imageSource.title %><br /><%= imageSource.caption %></p>
+    </div>
 <% }); %>
 </div>
 <% } %>

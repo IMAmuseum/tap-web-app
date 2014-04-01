@@ -309,6 +309,16 @@ body {
 .slideshow-images {
   background:#ccc;
 }
+.slideshow-images .caption {
+  position:absolute;
+  bottom:0;left:0;right:0;top:auto;
+  background:rgba(0,0,0,.5);
+  color:#fff;
+  margin:0;padding:5px;
+  font-size:11px;
+  text-shadow:none;
+}
+
 /* stop list */
 .stop-code {
   display:none;
