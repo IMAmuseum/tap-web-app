@@ -19,6 +19,7 @@ TapAPI.classes.views.StopListView = TapAPI.classes.views.StopSelectionView.exten
         this.displayCodes = TapAPI.navigationControllers.StopListView.displayCodes;
         this.displayThumbnails = TapAPI.navigationControllers.StopListView.displayThumbnails;
 
+
         // apply filter
         switch (this.filterBy) {
             case 'stopGroup':
@@ -72,7 +73,9 @@ TapAPI.classes.views.StopListView = TapAPI.classes.views.StopSelectionView.exten
     render: function() {
         this.$el.html(this.template({
             tourID: TapAPI.currentTour,
+            tourTitle: TapAPI.tours.get(TapAPI.currentTour).get('title'),
             stops: this.stops,
+            headerImageUri: TapAPI.tours.get(TapAPI.currentTour).getAppResourceByUsage('image'),
             displayCodes: this.displayCodes,
             displayThumbnails: this.displayThumbnails
         }));
