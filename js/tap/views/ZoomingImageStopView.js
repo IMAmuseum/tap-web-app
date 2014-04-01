@@ -59,17 +59,17 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
         }).addTo(this.map);
 
         if (!_.isUndefined(this.moreInfo) && this.moreInfo !== '') {
-            var desc = $('<div class="zoomingImageDescription"></div>').css({
-                'position': 'absolute',
-                'bottom': '32px',// @TODO don't hardcode this ya dummy, get it from $('.leaflet-control-attribution')
-                'height': '20px',
-            })
-            .append($('<div class="zoomingImageDescriptionHandle">View Caption</div>').click(function (evt) {
-                evt.preventDefault();
-                $(this).siblings('.zoomingImageDescriptionText').toggle();
-            }))
+            var desc = $('<div class="zoomingImageDescription"></div>')//.css({
+                //'position': 'absolute',
+                //'bottom': '32px',// @TODO don't hardcode this ya dummy, get it from $('.leaflet-control-attribution')
+                //'height': '20px',
+            //})
+            // .append($('<div class="zoomingImageDescriptionHandle">View Caption</div>').click(function (evt) {
+            //     evt.preventDefault();
+            //     $(this).siblings('.zoomingImageDescriptionText').toggle();
+            // }))
             .append($('<div class="zoomingImageDescriptionText">'+this.moreInfo+'</div>').css({
-                'display': 'none'
+                //'display': 'none'
             }));
             desc.appendTo(this.$el);
         }

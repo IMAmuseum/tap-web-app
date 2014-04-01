@@ -355,7 +355,14 @@ a.next-button {
 }
 
 /* Zoom Stop */
-.zoomingImageDescriptionHandle {
-    padding-right: 10px;
-    font-weight: bold;
+.zoomingImageDescriptionHandle, .zoomingImageDescriptionText {
+    width: 100%;
+    font-size: 12px;
+    position: absolute;
+    color: #FFF;
+    text-shadow: none;
+    bottom: 0px;
+    padding: 5px 5px 25px 5px;
+    background: rgba(0,0,0,.5);
+    text-align: left;
 }

@@ -194,10 +194,10 @@ a.ui-link-inherit {
 .ui-icon-searchfield:after {
 	background: #666666 /*{global-icon-color}*/;
 	background: rgba(0,0,0,.4) /*{global-icon-disc}*/;
-	background-image: url(images/icons-18-white.png) /*{global-icon-set}*/;
+	background-image: url('../images/icons-18-white.png') /*{global-icon-set}*/;
 	background-repeat: no-repeat;
-	-webkit-border-radius: 				9px;
-	border-radius: 						9px;
+	-webkit-border-radius: 9px;
+	border-radius: 9px;
 }
 /* Alt icon color
 -----------------------------------------------------------------------------------------------------------*/
@@ -205,7 +205,7 @@ a.ui-link-inherit {
 .ui-icon-alt .ui-icon-searchfield:after {
 	background-color: 						#fff;
 	background-color: 						rgba(255,255,255,.3);
-	background-image: url(images/icons-18-black.png);
+	background-image: url('../images/icons-18-black.png');
 	background-repeat: no-repeat;
 }
 /* No disc
