@@ -12,8 +12,8 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
         temp = this.model;
         this.imageWidth = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[0].attributes.value;
         this.imageHeight = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[1].attributes.value;
-        this.description = this.model.get('copyright');
-        this.moreInfo = this.model.get('description');
+        this.description = this.model.get('description');
+        this.moreInfo = this.model.getAssetsByUsage('zoom_caption')[0].get('content').at(0).get('data');
         this.assetUri = this.model.getAssets()[0].get('source').at(0).get('uri');
 
         $(':jqmData(role="page")').on('pageinit', {context: this}, this.resizeMapViewport);
@@ -56,8 +56,18 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
         }).addTo(this.map);
 
         if (this.moreInfo !== undefined) {
-            var desc = $('<div class="zoomingImageDescription"></div>').append('<div class="zoomingImageDescriptionHandle">Description</div>').append($('<div class="zoomingImageDescriptionText">'+this.moreInfo+'</div>'));
-
+            var desc = $('<div class="zoomingImageDescription"></div>').css({
+                'position': 'absolute',
+                'bottom': '32px',// @TODO don't hardcode this ya dummy, get it from $('.leaflet-control-attribution')
+                'height': '20px',
+            })
+            .append($('<div class="zoomingImageDescriptionHandle">(i)</div>').click(function (evt) {
+                evt.preventDefault();
+                $(this).siblings('.zoomingImageDescriptionText').toggle();
+            }))
+            .append($('<div class="zoomingImageDescriptionText">'+this.moreInfo+'</div>').css({
+                'display': 'none'
+            }));
             desc.appendTo(this.$el);
         }
 
