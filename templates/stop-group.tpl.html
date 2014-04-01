@@ -1,3 +1,20 @@
+<style>
+    .caption-inner {
+        display: block;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $('.caption-inner-overflow-link-show').on('click tap', function (evt) {
+            $(this).hide();
+            $(this).siblings('.caption-inner-overflow').show();
+        });
+        $('.caption-inner-overflow-link-hide').on('click touchstart', function (evt) {
+            $(this).parent().siblings('.caption-inner-overflow-link-show').show();
+            $(this).parent().hide();
+        });
+    });
+</script>
 <% if (audioSources.length > 0) { %>
 <audio id="audio-player" class="player" controls="controls">
     <p>Your browser does not support HTML 5 audio.</p>
@@ -14,7 +31,18 @@
     <% _.each(images, function(image) { %>
     <li class="image-slide">
         <img src="<%= image.originalUri %>" data-caption="<%= image.caption %>" title="<%= image.title %>" />
-        <p class="caption"><%= image.title %><br /><%= image.caption %></p>
+        <div class="caption-wrap">
+            <p class="caption">
+                <%= image.title %><br />
+                <span class="caption-inner">
+                    <% if (image.caption.length > 75) { %>
+                        <%= image.caption.substr(0,75) %><a class="caption-inner-overflow-link-show"> (MORE)</a><span class="caption-inner-overflow" style="display: none;"><%= image.caption.substr(75,image.caption.length) %><a class="caption-inner-overflow-link-hide"> (LESS)</a></span>
+                    <% } else { %>
+                        <%= image.caption %>
+                    <% } %>
+                </span>
+            </p>
+        </div>
     </li>
     <% }); %>
     </ul>
