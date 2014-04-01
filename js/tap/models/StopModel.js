@@ -6,7 +6,6 @@ TapAPI.classes.models.StopModel = Backbone.Model.extend({
         if(!this.attributes[attr]) return this.attributes[attr];
         switch(attr) {  // retrieve attribute based on language
             case 'description':
-            case 'copyright':
             case 'title':
                 if (this.attributes[attr].length === 0) return undefined;
 
