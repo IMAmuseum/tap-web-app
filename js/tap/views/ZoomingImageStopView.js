@@ -13,7 +13,8 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
         this.imageWidth = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[0].attributes.value;
         this.imageHeight = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[1].attributes.value;
         this.description = this.model.get('description');
-        this.moreInfo = this.model.getAssetsByUsage('zoom_caption')[0].get('content').at(0).get('data');
+        var zoomAssetGet = this.model.getAssetsByUsage('zoom_caption');
+        this.moreInfo = (!_.isUndefined(zoomAssetGet)) ? zoomAssetGet[0].get('content').at(0).get('data') : '';
         this.assetUri = this.model.getAssets()[0].get('source').at(0).get('uri');
 
         $(':jqmData(role="page")').on('pageinit', {context: this}, this.resizeMapViewport);
@@ -55,7 +56,7 @@ TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.e
             reuseTiles: true
         }).addTo(this.map);
 
-        if (this.moreInfo !== undefined) {
+        if (!_.isUndefined(this.moreInfo) && this.moreInfo !== '') {
             var desc = $('<div class="zoomingImageDescription"></div>').css({
                 'position': 'absolute',
                 'bottom': '32px',// @TODO don't hardcode this ya dummy, get it from $('.leaflet-control-attribution')
