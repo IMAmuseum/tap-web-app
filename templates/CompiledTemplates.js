@@ -99,7 +99,7 @@ obj || (obj = {});
 var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-__p += '<style>\n    .brand-footer {\n        height: 50px;\n    }\n    .brand-footer ul,\n    .brand-footer ul li,\n    .brand-footer ul li p {\n        margin: 0;\n        padding: 0;\n    }\n    .brand-footer ul,\n    .brand-footer ul li {\n        list-style: none;\n    }\n\n    .brand-footer ul li {\n        float: left;\n        padding-right: .7em;\n        height: 100%;\n    }\n    .brand-footer ul li img {\n        max-width: 35px;\n        opacity: .3;\n    }\n    .brand-footer ul li p {\n        font-size: 12px;\n    }\n</style>\n<header>\n\t<div class="homeHeader"></div>\n</header>\n<ul id="tour-list" class="ui-listview" data-role="listview">\n\t';
+__p += '<header>\n\t<div class="homeHeader">\n\t\t<p class="caption">TAP Into Baltimore</p>\n\t</div>\n</header>\n<ul id="tour-list" class="ui-listview" data-role="listview">\n\t';
  _.each(tours, function(tour, i) { ;
 __p += '\n\t<li data-icon="false">\n\t\t<a href="#" data-tour-id="' +
 ((__t = ( tour.get('id') )) == null ? '' : __t) +

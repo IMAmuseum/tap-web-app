@@ -1,5 +1,5 @@
 /*
- * TAP - v1.1.0 - 2014-04-01
+ * TAP - v1.1.0 - 2014-04-04
  * http://tapintomuseums.org/
  * Copyright (c) 2011-2014 Indianapolis Museum of Art
  * GPLv3
@@ -911,6 +911,33 @@ a.ui-link-inherit {
 	top:12px;
 }
 
+/* bundle home brand footer stuff */
+.brand-footer {
+    height: 50px;
+}
+.brand-footer ul,
+.brand-footer ul li,
+.brand-footer ul li p {
+    margin: 0;
+    padding: 0;
+}
+.brand-footer ul,
+.brand-footer ul li {
+    list-style: none;
+}
+
+.brand-footer ul li {
+    float: left;
+    padding-right: .7em;
+    height: 100%;
+}
+.brand-footer ul li img {
+    max-width: 35px;
+    opacity: .3;
+}
+.brand-footer ul li p {
+    font-size: 12px;
+}
 /* styles in here so we don't overrite each other */
 #page {
   background:#eee;
@@ -1016,10 +1043,7 @@ body {
   background-image:none;
 }
 
-/* filter search box on stop listing page */
-.ui-listview-filter .ui-input-search {
-  margin:10px 5px 5px 5px;
-}
+
 
 
 /* slider with dots */
@@ -1169,7 +1193,9 @@ body {
   margin-left:20px;
   margin-right:20px;
 }
-
+#audio-slideshow-stop #transcription {
+  margin-left:0;margin-right:0;
+}
 
 /* custom audio player */
 .custom-audio {
@@ -1269,12 +1295,28 @@ body {
 .homeHeader {
   background-image: url('../images/tap-into-baltimore-title.jpg') !important;
   background-image: url('../images/splashmap.jpg') !important;
+  background-image: url('../images/vintage-map-painting.jpg') !important;
   background-size: 100% auto!important;
   background-position:center center!important;
   height:420px;
+  position:relative;
 }
-@media screen and (max-width: 420px) {
-  .homeHeader { height:220px; }
+@media screen and (max-width: 767px) {
+  .homeHeader { height:180px; }
+}
+.homeHeader .caption {
+  margin:0;
+  padding:20px;
+  left:0;
+  bottom:40px;
+  text-transform:uppercase;
+  position:absolute;
+  font-size:26px;
+  max-width:200px;
+  font-weight:bold;
+  line-height:1.05em;
+  text-shadow:none;
+  color:#fff;
 }
 #bundle-home header {
   display:block;
@@ -1298,6 +1340,7 @@ body {
     color:#fff;
     text-shadow:none;
     position:relative;
+    border-radius:2px;
 }
 #bundle-home #tour-list li a:after {
   content:"";
@@ -1367,22 +1410,23 @@ body {
 }
 #keypad .keypad-button {
   box-shadow:none;
-  border-radius:0px;
+  border-radius:2px;
   background:#999;
   border:none;
   text-shadow:none;
   color:#fff;
 }
 #keypad .keypad-button.ui-btn-hover-a {
-  background:#ccc;
-  color:#444;
+  background:#888;
+  color:#eee;
 }
 #keypad .action-button {
   background:#DF5B2D;
-  border:1px solid #DF5B2D;
-  border-radius:0px;
+  border:none;
+  border-radius:2px;
   text-shadow:none;
   text-transform:uppercase;
+  box-shadow:none;
 }
 #keypad .action-button.ui-btn-hover-a {
   background:#C7512A;
@@ -1471,6 +1515,7 @@ body {
   color:#fff;
   text-transform:uppercase;
   text-shadow:none;
+  border-radius:2px;
 }
 .ui-radio-on {
   background-color:#ccc;
@@ -1488,4 +1533,74 @@ body {
   background-color:rgba(0,0,0,.6)!important;
   border-radius:50%;
   border:none;
+}
+
+/* top header bar */
+.ui-bar-a {
+  box-shadow:0 0 4px rgba(0,0,0,.25);
+}
+
+/* search box */
+.ui-listview-filter {
+  border-bottom:1px solid #999;
+}
+.ui-input-search input.ui-input-text {
+  background:none;
+  box-shadow:none;
+}
+.ui-input-search input.ui-input-text:focus {
+  outline:none;
+
+}
+.ui-listview-filter .ui-input-search {
+  margin:10px 5px 5px 5px;
+  background:none;
+  box-shadow:none;
+  border:none;
+}
+.ui-listview-filter .ui-input-search.ui-focus {
+  outline:none;
+  border-color:#999;
+}
+
+.ui-input-search .ui-input-clear{
+  border:none;
+  background-color:transparent;
+  box-shadow:none;
+}
+.ui-input-search .ui-icon {
+  background: url('../images/x.png') no-repeat center center transparent;
+  background-size:16px 16px;
+  opacity:.7;
+  box-shadow:none;
+}
+.ui-input-search .ui-icon:hover {
+  opacity:.8;
+}
+.ui-input-search .ui-btn-inner {
+  border:none;
+  box-shadow:none;
+}
+
+/* collapsible content */
+.ui-collapsible-content {
+  background: rgba(255,255,255,.8);
+}
+.ui-collapsible-content p {
+  line-height:1.5em;
+}
+
+/* popup */
+.ui-popup #dialog-cancel {
+  text-align:center;
+  border:none;
+  box-shadow:none;
+}
+.ui-popup #dialog-cancel .ui-btn-inner {
+  borer-raidus:2px;
+  color:#fff;
+  text-shadow:none;
+  border:none;
+  background: #c7512a;
+
 }
