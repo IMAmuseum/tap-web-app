@@ -69,7 +69,7 @@ TapAPI.tourMLParser = {
     },
     parseTourMLError : function (response) {
         TapAPI.tours.tourmlRequests--;
-        Backbone.trigger('tap.tourml.parsed');
+        Backbone.trigger('tap.tourml.parsed', []);
     },
     parseTour: function(data, tourUri) {
         this.trigger('willParseTour');
