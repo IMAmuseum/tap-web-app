@@ -24,6 +24,9 @@ TapAPI.classes.views.AppView = Backbone.View.extend({
         var popupView = new TapAPI.classes.views.PopupView();
         this.$el.append(popupView.render().$el);
 
+        // add loader view (but don't add its element, we don't need that)
+        var loaderView = new TapAPI.classes.views.LoaderView();
+
         if (TapAPI.social.enabled) {
             var socialPopupView = new TapAPI.classes.views.SocialPopupView();
             this.$el.append(socialPopupView.render().$el);

@@ -13,6 +13,8 @@ TapAPI.classes.views.ContentView = TapAPI.classes.views.BaseView.extend({
     render: function(view) {
         if (view === undefined) return this;
 
+        view.preRender();
+
         // cleanup previous view
         if (this.currentView !== undefined) {
             this.$el.removeClass(this.currentView.id);
@@ -24,6 +26,8 @@ TapAPI.classes.views.ContentView = TapAPI.classes.views.BaseView.extend({
         this.$el.addClass(view.id);
         this.$el.html(view.render().$el);
         view.finishedAddingContent();
+
+        view.postRender();
 
         return this;
     }

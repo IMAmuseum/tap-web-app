@@ -6,6 +6,7 @@ TapAPI.classes.collections.TourCollection = Backbone.Collection.extend({
     localStorage: new Backbone.LocalStorage('tours'),
     initialize: function() {
         this.listenTo(Backbone, 'tap.tourml.parsed', this.tourMLParsed);
+        this.tourmlRequests = 0;
     },
     syncTourML: function(url) {
         var tours = [],

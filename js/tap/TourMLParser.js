@@ -21,6 +21,10 @@ TapAPI.tourMLParser = {
             this.initialize();
         }
 
+        // increment counter to keep track
+        // of how much async work is left to do
+        TapAPI.tours.tourmlRequests++;
+
         // load tourML
         TapAPI.helper.loadXMLDoc(uri);
     },
@@ -43,6 +47,8 @@ TapAPI.tourMLParser = {
                 if (tour.length > 0 && Date.parse(tourRefs[i].lastModified) <= Date.parse(tour[0].get('lastModified'))) {
                     tours.push(tour[0]);
                 } else {
+                    // also increment async counter
+                    TapAPI.tours.tourmlRequests++;
                     TapAPI.helper.loadXMLDoc(tourRefs[i].uri);
                 }
             }
@@ -55,6 +61,8 @@ TapAPI.tourMLParser = {
                 }
             }
         }
+        // decrement async counter
+        TapAPI.tours.tourmlRequests--;
         Backbone.trigger('tap.tourml.parsed', tours);
     },
     parseTour: function(data, tourUri) {

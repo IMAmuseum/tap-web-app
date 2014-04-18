@@ -8,6 +8,7 @@ TapAPI.classes.views.BaseView = Backbone.View.extend({
 		this.displayHeader = true;
 		this.displayFooter = true;
 		this.displayBackButton = true;
+		this.displayLoader = false;
 	},
 	render: function() {},
 	finishedAddingContent: function() {},
@@ -36,5 +37,15 @@ TapAPI.classes.views.BaseView = Backbone.View.extend({
 	getNextStopId : function () {
 		var nextStop = this.model.getSortedConnections();
 		return !_.isUndefined(nextStop) ? nextStop[0].destId : undefined;
+	},
+	preRender : function () {
+		if (this.displayLoader === true) {
+		    Backbone.trigger('tap.displayLoader');
+		}
+	},
+	postRender : function () {
+		if (this.displayLoader === true) {
+			Backbone.trigger('tap.removeLoader');
+		}
 	}
 });
