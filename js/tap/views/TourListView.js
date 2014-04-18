@@ -44,6 +44,11 @@ TapAPI.classes.views.TourListView = TapAPI.classes.views.BaseView.extend({
 
 		return this;
 	},
+	close: function() {
+		if (this.displayLoader === true) {
+			Backbone.trigger('tap.removeLoader');
+		}
+	},
 	tourInfoPopup: function(e) {
 		e.preventDefault();
 

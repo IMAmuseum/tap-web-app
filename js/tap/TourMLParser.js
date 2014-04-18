@@ -13,6 +13,7 @@ TapAPI.tourMLParser = {
         this.tourOrder = [];
 
         this.listenTo(Backbone, 'tap.tourml.loaded', this.parseTourML);
+        this.listenTo(Backbone, 'tap.tourml.loadingerror', this.parseTourMLError);
 
         this.initialized = true;
     },
@@ -40,6 +41,7 @@ TapAPI.tourMLParser = {
         } else if(tourML.tourSet && tourML.tourSet.tourMLRef) { // TourSet w/ external tours
             var tourRefs = TapAPI.helper.objectToArray(tourML.tourSet.tourMLRef);
             len = tourRefs.length;
+            // TapAPI.tours.toursToParse += len;// if this is a tourset give the tour collection a length
             for(i = 0; i < len; i++) {
                 this.addTourToMap(tourRefs[i].uri, tourML.uri);
                 //check modified date before requesting tourml from server
@@ -64,6 +66,10 @@ TapAPI.tourMLParser = {
         // decrement async counter
         TapAPI.tours.tourmlRequests--;
         Backbone.trigger('tap.tourml.parsed', tours);
+    },
+    parseTourMLError : function (response) {
+        TapAPI.tours.tourmlRequests--;
+        Backbone.trigger('tap.tourml.parsed');
     },
     parseTour: function(data, tourUri) {
         this.trigger('willParseTour');
