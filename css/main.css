@@ -34,10 +34,10 @@
 
 /* Footer */
 #footer .ui-icon {
-    top: 3px;
+    /*top: 3px;
     width: 26px!important;
     height: 26px!important;
-    margin-left: -14px !important;
+    margin-left: -14px !important;*/
     -moz-box-shadow: none!important;
     -webkit-box-shadow: none!important;
     box-shadow: none!important;

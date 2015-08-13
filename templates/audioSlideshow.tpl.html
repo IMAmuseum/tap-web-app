@@ -8,7 +8,10 @@
 <% if (!_.isEmpty(imageSources)) { %>
 <div class="slideshow-images">
 <% _.each(imageSources, function(imageSource) { %>
-    <img class="slideshow-image" id="<%= imageSource.id %>" src="<%= imageSource.uri %>" />
+    <div class="image-container" id="<%= imageSource.id %>">
+        <img class="slideshow-image" src="<%= imageSource.uri %>" />
+        <p class="caption"><%= imageSource.title %><br /><%= imageSource.caption %></p>
+    </div>
 <% }); %>
 </div>
 <% } %>
@@ -16,6 +19,12 @@
 <div class="description" data-role="collapsible" data-content-theme="c">
     <h3>Description</h3>
     <%= description %>
+</div>
+<% } %>
+<% if (!_.isEmpty(transcription)) { %>
+<div id="transcription" data-role="collapsible" data-content-theme="c">
+    <h3>Transcript</h3>
+    <p><%= transcription %></p>
 </div>
 <% } %>
 <% if (!_.isUndefined(nextStopPath)) { %>
