@@ -72,7 +72,9 @@ TapAPI.classes.views.StopListView = TapAPI.classes.views.StopSelectionView.exten
     render: function() {
         this.$el.html(this.template({
             tourID: TapAPI.currentTour,
+            tourTitle: TapAPI.tours.get(TapAPI.currentTour).get('title'),
             stops: this.stops,
+            headerImageUri: TapAPI.tours.get(TapAPI.currentTour).getAppResourceByUsage('image'),
             displayCodes: this.displayCodes,
             displayThumbnails: this.displayThumbnails
         }));
