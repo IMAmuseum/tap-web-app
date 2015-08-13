@@ -57,6 +57,10 @@ var TapAPI = {
             view: 'WebStopView',
             icon: 'images/web.png'
         },
+        'quiz_stop': {
+            view: 'QuizStopView',
+            icon: 'images/quiz.png'
+        },
         'audio_slideshow_stop': {
             view: 'AudioSlideshowStopView',
             icon: 'images/audio.png'

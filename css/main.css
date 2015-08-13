@@ -348,6 +348,12 @@ a.next-button {
     -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
     filter: alpha(opacity=1);
 }
+
+/* Quiz Stop */
+.quiz-result {
+    display: none;
+}
+
 /* Zoom Stop */
 .zoomingImageDescriptionHandle, .zoomingImageDescriptionText {
     width: 100%;
