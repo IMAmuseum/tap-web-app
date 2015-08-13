@@ -228,6 +228,23 @@ div.tour-title {
     margin: 10px;
 }
 
+#tour-zooming,
+.tour-zooming {
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+#tour-zooming.zoomingImageDescription {
+    position: absolute;
+    color: white;
+    bottom: 0;
+    left: 0;
+    padding: 5px;
+    height: 25px;
+    background-color: #aaa;
+}
+
 /* Stop Group */
 .ui-content.stop-group {
     padding: 0;
@@ -330,4 +347,16 @@ a.next-button {
     opacity:1;
     -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
     filter: alpha(opacity=1);
+}
+/* Zoom Stop */
+.zoomingImageDescriptionHandle, .zoomingImageDescriptionText {
+    width: 100%;
+    font-size: 12px;
+    position: absolute;
+    color: #FFF;
+    text-shadow: none;
+    bottom: 0px;
+    padding: 5px 5px 25px 5px;
+    background: rgba(0,0,0,.5);
+    text-align: left;
 }
