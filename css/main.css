@@ -1,6 +1,41 @@
+@import url(http://fonts.googleapis.com/css?family=Merriweather:400,700,400italic);
+
+/* Typography */
+body,
+input,
+select,
+textarea,
+button,
+.ui-btn {
+    font-family: 'Merriweather', serif;
+    font-weight: 400;
+}
+
+strong {
+    font-weight: 700;
+}
+
+.ui-page-theme-a, .ui-page-theme-a .ui-btn, html .ui-bar-a .ui-btn, html .ui-body-a .ui-btn, html body .ui-group-theme-a .ui-btn, html head + body .ui-btn.ui-btn-a,
+.ui-page-theme-a .ui-btn:visited, html .ui-bar-a .ui-btn:visited, html .ui-body-a .ui-btn:visited, html body .ui-group-theme-a .ui-btn:visited, html head + body .ui-btn.ui-btn-a:visited {
+    text-shadow: none;
+}
+
+/* Colors */
+.ui-page-theme-a a, html .ui-bar-a a, html .ui-body-a a, html body .ui-group-theme-a a,
+.ui-page-theme-a a:visited, html .ui-bar-a a:visited, html .ui-body-a a:visited, html body .ui-group-theme-a a:visited {
+    color: #517891;
+}
+
+.ui-page-theme-a {
+    background: #e2ddcc !important;
+    color: #3a617a !important;
+    text-align: center;
+}
+
 /* Page */
-.ui-header .ui-title {
+.ui-header h3 {
     margin: .7em 5.5em;
+    text-shadow: none;
 }
 .ui-page-header-fixed {
     padding-top: 43px;
@@ -9,11 +44,25 @@
     padding-bottom: 49px;
 }
 #content-wrapper {
-    margin-top: -1px;
+
 }
 #content-wrapper h3.stop-title {
-    width: 100%;
     margin-top: 0;
+    width: 100%;
+}
+.ui-btn-back {
+    float: left;
+    font-weight: 400 !important;
+    font-size: .875em !important;
+    text-decoration: none;
+    text-transform: lowercase;
+    padding: 18px 15px 10px;
+}
+.ui-btn-back i {
+    float: left;
+    font-size: 2em;
+    margin-top: -6px;
+    margin-right: 5px;
 }
 
 /* popup */
@@ -32,34 +81,49 @@
     background-size: 16px 16px;
 }
 
+.ui-bar-a,
+.ui-page-theme-a .ui-bar-inherit,
+html .ui-bar-a .ui-bar-inherit,
+html .ui-body-a .ui-bar-inherit,
+html body .ui-group-theme-a .ui-bar-inherit {
+    background: #fff !important;
+    border: none;
+    text-align: center;
+}
+
 /* Footer */
 #footer .ui-icon {
-    /*top: 3px;
-    width: 26px!important;
-    height: 26px!important;
-    margin-left: -14px !important;*/
-    -moz-box-shadow: none!important;
-    -webkit-box-shadow: none!important;
-    box-shadow: none!important;
-    -webkit-border-radius: 0 !important;
-    -moz-border-radius: 0 !important;
-    border-radius: 0 !important;
 }
-#footer .ui-btn-inner {
-    padding: 30px 0 5px 0;
-    font-size: 9px;
+.ui-footer .ui-btn {
+    border: none !important;
+    text-shadow: none !important;
+    color: #517891 !important;
+    text-transform: lowercase;
+    font-weight: 400;
 }
-.ui-icon-keypadview {
-    background: url(../images/keypad-white.png) 0 0 no-repeat;
-    background-size: 26px 26px;
+.ui-footer .ui-btn-active {
+    background-color: #d3dde3 !important;
 }
-.ui-icon-stoplistview {
-    background: url(../images/list-white.png) 0 0 no-repeat;
-    background-size: 26px 26px;
+.ui-icon-keypadview:after{
+    background-color: #517891;
+    -webkit-mask-image: url(../images/keypad_icon.svg);
+    mask-image: url(../images/keypad_icon.svg);
+    background-size: cover;
+    border-radius: 0;
 }
-.ui-icon-mapview {
-    background: url(../images/map-white.png) 0 0 no-repeat;
-    background-size: 26px 26px;
+.ui-icon-stoplistview:after {
+    background-color: #517891;
+    -webkit-mask-image: url(../images/menu_icon.svg);
+    mask-image: url(../images/menu_icon.svg);
+    background-size: cover;
+    border-radius: 0;
+}
+.ui-icon-mapview:after {
+    background-color: #517891;
+    -webkit-mask-image: url(../images/map_pointer.svg);
+    mask-image: url(../images/map_pointer.svg);
+    background-size: cover;
+    border-radius: 0;
 }
 
 /* list view overrides */
@@ -68,31 +132,43 @@
 }
 
 /* Tour List */
+.tour-list h1 {
+    margin-bottom: 0;
+}
+
+.tour-list p {
+    margin: 0;
+    padding: 5px 0 20px;
+}
+
 .tour-wrapper {
     position: relative;
     overflow: hidden;
 }
 .tour-image img {
     width: 100%;
+    vertical-align: bottom;
 }
 
 div.tour-title {
-    background: rgb(0,0,0);
-    background: rgba(0,0,0,.7);
-    padding: 0;
+    background: rgb(81,120,145);
     color: #FFF;
-    z-index: 99;
+    font-weight: 400;
+    padding: 0;
+    text-align: center;
     text-shadow: none;
-    position: absolute;
-    bottom: 4px;
-    left: 0;
-    width: 100%;
     white-space: normal;
+    width: 100%;
 }
 
 .tour-title span {
     display: block;
     padding: 10px;
+}
+
+.tour-info {
+    background: #e2ddcc !important;
+    border: none !important;
 }
 
 /* Tour Details */
@@ -103,54 +179,64 @@ div.tour-title {
 
 /* Keypad */
 #keypad {
-    padding-top: -10px;
+    padding-bottom: 100px;
 }
+
+.keypad-button,
+.action-button {
+    border: 1px solid rgb(81,120,145);
+    -moz-border-radius: 75px;
+    -webkit-border-radius: 75px;
+    border-radius: 75px;
+    cursor: pointer;
+    font-size: 2.6em;
+    line-height: 1;
+    margin: .285em auto;
+    max-width: 42px;
+    padding: .38em;
+}
+
+.clear-button {
+    background: url(../images/delete_key.svg) 7px center no-repeat;
+    background-size: 75%;
+    padding: 0;
+    width: 75px;
+    height: 75px;
+    max-width: inherit;
+}
+
+.go-button {
+    background: #cfe5b5;
+    padding: .85em .55em .625em .45em;
+    font-size: 1.9em;
+    text-transform: uppercase;
+}
+
 #code-label {
     text-align: center;
-    font-weight: bold;
-}
-
-#code-label,
-.action-button,
-.keypad-button {
-    padding: .24em;
+    font-size: 3.5em;
     margin: .1em;
-    font-size: 2em;
-    -moz-border-radius: .3em;
-    -webkit-border-radius: .3em;
-    border-radius: .3em;
-}
-
-#clear-button-wrapper .ui-btn-inner {
-    padding: .6em 0;
-}
-
-.keypad-button .ui-btn-inner,
-.action-button .ui-btn-inner {
-    border-top: none;
+    line-height: 1;
+    padding: .24em;
 }
 
 #code-label-wrapper {
-    width: 100%;
     padding: 0 6px 5px 5px;
+    width: 100%;
 }
 
 #code-label-border {
-    border: 1px solid #666;
-    background-color: #FFF;
+    background-color: none;
+    height: 80px;
     margin-top: .3em;
-    height: 51px;
-    -moz-border-radius: .3em;
-    -webkit-border-radius: .3em;
-    border-radius: .3em;
 }
 
 /* Stop List View */
 #tour-stop-list .distance {
     float: right;
+    font-size: 0.8em;
     margin-right: 1em;
     padding: 0.3em;
-    font-size: 0.8em;
 }
 
 #tour-stop-list .nearest .distance {
@@ -161,15 +247,19 @@ div.tour-title {
 }
 
 .stop-code {
-    position: absolute;
-    top: 1px;
     font-size: 2em;
     opacity: .3;
+    position: absolute;
+    top: 1px;
     width: 36px;
 }
 
 .title-with-code {
     padding-left: 46px;
+}
+
+.ui-btn-icon-right:after {
+    display: none;
 }
 
 /* Map View */
@@ -178,8 +268,8 @@ div.tour-title {
 }
 
 #tour-map {
-    width: 100%;
     height: 100%;
+    width: 100%;
 }
 
 .leaflet-top, .leaflet-bottom {
@@ -201,8 +291,8 @@ div.tour-title {
 }
 
 .leaflet-popup-content .title a {
-    font-weight: bold;
     color: #000;
+    font-weight: 700;
     text-decoration: none;
 }
 
@@ -231,18 +321,18 @@ div.tour-title {
 #tour-zooming,
 .tour-zooming {
     height: 100%;
-    width: 100%;
-    padding: 0;
     margin: 0;
+    padding: 0;
+    width: 100%;
 }
 #tour-zooming.zoomingImageDescription {
-    position: absolute;
-    color: white;
+    background-color: #aaa;
     bottom: 0;
+    color: white;
+    height: 25px;
     left: 0;
     padding: 5px;
-    height: 25px;
-    background-color: #aaa;
+    position: absolute;
 }
 
 /* Stop Group */
@@ -252,8 +342,8 @@ div.tour-title {
 
 #stop-group #header-wrapper img {
     display: block;
-    width: 100%;
     height: auto;
+    width: 100%;
 }
 
 #stop-group h3.stop-title {
@@ -301,21 +391,21 @@ div.tour-title {
 }
 
 #gallery li a {
+    border: 1px solid #3c3c3c;
     display: block;
     margin: 5px;
-    border: 1px solid #3c3c3c;
 }
 
 #gallery li a img {
     display: block;
-    width: 100%;
     height: auto;
+    width: 100%;
 }
 /* Web stop */
 #web-stop img {
-    width: 100%;
     height: auto;
     padding: 10px 0;
+    width: 100%;
 }
 a.next-button {
     clear: both;
@@ -323,15 +413,13 @@ a.next-button {
 
 /* Audio Slideshow Stop */
 .slideshow-images {
-    width: 100%;
-    position: relative;
     height: 300px;
     overflow: hidden;
+    position: relative;
+    width: 100%;
 }
 
 .slideshow-images img {
-    position:absolute;
-    left:0;
     -webkit-transition: opacity 1s ease-in-out;
     -moz-transition: opacity 1s ease-in-out;
     -o-transition: opacity 1s ease-in-out;
@@ -339,8 +427,10 @@ a.next-button {
     opacity:0;
     -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
     filter: alpha(opacity=0);
-    max-height: 300px;
     display: block;
+    left:0;
+    max-height: 300px;
+    position:absolute;
 }
 
 .slideshow-images img.opaque {
@@ -356,13 +446,13 @@ a.next-button {
 
 /* Zoom Stop */
 .zoomingImageDescriptionHandle, .zoomingImageDescriptionText {
-    width: 100%;
-    font-size: 12px;
-    position: absolute;
-    color: #FFF;
-    text-shadow: none;
-    bottom: 0px;
-    padding: 5px 5px 25px 5px;
     background: rgba(0,0,0,.5);
+    bottom: 0px;
+    color: #FFF;
+    font-size: 12px;
+    padding: 5px 5px 25px 5px;
+    position: absolute;
     text-align: left;
+    text-shadow: none;
+    width: 100%;
 }
