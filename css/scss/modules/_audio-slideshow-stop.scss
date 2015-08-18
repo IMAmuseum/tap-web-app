@@ -1,0 +1,27 @@
+/* Audio Slideshow Stop */
+.slideshow-images {
+    height: 300px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+.slideshow-images img {
+    -webkit-transition: opacity 1s ease-in-out;
+    -moz-transition: opacity 1s ease-in-out;
+    -o-transition: opacity 1s ease-in-out;
+    transition: opacity 1s ease-in-out;
+    opacity:0;
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    filter: alpha(opacity=0);
+    display: block;
+    left:0;
+    max-height: 300px;
+    position:absolute;
+}
+
+.slideshow-images img.opaque {
+    opacity:1;
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+    filter: alpha(opacity=1);
+}

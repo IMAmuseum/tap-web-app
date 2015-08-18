@@ -1,0 +1,39 @@
+// ====================================================================
+// Base
+//
+// These are top-level styles for things like the <body>. Properties like
+//  box-sizing, body background/font-family and more.
+// ====================================================================
+
+* {
+	box-sizing: border-box;
+}
+
+img {
+	max-width: 100%;
+}
+
+body,
+.ui-page-theme-a {
+    background: $background-color !important;
+    color: $secondary-font-color !important;
+    text-align: center;
+}
+
+hr {
+    border: none;
+    border-bottom: 1px solid $primary-color;
+    width: 70%;
+    max-width: 440px;
+}
+
+.ui-page-theme-a a,
+html .ui-bar-a a,
+html .ui-body-a a,
+html body .ui-group-theme-a a,
+.ui-page-theme-a a:visited,
+html .ui-bar-a a:visited,
+html .ui-body-a a:visited,
+html body .ui-group-theme-a a:visited {
+    color: $primary-color;
+}

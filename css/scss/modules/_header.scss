@@ -1,0 +1,16 @@
+/* Header */
+
+#header .ui-icon-social {
+    background-image: url(../images/share-white.png);
+    background-size: 16px 16px;
+}
+
+.ui-bar-a,
+.ui-page-theme-a .ui-bar-inherit,
+html .ui-bar-a .ui-bar-inherit,
+html .ui-body-a .ui-bar-inherit,
+html body .ui-group-theme-a .ui-bar-inherit {
+    background: #fff !important;
+    border: none;
+    text-align: center;
+}

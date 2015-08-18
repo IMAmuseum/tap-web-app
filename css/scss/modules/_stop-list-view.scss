@@ -1,0 +1,54 @@
+// ====================================================================
+// Stop List Module
+//
+// Styles for stop list view
+// ===================================================================
+
+.tour-stop-list .ui-listview .ui-btn {
+    background: #517891 !important;
+    font-weight: 400;
+    color: #fff !important;
+    border: none !important;
+    margin: 0 1em 1em !important;
+    padding: 1em 1em 1em 0;
+}
+
+.tour-stop-list .ui-listview .ui-btn:hover {
+    background: #5d89a6 !important;
+}
+
+#tour-stop-list .distance {
+    float: right;
+    font-size: 0.8em;
+    margin-right: 1em;
+    padding: 0.3em;
+}
+
+#tour-stop-list .nearest .distance {
+    background-color: #7FBCE5;
+}
+
+#tour-stop-list #header-wrapper img {
+    margin: 0 -5% 0;
+    width: 110%;
+}
+
+.stop-code {
+    border-right: 1px solid #7094aa;
+    font-size: 2em;
+    line-height: 1;
+    margin: 10px 0;
+    position: absolute;
+    text-align: center;
+    top: 1px;
+    width: 56px;
+}
+
+.title-with-code {
+    padding-left: 66px;
+    line-height: 1;
+}
+
+.ui-btn-icon-right:after {
+    display: none;
+}

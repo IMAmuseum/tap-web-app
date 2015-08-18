@@ -1,0 +1,26 @@
+/* Tour Stops */
+.tour-stop .title {
+    font-size: 120%;
+    margin: 0 0 20px 10px;
+}
+
+.tour-stop .description {
+    margin: 10px;
+}
+
+#tour-zooming,
+.tour-zooming {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+#tour-zooming.zoomingImageDescription {
+    background-color: #aaa;
+    bottom: 0;
+    color: white;
+    height: 25px;
+    left: 0;
+    padding: 5px;
+    position: absolute;
+}

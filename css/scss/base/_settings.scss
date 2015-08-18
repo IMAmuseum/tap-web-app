@@ -1,0 +1,35 @@
+// ====================================================================
+// Settings
+//
+// These main setting for tap to make it your own. Add things like
+//  branding fonts, colors and other items to personalize the tap app.
+// ====================================================================
+
+@import url(http://fonts.googleapis.com/css?family=Merriweather:400,700,400italic|Open+Sans);
+
+// Fonts
+$primary-font: 'Merriweather', 'Georgia', serif;
+$secondary-font: 'Open Sans', sans-serif;
+
+// Colors
+$primary-color: #517891;
+$secondary-color: #b7cdda;
+$highlight-color: #d3dde3;
+
+$button: #517891;
+$button-hover: #5d89a6;
+$button-pressed: #395566;
+$button-text: #ffffff;
+$button-hover-text: #ffffff;
+$button-pressed-text: #ffffff;
+
+$go-button: #cfe5b5;
+$audio-bar: #343545;
+
+$primary-font-color: #517891;
+$secondary-font-color: #3a617a;
+
+$background-color: #e2ddcc;
+$header-background-color: #ffffff;
+
+// Breakpoints
