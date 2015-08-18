@@ -1,14 +1,26 @@
-@import url(http://fonts.googleapis.com/css?family=Merriweather:400,700,400italic);
+@import url(http://fonts.googleapis.com/css?family=Merriweather:400,700,400italic|Open+Sans);
 
 /* Typography */
+* {
+    text-shadow: none !important;
+}
+
 body,
 input,
 select,
 textarea,
 button,
-.ui-btn {
+.ui-btn,
+.leaflet-popup-content-wrapper {
     font-family: 'Merriweather', serif;
     font-weight: 400;
+}
+
+.keypad-button,
+.action-button,
+#code-label,
+.stop-code {
+    font-family: 'Open Sans', sans-serif;
 }
 
 strong {
@@ -26,6 +38,19 @@ strong {
     color: #517891;
 }
 
+.tour-stop-list .ui-listview .ui-btn {
+    background: #517891 !important;
+    font-weight: 400;
+    color: #fff !important;
+    border: none !important;
+    margin: 0 1em 1em !important;
+    padding: 1em 1em 1em 0;
+}
+
+.tour-stop-list .ui-listview .ui-btn:hover {
+    background: #5d89a6 !important;
+}
+
 .ui-page-theme-a {
     background: #e2ddcc !important;
     color: #3a617a !important;
@@ -34,8 +59,8 @@ strong {
 
 /* Page */
 .ui-header h3 {
-    margin: .7em 5.5em;
-    text-shadow: none;
+    margin: .7em 1em;
+    min-height: 1.1em;
 }
 .ui-page-header-fixed {
     padding-top: 43px;
@@ -51,12 +76,14 @@ strong {
     width: 100%;
 }
 .ui-btn-back {
-    float: left;
+    position: absolute;
+    left: 0;
+    top: 0;
     font-weight: 400 !important;
     font-size: .875em !important;
     text-decoration: none;
     text-transform: lowercase;
-    padding: 18px 15px 10px;
+    padding: 18px 2% 10px;
 }
 .ui-btn-back i {
     float: left;
@@ -96,34 +123,39 @@ html body .ui-group-theme-a .ui-bar-inherit {
 }
 .ui-footer .ui-btn {
     border: none !important;
-    text-shadow: none !important;
     color: #517891 !important;
     text-transform: lowercase;
     font-weight: 400;
+    padding-top: 38px;
 }
 .ui-footer .ui-btn-active {
     background-color: #d3dde3 !important;
 }
-.ui-icon-keypadview:after{
-    background-color: #517891;
-    -webkit-mask-image: url(../images/keypad_icon.svg);
-    mask-image: url(../images/keypad_icon.svg);
+
+.ui-icon-keypadview:after,
+.ui-icon-stoplistview:after,
+.ui-icon-mapview:after {
+    background-color: transparent;
     background-size: cover;
     border-radius: 0;
+    width: 30px;
+    height: 30px;
+}
+
+.ui-icon-keypadview:after{
+    background-image: url(../images/keypad_icon.svg);
 }
 .ui-icon-stoplistview:after {
-    background-color: #517891;
-    -webkit-mask-image: url(../images/menu_icon.svg);
-    mask-image: url(../images/menu_icon.svg);
-    background-size: cover;
-    border-radius: 0;
+    background-image: url(../images/menu_icon.svg);
 }
 .ui-icon-mapview:after {
-    background-color: #517891;
-    -webkit-mask-image: url(../images/map_pointer.svg);
-    mask-image: url(../images/map_pointer.svg);
-    background-size: cover;
-    border-radius: 0;
+    background-image: url(../images/map_pointer.svg);
+}
+
+.ui-btn-icon-notext:after,
+.ui-btn-icon-top:after,
+.ui-btn-icon-bottom:after {
+    margin-left: -15px;
 }
 
 /* list view overrides */
@@ -156,7 +188,6 @@ div.tour-title {
     font-weight: 400;
     padding: 0;
     text-align: center;
-    text-shadow: none;
     white-space: normal;
     width: 100%;
 }
@@ -178,10 +209,6 @@ div.tour-title {
 }
 
 /* Keypad */
-#keypad {
-    padding-bottom: 100px;
-}
-
 .keypad-button,
 .action-button {
     border: 1px solid rgb(81,120,145);
@@ -193,31 +220,32 @@ div.tour-title {
     line-height: 1;
     margin: .285em auto;
     max-width: 42px;
-    padding: .38em;
+    padding: .36em .38em .4em;
 }
 
 .clear-button {
     background: url(../images/delete_key.svg) 7px center no-repeat;
     background-size: 75%;
-    padding: 0;
-    width: 75px;
-    height: 75px;
+    height: 74px;
     max-width: inherit;
+    padding: 0;
+    width: 74px;
 }
 
 .go-button {
     background: #cfe5b5;
-    padding: .85em .55em .625em .45em;
     font-size: 1.9em;
+    margin-top: .385em;
+    padding: .725em .6em .725em .5em;
     text-transform: uppercase;
 }
 
 #code-label {
-    text-align: center;
     font-size: 3.5em;
-    margin: .1em;
     line-height: 1;
+    margin: .1em;
     padding: .24em;
+    text-align: center;
 }
 
 #code-label-wrapper {
@@ -241,25 +269,42 @@ div.tour-title {
 
 #tour-stop-list .nearest .distance {
     background-color: #7FBCE5;
-    -moz-border-radius: .3em;
-    -webkit-border-radius: .3em;
-    border-radius:.3em;
+}
+
+#tour-stop-list #header-wrapper img {
+    margin: -5% -5% 0;
+    width: 110%;
 }
 
 .stop-code {
+    border-right: 1px solid #7094aa;
     font-size: 2em;
-    opacity: .3;
+    line-height: 1;
+    margin: 10px 0;
     position: absolute;
+    text-align: center;
     top: 1px;
-    width: 36px;
+    width: 56px;
 }
 
 .title-with-code {
-    padding-left: 46px;
+    padding-left: 66px;
+    line-height: 1;
 }
 
 .ui-btn-icon-right:after {
     display: none;
+}
+
+/* Filter Form */
+.ui-filterable {
+    margin-bottom: 1em;
+}
+
+.ui-filterable .ui-input-search {
+    border-radius: 0;
+    border: 1px solid #7094aa;
+    box-shadow: none;
 }
 
 /* Map View */
@@ -287,11 +332,11 @@ div.tour-title {
 }
 
 .leaflet-popup-content {
-    margin: 2px 4px;
+    margin: 10px;
 }
 
 .leaflet-popup-content .title a {
-    color: #000;
+    font-size: 1em;
     font-weight: 700;
     text-decoration: none;
 }
@@ -302,13 +347,14 @@ div.tour-title {
 
 .leaflet-popup-content .goto-stop {
     float: right;
-    margin: 2px 0 0 0;
+    font-size: 2em;
+    margin: 0 0 0 5px;
 }
 .leaflet-popup {
     margin-bottom: 20px;
 }
-/* Tour Stops */
 
+/* Tour Stops */
 .tour-stop .title {
     font-size: 120%;
     margin: 0 0 20px 10px;
@@ -343,7 +389,8 @@ div.tour-title {
 #stop-group #header-wrapper img {
     display: block;
     height: auto;
-    width: 100%;
+    width: 110%;
+    margin: -5% -5% 0;
 }
 
 #stop-group h3.stop-title {
@@ -453,6 +500,5 @@ a.next-button {
     padding: 5px 5px 25px 5px;
     position: absolute;
     text-align: left;
-    text-shadow: none;
     width: 100%;
 }
