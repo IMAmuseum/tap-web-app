@@ -4,7 +4,6 @@
 		<li>
             <a href="<%= TapAPI.router.getControllerRoute(tourID, view) %>"
             data-icon="<%= view.toLowerCase() %>"
-            data-iconshadow="true"
             class="<%= view === activeToolbarButton ? 'ui-btn-active' : '' %>"><%= controllers[view].label %></a>
         </li>
         <% }; %>
