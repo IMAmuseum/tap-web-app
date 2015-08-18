@@ -1,10 +1,11 @@
-<ul  data-role="listview" data-filter="true">
-    <% if (!_.isUndefined(headerImageUri)) { %>
-        <div id="header-wrapper">
-            <img src="<%= headerImageUri %>">
-            <p class="caption"><%= tourTitle %></p>
-        </div>
-    <% } %>
+<% if (!_.isUndefined(headerImageUri)) { %>
+    <div id="header-wrapper">
+        <img src="<%= headerImageUri %>">
+        <h2 class="caption"><%= tourTitle %></h2>
+    </div>
+<% } %>
+<p>Please select a stop.</p>
+<ul data-role="listview" data-filter="true">
     <% _.each(stops, function(stop) { %>
     <li>
         <a href='<%= stop.model.getRoute() %>'>
