@@ -1,4 +1,9 @@
 /* Keypad */
+.keypad {
+    max-width: 350px;
+    margin: 0 auto 40px;
+}
+
 .keypad-button,
 .action-button {
     border: 1px solid rgb(81,120,145);
@@ -8,7 +13,7 @@
     cursor: pointer;
     font-size: 2.6em;
     line-height: 1;
-    margin: .285em auto;
+    margin: .3em auto;
     padding: .36em .38em .4em;
     width: 75px;
     height: 75px;
@@ -25,25 +30,22 @@
     background: #cfe5b5;
     font-size: 1.9em;
     margin-top: .39em;
-    padding: .725em .6em .725em .5em;
+    padding: .725em .65em .725em .45em;
     text-transform: uppercase;
 }
 
-#code-label {
-    font-size: 3.5em;
-    line-height: 1;
-    margin: .1em;
-    padding: .24em;
-    text-align: center;
-}
-
-#code-label-wrapper {
-    padding: 0 6px 5px 5px;
+.code-label-wrapper {
+    padding: 40px 6px;
     width: 100%;
-}
 
-#code-label-border {
-    background-color: none;
-    height: 80px;
-    margin-top: .3em;
+    .code-label-border {
+        height: 40px;
+
+        .code-label {
+            font-size: 3.5em;
+            line-height: 1;
+            text-align: center;
+            width: 100%;
+        }
+    }
 }
