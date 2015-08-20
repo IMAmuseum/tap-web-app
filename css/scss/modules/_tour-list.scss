@@ -4,13 +4,15 @@
 // Styles for Tour List View
 // ===================================================================
 
-.tour-list h1 {
-    margin-bottom: 0;
-}
+.tour-list {
+    h1 {
+        margin: 32px 0 0;
+    }
 
-.tour-list p {
-    margin: 0;
-    padding: 5px 0 20px;
+    p {
+        margin: 0;
+        padding: 5px 0 20px;
+    }
 }
 
 .tour-wrapper {
@@ -23,21 +25,30 @@
 }
 
 .tour-title {
-    background: rgb(81,120,145);
-    color: #FFF;
+    background: none;
     font-weight: 400;
-    padding: 0;
     text-align: center;
     white-space: normal;
     width: 100%;
-}
 
-.tour-title span {
-    display: block;
-    padding: 10px;
+    span {
+        display: block;
+        padding: 10px;
+    }
 }
 
 .tour-info {
-    background: #e2ddcc !important;
+    background: $button-color !important;
+    color: $button-text-color !important;
     border: none !important;
+    padding: 0 !important;
+    margin: 15px !important;
+
+    &:hover {
+        background: $button-hover-color !important;
+    }
+
+    &:active {
+        background: $button-active-color !important;
+    }
 }
