@@ -16,20 +16,22 @@ $primary-color: #517891;
 $secondary-color: #b7cdda;
 $highlight-color: #d3dde3;
 
-$button: #517891;
-$button-hover: #5d89a6;
-$button-pressed: #395566;
-$button-text: #ffffff;
-$button-hover-text: #ffffff;
-$button-pressed-text: #ffffff;
+$button-color: #517891;
+$button-hover-color: #5d89a6;
+$button-active-color: #395566;
+$button-text-color: #ffffff;
+$button-hover-text-color: #ffffff;
+$button-active-text-color: #ffffff;
 
-$go-button: #cfe5b5;
-$audio-bar: #343545;
+$go-button-color: #cfe5b5;
+$audio-bar-color: #343545;
 
 $primary-font-color: #517891;
 $secondary-font-color: #3a617a;
 
 $background-color: #e2ddcc;
 $header-background-color: #ffffff;
+$footer-background-color: #ffffff;
+$footer-background-color-active: #d3dde3;
 
 // Breakpoints
