@@ -27,6 +27,7 @@ TapAPI.classes.views.StopGroupView = TapAPI.classes.views.BaseView.extend({
                     id: stop.get('id'),
                     title: stop.get('title'),
                     icon: TapAPI.viewRegistry[stop.get('view')].icon,
+                    fa_icon: TapAPI.viewRegistry[stop.get('view')].fa_icon,
                     view: stop.get('view'),
                     route: stop.getRoute()
                 });

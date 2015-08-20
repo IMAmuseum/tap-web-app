@@ -1,19 +1,32 @@
 /* Stop Group */
-#stop-group #header-wrapper img {
-    display: block;
-    height: auto;
-    width: 110%;
-    margin: 0 -5%;
+#stop-group {
+
+    #header-wrapper img {
+        display: block;
+        height: auto;
+        width: 110%;
+        margin: 0 -5%;
+    }
+
+    .stop-title {
+        margin: 15px 20px 0 20px;
+    }
+
+    .description {
+        margin: 20px;
+    }
+
+    #stop-list {
+        margin: 0 0 20px !important;
+    }
+
+    .ui-listview {
+        .ui-btn {
+            margin: 0 0 1em !important;
+        }
+    }
 }
 
-#stop-group .stop-title {
-    margin: 15px 20px 0 20px;
-}
 
-#stop-group .description {
-    margin: 20px;
-}
 
-#stop-group #stop-list {
-    margin: 20px;
-}
+

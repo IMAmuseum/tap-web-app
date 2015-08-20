@@ -32,20 +32,27 @@
     <% } %>
 </div>
 <% } %>
-<h3 class="stop-title"><%= title %></h3>
+<h2 class="stop-title"><%= title %></h2>
+<hr />
 <div class='description'><%= description %></div>
-<ul id="stop-list" data-role="listview" data-inset="true">
+<ul id="stop-list" class="stop-list ui-listview" data-role="listview">
 <% _.each(stops, function(stop) { %>
     <li>
-        <a href="<%= stop.route %>">
-            <img src="<%= stop.icon %>" class="ui-li-icon ui-li-thumb" />
-            <%= stop.title %>
+        <a href="<%= stop.route %>" class="ui-btn">
+            <span class="stop-code">
+                <% if (stop.fa_icon != "") { %>
+                    <i class="fa fa-<%= stop.fa_icon %>"></i>
+                <% } else { %>
+                    <img src="<%= stop.icon %>" class="ui-li-icon ui-li-thumb" />
+                <% } %>
+            </span>
+            <span class="title-with-code"><%= stop.title %></span>
         </a>
     </li>
 <% }); %>
 </ul>
 <% if (!_.isEmpty(transcription)) { %>
-<div id="transcription" data-role="collapsible" data-content-theme="c" data-inset="true">
+<div id="transcription" data-role="collapsible" data-content-theme="c">
     <h3>Audio Transcript</h3>
     <p><%= transcription %></p>
 </div>
