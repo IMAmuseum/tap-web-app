@@ -1,15 +1,22 @@
 /* Footer */
 
-.ui-footer .ui-btn {
-    border: none !important;
-    color: #517891 !important;
-    text-transform: lowercase;
-    font-weight: 400;
-    padding-top: 38px;
-}
+.ui-footer {
+    .ui-btn {
+        background-color: $footer-background-color !important;
+        border: none !important;
+        color: $primary-color !important;
+        text-transform: lowercase;
+        font-weight: 400;
+        padding-top: 38px;
 
-.ui-footer .ui-btn-active {
-    background-color: #d3dde3 !important;
+        &:hover {
+            background-color: $footer-background-color-active !important;
+        }
+    }
+
+    .ui-btn-active {
+        background-color: $footer-background-color-active !important;
+    }
 }
 
 .ui-icon-keypadview:after,
