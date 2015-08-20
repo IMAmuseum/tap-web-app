@@ -4,49 +4,68 @@
 // Styles for stop list view
 // ===================================================================
 
-.tour-stop-list .ui-listview .ui-btn {
-    background: #517891 !important;
-    font-weight: 400;
-    color: #fff !important;
-    border: none !important;
-    margin: 0 1em 1em !important;
-    padding: 1em 1em 1em 0;
+.tour-stop-list {
+
+    h2 {
+        margin: 10px 0 3px;
+    }
+
+    p {
+        margin-top: 0;
+    }
+
+    .distance {
+        float: right;
+        font-size: 0.8em;
+        margin-right: 1em;
+        padding: 0.3em;
+    }
+    .nearest .distance {
+        background-color: #7FBCE5;
+    }
+
+    #header-wrapper img {
+        margin: 0 -5% 0;
+        width: 110%;
+    }
 }
 
-.tour-stop-list .ui-listview .ui-btn:hover {
-    background: #5d89a6 !important;
-}
+.ui-listview {
+    margin-top: 0 !important;
 
-#tour-stop-list .distance {
-    float: right;
-    font-size: 0.8em;
-    margin-right: 1em;
-    padding: 0.3em;
-}
+    .ui-btn {
+        background: #517891 !important;
+        border: none !important;
+        color: #fff !important;
+        font-weight: 400;
+        margin: 0 1em 1em !important;
+        padding: 1.1em 1em .9em 0;
 
-#tour-stop-list .nearest .distance {
-    background-color: #7FBCE5;
-}
-
-#tour-stop-list #header-wrapper img {
-    margin: 0 -5% 0;
-    width: 110%;
+        &:hover {
+            background: #5d89a6 !important;
+        }
+    }
 }
 
 .stop-code {
     border-right: 1px solid #7094aa;
     font-size: 2em;
     line-height: 1;
-    margin: 10px 0;
+    margin: 7px 0 0;
+    padding: 3px 0;
     position: absolute;
     text-align: center;
-    top: 1px;
-    width: 56px;
+    top: 0;
+    width: 60px;
+
+    i {
+        vertical-align: top;
+    }
 }
 
 .title-with-code {
-    padding-left: 66px;
     line-height: 1;
+    padding-left: 70px;
 }
 
 .ui-btn-icon-right:after {
