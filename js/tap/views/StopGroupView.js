@@ -124,6 +124,8 @@ TapAPI.classes.views.StopGroupView = TapAPI.classes.views.BaseView.extend({
                 TapAPI.tracker.trackEvent('AudioStop', 'media_ended', label, timer.elapsed);
             });
 
+            $('.custom-audio').insertAfter( '.rslides' );
+
             // Add expand handler on the transcription toggle button
             this.$el.find('#transcription').on('expand', function(e, ui) {
                 var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
