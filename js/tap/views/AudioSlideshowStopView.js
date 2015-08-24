@@ -185,6 +185,14 @@ TapAPI.classes.views.AudioSlideshowStopView = TapAPI.classes.views.BaseView.exte
         }, false);
         //     mediaElement = $('.player')[0];
 
+        if (!_.isEmpty(this.images)) {
+            $(".rslides").responsiveSlides({
+                auto: false,             // Boolean: Animate automatically, true or false
+                pager: true,           // Boolean: Show pager, true or false
+                nav: false             // Boolean: Show navigation, true or false
+            });
+        }
+
         // add event handlers for media player events
         that.audioPlayer.addEventListener('loadedmetadata', function() {
             TapAPI.tracker.setTimerOption('maxThreshold', that.audioPlayer.duration * 1000);
@@ -216,6 +224,7 @@ TapAPI.classes.views.AudioSlideshowStopView = TapAPI.classes.views.BaseView.exte
             TapAPI.tracker.trackEvent('AudioSlideshowStop', 'show_transcription', label, null);
         });
 
+        $('.custom-audio').insertAfter( '.rslides' );
 
         that.customAudio.play();
     },
