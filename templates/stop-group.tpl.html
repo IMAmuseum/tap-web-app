@@ -1,11 +1,3 @@
-<% if (audioSources.length > 0) { %>
-<audio id="audio-player" class="player" controls="controls">
-    <p>Your browser does not support HTML 5 audio.</p>
-    <% _.each(audioSources, function(source) { %>
-    <%= source %>
-    <% }); %>
-</audio>
-<% } %>
 <% if (!_.isUndefined(header) || images.length > 0) { %>
 <div id="header-wrapper">
     <% if (!_.isUndefined(header)) { %><img src="<%= header %>"><% } %>
@@ -31,6 +23,14 @@
     </ul>
     <% } %>
 </div>
+<% if (audioSources.length > 0) { %>
+<audio id="audio-player" class="player" controls="controls">
+    <p>Your browser does not support HTML 5 audio.</p>
+    <% _.each(audioSources, function(source) { %>
+    <%= source %>
+    <% }); %>
+</audio>
+<% } %>
 <% } %>
 <h2 class="stop-title"><%= title %></h2>
 <hr />
@@ -52,7 +52,7 @@
 <% }); %>
 </ul>
 <% if (!_.isEmpty(transcription)) { %>
-<div id="transcription" data-role="collapsible" data-content-theme="c">
+<div id="transcription" data-role="collapsible" data-content-theme="c" data-iconpos="right" data-collapsed-icon="arrow-down" data-expanded-icon="arrow-up">
     <h3>Audio Transcript</h3>
     <p><%= transcription %></p>
 </div>

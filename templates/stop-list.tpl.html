@@ -5,7 +5,7 @@
     </div>
 <% } %>
 <p>Please select a stop.</p>
-<ul data-role="listview" data-filter="true">
+<ul data-role="listview" data-filter="true" data-inset="false" data-icon="false">
     <% _.each(stops, function(stop) { %>
     <li>
         <a href='<%= stop.model.getRoute() %>'>

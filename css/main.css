@@ -1,4 +1,5 @@
 @import url(http://fonts.googleapis.com/css?family=Merriweather:400,700,400italic|Open+Sans);
+@import url(https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css);
 /**
  * Media query breakpoints
  *
@@ -80,9 +81,6 @@
 * {
   box-sizing: border-box; }
 
-img {
-  max-width: 100%; }
-
 body,
 .ui-page-theme-a {
   background: #e2ddcc !important;
@@ -118,15 +116,17 @@ html body .ui-group-theme-a a:visited {
     padding-bottom: 49px;
 }*/
 .ui-content {
-  padding: 0 1em 1em; }
-
-#content-wrapper h3.stop-title {
-  margin-top: 0;
-  width: 100%; }
+  padding: 0 0 1em; }
 
 /* list view overrides */
-.ui-listview .ui-li-icon {
-  top: .7em; }
+.ui-listview,
+.ui-collapsible,
+.ui-filterable {
+  padding: 0 1em; }
+  .ui-listview .ui-li-icon,
+  .ui-collapsible .ui-li-icon,
+  .ui-filterable .ui-li-icon {
+    top: .7em; }
 
 * {
   text-shadow: none !important; }
@@ -150,30 +150,119 @@ button,
 strong {
   font-weight: 700; }
 
+p {
+  line-height: 1.4; }
+
 /* Audio Slideshow Stop */
-.slideshow-images {
-  height: 300px;
-  overflow: hidden;
-  position: relative;
-  width: 100%; }
-
-.slideshow-images img {
-  -webkit-transition: opacity 1s ease-in-out;
-  -moz-transition: opacity 1s ease-in-out;
-  -o-transition: opacity 1s ease-in-out;
-  transition: opacity 1s ease-in-out;
-  opacity: 0;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
-  filter: alpha(opacity=0);
-  display: block;
+.custom-audio {
+  background: #517891;
+  font-size: 11px;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  height: 40px;
   left: 0;
-  max-height: 300px;
-  position: absolute; }
+  padding: 5px;
+  right: 0;
+  text-shadow: none;
+  top: 40px;
+  width: 100%;
+  z-index: 999; }
 
-.slideshow-images img.opaque {
-  opacity: 1;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
-  filter: alpha(opacity=1); }
+.play-pause {
+  background: url(../images/icon-play.png) no-repeat center center transparent;
+  background-size: 12px 10px;
+  color: #fff;
+  text-indent: -9999px;
+  float: left;
+  height: 30px;
+  margin-top: 0;
+  width: 20%; }
+  .play-pause.play {
+    background: url(../images/icon-play.png) no-repeat center center transparent;
+    background-size: 12px 10px; }
+  .play-pause.pause {
+    background: url(../images/icon-pause.png) no-repeat center center transparent;
+    background-size: 12px 10px; }
+
+.audio-slider {
+  background-color: #343545;
+  float: left;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  height: 10px;
+  margin-top: 10px;
+  position: relative;
+  width: 60%; }
+  .audio-slider .audio-progress {
+    background-color: #b7cdda;
+    bottom: 0;
+    height: 10px;
+    left: 0;
+    position: absolute;
+    top: 0; }
+
+.audio-time {
+  color: #fff;
+  display: table-cell;
+  float: left;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  margin-top: 7px;
+  padding-right: 5px;
+  text-align: right;
+  width: 20%; }
+
+.rslides .image-slide {
+  background: #1e1e1e; }
+
+.rslides .image-slide img {
+  float: none;
+  height: auto !important;
+  margin: 0 auto !important;
+  max-height: 100%;
+  max-width: 100%;
+  width: auto !important; }
+
+.rslides .image-slide .caption {
+  background: black;
+  background: rgba(0, 0, 0, 0.7);
+  bottom: 0;
+  color: #ffffff;
+  font-size: 11px;
+  left: 0;
+  margin: 0;
+  padding: 5px;
+  position: absolute;
+  right: 0;
+  text-align: left; }
+
+.rslides .image-slide .caption br {
+  display: none; }
+
+.rslides li {
+  height: 400px; }
+  @media screen and (max-width: 420px) {
+    .rslides li {
+      height: 300px; } }
+
+.rslides_tabs {
+  margin: 0;
+  padding: 20px 0 10px;
+  text-align: center; }
+
+.rslides_tabs li {
+  display: inline-block;
+  margin: 0 5px; }
+  .rslides_tabs li a {
+    background: #517891;
+    border-radius: 7px;
+    display: block;
+    height: 14px;
+    overflow: hidden;
+    text-indent: 30px;
+    width: 14px; }
+  .rslides_tabs li.rslides_here a {
+    background: #b7cdda; }
 
 /* Audio Stops */
 #audio-stop .poster-image {
@@ -195,6 +284,33 @@ strong {
   margin-top: -6px;
   margin-right: 5px; }
 
+.ui-collapsible-heading, .ui-collapsible-heading > .ui-btn {
+  border-radius: 0 !important;
+  font-weight: 400 !important; }
+
+.ui-collapsible-heading-toggle {
+  background: #517891 !important;
+  border: none !important;
+  color: #ffffff !important; }
+  .ui-collapsible-heading-toggle:after {
+    background: none !important;
+    content: "\f0d7";
+    font-family: FontAwesome;
+    font-size: 24px;
+    line-height: 1;
+    margin-top: -12px !important; }
+
+.ui-collapsible-heading .ui-icon-arrow-down:after {
+  content: "\f0d7"; }
+
+.ui-collapsible-heading .ui-icon-arrow-up:after {
+  content: "\f0d8"; }
+
+.ui-collapsible-content {
+  background: #b7cdda !important;
+  border-radius: 0;
+  border: none !important; }
+
 /* Filter Form */
 .ui-filterable {
   margin-bottom: 1em; }
@@ -206,11 +322,14 @@ strong {
 
 /* Footer */
 .ui-footer .ui-btn {
+  background-color: #ffffff !important;
   border: none !important;
   color: #517891 !important;
   text-transform: lowercase;
   font-weight: 400;
   padding-top: 38px; }
+  .ui-footer .ui-btn:hover {
+    background-color: #d3dde3 !important; }
 
 .ui-footer .ui-btn-active {
   background-color: #d3dde3 !important; }
@@ -273,6 +392,10 @@ html body .ui-group-theme-a .ui-bar-inherit {
   width: 100%; }
 
 /* Keypad */
+.keypad {
+  max-width: 350px;
+  margin: 0 auto 40px; }
+
 .keypad-button,
 .action-button {
   border: 1px solid #517891;
@@ -282,7 +405,7 @@ html body .ui-group-theme-a .ui-bar-inherit {
   cursor: pointer;
   font-size: 2.6em;
   line-height: 1;
-  margin: .285em auto;
+  margin: .3em auto;
   padding: 0.36em 0.38em 0.4em;
   width: 75px;
   height: 75px; }
@@ -297,24 +420,19 @@ html body .ui-group-theme-a .ui-bar-inherit {
   background: #cfe5b5;
   font-size: 1.9em;
   margin-top: .39em;
-  padding: 0.725em 0.6em 0.725em 0.5em;
+  padding: 0.725em 0.65em 0.725em 0.45em;
   text-transform: uppercase; }
 
-#code-label {
-  font-size: 3.5em;
-  line-height: 1;
-  margin: .1em;
-  padding: .24em;
-  text-align: center; }
-
-#code-label-wrapper {
-  padding: 0 6px 5px 5px;
+.code-label-wrapper {
+  padding: 40px 6px;
   width: 100%; }
-
-#code-label-border {
-  background-color: none;
-  height: 80px;
-  margin-top: .3em; }
+  .code-label-wrapper .code-label-border {
+    height: 40px; }
+    .code-label-wrapper .code-label-border .code-label {
+      font-size: 3.5em;
+      line-height: 1;
+      text-align: center;
+      width: 100%; }
 
 /* Map View */
 #content-wrapper.tour-map {
@@ -364,23 +482,85 @@ html body .ui-group-theme-a .ui-bar-inherit {
   width: 100%; }
 
 /* popup */
-#popup-view p {
-  text-align: center; }
+.ui-popup-container {
+  width: 80%; }
+
+#popup-view {
+  padding: 0 1em; }
+  #popup-view p {
+    text-align: center; }
 
 /* social popup */
 .share-button {
   margin-bottom: 10px; }
 
 /* Quiz Stop */
+.quiz-stop {
+  padding: 0 1em 3em; }
+
 .quiz-result {
   display: none; }
+
+.ui-controlgroup-controls,
+.ui-controlgroup-controls .ui-radio,
+.ui-controlgroup-controls .ui-checkbox,
+.ui-controlgroup-controls .ui-select,
+.ui-controlgroup-controls li,
+.ui-controlgroup-controls label {
+  border-radius: 0 !important; }
+  .ui-controlgroup-controls .ui-radio .ui-radio-off,
+  .ui-controlgroup-controls .ui-radio .ui-radio .ui-radio-off,
+  .ui-controlgroup-controls .ui-checkbox .ui-radio .ui-radio-off,
+  .ui-controlgroup-controls .ui-select .ui-radio .ui-radio-off,
+  .ui-controlgroup-controls li .ui-radio .ui-radio-off,
+  .ui-controlgroup-controls label .ui-radio .ui-radio-off {
+    background: #517891;
+    color: #ffffff;
+    border: none;
+    font-weight: 400;
+    margin-bottom: 20px; }
+    .ui-controlgroup-controls .ui-radio .ui-radio-off:hover,
+    .ui-controlgroup-controls .ui-radio .ui-radio .ui-radio-off:hover,
+    .ui-controlgroup-controls .ui-checkbox .ui-radio .ui-radio-off:hover,
+    .ui-controlgroup-controls .ui-select .ui-radio .ui-radio-off:hover,
+    .ui-controlgroup-controls li .ui-radio .ui-radio-off:hover,
+    .ui-controlgroup-controls label .ui-radio .ui-radio-off:hover {
+      background: #5d89a6; }
+  .ui-controlgroup-controls .ui-radio .ui-radio-on,
+  .ui-controlgroup-controls .ui-radio .ui-radio .ui-radio-on,
+  .ui-controlgroup-controls .ui-checkbox .ui-radio .ui-radio-on,
+  .ui-controlgroup-controls .ui-select .ui-radio .ui-radio-on,
+  .ui-controlgroup-controls li .ui-radio .ui-radio-on,
+  .ui-controlgroup-controls label .ui-radio .ui-radio-on {
+    background: #395566;
+    color: #ffffff;
+    border: none;
+    font-weight: 400;
+    margin-bottom: 20px; }
+    .ui-controlgroup-controls .ui-radio .ui-radio-on:after,
+    .ui-controlgroup-controls .ui-radio .ui-radio .ui-radio-on:after,
+    .ui-controlgroup-controls .ui-checkbox .ui-radio .ui-radio-on:after,
+    .ui-controlgroup-controls .ui-select .ui-radio .ui-radio-on:after,
+    .ui-controlgroup-controls li .ui-radio .ui-radio-on:after,
+    .ui-controlgroup-controls label .ui-radio .ui-radio-on:after {
+      border-color: #5d89a6; }
+
+.ui-input-btn {
+  border-radius: 0 !important;
+  background: #517891 !important;
+  color: #ffffff !important;
+  border: none !important;
+  width: 80%;
+  max-width: 300px !important;
+  margin: 0 auto !important; }
+  .ui-input-btn:hover {
+    background: #5d89a6; }
 
 /* Stop Group */
 #stop-group #header-wrapper img {
   display: block;
   height: auto;
-  width: 110%;
-  margin: 0 -5%; }
+  width: 100%; }
 
 #stop-group .stop-title {
   margin: 15px 20px 0 20px; }
@@ -389,48 +569,58 @@ html body .ui-group-theme-a .ui-bar-inherit {
   margin: 20px; }
 
 #stop-group #stop-list {
-  margin: 20px; }
+  margin: 0 0 20px !important; }
 
-.tour-stop-list .ui-listview .ui-btn {
-  background: #517891 !important;
-  font-weight: 400;
-  color: #fff !important;
-  border: none !important;
-  margin: 0 1em 1em !important;
-  padding: 1em 1em 1em 0; }
+#stop-group .ui-listview .ui-btn {
+  margin: 0 0 1em !important; }
 
-.tour-stop-list .ui-listview .ui-btn:hover {
-  background: #5d89a6 !important; }
+.tour-stop-list h2 {
+  margin: 10px 0 3px; }
 
-#tour-stop-list .distance {
+.tour-stop-list p {
+  margin-top: 0; }
+
+.tour-stop-list .distance {
   float: right;
   font-size: 0.8em;
   margin-right: 1em;
   padding: 0.3em; }
 
-#tour-stop-list .nearest .distance {
+.tour-stop-list .nearest .distance {
   background-color: #7FBCE5; }
 
-#tour-stop-list #header-wrapper img {
+.tour-stop-list #header-wrapper img {
   margin: 0 -5% 0;
   width: 110%; }
+
+.ui-listview {
+  margin-top: 0 !important; }
+  .ui-listview .ui-btn {
+    background: #517891 !important;
+    border: none !important;
+    color: #fff !important;
+    font-weight: 400;
+    margin: 0 1em 1em !important;
+    padding: 1.1em 1em 0.9em 0; }
+    .ui-listview .ui-btn:hover {
+      background: #5d89a6 !important; }
 
 .stop-code {
   border-right: 1px solid #7094aa;
   font-size: 2em;
   line-height: 1;
-  margin: 10px 0;
+  margin: 7px 0 0;
+  padding: 3px 0;
   position: absolute;
   text-align: center;
-  top: 1px;
-  width: 56px; }
+  top: 0;
+  width: 60px; }
+  .stop-code i {
+    vertical-align: top; }
 
 .title-with-code {
-  padding-left: 66px;
-  line-height: 1; }
-
-.ui-btn-icon-right:after {
-  display: none; }
+  line-height: 1;
+  padding-left: 70px; }
 
 /* Tour Details */
 #tour-details #header-wrapper img {
@@ -438,7 +628,7 @@ html body .ui-group-theme-a .ui-bar-inherit {
   width: 100%; }
 
 .tour-list h1 {
-  margin-bottom: 0; }
+  margin: 32px 0 0; }
 
 .tour-list p {
   margin: 0;
@@ -453,21 +643,25 @@ html body .ui-group-theme-a .ui-bar-inherit {
   vertical-align: bottom; }
 
 .tour-title {
-  background: #517891;
-  color: #FFF;
+  background: none;
   font-weight: 400;
-  padding: 0;
   text-align: center;
   white-space: normal;
   width: 100%; }
-
-.tour-title span {
-  display: block;
-  padding: 10px; }
+  .tour-title span {
+    display: block;
+    padding: 10px; }
 
 .tour-info {
-  background: #e2ddcc !important;
-  border: none !important; }
+  background: #517891 !important;
+  color: #ffffff !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 15px !important; }
+  .tour-info:hover {
+    background: #5d89a6 !important; }
+  .tour-info:active {
+    background: #395566 !important; }
 
 /* Tour Stops */
 .tour-stop .title {
@@ -494,8 +688,9 @@ html body .ui-group-theme-a .ui-bar-inherit {
   position: absolute; }
 
 /* Video Stops */
-#video-stop .player {
-  max-width: 100%; }
+.videocontent {
+  width: 100%;
+  margin: 0 auto; }
 
 /* Web stop */
 #web-stop img {

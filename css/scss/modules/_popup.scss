@@ -1,6 +1,14 @@
 /* popup */
-#popup-view p {
-    text-align: center;
+.ui-popup-container{
+    width: 80%;
+}
+
+#popup-view{
+    padding: 0 1em;
+
+    p {
+        text-align: center;
+    }
 }
 
 /* social popup */

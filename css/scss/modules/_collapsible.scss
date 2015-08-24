@@ -1,5 +1,43 @@
+.ui-collapsible-heading {
 
-.ui-collapsible-heading-toggle {
+    &, & > .ui-btn {
+        border-radius: 0 !important;
+        font-weight: 400 !important;
+    }
 
+    &-toggle {
+        background: $button-color !important;
+        border: none !important;
+        color: $button-text-color !important;
+
+        &:after{
+            background: none !important;
+            content: "\f0d7";
+            font-family: FontAwesome;
+            font-size: 24px;
+            line-height: 1;
+            margin-top: -12px !important;
+        }
+    }
+
+    .ui-icon-arrow-down{
+
+        &:after{
+            content: "\f0d7";
+        }
+    }
+
+    .ui-icon-arrow-up{
+
+        &:after{
+            content: "\f0d8";
+        }
+    }
+}
+
+.ui-collapsible-content {
+    background: $secondary-color !important;
+    border-radius: 0;
+    border: none !important;
 }
 
