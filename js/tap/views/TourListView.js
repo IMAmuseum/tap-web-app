@@ -15,9 +15,9 @@ TapAPI.classes.views.TourListView = TapAPI.classes.views.BaseView.extend({
 		//update the view when tours are added to the collection
 		Backbone.on('tap.tourml.parsed', this.render, this);
 	},
-	events: {
-		'tap .tour-info' : 'tourInfoPopup'
-	},
+	// events: {
+	// 	'tap .tour-info' : 'tourInfoPopup'
+	// },
 	render: function() {
 		if (TapAPI.tours.length === 0 || TapAPI.tours.tourmlRequests > 0) {
 			return this;

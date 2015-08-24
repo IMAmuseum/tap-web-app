@@ -70,5 +70,8 @@ TapAPI.classes.models.TourModel = Backbone.Model.extend({
         });
 
         return appResources;
+    },
+    getDetailRoute: function(withHash) {
+        return TapAPI.router.getTourDetailRoute(this.get('id'), withHash);
     }
 });
