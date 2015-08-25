@@ -40,7 +40,7 @@
 }
 
 .audio-slider {
-    background-color: $audio-bar-color;
+    background-color: $audio-bar-total;
     float:left;
     font-style:normal!important;
     font-weight:400!important;
@@ -50,7 +50,7 @@
     width:60%;
 
     .audio-progress {
-        background-color: $secondary-color;
+        background-color: $audio-bar-current;
         bottom:0;
         height:10px;
         left:0;

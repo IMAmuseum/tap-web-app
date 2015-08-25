@@ -17,7 +17,7 @@ $primary-color: #517891;
 $secondary-color: #b7cdda;
 $highlight-color: #d3dde3;
 
-$button-color: #517891;
+$button-color: $primary-color;
 $button-hover-color: #5d89a6;
 $button-active-color: #395566;
 $button-text-color: #ffffff;
@@ -25,9 +25,13 @@ $button-hover-text-color: #ffffff;
 $button-active-text-color: #ffffff;
 
 $go-button-color: #cfe5b5;
-$audio-bar-color: #343545;
 
-$primary-font-color: #517891;
+$audio-player: $primary-color;
+$audio-bar-total: #000;
+$audio-bar-loaded: #343545;
+$audio-bar-current: #d3dde3;
+
+$primary-font-color: $primary-color;
 $secondary-font-color: #3a617a;
 
 $background-color: #e2ddcc;
