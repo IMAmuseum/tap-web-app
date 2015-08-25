@@ -1,36 +1,40 @@
-.ui-collapsible-heading {
+.ui-collapsible {
+    padding-bottom: 10px;
 
-    &, & > .ui-btn {
-        border-radius: 0 !important;
-        font-weight: 400 !important;
-    }
+    &-heading {
 
-    &-toggle {
-        background: $button-color !important;
-        border: none !important;
-        color: $button-text-color !important;
-
-        &:after{
-            background: none !important;
-            content: "\f0d7";
-            font-family: FontAwesome;
-            font-size: 24px;
-            line-height: 1;
-            margin-top: -12px !important;
+        &, & > .ui-btn {
+            border-radius: 0 !important;
+            font-weight: 400 !important;
         }
-    }
 
-    .ui-icon-arrow-down{
+        &-toggle {
+            background: $button-color !important;
+            border: none !important;
+            color: $button-text-color !important;
 
-        &:after{
-            content: "\f0d7";
+            &:after{
+                background: none !important;
+                content: "\f0d7";
+                font-family: FontAwesome;
+                font-size: 24px;
+                line-height: 1;
+                margin-top: -12px !important;
+            }
         }
-    }
 
-    .ui-icon-arrow-up{
+        .ui-icon-arrow-down{
 
-        &:after{
-            content: "\f0d8";
+            &:after{
+                content: "\f0d7";
+            }
+        }
+
+        .ui-icon-arrow-up{
+
+            &:after{
+                content: "\f0d8";
+            }
         }
     }
 }
