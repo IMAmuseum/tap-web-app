@@ -18,23 +18,24 @@
 .tour-wrapper {
     position: relative;
     overflow: hidden;
+
+    .tour-title {
+        background: none;
+        font-weight: 400;
+        text-align: center;
+        white-space: normal;
+        width: 100%;
+
+        span {
+            display: block;
+            padding: 10px;
+        }
+    }
 }
+
 .tour-image img {
     width: 100%;
     vertical-align: bottom;
-}
-
-.tour-title {
-    background: none;
-    font-weight: 400;
-    text-align: center;
-    white-space: normal;
-    width: 100%;
-
-    span {
-        display: block;
-        padding: 10px;
-    }
 }
 
 .tour-info {
