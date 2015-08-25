@@ -37,6 +37,9 @@ $secondary-font-color: #3a617a;
 $background-color: #e2ddcc;
 $header-background-color: #ffffff;
 $footer-background-color: #ffffff;
-$footer-background-color-active: #d3dde3;
+$footer-background-color-active: $highlight-color;
+
+// TODO: Add more configurable elements to settings in order to have
+//       individual items available for easy manipulation
 
 // Breakpoints
