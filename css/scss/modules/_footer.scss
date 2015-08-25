@@ -44,3 +44,13 @@
 .ui-btn-icon-bottom:after {
     margin-left: -15px;
 }
+
+.footer-credits {
+    color: $primary-color;
+    font-size: .6em;
+    font-weight: 400;
+
+    > a {
+        font-weight: 400;
+    }
+}

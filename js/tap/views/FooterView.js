@@ -36,7 +36,11 @@ TapAPI.classes.views.FooterView = Backbone.View.extend({
                 baseRoute: TapAPI.router.getBaseRoute()
             }));
         } else {
-            this.$el.hide();
+            this.$el.show();
+
+            this.$el.html(this.template({
+                text: 'Powered by <a href="http://www.tapintomuseums.org/" target="_blank">TAP</a>. Built by <a href="http://lab.imamuseum.org/" target="_blank">IMA</a>.'
+            }));
         }
         return this;
     },

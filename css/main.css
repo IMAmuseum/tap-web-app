@@ -359,6 +359,13 @@ p {
 .ui-btn-icon-bottom:after {
   margin-left: -15px; }
 
+.footer-credits {
+  color: #517891;
+  font-size: .6em;
+  font-weight: 400; }
+  .footer-credits > a {
+    font-weight: 400; }
+
 /* Header */
 #header .ui-icon-social {
   background-image: url(../images/share-white.png);
