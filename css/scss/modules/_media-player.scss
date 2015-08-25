@@ -1,7 +1,9 @@
 /* Media Player */
 .player {
     max-width: 100%;
+    min-height: 320px;
 }
+
 .mejs-overlay-play,
 .mejs-poster {
     height: 100%;

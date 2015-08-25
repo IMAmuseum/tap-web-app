@@ -483,7 +483,8 @@ html body .ui-group-theme-a .ui-bar-inherit {
 
 /* Media Player */
 .player {
-  max-width: 100%; }
+  max-width: 100%;
+  min-height: 320px; }
 
 .mejs-overlay-play,
 .mejs-poster {
@@ -578,7 +579,6 @@ html body .ui-group-theme-a .ui-bar-inherit {
 
 /* Stop Group */
 #stop-group #header-wrapper img {
-  display: block;
   height: auto;
   width: 100%; }
 
