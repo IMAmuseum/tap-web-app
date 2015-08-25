@@ -1,5 +1,24 @@
 /* Tour Details */
-#tour-details #header-wrapper img {
-    display: block;
-    width: 100%;
+#tour-details {
+    #header-wrapper img {
+        width: 100%;
+    }
+
+    .tour-title {
+        font-size: 1.5em;
+        margin: 10px 0 3px;
+    }
+
+    .ui-btn {
+        background: #517891 !important;
+        border: none !important;
+        color: #fff !important;
+        font-weight: 400 !important;
+        margin: 0 0em 1em !important;
+        padding: 1em 1em 1em 0;
+
+        &:hover {
+            background: #5d89a6 !important;
+        }
+    }
 }
