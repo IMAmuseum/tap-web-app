@@ -39,27 +39,43 @@ var TapAPI = {
     viewRegistry: {
         'audio_stop': {
             view: 'AudioStopView',
-            icon: 'images/audio.png'
+            icon: 'images/audio.png',
+            fa_icon: 'volume-up'
         },
         'image_stop': {
             view: 'ImageStopView',
-            icon: 'images/photo.png'
+            icon: 'images/photo.png',
+            fa_icon: 'photo'
         },
         'stop_group': {
             view: 'StopGroupView',
-            icon: 'images/list.png'
+            icon: 'images/list.png',
+            fa_icon: 'list'
         },
         'video_stop': {
             view: 'VideoStopView',
-            icon: 'images/video.png'
+            icon: 'images/video.png',
+            fa_icon: 'film'
         },
         'web_stop': {
             view: 'WebStopView',
-            icon: 'images/web.png'
+            icon: 'images/web.png',
+            fa_icon: 'external-link'
+        },
+        'quiz_stop': {
+            view: 'QuizStopView',
+            icon: 'images/quiz.png',
+            fa_icon: 'tasks'
         },
         'audio_slideshow_stop': {
             view: 'AudioSlideshowStopView',
-            icon: 'images/audio.png'
+            icon: 'images/audio.png',
+            fa_icon: 'volume-up'
+        },
+        'zooming_image_stop': {
+            view: 'ZoomingImageView',
+            icon: 'images/zoom.png',
+            fa_icon: 'search-plus'
         }
     },
     media: {

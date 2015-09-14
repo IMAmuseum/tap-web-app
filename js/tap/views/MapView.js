@@ -154,13 +154,10 @@ TapAPI.classes.views.MapView = TapAPI.classes.views.StopSelectionView.extend({
 
         if (data.type == 'Point') {
             var stopIcon = L.icon({
-                iconUrl: 'images/marker-icon.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                iconRetinaUrl: 'images/marker-icon@2x.png',
-                shadowUrl: 'images/marker-shadow.png',
-                shadowSize: [41, 41],
-                popupAnchor: [0, -100],
+                iconUrl: 'images/map_pointer_stop.svg',
+                iconSize: [36, 36],
+                iconAnchor: [18, 36],
+                popupAnchor: [1, -13],
                 className: 'stop-icon ' + stop.id
             });
 
@@ -214,12 +211,10 @@ TapAPI.classes.views.MapView = TapAPI.classes.views.StopSelectionView.extend({
 
         if (this.positionMarker === null) {
             var stopIcon = L.icon({
-                iconUrl: 'images/marker-person.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                shadowUrl: 'images/marker-shadow.png',
-                shadowSize: [41, 41],
-                popupAnchor: [0, -22],
+                iconUrl: 'images/map_pointer_location.svg',
+                iconSize: [36, 36],
+                iconAnchor: [18, 36],
+                popupAnchor: [1, -13],
                 className: 'stop-icon ' + stop.id
             });
             this.positionMarker = new L.Marker(latlong, {icon: stopIcon})

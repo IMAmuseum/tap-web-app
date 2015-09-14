@@ -1,0 +1,23 @@
+/* Image Stop */
+#gallery {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#gallery li {
+    float: left;
+    width: 33.33333333%;
+}
+
+#gallery li a {
+    border: 1px solid #3c3c3c;
+    display: block;
+    margin: 5px;
+}
+
+#gallery li a img {
+    display: block;
+    height: auto;
+    width: 100%;
+}

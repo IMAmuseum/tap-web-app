@@ -1,0 +1,22 @@
+// ====================================================================
+// Back Button Module
+//
+// Styles for back button
+// ===================================================================
+
+.ui-btn-back {
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-weight: 400 !important;
+    font-size: .875em !important;
+    text-decoration: none;
+    text-transform: lowercase;
+    padding: 18px 2% 10px;
+}
+.ui-btn-back i {
+    float: left;
+    font-size: 2em;
+    margin-top: -6px;
+    margin-right: 5px;
+}

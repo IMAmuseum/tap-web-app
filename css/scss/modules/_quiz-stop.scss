@@ -1,0 +1,54 @@
+/* Quiz Stop */
+.quiz-stop {
+    padding: 0 1em 3em;
+}
+.quiz-result {
+    display: none;
+}
+.ui-controlgroup-controls,
+.ui-controlgroup-controls .ui-radio,
+.ui-controlgroup-controls .ui-checkbox,
+.ui-controlgroup-controls .ui-select,
+.ui-controlgroup-controls li,
+.ui-controlgroup-controls label
+{
+    border-radius: 0 !important;
+
+    .ui-radio .ui-radio-off {
+        background: $button-color;
+        color: $button-text-color;
+        border: none;
+        font-weight: 400;
+        margin-bottom: 20px;
+
+        &:hover{
+            background: $button-hover-color;
+        }
+    }
+
+    .ui-radio .ui-radio-on {
+        background: $button-active-color;
+        color: $button-active-text-color;
+        border: none;
+        font-weight: 400;
+        margin-bottom: 20px;
+
+        &:after {
+            border-color: $button-hover-color;
+        }
+    }
+}
+
+.ui-input-btn {
+    border-radius: 0 !important;
+    background: $button-color !important;
+    color: $button-text-color !important;
+    border: none !important;
+    width: 80%;
+    max-width: 300px !important;
+    margin: 0 auto !important;
+
+    &:hover{
+        background: $button-hover-color;
+    }
+}

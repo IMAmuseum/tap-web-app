@@ -1,0 +1,55 @@
+// ====================================================================
+// Tour List Module
+//
+// Styles for Tour List View
+// ===================================================================
+
+.tour-list {
+    h1 {
+        margin: 32px 0 0;
+    }
+
+    p {
+        margin: 0;
+        padding: 5px 0 20px;
+    }
+}
+
+.tour-wrapper {
+    position: relative;
+    overflow: hidden;
+
+    .tour-title {
+        background: none;
+        font-weight: 400;
+        text-align: center;
+        white-space: normal;
+        width: 100%;
+
+        span {
+            display: block;
+            padding: 10px;
+        }
+    }
+}
+
+.tour-image img {
+    width: 100%;
+    vertical-align: bottom;
+}
+
+.tour-info {
+    background: $button-color !important;
+    color: $button-text-color !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 15px !important;
+
+    &:hover {
+        background: $button-hover-color !important;
+    }
+
+    &:active {
+        background: $button-active-color !important;
+    }
+}

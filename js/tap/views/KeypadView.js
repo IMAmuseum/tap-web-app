@@ -40,7 +40,7 @@ TapAPI.classes.views.KeypadView = TapAPI.classes.views.StopSelectionView.extend(
     },
     inputKeyCode: function(e) {
         e.preventDefault();
-        this.code += $(e.currentTarget).find('.ui-btn-text').html();
+        this.code += $(e.currentTarget).html();
 
         if (this.code.length > 6) return;
 

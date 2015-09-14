@@ -1,17 +1,59 @@
-<% if (!_.isUndefined(header)) { %>
+<% if (!_.isUndefined(header) || images.length > 0) { %>
 <div id="header-wrapper">
-    <img src="<%= header %>" />
+    <% if (!_.isUndefined(header)) { %><img src="<%= header %>"><% } %>
+    <% if (images.length > 0) { %>
+    <ul class="rslides">
+    <% _.each(images, function(image) { %>
+    <li class="image-slide">
+        <img src="<%= image.originalUri %>" data-caption="<%= image.caption %>" title="<%= image.title %>" />
+        <div class="caption-wrap">
+            <p class="caption">
+                <%= image.title %><br />
+                <span class="caption-inner">
+                    <% if (image.caption.length > 75) { %>
+                        <%= image.caption.substr(0,75) %><a class="caption-inner-overflow-link-show"> (MORE)</a><span class="caption-inner-overflow" style="display: none;"><%= image.caption.substr(75,image.caption.length) %><a class="caption-inner-overflow-link-hide"> (LESS)</a></span>
+                    <% } else { %>
+                        <%= image.caption %>
+                    <% } %>
+                </span>
+            </p>
+        </div>
+    </li>
+    <% }); %>
+    </ul>
+    <% } %>
 </div>
+<% if (audioSources.length > 0) { %>
+<audio id="audio-player" class="player" controls="controls">
+    <p>Your browser does not support HTML 5 audio.</p>
+    <% _.each(audioSources, function(source) { %>
+    <%= source %>
+    <% }); %>
+</audio>
 <% } %>
-<h3 class="stop-title"><%= title %></h3>
+<% } %>
+<h2 class="stop-title"><%= title %></h2>
+<hr />
 <div class='description'><%= description %></div>
-<ul id="stop-list" data-role="listview" data-inset="true">
+<ul id="stop-list" class="stop-list ui-listview" data-role="listview">
 <% _.each(stops, function(stop) { %>
     <li>
-        <a href="<%= stop.route %>">
-            <img src="<%= stop.icon %>" class="ui-li-icon ui-li-thumb" />
-            <%= stop.title %>
+        <a href="<%= stop.route %>" class="ui-btn">
+            <span class="stop-code">
+                <% if (stop.fa_icon != "") { %>
+                    <i class="fa fa-<%= stop.fa_icon %>"></i>
+                <% } else { %>
+                    <img src="<%= stop.icon %>" class="ui-li-icon ui-li-thumb" />
+                <% } %>
+            </span>
+            <span class="title-with-code"><%= stop.title %></span>
         </a>
     </li>
 <% }); %>
 </ul>
+<% if (!_.isEmpty(transcription)) { %>
+<div id="transcription" data-role="collapsible" data-content-theme="c" data-iconpos="right" data-collapsed-icon="arrow-down" data-expanded-icon="arrow-up">
+    <h3>Audio Transcript</h3>
+    <p><%= transcription %></p>
+</div>
+<% } %>

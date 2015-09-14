@@ -1,13 +1,12 @@
 <div class="marker-bubble-content">
-    <a href="<%= route %>" class="goto-stop ui-btn ui-shadow ui-btn-corner-all ui-btn-inline ui-btn-icon-notext ui-btn-up-c">
+    <a href="<%= route %>" class="goto-stop">
         <span class="ui-btn-inner">
-            <span class="ui-btn-text">View Stop</span>
-            <span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span>
+            <span class="ui-btn-text"><i class="fa fa-caret-right"></i></span>
         </span>
     </a>
 	<div class="title"><a href="<%= route %>"><%= title %></a></div>
 	<div class="distance">
-        <%= distance %> 
+        <%= distance %>
         <% if (showDirections) { %>
         <a href="http://maps.google.com/maps?saddr=Current%20Location&daddr=<%= stopLat %>,<%= stopLong %>">Get Directions</a>
         <% } %>

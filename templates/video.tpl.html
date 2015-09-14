@@ -1,18 +1,21 @@
 <h3 class="stop-title"><%= title %></h3>
-<video id="video-player" class="player" controls="controls" autoplay="autoplay" poster="<%= imagePath %>">
-	<p>Your browser does not support the HTML5 video</p>
-	<% _.each(sources, function(source) { %>
-	<%= source %>
-	<% }); %>
-</video>
+<hr />
+<div class="videocontent">
+    <video id="video-player" class="player" controls="controls" autoplay="autoplay" poster="<%= imagePath %>" style="width:100%; height:100%;" width="100%" height="100%">
+    	<p>Your browser does not support the HTML5 video</p>
+    	<% _.each(sources, function(source) { %>
+    	<%= source %>
+    	<% }); %>
+    </video>
+</div>
 <% if (!_.isEmpty(description)) { %>
-<div id="description" data-role="collapsible" data-content-theme="c">
+<div id="description" data-role="collapsible" data-content-theme="c" data-iconpos="right" data-collapsed-icon="arrow-down" data-expanded-icon="arrow-up">
 	<h3>Description</h3>
 	<p><%= description %></p>
 </div>
 <% } %>
 <% if (!_.isEmpty(transcription)) { %>
-<div id="transcription" data-role="collapsible" data-content-theme="c">
+<div id="transcription" data-role="collapsible" data-content-theme="c" data-iconpos="right" data-collapsed-icon="arrow-down" data-expanded-icon="arrow-up">
 	<h3>Transcript</h3>
 	<p><%= transcription %></p>
 </div>

@@ -1,0 +1,37 @@
+// ====================================================================
+// Layout
+//
+// These are top-level styles for layout-based elements like wrappers,
+//  sidebars, footers and other similar elements.
+// ===================================================================
+
+/* Page */
+.ui-header h3 {
+    margin: .7em 1em;
+    min-height: 1.1em;
+}
+/*
+.ui-page-header-fixed {
+    padding-top: 43px;
+}
+.ui-page-footer-fixed {
+    padding-bottom: 49px;
+}*/
+.ui-content {
+    padding: 0 0 1em;
+}
+
+.content-wrapper {
+    padding: 0 1em 0;
+}
+
+/* list view overrides */
+.ui-listview,
+.ui-collapsible,
+.ui-filterable {
+    padding: 0 1em;
+
+    .ui-li-icon {
+        top: .7em;
+    }
+}

@@ -48,6 +48,16 @@ module.exports = function(grunt) {
                 jQuery: true
             }
         },
+        sass: {
+            options: {
+                sourceMap: true
+            },
+            dist: {
+                files: {
+                    'css/main.css': 'css/scss/main.scss'
+                }
+            }
+        },
         cssmin: {
             options: {
                 banner: '<%= meta.banner %>'
@@ -83,12 +93,14 @@ module.exports = function(grunt) {
                         'vendor/underscore.js',
                         'vendor/backbone.js',
                         'vendor/backbone-super.js',
-                        'vendor/backbone.localstorage.js',
+                        'vendor/backbone.localStorage.js',
                         'vendor/json2.js',
                         'vendor/klass.js',
                         'vendor/leaflet/leaflet-src.js',
                         'vendor/mediaelement/mediaelement-and-player.js',
                         'vendor/photoswipe/code.photoswipe.jquery.js',
+                        'vendor/customAudio/customAudio.js',
+                        'vendor/responsiveSlides/responsiveSlides.js',
                         'js/tap/JQMConfig.js',
                         'vendor/jqmobile/jquery.mobile.js',
                         'js/tap/TapAPI.js',
@@ -105,6 +117,35 @@ module.exports = function(grunt) {
                         'js/tap/views/**/*.js'
                     ]
                 }
+            }
+        },
+        watch: {
+            options: {
+                livereload: true,
+            },
+            html: {
+                files: ['index.html', 'devel.html', 'templates/*.tpl.html'],
+            },
+            js: {
+                files: ['js/tap/**/*.js'],
+                tasks: ['jshint'],
+            },
+            css: {
+                files: ['css/scss/**/*.scss'],
+                tasks: ['sass'],
+            },
+        },
+        postcss: {
+            options: {
+                map: true,
+                processors: [
+                    require('autoprefixer-core')({
+                        browsers: ['> 1%', 'IE 7'] // add vendor prefixes for any browser with greater than 1% usage and IE7 up
+                    })
+                ]
+            },
+            dist: {
+                src: 'css/*.css'
             }
         }
     });
@@ -145,7 +186,13 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-css');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-sass');
+    grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-postcss');
 
     // Default task.
-    grunt.registerTask('default', ['precompileTemplates', 'copy', 'jshint', 'concat', 'cssmin']);
+    grunt.registerTask('default', ['watch', 'sass', 'postcss:dist']);
+
+    // Build task.
+    grunt.registerTask('build', ['precompileTemplates', 'copy', 'jshint', 'concat', 'sass', 'postcss:dist', 'cssmin']);
 };

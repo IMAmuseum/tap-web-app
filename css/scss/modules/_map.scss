@@ -1,0 +1,46 @@
+/* Map View */
+#content-wrapper.tour-map {
+    padding: 0;
+}
+
+#tour-map {
+    height: 100%;
+    width: 100%;
+}
+
+.leaflet-top, .leaflet-bottom {
+    z-index: 999 !important;
+}
+
+.marker-bubble-content .stop-options {
+    margin-top: 5px;
+    text-align: center;
+}
+
+.leaflet-popup-content-wrapper {
+    -webkit-border-radius: 0;
+    border-radius: 0;
+}
+
+.leaflet-popup-content {
+    margin: 10px;
+}
+
+.leaflet-popup-content .title a {
+    font-size: 1em;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.leaflet-popup-content .distance {
+    font-size: 80%;
+}
+
+.leaflet-popup-content .goto-stop {
+    float: right;
+    font-size: 2em;
+    margin: 0 0 0 5px;
+}
+.leaflet-popup {
+    margin-bottom: 20px;
+}

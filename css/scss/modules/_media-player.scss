@@ -1,0 +1,34 @@
+/* Media Player */
+.player {
+    max-width: 100%;
+    min-height: 320px;
+}
+
+.mejs-overlay-play,
+.mejs-poster {
+    height: 100%;
+    width: 100%;
+}
+
+.mejs-container .mejs-controls {
+    background: $audio-player !important;
+
+    .mejs-time-total{
+        background: $audio-bar-total !important;
+    }
+
+    .mejs-time-loaded{
+        background: $audio-bar-loaded !important;
+    }
+
+    .mejs-time-current{
+        background: $audio-bar-current !important;
+    }
+
+    button {
+
+        &:hover{
+            background-color: transparent !important;
+        }
+    }
+}

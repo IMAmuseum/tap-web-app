@@ -1,12 +1,17 @@
+<% if (typeof(text) !== "undefined") { %>
+<div class="footer-credits">
+    <p><%= text %></p>
+</div>
+<% } else { %>
 <div data-role="navbar" data-iconpos="top">
-	<ul>
+    <ul>
         <% for(var view in controllers) { %>
-		<li>
+        <li>
             <a href="<%= TapAPI.router.getControllerRoute(tourID, view) %>"
             data-icon="<%= view.toLowerCase() %>"
-            data-iconshadow="true"
             class="<%= view === activeToolbarButton ? 'ui-btn-active' : '' %>"><%= controllers[view].label %></a>
         </li>
         <% }; %>
-	</ul>
+    </ul>
 </div>
+<% }; %>

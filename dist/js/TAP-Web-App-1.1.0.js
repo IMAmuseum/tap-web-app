@@ -1,7 +1,7 @@
 /*
- * TAP - v1.1.0 - 2013-09-11
+ * TAP - v1.1.0 - 2015-08-18
  * http://tapintomuseums.org/
- * Copyright (c) 2011-2013 Indianapolis Museum of Art
+ * Copyright (c) 2011-2015 Indianapolis Museum of Art
  * GPLv3
  */
 var TapAPI = {
@@ -62,6 +62,18 @@ var TapAPI = {
         'web_stop': {
             view: 'WebStopView',
             icon: 'images/web.png'
+        },
+        'quiz_stop': {
+            view: 'QuizStopView',
+            icon: 'images/quiz.png'
+        },
+        'audio_slideshow_stop': {
+            view: 'AudioSlideshowStopView',
+            icon: 'images/audio.png'
+        },
+        'zooming_image_stop': {
+            view: 'ZoomingImageView',
+            icon: 'images/zoom.png'
         }
     },
     media: {
@@ -72,6 +84,7 @@ var TapAPI = {
     },
     social: {
         enabled: false,
+        title: 'Share TAP',
         facebook: {
             appID: ''
         }
@@ -96,6 +109,11 @@ if (!_.isUndefined(TapConfig.viewRegistry)) {
 // attempt to get user defiend navigation controllers
 if (!_.isUndefined(TapConfig.navigationControllers)) {
     _.extend(TapAPI.navigationControllers, TapConfig.navigationControllers);
+}
+
+// attempt to get user defiend social settings
+if (!_.isUndefined(TapConfig.social)) {
+    _.extend(TapAPI.social, TapConfig.social);
 }
 TapAPI.helper = {
     replaceArray: function(obj, find, replace) {
@@ -128,6 +146,8 @@ TapAPI.helper = {
                 var response = TapAPI.helper.xmlToJson(this.responseXML);
                 response.uri = this.responseXML.URL;
                 Backbone.trigger('tap.tourml.loaded', response);
+            } else if (this.status === 404) {
+                Backbone.trigger('tap.tourml.loadingerror', response);
             }
         }
     },
@@ -388,8 +408,10 @@ TapAPI.tourMLParser = {
         this.on('didParseAsset', $.proxy(this.onDidParseAsset, this));
 
         this.tourMap = {};
+        this.tourOrder = [];
 
         this.listenTo(Backbone, 'tap.tourml.loaded', this.parseTourML);
+        this.listenTo(Backbone, 'tap.tourml.loadingerror', this.parseTourMLError);
 
         this.initialized = true;
     },
@@ -398,39 +420,60 @@ TapAPI.tourMLParser = {
             this.initialize();
         }
 
+        // increment counter to keep track
+        // of how much async work is left to do
+        TapAPI.tours.tourmlRequests++;
+
         // load tourML
         TapAPI.helper.loadXMLDoc(uri);
     },
     parseTourML: function(tourML) {
         var tours = [];
+        var tour;
         if(tourML.tour) { // Single tour
             this.addTourToMap(tourML.uri);
-            tours.push(this.parseTour(tourML.tour, tourML.uri));
+            tour = this.parseTour(tourML.tour, tourML.uri);
+            if (!_.isUndefined(tour)) {
+                tours.push(tour);
+            }
         } else if(tourML.tourSet && tourML.tourSet.tourMLRef) { // TourSet w/ external tours
             var tourRefs = TapAPI.helper.objectToArray(tourML.tourSet.tourMLRef);
             len = tourRefs.length;
+            // TapAPI.tours.toursToParse += len;// if this is a tourset give the tour collection a length
             for(i = 0; i < len; i++) {
                 this.addTourToMap(tourRefs[i].uri, tourML.uri);
                 //check modified date before requesting tourml from server
-                var tour = TapAPI.tours.cache.where({tourUri:tourRefs[i].uri});
+                tour = TapAPI.tours.cache.where({tourUri:tourRefs[i].uri});
                 if (tour.length > 0 && Date.parse(tourRefs[i].lastModified) <= Date.parse(tour[0].get('lastModified'))) {
                     tours.push(tour[0]);
                 } else {
+                    // also increment async counter
+                    TapAPI.tours.tourmlRequests++;
                     TapAPI.helper.loadXMLDoc(tourRefs[i].uri);
                 }
             }
         } else if(tourML.tourSet && tourML.tourSet.tour) { // TourSet w/ tours as children elements
             len = tourML.tourSet.tour.length;
             for(i = 0; i < len; i++) {
-               tours.push(this.parseTour(tourML.tourSet.tour[i], tourML.uri));
+                tour = this.parseTour(tourML.tourSet.tour[i], tourML.uri);
+                if (!_.isUndefined(tour)) {
+                    tours.push(tour);
+                }
             }
         }
+        // decrement async counter
+        TapAPI.tours.tourmlRequests--;
         Backbone.trigger('tap.tourml.parsed', tours);
+    },
+    parseTourMLError : function (response) {
+        TapAPI.tours.tourmlRequests--;
+        Backbone.trigger('tap.tourml.parsed', []);
     },
     parseTour: function(data, tourUri) {
         this.trigger('willParseTour');
 
         var toursetUri = this.tourMap[tourUri];
+        var tourOrder = _.indexOf(this.tourOrder, tourUri);
 
         // check to see if the tour has been updated
         var tour = TapAPI.tours.cache.get(data.id);
@@ -439,11 +482,19 @@ TapAPI.tourMLParser = {
         var stops = [],
             assets = [];
 
+        //clean stop data for consistant formatting
+        data.stop = TapAPI.helper.objectToArray(data.stop);
+        //if no stops do not continue with this tour
+        if (_.isUndefined(data.stop)) {
+            return undefined;
+        }
+
         // create new tour
         tour = new TapAPI.classes.models.TourModel({
             id: data.id,
             toursetUri: toursetUri,
             tourUri: tourUri,
+            tourOrder: tourOrder,
             appResource: data.tourMetadata && data.tourMetadata.appResource ? TapAPI.helper.objectToArray(data.tourMetadata.appResource) : undefined,
             connection: data.connection ? TapAPI.helper.objectToArray(data.connection) : undefined,
             description: data.tourMetadata && data.tourMetadata.description ? TapAPI.helper.objectToArray(data.tourMetadata.description) : undefined,
@@ -463,7 +514,6 @@ TapAPI.tourMLParser = {
         var i, j;
         // load tour models
         var connectionData = TapAPI.helper.objectToArray(data.connection);
-        data.stop = TapAPI.helper.objectToArray(data.stop);
         var numStops = data.stop.length;
         for (i = 0; i < numStops; i++) {
             this.trigger('willParseStop');
@@ -481,7 +531,7 @@ TapAPI.tourMLParser = {
                     }
                 }
             }
-            
+
             stop = new TapAPI.classes.models.StopModel({
                 id: data.stop[i].id,
                 connection: outgoingConnections,
@@ -553,10 +603,10 @@ TapAPI.tourMLParser = {
         // clear out the temporary models
         stopCollection.reset();
         assetCollection.reset();
-        
+
         // announce we're done parsing the tour
         this.trigger('didParseTour', tour);
-        
+
         return tour;
     },
 
@@ -568,8 +618,12 @@ TapAPI.tourMLParser = {
         if (!_.isUndefined(tourSetUri)) {
             this.tourMap[tourUri].push(tourSetUri);
         }
+
+        if (_.indexOf(this.tourOrder, tourUri) === -1) {
+            this.tourOrder.push(tourUri);
+        }
     },
-    
+
     // stubs for local parse event handlers
     onWillParseTour: (TapConfig.willParseTour) ? TapConfig.willParseTour : function () {},
     onDidParseTour: (TapConfig.didParseTour) ? TapConfig.didParseTour : function (tour) {},
@@ -738,9 +792,62 @@ __p += '\n';
  if (!_.isUndefined(nextStopPath)) { ;
 __p += '\n    <a href="' +
 ((__t = ( nextStopPath )) == null ? '' : __t) +
-'" data-role="button">next</a>\n';
+'" data-role="button" class="next-button">next</a>\n';
  } ;
 
+
+}
+return __p
+};
+
+TapAPI.templates['audioSlideshow'] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<h3 class="stop-title">' +
+((__t = ( title )) == null ? '' : __t) +
+'</h3>\n<audio id="audio-player" class="player" controls="controls">\n    <p>Your browser does not support HTML 5 audio.</p>\n    ';
+ _.each(sources, function(source) { ;
+__p += '\n    ' +
+((__t = ( source )) == null ? '' : __t) +
+'\n    ';
+ }); ;
+__p += '\n</audio>\n';
+ if (!_.isEmpty(imageSources)) { ;
+__p += '\n<div class="slideshow-images">\n';
+ _.each(imageSources, function(imageSource) { ;
+__p += '\n    <div class="image-container" id="' +
+((__t = ( imageSource.id )) == null ? '' : __t) +
+'">\n        <img class="slideshow-image" src="' +
+((__t = ( imageSource.uri )) == null ? '' : __t) +
+'" />\n        <p class="caption">' +
+((__t = ( imageSource.title )) == null ? '' : __t) +
+'<br />' +
+((__t = ( imageSource.caption )) == null ? '' : __t) +
+'</p>\n    </div>\n';
+ }); ;
+__p += '\n</div>\n';
+ } ;
+__p += '\n';
+ if (!_.isEmpty(description)) { ;
+__p += '\n<div class="description" data-role="collapsible" data-content-theme="c">\n    <h3>Description</h3>\n    ' +
+((__t = ( description )) == null ? '' : __t) +
+'\n</div>\n';
+ } ;
+__p += '\n';
+ if (!_.isEmpty(transcription)) { ;
+__p += '\n<div id="transcription" data-role="collapsible" data-content-theme="c">\n    <h3>Transcript</h3>\n    <p>' +
+((__t = ( transcription )) == null ? '' : __t) +
+'</p>\n</div>\n';
+ } ;
+__p += '\n';
+ if (!_.isUndefined(nextStopPath)) { ;
+__p += '\n    <a href="' +
+((__t = ( nextStopPath )) == null ? '' : __t) +
+'" data-role="button" class="next-button">next</a>\n';
+ } ;
+__p += '\n';
 
 }
 return __p
@@ -757,13 +864,13 @@ __p += '\n\t\t<li>\n            <a href="' +
 ((__t = ( TapAPI.router.getControllerRoute(tourID, view) )) == null ? '' : __t) +
 '"\n            data-icon="' +
 ((__t = ( view.toLowerCase() )) == null ? '' : __t) +
-'"\n            data-iconshadow="true"\n            class="' +
+'"\n            class="' +
 ((__t = ( view === activeToolbarButton ? 'ui-btn-active' : '' )) == null ? '' : __t) +
 '">' +
 ((__t = ( controllers[view].label )) == null ? '' : __t) +
 '</a>\n        </li>\n        ';
  }; ;
-__p += '\n\t</ul>\n</div>';
+__p += '\n\t</ul>\n</div>\n';
 
 }
 return __p
@@ -776,15 +883,15 @@ function print() { __p += __j.call(arguments, '') }
 with (obj) {
 
  if (displayBackButton) { ;
-__p += '\n<a href="#" id="back-button" data-role="back" data-icon="arrow-l">Back</a>\n';
+__p += '\n<a href="#" id="back-button" data-role="back" data-icon="arrow-l" class="ui-btn-back"><i class="fa fa-caret-left"></i> Back</a>\n';
  } ;
 __p += '\n<h3>' +
 ((__t = ( title )) == null ? '' : __t) +
 '</h3>\n';
  if (displaySocialButton) { ;
-__p += '\n<a href="#" id="social-button" data-role="button" data-icon="social" \ndata-iconpos="notext" data-iconshadow="false" class="ui-icon-nodisc ui-btn-right">Social</a>\n';
+__p += '\n<a href="#" id="social-button" data-role="button" data-icon="social"\ndata-iconpos="notext" data-iconshadow="false" class="ui-icon-nodisc ui-btn-right">Social</a>\n';
  } ;
-
+__p += '\n';
 
 }
 return __p
@@ -797,11 +904,13 @@ function print() { __p += __j.call(arguments, '') }
 with (obj) {
 __p += '<h3 class="stop-title">' +
 ((__t = ( title )) == null ? '' : __t) +
-'</h3>\n';
+'</h3>\n' +
+((__t = ( description )) == null ? '' : __t) +
+'\n<ul class="ui-grid-b" id="gallery">\n';
  _.each(images, function(image) { ;
 __p += '\n\t<li>\n\t\t<a href="' +
 ((__t = ( image.originalUri )) == null ? '' : __t) +
-'" rel="external">\n\t\t\t<img src="' +
+'" rel="external" class="gallery-link">\n\t\t\t<img src="' +
 ((__t = ( image.thumbnailUri )) == null ? '' : __t) +
 '" data-caption="' +
 ((__t = ( image.caption )) == null ? '' : __t) +
@@ -809,11 +918,11 @@ __p += '\n\t<li>\n\t\t<a href="' +
 ((__t = ( image.title )) == null ? '' : __t) +
 '" />\n\t\t</a>\n\t</li>\n';
  }) ;
-__p += '\n';
+__p += '\n</ul>\n';
  if (!_.isUndefined(nextStopPath)) { ;
 __p += '\n    <a href="' +
 ((__t = ( nextStopPath )) == null ? '' : __t) +
-'" data-role="button">next</a>\n';
+'" data-role="button" class="next-button">next</a>\n';
  } ;
 
 
@@ -824,7 +933,14 @@ return __p
 TapAPI.templates['keypad'] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape, __d = obj.obj || obj;
-__p += '<fieldset class="ui-grid-b">\n    <div id="code-label-wrapper" class="ui-block-a ui-block-b ui-block-c">\n        <div id="code-label-border">\n            <div id="code-label"></div>\n        </div>\n    </div>\n    <div class="ui-block-a">\n        <div data-role="button" data-theme="a" class="keypad-button">1</div>\n    </div>\n    <div class="ui-block-b">\n        <div data-role="button" data-theme="a" class="keypad-button">2</div>\n    </div>\n    <div class="ui-block-c">\n        <div data-role="button" data-theme="a" class="keypad-button">3</div>\n    </div>\n    <div class="ui-block-a">\n        <div data-role="button" data-theme="a" class="keypad-button">4</div>\n    </div>\n    <div class="ui-block-b">\n        <div data-role="button" data-theme="a" class="keypad-button">5</div>\n    </div>\n    <div class="ui-block-c">\n        <div data-role="button" data-theme="a" class="keypad-button">6</div>\n    </div>\n    <div class="ui-block-a">\n        <div data-role="button" data-theme="a" class="keypad-button">7</div>\n    </div>\n    <div class="ui-block-b">\n        <div data-role="button" data-theme="a" class="keypad-button">8</div>\n    </div>\n    <div class="ui-block-c">\n        <div data-role="button" data-theme="a" class="keypad-button">9</div>\n    </div>\n    <div class="ui-block-a" id="clear-button-wrapper">\n        <div id="clear-button" data-role="button" data-theme="b" class="action-button">Clear</div>\n    </div>\n    <div class="ui-block-b">\n        <div data-role="button" data-theme="a" class="keypad-button">0</div>\n    </div>\n    <div class="ui-block-c">\n        <div id="go-button" data-role="button" data-theme="b" class="action-button ui-disabled">Go</div>\n    </div>\n</fieldset>\n';
+__p += '<fieldset class="ui-grid-b">\n    <div id="code-label-wrapper" class="ui-block-a ui-block-b ui-block-c">\n        <div id="code-label-border">\n            <div id="code-label"></div>\n        </div>\n    </div>\n    <div class="ui-block-a">\n        <div data-role="button" data-theme="a" class="keypad-button">1</div>\n    </div>\n    <div class="ui-block-b">\n        <div data-role="button" data-theme="a" class="keypad-button">2</div>\n    </div>\n    <div class="ui-block-c">\n        <div data-role="button" data-theme="a" class="keypad-button">3</div>\n    </div>\n    <div class="ui-block-a">\n        <div data-role="button" data-theme="a" class="keypad-button">4</div>\n    </div>\n    <div class="ui-block-b">\n        <div data-role="button" data-theme="a" class="keypad-button">5</div>\n    </div>\n    <div class="ui-block-c">\n        <div data-role="button" data-theme="a" class="keypad-button">6</div>\n    </div>\n    <div class="ui-block-a">\n        <div data-role="button" data-theme="a" class="keypad-button">7</div>\n    </div>\n    <div class="ui-block-b">\n        <div data-role="button" data-theme="a" class="keypad-button">8</div>\n    </div>\n    <div class="ui-block-c">\n        <div data-role="button" data-theme="a" class="keypad-button">9</div>\n    </div>\n    <div class="ui-block-a" id="clear-button-wrapper">\n        <div id="clear-button" data-role="button" data-theme="b" class="action-button clear-button"></div>\n    </div>\n    <div class="ui-block-b">\n        <div data-role="button" data-theme="a" class="keypad-button">0</div>\n    </div>\n    <div class="ui-block-c">\n        <div id="go-button" data-role="button" data-theme="b" class="action-button go-button ui-disabled">Go</div>\n    </div>\n</fieldset>\n';
+return __p
+};
+
+TapAPI.templates['loader'] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __d = obj.obj || obj;
+__p += '<div id="loader">\n<!--\n    If you wish to use a custom loader progress\n    ui (we\'re just using the jqm loader), then\n    here is where you would place its content.\n    You would then also need to modify AppView\n    to add this element to the DOM, and TourListView\n    to change the displayLoader and removeLoader\n    implementations.\n-->\n</div>';
 return __p
 };
 
@@ -844,13 +960,13 @@ function print() { __p += __j.call(arguments, '') }
 with (obj) {
 __p += '<div class="marker-bubble-content">\n    <a href="' +
 ((__t = ( route )) == null ? '' : __t) +
-'" class="goto-stop ui-btn ui-shadow ui-btn-corner-all ui-btn-inline ui-btn-icon-notext ui-btn-up-c">\n        <span class="ui-btn-inner">\n            <span class="ui-btn-text">View Stop</span>\n            <span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span>\n        </span>\n    </a>\n\t<div class="title"><a href="' +
+'" class="goto-stop">\n        <span class="ui-btn-inner">\n            <span class="ui-btn-text"><i class="fa fa-caret-right"></i></span>\n        </span>\n    </a>\n\t<div class="title"><a href="' +
 ((__t = ( route )) == null ? '' : __t) +
 '">' +
 ((__t = ( title )) == null ? '' : __t) +
 '</a></div>\n\t<div class="distance">\n        ' +
 ((__t = ( distance )) == null ? '' : __t) +
-' \n        ';
+'\n        ';
  if (showDirections) { ;
 __p += '\n        <a href="http://maps.google.com/maps?saddr=Current%20Location&daddr=' +
 ((__t = ( stopLat )) == null ? '' : __t) +
@@ -858,7 +974,7 @@ __p += '\n        <a href="http://maps.google.com/maps?saddr=Current%20Location&
 ((__t = ( stopLong )) == null ? '' : __t) +
 '">Get Directions</a>\n        ';
  } ;
-__p += '\n    </div>\n</div>';
+__p += '\n    </div>\n</div>\n';
 
 }
 return __p
@@ -907,7 +1023,7 @@ __p += '\n\t\t\t<li><a ' +
  }); ;
 __p += '\n\t\t</ul>\n\t</div>\n</div>\n';
  } ;
-
+__p += '\n';
 
 }
 return __p
@@ -934,10 +1050,43 @@ __p += '\n<div data-role="content" data-theme="d" role="main">\n\t<p>' +
 return __p
 };
 
+TapAPI.templates['quiz'] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<h3 class="stop-title">' +
+((__t = ( title )) == null ? '' : __t) +
+'</h3>\n<p>' +
+((__t = ( question )) == null ? '' : __t) +
+'</p>\n<form>\n\t<fieldset data-role="controlgroup">\n\t<legend>Select your answer:</legend>\n\t';
+ _.each(choices, function(choice) { ;
+__p += '\n\t\t<input type="radio" name="radio-choice" id="radio-choice-' +
+((__t = ( choice.value )) == null ? '' : __t) +
+'" value="choice-' +
+((__t = ( choice.value )) == null ? '' : __t) +
+'" />\n\t\t<label for="radio-choice-' +
+((__t = ( choice.value )) == null ? '' : __t) +
+'">' +
+((__t = ( choice.text )) == null ? '' : __t) +
+'</label>\n\t';
+ }) ;
+__p += '\n\t</fieldset>\n\t<input type="hidden" name="answer" value="choice-' +
+((__t = ( answer )) == null ? '' : __t) +
+'">\n\t<input type="hidden" name="note" value="' +
+((__t = ( note )) == null ? '' : __t) +
+'">\n\t<input type="submit" class="js-action" value="Submit">\n</form>\n';
+
+}
+return __p
+};
+
 TapAPI.templates['social-popup'] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape, __d = obj.obj || obj;
-__p += '<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>\n<div data-role="header" data-theme="a" class="ui-corner-top">\n    <h1>Share TAP</h1>\n</div>\n<div data-role="content" data-theme="d" role="main">\n    <div id="twitter-share-button" class="share-button">\n        <iframe allowtransparency="true" frameborder="0" scrolling="no"\n                src="http://platform.twitter.com/widgets/tweet_button.html?url=' +
+__p += '<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>\n<div data-role="header" data-theme="a" class="ui-corner-top">\n    <h1>' +
+((__t = ( obj.title )) == null ? '' : __t) +
+'</h1>\n</div>\n<div data-role="content" data-theme="d" role="main">\n    <div id="twitter-share-button" class="share-button">\n        <iframe allowtransparency="true" frameborder="0" scrolling="no"\n                src="http://platform.twitter.com/widgets/tweet_button.html?url=' +
 ((__t = ( obj.url )) == null ? '' : __t) +
 '"\n                style="width:100px; height:20px;"></iframe>\n    </div>\n    <div id="facebook-share-button" class="share-button">\n        <iframe src="http://www.facebook.com/plugins/like.php?href=' +
 ((__t = ( obj.url )) == null ? '' : __t) +
@@ -953,26 +1102,74 @@ var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
 
- if (!_.isUndefined(header)) { ;
-__p += '\n<div id="header-wrapper">\n    <img src="' +
-((__t = ( header )) == null ? '' : __t) +
-'" />\n</div>\n';
+ if (audioSources.length > 0) { ;
+__p += '\n<audio id="audio-player" class="player" controls="controls">\n    <p>Your browser does not support HTML 5 audio.</p>\n    ';
+ _.each(audioSources, function(source) { ;
+__p += '\n    ' +
+((__t = ( source )) == null ? '' : __t) +
+'\n    ';
+ }); ;
+__p += '\n</audio>\n';
  } ;
-__p += '\n<h3 class="stop-title">' +
+__p += '\n';
+ if (!_.isUndefined(header) || images.length > 0) { ;
+__p += '\n<div id="header-wrapper">\n    ';
+ if (!_.isUndefined(header)) { ;
+__p += '<img src="' +
+((__t = ( header )) == null ? '' : __t) +
+'">';
+ } ;
+__p += '\n    ';
+ if (images.length > 0) { ;
+__p += '\n    <ul class="rslides">\n    ';
+ _.each(images, function(image) { ;
+__p += '\n    <li class="image-slide">\n        <img src="' +
+((__t = ( image.originalUri )) == null ? '' : __t) +
+'" data-caption="' +
+((__t = ( image.caption )) == null ? '' : __t) +
+'" title="' +
+((__t = ( image.title )) == null ? '' : __t) +
+'" />\n        <div class="caption-wrap">\n            <p class="caption">\n                ' +
+((__t = ( image.title )) == null ? '' : __t) +
+'<br />\n                <span class="caption-inner">\n                    ';
+ if (image.caption.length > 75) { ;
+__p += '\n                        ' +
+((__t = ( image.caption.substr(0,75) )) == null ? '' : __t) +
+'<a class="caption-inner-overflow-link-show"> (MORE)</a><span class="caption-inner-overflow" style="display: none;">' +
+((__t = ( image.caption.substr(75,image.caption.length) )) == null ? '' : __t) +
+'<a class="caption-inner-overflow-link-hide"> (LESS)</a></span>\n                    ';
+ } else { ;
+__p += '\n                        ' +
+((__t = ( image.caption )) == null ? '' : __t) +
+'\n                    ';
+ } ;
+__p += '\n                </span>\n            </p>\n        </div>\n    </li>\n    ';
+ }); ;
+__p += '\n    </ul>\n    ';
+ } ;
+__p += '\n</div>\n';
+ } ;
+__p += '\n<h2 class="stop-title">' +
 ((__t = ( title )) == null ? '' : __t) +
-'</h3>\n<div class=\'description\'>' +
+'</h2>\n<hr />\n<div class=\'description\'>' +
 ((__t = ( description )) == null ? '' : __t) +
-'</div>\n<ul id="stop-list" data-role="listview" data-inset="true">\n';
+'</div>\n<ul id="stop-list" class="stop-list ui-listview" data-role="listview" data-inset="true">\n';
  _.each(stops, function(stop) { ;
 __p += '\n    <li>\n        <a href="' +
 ((__t = ( stop.route )) == null ? '' : __t) +
-'">\n            <img src="' +
+'" class="ui-btn">\n            <img src="' +
 ((__t = ( stop.icon )) == null ? '' : __t) +
 '" class="ui-li-icon ui-li-thumb" />\n            ' +
 ((__t = ( stop.title )) == null ? '' : __t) +
 '\n        </a>\n    </li>\n';
  }); ;
-__p += '\n</ul>';
+__p += '\n</ul>\n';
+ if (!_.isEmpty(transcription)) { ;
+__p += '\n<div id="transcription" data-role="collapsible" data-content-theme="c" data-inset="true">\n    <h3>Audio Transcript</h3>\n    <p>' +
+((__t = ( transcription )) == null ? '' : __t) +
+'</p>\n</div>\n';
+ } ;
+__p += '\n';
 
 }
 return __p
@@ -983,7 +1180,15 @@ obj || (obj = {});
 var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-__p += '<ul  data-role="listview" data-filter="true">\n    ';
+
+ if (!_.isUndefined(headerImageUri)) { ;
+__p += '\n    <div id="header-wrapper">\n        <img src="' +
+((__t = ( headerImageUri )) == null ? '' : __t) +
+'">\n        <h2 class="caption">' +
+((__t = ( tourTitle )) == null ? '' : __t) +
+'</h2>\n    </div>\n';
+ } ;
+__p += '\n<p>Please select a stop.</p>\n<ul data-role="listview" data-filter="true">\n    ';
  _.each(stops, function(stop) { ;
 __p += '\n    <li>\n        <a href=\'' +
 ((__t = ( stop.model.getRoute() )) == null ? '' : __t) +
@@ -1005,7 +1210,7 @@ __p += '\n                ' +
 ((__t = ( stop.title )) == null ? '' : __t) +
 '\n            </span>\n        </a>\n    </li>\n    ';
  }); ;
-__p += '\n</ul>';
+__p += '\n</ul>\n';
 
 }
 return __p
@@ -1039,7 +1244,7 @@ obj || (obj = {});
 var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-__p += '<ul id="tour-list" class="ui-listview" data-split-icon="info" data-split-theme="d" data-role="listview">\n\t';
+__p += '<h1>Welcome</h1>\n<p>Please choose an area to start a tour.</p>\n<ul id="tour-list" class="ui-listview" data-split-icon="info" data-split-theme="d" data-role="listview">\n\t';
  _.each(tours, function(tour, i) { ;
 __p += '\n\t<li data-icon="false">\n\t\t<a href="#" data-tour-id="' +
 ((__t = ( tour.get('id') )) == null ? '' : __t) +
@@ -1053,7 +1258,7 @@ __p += '\n\t\t\t\t<div class="tour-title"><span>' +
 ((__t = ( tour.get('title') )) == null ? '' : __t) +
 '</span></div>\n\t\t\t</div>\n\t\t</a>\n\t</li>\n\t';
  }); ;
-__p += '\n</ul>';
+__p += '\n</ul>\n';
 
 }
 return __p
@@ -1090,7 +1295,7 @@ __p += '\n';
  if (!_.isUndefined(nextStopPath)) { ;
 __p += '\n    <a href="' +
 ((__t = ( nextStopPath )) == null ? '' : __t) +
-'" data-role="button">next</a>\n';
+'" data-role="button" class="next-button">next</a>\n';
  } ;
 __p += '\n';
 
@@ -1111,7 +1316,7 @@ __p += '<h3 class="stop-title">' +
  if (!_.isUndefined(nextStopPath)) { ;
 __p += '\n    <a href="' +
 ((__t = ( nextStopPath )) == null ? '' : __t) +
-'" data-role="button">next</a>\n';
+'" data-role="button" class="next-button">next</a>\n';
  } ;
 
 
@@ -1640,6 +1845,7 @@ TapAPI.classes.collections.TourCollection = Backbone.Collection.extend({
     localStorage: new Backbone.LocalStorage('tours'),
     initialize: function() {
         this.listenTo(Backbone, 'tap.tourml.parsed', this.tourMLParsed);
+        this.tourmlRequests = 0;
     },
     syncTourML: function(url) {
         var tours = [],
@@ -1691,6 +1897,9 @@ TapAPI.classes.collections.TourCollection = Backbone.Collection.extend({
         TapAPI.tourStops.fetch();
 
         Backbone.trigger('tap.tour.selected');
+    },
+    comparator: function(tour) {
+        return tour.get('tourOrder');
     }
 });
 
@@ -1704,6 +1913,7 @@ TapAPI.classes.views.BaseView = Backbone.View.extend({
 		this.displayHeader = true;
 		this.displayFooter = true;
 		this.displayBackButton = true;
+		this.displayLoader = false;
 	},
 	render: function() {},
 	finishedAddingContent: function() {},
@@ -1732,6 +1942,16 @@ TapAPI.classes.views.BaseView = Backbone.View.extend({
 	getNextStopId : function () {
 		var nextStop = this.model.getSortedConnections();
 		return !_.isUndefined(nextStop) ? nextStop[0].destId : undefined;
+	},
+	preRender : function () {
+		if (this.displayLoader === true) {
+		    Backbone.trigger('tap.displayLoader');
+		}
+	},
+	postRender : function () {
+		if (this.displayLoader === true) {
+			Backbone.trigger('tap.removeLoader');
+		}
 	}
 });
 /*
@@ -1773,6 +1993,9 @@ TapAPI.classes.views.AppView = Backbone.View.extend({
         // add dialog view
         var popupView = new TapAPI.classes.views.PopupView();
         this.$el.append(popupView.render().$el);
+
+        // add loader view (but don't add its element, we don't need that)
+        var loaderView = new TapAPI.classes.views.LoaderView();
 
         if (TapAPI.social.enabled) {
             var socialPopupView = new TapAPI.classes.views.SocialPopupView();
@@ -1821,6 +2044,234 @@ TapAPI.classes.views.AppView = Backbone.View.extend({
         $.mobile.resetActivePageHeight();
     }
 });
+
+/*
+ * Backbone View for displaying an Audio Slideshow Stop
+ */
+TapAPI.classes.views.AudioSlideshowStopView = TapAPI.classes.views.BaseView.extend({
+    id: 'audio-slideshow-stop',
+    template: TapAPI.templateManager.get("audioSlideshow"),
+    initialize: function(options) {
+        this._super(options);
+        this.audioPlayer = null;
+        this.imageData = {};
+        this.images = [];
+        this.captions = [];
+        this.currentImage;
+        TapAPI.tracker.createTimer('AudioSlideshowStop', 'played_for', TapAPI.currentStop.id);
+    },
+    render: function() {
+        var description = this.model.get('description');
+
+        var queuePoints = this.model.getAssetsByUsage('queue_points');
+        var timings = [];
+        if (!_.isEmpty(queuePoints)) {
+            queuePoints = queuePoints[0];
+            queuePoints.get('content').each(function(qPt) {
+                timings.push(parseInt(qPt.get('data'), 10));
+            });
+        }
+
+        // Find the images
+        var posterImagePath = '';
+        var imageAssets = this.model.getAssetsByUsage('image_asset');
+        var imageSources = {};
+        var offset = 0;
+        if (!_.isEmpty(imageAssets)) {
+            for (var i = 0, numImages = imageAssets.length; i < numImages; i++) {
+                var imageSource = imageAssets[i].getSourcesByPart('image');
+                var imageUri = imageSource[0].get('uri');
+                var imageProperties = imageSource[0].get('propertySet');
+                var imageDimensions = {width:0, height:0, aspect:1};
+                var title = imageAssets[i].getContentsByPart('title');
+                var caption = imageAssets[i].getContentsByPart('caption');
+
+                imageProperties.each(function(imgProp) {
+                    if (imgProp.get('name') == 'width') {
+                        imageDimensions.width = parseInt(imgProp.get('value'), 10);
+                    } else if (imgProp.get('name') == 'height') {
+                        imageDimensions.height = parseInt(imgProp.get('value'), 10);
+                    }
+                });
+                var landscape = false;
+                if (imageDimensions.width > imageDimensions.height) {
+                    landscape = true;
+                }
+                imageDimensions.aspect = imageDimensions.width / imageDimensions.height;
+
+                var filename = imageUri.substring(imageUri.lastIndexOf('/') + 1);
+                imageSources[filename] = {
+                    start: offset,
+                    end: offset + timings[i],
+                    uri: imageUri,
+                    id: 'imageSlide_' + i,
+                    dimensions: imageDimensions,
+                    orientation: landscape ? 'l' : 'p',
+                    title: _.isEmpty(title) ? '' : title[0].get('data'),
+                    caption: _.isEmpty(caption) ? '' : caption[0].get('data')
+                };
+                offset += timings[i];
+            }
+        }
+
+        this.imageData = imageSources;
+
+        var audioAsset = this.model.getAssetsByType(['audio']);
+
+        if (_.isEmpty(audioAsset)) {
+            console.log('No audio found.');
+            return this;
+        }
+
+        // Get media element sources and determine template
+        var sources = [];
+        _.each(audioAsset[0].get('source').models, function(source) {
+            sources.push('<source src="' + source.get('uri') + '" type="' + source.get('format') + '" />');
+        });
+
+        // Find the transcription if one exists
+        var transcription = '';
+        var transcriptAsset = this.model.getAssetsByUsage('transcription');
+        if (!_.isEmpty(transcriptAsset)) {
+            transcription = transcriptAsset[0].get('content').at(0).get('data');
+        }
+
+        // Render from the template
+        this.$el.html(this.template({
+            title: this.model.get('title'),
+            imageSources: imageSources,
+            sources: sources,
+            description: description,
+            nextStopPath: this.getNextStopPath(),
+            transcription: transcription,
+        }));
+
+        return this;
+    },
+    finishedAddingContent: function() {
+        var that = this;
+
+        that.images = that.$el.find("img");
+        that.captions = that.$el.find(".caption").hide();
+
+        var imageContainer = that.$el.find(".slideshow-images");
+        var imageContainerDimensions = {
+            height: imageContainer.height(),
+            width: imageContainer.width()
+        };
+
+        _.each(that.images, function(img) {
+            var $img = $(img);
+            var imageData = _.find(that.imageData, function(image) {
+                if (image.uri == $img.attr("src")) {
+                    return true;
+                }
+            });
+
+            var scaledWidth = imageContainerDimensions.height * imageData.dimensions.aspect;
+            if (scaledWidth < imageContainerDimensions.width) {
+                $img.css({
+                    'left': (imageContainerDimensions.width - scaledWidth) / 2
+                });
+            }
+        });
+
+        that.audioPlayer = document.getElementById("audio-player");
+
+        that.customAudio = new CustomAudio("audio-player");
+
+        that.audioPlayer.addEventListener('pause', function() {
+            that.images.stop();
+        });
+
+        that.audioPlayer.addEventListener('timeupdate', function() {
+            var audioTime = this.currentTime;
+            var displayImage = _.find(that.imageData, function(image) {
+                if (audioTime >= image.start && audioTime < image.end) {
+                    return true;
+                }
+            });
+
+            if (!_.isUndefined(displayImage)) {
+                var paused = that.audioPlayer.paused;
+                var sectionDuration = displayImage.end - audioTime;
+
+                var imageContainerElem = that.$el.find("#" + displayImage.id);
+                var imageElem = imageContainerElem.find("img");
+                var captionElem = imageContainerElem.find(".caption");
+                if (_.isUndefined(that.currentImage) || that.currentImage.id != displayImage.id || paused) {
+                    that.images.removeClass("opaque");
+                    imageElem.addClass("opaque");
+                    that.captions.hide();
+                    captionElem.show();
+                    that.currentImage = displayImage;
+                }
+
+                if (displayImage.orientation == 'l' && !_.isUndefined(imageElem) && !imageElem.is(':animated')) {
+                    var panFactor = (displayImage.end - displayImage.start) / sectionDuration;
+                    var panDistance = -1 * ((imageContainerDimensions.height * displayImage.dimensions.aspect) - imageContainerDimensions.width) / panFactor;
+                    if (panDistance < 0 && !paused) {
+                        imageElem.animate(
+                            {'left': panDistance + parseFloat(imageElem.css('left'))},
+                            sectionDuration * 1000,
+                            'swing',
+                            function() {
+                                var $that = $(this);
+                                window.setTimeout(function() {
+                                    $that.css({'left':0});
+                                }, 1000);
+                        });
+                    } else {
+                        imageElem.css({
+                            'left': -1 * ((imageContainerDimensions.height * displayImage.dimensions.aspect) - imageContainerDimensions.width + panDistance)
+                        });
+                    }
+                }
+            }
+
+        }, false);
+        //     mediaElement = $('.player')[0];
+
+        // add event handlers for media player events
+        that.audioPlayer.addEventListener('loadedmetadata', function() {
+            TapAPI.tracker.setTimerOption('maxThreshold', that.audioPlayer.duration * 1000);
+        });
+
+        that.audioPlayer.addEventListener('play', function() {
+            var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
+            TapAPI.tracker.trackEvent('AudioSlideshowStop', 'media_started', label, null);
+            TapAPI.tracker.startTimer();
+        });
+
+        that.audioPlayer.addEventListener('pause', function() {
+            var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
+            TapAPI.tracker.stopTimer();
+            var timer = TapAPI.tracker.get('timer');
+            TapAPI.tracker.trackEvent('AudioSlideshowStop', 'media_paused', label, timer.elapsed);
+        });
+
+        that.audioPlayer.addEventListener('ended', function() {
+            var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
+            TapAPI.tracker.stopTimer();
+            var timer = TapAPI.tracker.get('timer');
+            TapAPI.tracker.trackEvent('AudioSlideshowStop', 'media_ended', label, timer.elapsed);
+        });
+
+        // Add expand handler on the transcription toggle button
+        this.$el.find('#transcription').on('expand', function(e, ui) {
+            var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
+            TapAPI.tracker.trackEvent('AudioSlideshowStop', 'show_transcription', label, null);
+        });
+
+
+        that.customAudio.play();
+    },
+    close: function() {
+        // Send information about playback duration when the view closes
+        TapAPI.tracker.trackTime();
+    }
+});
+
 /*
  * Backbone View for displaying an Audio Stop
  * Relies on the MediaElement Plugin
@@ -1946,6 +2397,8 @@ TapAPI.classes.views.ContentView = TapAPI.classes.views.BaseView.extend({
     render: function(view) {
         if (view === undefined) return this;
 
+        view.preRender();
+
         // cleanup previous view
         if (this.currentView !== undefined) {
             this.$el.removeClass(this.currentView.id);
@@ -1957,6 +2410,8 @@ TapAPI.classes.views.ContentView = TapAPI.classes.views.BaseView.extend({
         this.$el.addClass(view.id);
         this.$el.html(view.render().$el);
         view.finishedAddingContent();
+
+        view.postRender();
 
         return this;
     }
@@ -2059,15 +2514,14 @@ TapAPI.classes.views.HeaderView = Backbone.View.extend({
  * Relies on the PhotoSwipe jquery plugin
  */
 TapAPI.classes.views.ImageStopView = TapAPI.classes.views.BaseView.extend({
-    tagName: 'ul',
-    id: 'gallery',
-    className: 'ui-grid-b',
+    id: 'gallery-container',
     template: TapAPI.templateManager.get('image-stop'),
     initialize: function(options) {
         this._super(options);
     },
     render: function() {
         var assetRefs = this.model.get('assetRef');
+        var description = this.model.get('description');
 
         if (_.isEmpty(assetRefs)) return this;
 
@@ -2094,10 +2548,11 @@ TapAPI.classes.views.ImageStopView = TapAPI.classes.views.BaseView.extend({
         this.$el.html(this.template({
             title: this.model.get('title'),
             images: images,
-            nextStopPath: this.getNextStopPath()
+            nextStopPath: this.getNextStopPath(),
+            description: description
         }));
 
-        this.gallery = this.$el.find('a').photoSwipe({
+        this.gallery = this.$el.find('a.gallery-link').photoSwipe({
             enableMouseWheel: false,
             enableKeyboard: true,
             doubleTapZoomLevel : 0,
@@ -2160,7 +2615,7 @@ TapAPI.classes.views.KeypadView = TapAPI.classes.views.StopSelectionView.extend(
     },
     inputKeyCode: function(e) {
         e.preventDefault();
-        this.code += $(e.currentTarget).find('.ui-btn-text').html();
+        this.code += $(e.currentTarget).html();
 
         if (this.code.length > 6) return;
 
@@ -2173,6 +2628,38 @@ TapAPI.classes.views.KeypadView = TapAPI.classes.views.StopSelectionView.extend(
         this.$el.find('#go-button').addClass('ui-disabled');
         this.$el.find('#code-label').html('');
         this.code = '';
+    }
+});
+
+/*
+ * Backbone View for displaying the footer tab bar
+ */
+TapAPI.classes.views.LoaderView = Backbone.View.extend({
+    id: 'loader',
+    template: TapAPI.templateManager.get('loader'),
+    attributes: {
+        'data-role': 'loader',
+        'data-position': 'fixed',
+    },
+    template: TapAPI.templateManager.get('loader'),
+    initialize: function() {
+        this.listenTo(Backbone, 'tap.displayLoader', this.displayLoader);
+        this.listenTo(Backbone, 'tap.removeLoader', this.removeLoader);
+    },
+    render: function(view) {
+        this.$el.html(this.template({}));
+        return this;
+    },
+
+    displayLoader : function () {
+        $.mobile.loading("show", {
+            text: 'Loading tours',
+            textVisible: true,
+            theme: 'a'
+        });
+    },
+    removeLoader : function () {
+        $.mobile.loading("hide");
     }
 });
 /*
@@ -2331,13 +2818,10 @@ TapAPI.classes.views.MapView = TapAPI.classes.views.StopSelectionView.extend({
 
         if (data.type == 'Point') {
             var stopIcon = L.icon({
-                iconUrl: 'images/marker-icon.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                iconRetinaUrl: 'images/marker-icon@2x.png',
-                shadowUrl: 'images/marker-shadow.png',
-                shadowSize: [41, 41],
-                popupAnchor: [0, -100],
+                iconUrl: 'images/map_pointer_stop.svg',
+                iconSize: [36, 36],
+                iconAnchor: [18, 36],
+                popupAnchor: [1, -13],
                 className: 'stop-icon ' + stop.id
             });
 
@@ -2391,12 +2875,10 @@ TapAPI.classes.views.MapView = TapAPI.classes.views.StopSelectionView.extend({
 
         if (this.positionMarker === null) {
             var stopIcon = L.icon({
-                iconUrl: 'images/marker-person.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                shadowUrl: 'images/marker-shadow.png',
-                shadowSize: [41, 41],
-                popupAnchor: [0, -22],
+                iconUrl: 'images/map_pointer_location.svg',
+                iconSize: [36, 36],
+                iconAnchor: [18, 36],
+                popupAnchor: [1, -13],
                 className: 'stop-icon ' + stop.id
             });
             this.positionMarker = new L.Marker(latlong, {icon: stopIcon})
@@ -2440,6 +2922,7 @@ TapAPI.classes.views.MapView = TapAPI.classes.views.StopSelectionView.extend({
         $('#content-wrapper').removeAttr('style');
     }
 });
+
 /*
  * Backbone View for displaying a jquery mobile pop-up
  */
@@ -2503,6 +2986,78 @@ TapAPI.classes.views.PopupView = Backbone.View.extend({
     }
 });
 /*
+ * Backbone View for displaying a Quiz Stop
+ */
+TapAPI.classes.views.QuizStopView = TapAPI.classes.views.BaseView.extend({
+    id: 'quiz-stop',
+    template: TapAPI.templateManager.get('quiz'),
+    events: {
+        'submit form': 'checkAnswer'
+    },
+    initialize: function(options) {
+        this._super(options);
+    },
+    overlay: $('quiz-result'),
+    // Render from the template
+    render: function() {
+        var question = this.model.getAssetsByUsage('body');
+        var choiceAssets = this.model.getAssetsByUsage('quiz_choices');
+        var answer = this.model.getAssetsByUsage('quiz_answer');
+        var note = this.model.getAssetsByUsage('quiz_note');
+        if (note) {
+            note = note[0].get('content').at(0).get('data');
+        } else {
+            note = '';
+        }
+
+        if (!_.isEmpty(choiceAssets)) {
+            var choice = choiceAssets[0].get('content');
+            var numChoices = choice.length;
+            var choices = {};
+            for (var i=0;i < numChoices; i++) {
+                choices[i] = {
+                    value: i+1,
+                    text: choiceAssets[0].get('content').at(i).get('data')
+                }
+            }
+        }
+        this.$el.html(this.template({
+            title: this.model.get('title'),
+            question: question[0].get('content').at(0).get('data'),
+            choices: choices,
+            answer: answer[0].get('content').at(0).get('data'),
+            note: note,
+            nextStopPath: this.getNextStopPath()
+        }));
+        return this;
+    },
+    checkAnswer: function(e) {
+        e.preventDefault();
+        var selectedAnswer = $('input:radio[name=radio-choice]:checked').val();
+        var answer = $('input:hidden[name=answer]').val();
+        var note = $('input:hidden[name=note]').val();
+        if (selectedAnswer) {
+            if(selectedAnswer == answer) {
+                console.log('Correct');
+                Backbone.trigger('tap.popup.dislay', {
+                    title: 'Your Result',
+                    message: 'Correct Answer<p>' + note + '</p>',
+                    cancelButtonTitle: 'Okay'
+                });
+            } else {
+                console.log('Wrong');
+                Backbone.trigger('tap.popup.dislay', {
+                    title: 'Your Result',
+                    message: 'Incorrect Answer<p>' + note + '</p>',
+                    cancelButtonTitle: 'Okay'
+                });
+            }
+        } else {
+            console.log('nothing selected');
+        }
+    }
+});
+/*
  * Backbone View for displaying social sharing features
  */
 TapAPI.classes.views.SocialPopupView = Backbone.View.extend({
@@ -2520,6 +3075,7 @@ TapAPI.classes.views.SocialPopupView = Backbone.View.extend({
     },
     render: function() {
         this.$el.html(this.template({
+            title: TapAPI.social.title,
             FBAppID: TapAPI.social.facebook.appID,
             url: escape(document.URL)
         }));
@@ -2544,10 +3100,13 @@ TapAPI.classes.views.StopGroupView = TapAPI.classes.views.BaseView.extend({
     template: TapAPI.templateManager.get('stop-group'),
     initialize: function(options) {
         this._super(options);
+        this.hasAudio = false;
+        this.hasMultiImage = false;
     },
     render: function() {
         var stops = [],
-            header;
+            header,
+            that = this;
         var description = this.model.get('description');
 
         var headerAsset = this.model.getAssetsByUsage('header_image');
@@ -2562,22 +3121,118 @@ TapAPI.classes.views.StopGroupView = TapAPI.classes.views.BaseView.extend({
                     id: stop.get('id'),
                     title: stop.get('title'),
                     icon: TapAPI.viewRegistry[stop.get('view')].icon,
+                    view: stop.get('view'),
                     route: stop.getRoute()
                 });
             }
         });
 
+        //for multi-image support
+        var imageAssets = this.model.getAssetsByUsage('image_asset');
+        var images = [];
+        _.each(imageAssets, function(asset) {
+            var image = asset.getSourcesByPart('image');
+            var title = asset.getContentsByPart('title');
+            var caption = asset.getContentsByPart('caption');
+
+            var imageAsset = {
+                originalUri: _.isEmpty(image) ? '' : image[0].get('uri'),
+                title: _.isEmpty(title) ? '' : title[0].get('data'),
+                caption: _.isEmpty(caption) ? '' : caption[0].get('data')
+            };
+            images.push(imageAsset);
+            that.hasMultiImage = true;
+        });
+
+        //for audio support
+        var audioAsset = this.model.getAssetsByType('audio');
+
+        // Get audio element sources and determine template
+        var audioSources = [];
+        var transcription = '';
+        if (!_.isUndefined(audioAsset)) {
+            _.each(audioAsset[0].get('source').models, function(source) {
+                audioSources.push('<source src="' + source.get('uri') + '" type="' + source.get('format') + '" />');
+                that.hasAudio = true;
+            });
+
+
+            // Find the transcription if one exists
+            var transcriptAsset = this.model.getAssetsByUsage('transcription');
+            if (!_.isEmpty(transcriptAsset)) {
+                transcription = transcriptAsset[0].get('content').at(0).get('data');
+            }
+        }
+
+        //render the stop
         this.$el.html(this.template({
             header: header,
             title: this.model.get('title'),
             tourID: TapAPI.currentTour,
             description: _.isEmpty(description) ? '' : description,
-            stops: stops
+            stops: stops,
+            images: images,
+            audioSources: audioSources,
+            transcription: transcription
         }));
 
         return this;
+    },
+    finishedAddingContent: function() {
+        if (this.hasMultiImage) {
+            $(".rslides").responsiveSlides({
+                auto: false,             // Boolean: Animate automatically, true or false
+                pager: true,           // Boolean: Show pager, true or false
+                nav: false             // Boolean: Show navigation, true or false
+            });
+        }
+
+        if (this.hasAudio) {
+            var that = this;
+            //mediaElement = $('.player')[0];
+            that.customAudio = new CustomAudio("audio-player");
+
+            // add event handlers for media player events
+            that.customAudio.audioElement.addEventListener('loadedmetadata', function() {
+                TapAPI.tracker.setTimerOption('maxThreshold', that.customAudio.audioElement.duration * 1000);
+            });
+
+            that.customAudio.audioElement.addEventListener('play', function() {
+                var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
+                TapAPI.tracker.trackEvent('AudioStop', 'media_started', label, null);
+                TapAPI.tracker.startTimer();
+            });
+
+            that.customAudio.audioElement.addEventListener('pause', function() {
+                var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
+                TapAPI.tracker.stopTimer();
+                var timer = TapAPI.tracker.get('timer');
+                TapAPI.tracker.trackEvent('AudioStop', 'media_paused', label, timer.elapsed);
+            });
+
+            that.customAudio.audioElement.addEventListener('ended', function() {
+                var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
+                TapAPI.tracker.stopTimer();
+                var timer = TapAPI.tracker.get('timer');
+                TapAPI.tracker.trackEvent('AudioStop', 'media_ended', label, timer.elapsed);
+            });
+
+            // Add expand handler on the transcription toggle button
+            this.$el.find('#transcription').on('expand', function(e, ui) {
+                var label = _.isObject(TapAPI.currentStop) ? TapAPI.currentStop.get("title") : null;
+                TapAPI.tracker.trackEvent('AudioStop', 'show_transcription', label, null);
+            });
+
+            // this.player = new MediaElementPlayer('.player', {
+            //     pluginPath: TapAPI.media.pluginPath,
+            //     flashName: 'flashmediaelement.swf',
+            //     silverlightName: 'silverlightmediaelement.xap'
+            // });
+            // that.customAudio.play();
+        }
     }
 });
+
 /*
  * Backbone View for displaying the Stop List Navigation
  */
@@ -2652,7 +3307,9 @@ TapAPI.classes.views.StopListView = TapAPI.classes.views.StopSelectionView.exten
     render: function() {
         this.$el.html(this.template({
             tourID: TapAPI.currentTour,
+            tourTitle: TapAPI.tours.get(TapAPI.currentTour).get('title'),
             stops: this.stops,
+            headerImageUri: TapAPI.tours.get(TapAPI.currentTour).getAppResourceByUsage('image'),
             displayCodes: this.displayCodes,
             displayThumbnails: this.displayThumbnails
         }));
@@ -2670,9 +3327,15 @@ TapAPI.classes.views.StopListView = TapAPI.classes.views.StopSelectionView.exten
         return icon;
     },
     getStopThumbnail: function(stop) {
-        return undefined;
+        var imageAsset = stop.getAssetsByType('image');
+        var image, thumb;
+        if (!_.isUndefined(imageAsset)) {
+            thumb = imageAsset[0].get("source").at(0).get("uri");
+        }
+        return thumb;
     }
 });
+
 /*
  * Backbone View for displaying a Tour Summary/Start screen
  */
@@ -2717,6 +3380,7 @@ TapAPI.classes.views.TourListView = TapAPI.classes.views.BaseView.extend({
 
 		this.displayHeader = false;
 		this.displayFooter = false;
+		this.displayLoader = true;
 
 		//update the view when tours are added to the collection
 		Backbone.on('tap.tourml.parsed', this.render, this);
@@ -2725,24 +3389,35 @@ TapAPI.classes.views.TourListView = TapAPI.classes.views.BaseView.extend({
 		'tap .tour-info' : 'tourInfoPopup'
 	},
 	render: function() {
-		if (TapAPI.tours.length === 0) {
+		if (TapAPI.tours.length === 0 || TapAPI.tours.tourmlRequests > 0) {
 			return this;
 		}
 
+		var tours = TapAPI.tours.sortBy(function(tour) {
+			tour.get("title");
+		});
+
 		var headers = [];
-		TapAPI.tours.each(function(tour) {
+		_.each(tours, function(tour) {
 			TapAPI.tours.selectTour(tour.get('id'));
 			headers.push(tour.getAppResourceByUsage('image'));
 		});
 
 		this.$el.html(this.template({
-			tours: TapAPI.tours.models,
+			tours: tours,
 			headers: headers
 		}));
 
 		Backbone.trigger('app.widgets.refresh');
 
+		this.postRender();
+
 		return this;
+	},
+	close: function() {
+		if (this.displayLoader === true) {
+			Backbone.trigger('tap.removeLoader');
+		}
 	},
 	tourInfoPopup: function(e) {
 		e.preventDefault();
@@ -2756,6 +3431,11 @@ TapAPI.classes.views.TourListView = TapAPI.classes.views.BaseView.extend({
             cancelButtonTitle: 'Start Tour',
             routeAfterClose: TapAPI.router.getTourDefaultRoute(tour.get('id'))
         });
+	},
+	postRender : function () {
+		if (TapAPI.tours.tourmlRequests === 0) {
+            Backbone.trigger('tap.removeLoader');
+        }
 	}
 });
 /*
@@ -2893,6 +3573,136 @@ TapAPI.classes.views.WebStopView = TapAPI.classes.views.BaseView.extend({
             nextStopPath: this.getNextStopPath()
         }));
         return this;
+    }
+});
+/*
+ * Backbone View for displaying the Map navigation interface
+ * Relies on leaflet
+ */
+TapAPI.classes.views.ZoomingImageView = TapAPI.classes.views.StopSelectionView.extend({
+    id: 'tour-zooming',
+    initialize: function(options) {
+        var that = this;
+        this._super(options);
+
+        this.title = '';
+        temp = this.model;
+        this.imageWidth = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[0].attributes.value;
+        this.imageHeight = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[1].attributes.value;
+        this.description = this.model.get('description');
+        var zoomAssetGet = this.model.getAssetsByUsage('zoom_caption');
+        this.moreInfo = (!_.isUndefined(zoomAssetGet)) ? zoomAssetGet[0].get('content').at(0).get('data') : '';
+        this.assetUri = this.model.getAssets()[0].get('source').at(0).get('uri');
+
+        $(':jqmData(role="page")').on('pageinit', {context: this}, this.resizeMapViewport);
+        $(window).on('orientationchange resize', {context: this}, this.resizeMapViewport);
+    },
+    render: function() {
+        return this;
+    },
+    finishedAddingContent: function() {
+        // create map
+        var tolerance = 0.8;
+        var url = this.model.getAssets()[0].get('source').at(0).get('uri');
+        var url = url + '/';
+        var imageWidth = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[0].attributes.value;
+        var imageHeight = this.model.getAssets()[0].get('source').at(0).attributes.propertySet.models[1].attributes.value;
+        var attribution = this.description;
+
+        var imageSize = L.point(imageWidth, imageHeight),
+            tileSize = 256;
+        this._imageSize = [imageSize];
+        this._gridSize = [this._getGridSize(imageSize)];
+
+        while (parseInt(imageSize.x) > tileSize || parseInt(imageSize.y) > tileSize) {
+            imageSize = imageSize.divideBy(2).floor();
+            this._imageSize.push(imageSize);
+            this._gridSize.push(this._getGridSize(imageSize));
+        }
+
+        this.map = L.map('tour-zooming', {
+            maxZoom: 4,
+            minZoom: 0,
+            tolerance: tolerance
+        }).setView([0, 0], 0);
+
+        // setup tile layer
+        //console.log(this.assetUri + '/zoom{z}/row{y}/col{x}.png', 'url');
+        this.tileLayer = L.tileLayer(this.assetUri + '/zoom{z}/row{y}/col{x}.png', {
+            continuousWorld: true,
+            nowrap: false,
+            unloadInvisibleTiles: true,
+            reuseTiles: true
+        }).addTo(this.map);
+
+        if (!_.isUndefined(this.moreInfo) && this.moreInfo !== '') {
+            var desc = $('<div class="zoomingImageDescription"></div>')//.css({
+                //'position': 'absolute',
+                //'bottom': '32px',// @TODO don't hardcode this ya dummy, get it from $('.leaflet-control-attribution')
+                //'height': '20px',
+            //})
+            // .append($('<div class="zoomingImageDescriptionHandle">View Caption</div>').click(function (evt) {
+            //     evt.preventDefault();
+            //     $(this).siblings('.zoomingImageDescriptionText').toggle();
+            // }))
+            .append($('<div class="zoomingImageDescriptionText">'+this.moreInfo+'</div>').css({
+                //'display': 'none'
+            }));
+            desc.appendTo(this.$el);
+        }
+        this.map.attributionControl.addAttribution(attribution.replace(/(<([^>]+)>)/ig,""));
+
+        var mapSize = this.map.getSize();
+        var zoom = this._getBestFitZoom(mapSize);
+        var center = this.map.options.crs.pointToLatLng(L.point(imageSize.x / 2, imageSize.y / 2), zoom);
+        var windowHeight = $( window ).height();
+        var windowWidth = $( window ).width();
+        if (windowHeight > imageSize.y * 2  && windowWidth > imageSize.x * 2) {
+            this.map.setView(center, zoom+1, true);
+        } else {
+            this.map.setView(center, zoom, true);
+        }
+    },
+    resizeMapViewport: function(e) {
+        var footer, header, viewport;
+
+        viewport = $('html').height();
+        header = $('[data-role="header"]').outerHeight();
+        footer = $('[data-role="footer"]').outerHeight();
+
+        //$('#content-wrapper').height(viewport - header - footer - (parseInt($('#content-wrapper').css('padding-top'), 10) * 2));
+        $('#content-wrapper').height(viewport - header - footer + 6);
+
+        if (e.data.context.map !== null) {
+            e.data.context.map.invalidateSize();
+        }
+        window.scroll(0, 0);
+    },
+    onClose: function() {
+        // remove event handlers
+        $(':jqmData(role="page")').off('pageinit', this.resizeMapViewport);
+        $(window).off('orientationchange resize', this.resizeMapViewport);
+
+        $('#content-wrapper').removeAttr('style');
+    },
+    _getBestFitZoom: function (mapSize) {
+        var tolerance = 0.8,
+            zoom = this._imageSize.length - 1,
+            imageSize, zoom;
+
+        while (zoom) {
+            imageSize = this._imageSize[zoom];
+            if (imageSize.x * tolerance < mapSize.x && imageSize.y * tolerance < mapSize.y) {
+                return zoom;
+            }
+            zoom--;
+        }
+
+        return zoom;
+    },
+    _getGridSize: function (imageSize) {
+        var tileSize = 256;
+        return L.point(Math.ceil(imageSize.x / tileSize), Math.ceil(imageSize.y / tileSize));
     }
 });
 $(document).bind('mobileinit', function () {

@@ -1,0 +1,37 @@
+// ====================================================================
+// Typography
+//
+// These are top-level styles for the site typography. Styles for h1-h6
+//  body copy, paragraphs and more.
+// ====================================================================
+
+* {
+    text-shadow: none !important;
+}
+
+body,
+input,
+select,
+textarea,
+button,
+.ui-btn,
+.leaflet-popup-content-wrapper {
+    font-family: $primary-font;
+    font-weight: 400;
+}
+
+.keypad-button,
+.action-button,
+#code-label,
+.stop-code {
+    font-family: $secondary-font;
+}
+
+strong {
+    font-weight: 700;
+}
+
+p{
+    line-height: 1.4;
+}
+

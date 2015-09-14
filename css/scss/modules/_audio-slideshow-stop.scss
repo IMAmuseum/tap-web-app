@@ -1,0 +1,141 @@
+/* Audio Slideshow Stop */
+
+#audio-slideshow-stop {
+}
+
+.custom-audio {
+    background:$primary-color;
+    font-size:11px;
+    font-style:normal!important;
+    font-weight:400!important;
+    height:40px;
+    left:0;
+    padding:5px;
+    right:0;
+    text-shadow:none;
+    top:40px;
+    width:100%;
+    z-index:999;
+}
+
+.play-pause {
+    background:url(../images/icon-play.png) no-repeat center center transparent;
+    background-size: 12px 10px;
+    color:#fff;
+    text-indent: -9999px;
+    float:left;
+    height:30px;
+    margin-top:0;
+    width:20%;
+
+    &.play {
+        background:url(../images/icon-play.png) no-repeat center center transparent;
+        background-size: 12px 10px;
+    }
+
+    &.pause {
+        background:url(../images/icon-pause.png) no-repeat center center transparent;
+        background-size: 12px 10px;
+    }
+}
+
+.audio-slider {
+    background-color: $audio-bar-total;
+    float:left;
+    font-style:normal!important;
+    font-weight:400!important;
+    height:10px;
+    margin-top:10px;
+    position:relative;
+    width:60%;
+
+    .audio-progress {
+        background-color: $audio-bar-current;
+        bottom:0;
+        height:10px;
+        left:0;
+        position:absolute;
+        top:0;
+    }
+}
+
+.audio-time {
+    color:#fff;
+    display:table-cell;
+    float:left;
+    font-style:normal!important;
+    font-weight:400!important;
+    margin-top:7px;
+    padding-right:5px;
+    text-align:right;
+    width:20%;
+}
+
+
+
+.rslides {
+}
+
+.rslides .image-slide {
+    background: #1e1e1e;
+}
+
+.rslides .image-slide img {
+    float:none;
+    height:auto !important;
+    margin:0 auto !important;
+    max-height:100%;
+    max-width:100%;
+    width: auto !important;
+}
+
+.rslides .image-slide .caption {
+    background:rgb(0,0,0);
+    background:rgba(0,0,0,.7);
+    bottom:0;
+    color:#ffffff;
+    font-size:11px;
+    left:0;
+    margin:0;
+    padding:5px;
+    position:absolute;
+    right:0;
+    text-align: left;
+}
+
+.rslides .image-slide .caption br {
+    display:none;
+}
+
+.rslides li {
+    height:400px;
+
+    @media screen and (max-width:420px){
+        height:300px;
+    }
+}
+
+.rslides_tabs {
+    margin:0;
+    padding: 20px 0 10px;
+    text-align:center;
+}
+
+.rslides_tabs li {
+    display:inline-block;
+    margin: 0 5px;
+
+    a {
+        background: $primary-color;
+        border-radius: 7px;
+        display: block;
+        height: 14px;
+        overflow: hidden;
+        text-indent: 30px;
+        width: 14px;
+    }
+
+    &.rslides_here a {
+        background: $secondary-color;
+    }
+}

@@ -1,7 +1,9 @@
-<ul id="tour-list" class="ui-listview" data-split-icon="info" data-split-theme="d" data-role="listview">
+<h1>Welcome</h1>
+<p>Please choose an area to start a tour.</p>
+<ul id="tour-list" class="ui-listview tour-list" data-split-icon="info" data-split-theme="d" data-role="listview">
 	<% _.each(tours, function(tour, i) { %>
 	<li data-icon="false">
-		<a href="#" data-tour-id="<%= tour.get('id') %>" class="tour-info">
+		<a href="<%= tour.getDetailRoute() %>" data-tour-id="<%= tour.get('id') %>" class="tour-info">
 			<div class="tour-wrapper">
 				<% if (headers[i] !== undefined) { %>
 				<div class="tour-image"><img src="<%= headers[i] %>" /></div>

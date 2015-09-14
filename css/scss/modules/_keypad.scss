@@ -1,0 +1,51 @@
+/* Keypad */
+.keypad {
+    max-width: 350px;
+    margin: 0 auto 40px;
+}
+
+.keypad-button,
+.action-button {
+    border: 1px solid rgb(81,120,145);
+    -moz-border-radius: 75px;
+    -webkit-border-radius: 75px;
+    border-radius: 75px;
+    cursor: pointer;
+    font-size: 2.6em;
+    line-height: 1;
+    margin: .3em auto;
+    padding: .36em .38em .4em;
+    width: 75px;
+    height: 75px;
+}
+
+.clear-button {
+    background: url(../images/delete_key.svg) 7px center no-repeat;
+    background-size: 75%;
+    max-width: inherit;
+    padding: 0;
+}
+
+.go-button {
+    background: #cfe5b5;
+    font-size: 1.9em;
+    margin-top: .39em;
+    padding: .725em .65em .725em .45em;
+    text-transform: uppercase;
+}
+
+.code-label-wrapper {
+    padding: 40px 6px;
+    width: 100%;
+
+    .code-label-border {
+        height: 40px;
+
+        .code-label {
+            font-size: 3.5em;
+            line-height: 1;
+            text-align: center;
+            width: 100%;
+        }
+    }
+}

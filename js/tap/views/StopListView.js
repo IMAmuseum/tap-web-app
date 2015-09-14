@@ -72,7 +72,9 @@ TapAPI.classes.views.StopListView = TapAPI.classes.views.StopSelectionView.exten
     render: function() {
         this.$el.html(this.template({
             tourID: TapAPI.currentTour,
+            tourTitle: TapAPI.tours.get(TapAPI.currentTour).get('title'),
             stops: this.stops,
+            headerImageUri: TapAPI.tours.get(TapAPI.currentTour).getAppResourceByUsage('image'),
             displayCodes: this.displayCodes,
             displayThumbnails: this.displayThumbnails
         }));
@@ -90,6 +92,11 @@ TapAPI.classes.views.StopListView = TapAPI.classes.views.StopSelectionView.exten
         return icon;
     },
     getStopThumbnail: function(stop) {
-        return undefined;
+        var imageAsset = stop.getAssetsByType('image');
+        var image, thumb;
+        if (!_.isUndefined(imageAsset)) {
+            thumb = imageAsset[0].get("source").at(0).get("uri");
+        }
+        return thumb;
     }
 });

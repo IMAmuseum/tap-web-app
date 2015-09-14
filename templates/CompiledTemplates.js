@@ -33,9 +33,62 @@ __p += '\n';
  if (!_.isUndefined(nextStopPath)) { ;
 __p += '\n    <a href="' +
 ((__t = ( nextStopPath )) == null ? '' : __t) +
-'" data-role="button">next</a>\n';
+'" data-role="button" class="next-button">next</a>\n';
  } ;
 
+
+}
+return __p
+};
+
+TapAPI.templates['audioSlideshow'] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<h3 class="stop-title">' +
+((__t = ( title )) == null ? '' : __t) +
+'</h3>\n<audio id="audio-player" class="player" controls="controls">\n    <p>Your browser does not support HTML 5 audio.</p>\n    ';
+ _.each(sources, function(source) { ;
+__p += '\n    ' +
+((__t = ( source )) == null ? '' : __t) +
+'\n    ';
+ }); ;
+__p += '\n</audio>\n';
+ if (!_.isEmpty(imageSources)) { ;
+__p += '\n<div class="slideshow-images">\n';
+ _.each(imageSources, function(imageSource) { ;
+__p += '\n    <div class="image-container" id="' +
+((__t = ( imageSource.id )) == null ? '' : __t) +
+'">\n        <img class="slideshow-image" src="' +
+((__t = ( imageSource.uri )) == null ? '' : __t) +
+'" />\n        <p class="caption">' +
+((__t = ( imageSource.title )) == null ? '' : __t) +
+'<br />' +
+((__t = ( imageSource.caption )) == null ? '' : __t) +
+'</p>\n    </div>\n';
+ }); ;
+__p += '\n</div>\n';
+ } ;
+__p += '\n';
+ if (!_.isEmpty(description)) { ;
+__p += '\n<div class="description" data-role="collapsible" data-content-theme="c">\n    <h3>Description</h3>\n    ' +
+((__t = ( description )) == null ? '' : __t) +
+'\n</div>\n';
+ } ;
+__p += '\n';
+ if (!_.isEmpty(transcription)) { ;
+__p += '\n<div id="transcription" data-role="collapsible" data-content-theme="c">\n    <h3>Transcript</h3>\n    <p>' +
+((__t = ( transcription )) == null ? '' : __t) +
+'</p>\n</div>\n';
+ } ;
+__p += '\n';
+ if (!_.isUndefined(nextStopPath)) { ;
+__p += '\n    <a href="' +
+((__t = ( nextStopPath )) == null ? '' : __t) +
+'" data-role="button" class="next-button">next</a>\n';
+ } ;
+__p += '\n';
 
 }
 return __p
@@ -52,13 +105,13 @@ __p += '\n\t\t<li>\n            <a href="' +
 ((__t = ( TapAPI.router.getControllerRoute(tourID, view) )) == null ? '' : __t) +
 '"\n            data-icon="' +
 ((__t = ( view.toLowerCase() )) == null ? '' : __t) +
-'"\n            data-iconshadow="true"\n            class="' +
+'"\n            class="' +
 ((__t = ( view === activeToolbarButton ? 'ui-btn-active' : '' )) == null ? '' : __t) +
 '">' +
 ((__t = ( controllers[view].label )) == null ? '' : __t) +
 '</a>\n        </li>\n        ';
  }; ;
-__p += '\n\t</ul>\n</div>';
+__p += '\n\t</ul>\n</div>\n';
 
 }
 return __p
@@ -71,15 +124,15 @@ function print() { __p += __j.call(arguments, '') }
 with (obj) {
 
  if (displayBackButton) { ;
-__p += '\n<a href="#" id="back-button" data-role="back" data-icon="arrow-l">Back</a>\n';
+__p += '\n<a href="#" id="back-button" data-role="back" data-icon="arrow-l" class="ui-btn-back"><i class="fa fa-caret-left"></i> Back</a>\n';
  } ;
 __p += '\n<h3>' +
 ((__t = ( title )) == null ? '' : __t) +
 '</h3>\n';
  if (displaySocialButton) { ;
-__p += '\n<a href="#" id="social-button" data-role="button" data-icon="social" \ndata-iconpos="notext" data-iconshadow="false" class="ui-icon-nodisc ui-btn-right">Social</a>\n';
+__p += '\n<a href="#" id="social-button" data-role="button" data-icon="social"\ndata-iconpos="notext" data-iconshadow="false" class="ui-icon-nodisc ui-btn-right">Social</a>\n';
  } ;
-
+__p += '\n';
 
 }
 return __p
@@ -92,11 +145,13 @@ function print() { __p += __j.call(arguments, '') }
 with (obj) {
 __p += '<h3 class="stop-title">' +
 ((__t = ( title )) == null ? '' : __t) +
-'</h3>\n';
+'</h3>\n' +
+((__t = ( description )) == null ? '' : __t) +
+'\n<ul class="ui-grid-b" id="gallery">\n';
  _.each(images, function(image) { ;
 __p += '\n\t<li>\n\t\t<a href="' +
 ((__t = ( image.originalUri )) == null ? '' : __t) +
-'" rel="external">\n\t\t\t<img src="' +
+'" rel="external" class="gallery-link">\n\t\t\t<img src="' +
 ((__t = ( image.thumbnailUri )) == null ? '' : __t) +
 '" data-caption="' +
 ((__t = ( image.caption )) == null ? '' : __t) +
@@ -104,11 +159,11 @@ __p += '\n\t<li>\n\t\t<a href="' +
 ((__t = ( image.title )) == null ? '' : __t) +
 '" />\n\t\t</a>\n\t</li>\n';
  }) ;
-__p += '\n';
+__p += '\n</ul>\n';
  if (!_.isUndefined(nextStopPath)) { ;
 __p += '\n    <a href="' +
 ((__t = ( nextStopPath )) == null ? '' : __t) +
-'" data-role="button">next</a>\n';
+'" data-role="button" class="next-button">next</a>\n';
  } ;
 
 
@@ -119,7 +174,14 @@ return __p
 TapAPI.templates['keypad'] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape, __d = obj.obj || obj;
-__p += '<fieldset class="ui-grid-b">\n    <div id="code-label-wrapper" class="ui-block-a ui-block-b ui-block-c">\n        <div id="code-label-border">\n            <div id="code-label"></div>\n        </div>\n    </div>\n    <div class="ui-block-a">\n        <div data-role="button" data-theme="a" class="keypad-button">1</div>\n    </div>\n    <div class="ui-block-b">\n        <div data-role="button" data-theme="a" class="keypad-button">2</div>\n    </div>\n    <div class="ui-block-c">\n        <div data-role="button" data-theme="a" class="keypad-button">3</div>\n    </div>\n    <div class="ui-block-a">\n        <div data-role="button" data-theme="a" class="keypad-button">4</div>\n    </div>\n    <div class="ui-block-b">\n        <div data-role="button" data-theme="a" class="keypad-button">5</div>\n    </div>\n    <div class="ui-block-c">\n        <div data-role="button" data-theme="a" class="keypad-button">6</div>\n    </div>\n    <div class="ui-block-a">\n        <div data-role="button" data-theme="a" class="keypad-button">7</div>\n    </div>\n    <div class="ui-block-b">\n        <div data-role="button" data-theme="a" class="keypad-button">8</div>\n    </div>\n    <div class="ui-block-c">\n        <div data-role="button" data-theme="a" class="keypad-button">9</div>\n    </div>\n    <div class="ui-block-a" id="clear-button-wrapper">\n        <div id="clear-button" data-role="button" data-theme="b" class="action-button">Clear</div>\n    </div>\n    <div class="ui-block-b">\n        <div data-role="button" data-theme="a" class="keypad-button">0</div>\n    </div>\n    <div class="ui-block-c">\n        <div id="go-button" data-role="button" data-theme="b" class="action-button ui-disabled">Go</div>\n    </div>\n</fieldset>\n';
+__p += '<fieldset class="ui-grid-b">\n    <div id="code-label-wrapper" class="ui-block-a ui-block-b ui-block-c">\n        <div id="code-label-border">\n            <div id="code-label"></div>\n        </div>\n    </div>\n    <div class="ui-block-a">\n        <div data-role="button" data-theme="a" class="keypad-button">1</div>\n    </div>\n    <div class="ui-block-b">\n        <div data-role="button" data-theme="a" class="keypad-button">2</div>\n    </div>\n    <div class="ui-block-c">\n        <div data-role="button" data-theme="a" class="keypad-button">3</div>\n    </div>\n    <div class="ui-block-a">\n        <div data-role="button" data-theme="a" class="keypad-button">4</div>\n    </div>\n    <div class="ui-block-b">\n        <div data-role="button" data-theme="a" class="keypad-button">5</div>\n    </div>\n    <div class="ui-block-c">\n        <div data-role="button" data-theme="a" class="keypad-button">6</div>\n    </div>\n    <div class="ui-block-a">\n        <div data-role="button" data-theme="a" class="keypad-button">7</div>\n    </div>\n    <div class="ui-block-b">\n        <div data-role="button" data-theme="a" class="keypad-button">8</div>\n    </div>\n    <div class="ui-block-c">\n        <div data-role="button" data-theme="a" class="keypad-button">9</div>\n    </div>\n    <div class="ui-block-a" id="clear-button-wrapper">\n        <div id="clear-button" data-role="button" data-theme="b" class="action-button clear-button"></div>\n    </div>\n    <div class="ui-block-b">\n        <div data-role="button" data-theme="a" class="keypad-button">0</div>\n    </div>\n    <div class="ui-block-c">\n        <div id="go-button" data-role="button" data-theme="b" class="action-button go-button ui-disabled">Go</div>\n    </div>\n</fieldset>\n';
+return __p
+};
+
+TapAPI.templates['loader'] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __d = obj.obj || obj;
+__p += '<div id="loader">\n<!--\n    If you wish to use a custom loader progress\n    ui (we\'re just using the jqm loader), then\n    here is where you would place its content.\n    You would then also need to modify AppView\n    to add this element to the DOM, and TourListView\n    to change the displayLoader and removeLoader\n    implementations.\n-->\n</div>';
 return __p
 };
 
@@ -139,13 +201,13 @@ function print() { __p += __j.call(arguments, '') }
 with (obj) {
 __p += '<div class="marker-bubble-content">\n    <a href="' +
 ((__t = ( route )) == null ? '' : __t) +
-'" class="goto-stop ui-btn ui-shadow ui-btn-corner-all ui-btn-inline ui-btn-icon-notext ui-btn-up-c">\n        <span class="ui-btn-inner">\n            <span class="ui-btn-text">View Stop</span>\n            <span class="ui-icon ui-icon-arrow-r ui-icon-shadow">&nbsp;</span>\n        </span>\n    </a>\n\t<div class="title"><a href="' +
+'" class="goto-stop">\n        <span class="ui-btn-inner">\n            <span class="ui-btn-text"><i class="fa fa-caret-right"></i></span>\n        </span>\n    </a>\n\t<div class="title"><a href="' +
 ((__t = ( route )) == null ? '' : __t) +
 '">' +
 ((__t = ( title )) == null ? '' : __t) +
 '</a></div>\n\t<div class="distance">\n        ' +
 ((__t = ( distance )) == null ? '' : __t) +
-' \n        ';
+'\n        ';
  if (showDirections) { ;
 __p += '\n        <a href="http://maps.google.com/maps?saddr=Current%20Location&daddr=' +
 ((__t = ( stopLat )) == null ? '' : __t) +
@@ -153,7 +215,7 @@ __p += '\n        <a href="http://maps.google.com/maps?saddr=Current%20Location&
 ((__t = ( stopLong )) == null ? '' : __t) +
 '">Get Directions</a>\n        ';
  } ;
-__p += '\n    </div>\n</div>';
+__p += '\n    </div>\n</div>\n';
 
 }
 return __p
@@ -202,7 +264,7 @@ __p += '\n\t\t\t<li><a ' +
  }); ;
 __p += '\n\t\t</ul>\n\t</div>\n</div>\n';
  } ;
-
+__p += '\n';
 
 }
 return __p
@@ -229,10 +291,43 @@ __p += '\n<div data-role="content" data-theme="d" role="main">\n\t<p>' +
 return __p
 };
 
+TapAPI.templates['quiz'] = function(obj) {
+obj || (obj = {});
+var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
+function print() { __p += __j.call(arguments, '') }
+with (obj) {
+__p += '<h3 class="stop-title">' +
+((__t = ( title )) == null ? '' : __t) +
+'</h3>\n<p>' +
+((__t = ( question )) == null ? '' : __t) +
+'</p>\n<form>\n\t<fieldset data-role="controlgroup">\n\t<legend>Select your answer:</legend>\n\t';
+ _.each(choices, function(choice) { ;
+__p += '\n\t\t<input type="radio" name="radio-choice" id="radio-choice-' +
+((__t = ( choice.value )) == null ? '' : __t) +
+'" value="choice-' +
+((__t = ( choice.value )) == null ? '' : __t) +
+'" />\n\t\t<label for="radio-choice-' +
+((__t = ( choice.value )) == null ? '' : __t) +
+'">' +
+((__t = ( choice.text )) == null ? '' : __t) +
+'</label>\n\t';
+ }) ;
+__p += '\n\t</fieldset>\n\t<input type="hidden" name="answer" value="choice-' +
+((__t = ( answer )) == null ? '' : __t) +
+'">\n\t<input type="hidden" name="note" value="' +
+((__t = ( note )) == null ? '' : __t) +
+'">\n\t<input type="submit" class="js-action" value="Submit">\n</form>\n';
+
+}
+return __p
+};
+
 TapAPI.templates['social-popup'] = function(obj) {
 obj || (obj = {});
 var __t, __p = '', __e = _.escape, __d = obj.obj || obj;
-__p += '<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>\n<div data-role="header" data-theme="a" class="ui-corner-top">\n    <h1>Share TAP</h1>\n</div>\n<div data-role="content" data-theme="d" role="main">\n    <div id="twitter-share-button" class="share-button">\n        <iframe allowtransparency="true" frameborder="0" scrolling="no"\n                src="http://platform.twitter.com/widgets/tweet_button.html?url=' +
+__p += '<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>\n<div data-role="header" data-theme="a" class="ui-corner-top">\n    <h1>' +
+((__t = ( obj.title )) == null ? '' : __t) +
+'</h1>\n</div>\n<div data-role="content" data-theme="d" role="main">\n    <div id="twitter-share-button" class="share-button">\n        <iframe allowtransparency="true" frameborder="0" scrolling="no"\n                src="http://platform.twitter.com/widgets/tweet_button.html?url=' +
 ((__t = ( obj.url )) == null ? '' : __t) +
 '"\n                style="width:100px; height:20px;"></iframe>\n    </div>\n    <div id="facebook-share-button" class="share-button">\n        <iframe src="http://www.facebook.com/plugins/like.php?href=' +
 ((__t = ( obj.url )) == null ? '' : __t) +
@@ -248,26 +343,74 @@ var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
 
- if (!_.isUndefined(header)) { ;
-__p += '\n<div id="header-wrapper">\n    <img src="' +
-((__t = ( header )) == null ? '' : __t) +
-'" />\n</div>\n';
+ if (audioSources.length > 0) { ;
+__p += '\n<audio id="audio-player" class="player" controls="controls">\n    <p>Your browser does not support HTML 5 audio.</p>\n    ';
+ _.each(audioSources, function(source) { ;
+__p += '\n    ' +
+((__t = ( source )) == null ? '' : __t) +
+'\n    ';
+ }); ;
+__p += '\n</audio>\n';
  } ;
-__p += '\n<h3 class="stop-title">' +
+__p += '\n';
+ if (!_.isUndefined(header) || images.length > 0) { ;
+__p += '\n<div id="header-wrapper">\n    ';
+ if (!_.isUndefined(header)) { ;
+__p += '<img src="' +
+((__t = ( header )) == null ? '' : __t) +
+'">';
+ } ;
+__p += '\n    ';
+ if (images.length > 0) { ;
+__p += '\n    <ul class="rslides">\n    ';
+ _.each(images, function(image) { ;
+__p += '\n    <li class="image-slide">\n        <img src="' +
+((__t = ( image.originalUri )) == null ? '' : __t) +
+'" data-caption="' +
+((__t = ( image.caption )) == null ? '' : __t) +
+'" title="' +
+((__t = ( image.title )) == null ? '' : __t) +
+'" />\n        <div class="caption-wrap">\n            <p class="caption">\n                ' +
+((__t = ( image.title )) == null ? '' : __t) +
+'<br />\n                <span class="caption-inner">\n                    ';
+ if (image.caption.length > 75) { ;
+__p += '\n                        ' +
+((__t = ( image.caption.substr(0,75) )) == null ? '' : __t) +
+'<a class="caption-inner-overflow-link-show"> (MORE)</a><span class="caption-inner-overflow" style="display: none;">' +
+((__t = ( image.caption.substr(75,image.caption.length) )) == null ? '' : __t) +
+'<a class="caption-inner-overflow-link-hide"> (LESS)</a></span>\n                    ';
+ } else { ;
+__p += '\n                        ' +
+((__t = ( image.caption )) == null ? '' : __t) +
+'\n                    ';
+ } ;
+__p += '\n                </span>\n            </p>\n        </div>\n    </li>\n    ';
+ }); ;
+__p += '\n    </ul>\n    ';
+ } ;
+__p += '\n</div>\n';
+ } ;
+__p += '\n<h2 class="stop-title">' +
 ((__t = ( title )) == null ? '' : __t) +
-'</h3>\n<div class=\'description\'>' +
+'</h2>\n<hr />\n<div class=\'description\'>' +
 ((__t = ( description )) == null ? '' : __t) +
-'</div>\n<ul id="stop-list" data-role="listview" data-inset="true">\n';
+'</div>\n<ul id="stop-list" class="stop-list ui-listview" data-role="listview" data-inset="true">\n';
  _.each(stops, function(stop) { ;
 __p += '\n    <li>\n        <a href="' +
 ((__t = ( stop.route )) == null ? '' : __t) +
-'">\n            <img src="' +
+'" class="ui-btn">\n            <img src="' +
 ((__t = ( stop.icon )) == null ? '' : __t) +
 '" class="ui-li-icon ui-li-thumb" />\n            ' +
 ((__t = ( stop.title )) == null ? '' : __t) +
 '\n        </a>\n    </li>\n';
  }); ;
-__p += '\n</ul>';
+__p += '\n</ul>\n';
+ if (!_.isEmpty(transcription)) { ;
+__p += '\n<div id="transcription" data-role="collapsible" data-content-theme="c" data-inset="true">\n    <h3>Audio Transcript</h3>\n    <p>' +
+((__t = ( transcription )) == null ? '' : __t) +
+'</p>\n</div>\n';
+ } ;
+__p += '\n';
 
 }
 return __p
@@ -278,7 +421,15 @@ obj || (obj = {});
 var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-__p += '<ul  data-role="listview" data-filter="true">\n    ';
+
+ if (!_.isUndefined(headerImageUri)) { ;
+__p += '\n    <div id="header-wrapper">\n        <img src="' +
+((__t = ( headerImageUri )) == null ? '' : __t) +
+'">\n        <h2 class="caption">' +
+((__t = ( tourTitle )) == null ? '' : __t) +
+'</h2>\n    </div>\n';
+ } ;
+__p += '\n<p>Please select a stop.</p>\n<ul data-role="listview" data-filter="true">\n    ';
  _.each(stops, function(stop) { ;
 __p += '\n    <li>\n        <a href=\'' +
 ((__t = ( stop.model.getRoute() )) == null ? '' : __t) +
@@ -300,7 +451,7 @@ __p += '\n                ' +
 ((__t = ( stop.title )) == null ? '' : __t) +
 '\n            </span>\n        </a>\n    </li>\n    ';
  }); ;
-__p += '\n</ul>';
+__p += '\n</ul>\n';
 
 }
 return __p
@@ -334,7 +485,7 @@ obj || (obj = {});
 var __t, __p = '', __e = _.escape, __j = Array.prototype.join;
 function print() { __p += __j.call(arguments, '') }
 with (obj) {
-__p += '<ul id="tour-list" class="ui-listview" data-split-icon="info" data-split-theme="d" data-role="listview">\n\t';
+__p += '<h1>Welcome</h1>\n<p>Please choose an area to start a tour.</p>\n<ul id="tour-list" class="ui-listview" data-split-icon="info" data-split-theme="d" data-role="listview">\n\t';
  _.each(tours, function(tour, i) { ;
 __p += '\n\t<li data-icon="false">\n\t\t<a href="#" data-tour-id="' +
 ((__t = ( tour.get('id') )) == null ? '' : __t) +
@@ -348,7 +499,7 @@ __p += '\n\t\t\t\t<div class="tour-title"><span>' +
 ((__t = ( tour.get('title') )) == null ? '' : __t) +
 '</span></div>\n\t\t\t</div>\n\t\t</a>\n\t</li>\n\t';
  }); ;
-__p += '\n</ul>';
+__p += '\n</ul>\n';
 
 }
 return __p
@@ -385,7 +536,7 @@ __p += '\n';
  if (!_.isUndefined(nextStopPath)) { ;
 __p += '\n    <a href="' +
 ((__t = ( nextStopPath )) == null ? '' : __t) +
-'" data-role="button">next</a>\n';
+'" data-role="button" class="next-button">next</a>\n';
  } ;
 __p += '\n';
 
@@ -406,7 +557,7 @@ __p += '<h3 class="stop-title">' +
  if (!_.isUndefined(nextStopPath)) { ;
 __p += '\n    <a href="' +
 ((__t = ( nextStopPath )) == null ? '' : __t) +
-'" data-role="button">next</a>\n';
+'" data-role="button" class="next-button">next</a>\n';
  } ;
 
 

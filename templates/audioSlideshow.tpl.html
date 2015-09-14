@@ -1,21 +1,46 @@
 <h3 class="stop-title"><%= title %></h3>
+<hr />
+<% if (!_.isEmpty(imageSources)) { %>
+<div id="header-wrapper">
+    <ul class="rslides">
+    <% _.each(imageSources, function(imageSource) { %>
+    <li class="image-slide">
+        <img src="<%= imageSource.uri %>" data-caption="<%= imageSource.caption %>" title="<%= imageSource.title %>" />
+        <div class="caption-wrap">
+            <p class="caption">
+                <%= imageSource.title %><br />
+                <span class="caption-inner">
+                    <% if (imageSource.caption.length > 75) { %>
+                        <%= imageSource.caption.substr(0,75) %><a class="caption-inner-overflow-link-show"> (MORE)</a><span class="caption-inner-overflow" style="display: none;"><%= imageSource.caption.substr(75,imageSource.caption.length) %><a class="caption-inner-overflow-link-hide"> (LESS)</a></span>
+                    <% } else { %>
+                        <%= imageSource.caption %>
+                    <% } %>
+                </span>
+            </p>
+        </div>
+    </li>
+    <% }); %>
+    </ul>
+</div>
 <audio id="audio-player" class="player" controls="controls">
     <p>Your browser does not support HTML 5 audio.</p>
     <% _.each(sources, function(source) { %>
     <%= source %>
     <% }); %>
 </audio>
-<% if (!_.isEmpty(imageSources)) { %>
-<div class="slideshow-images">
-<% _.each(imageSources, function(imageSource) { %>
-    <img class="slideshow-image" id="<%= imageSource.id %>" src="<%= imageSource.uri %>" />
-<% }); %>
-</div>
 <% } %>
+
+
 <% if (!_.isEmpty(description)) { %>
-<div class="description" data-role="collapsible" data-content-theme="c">
+<div class="description" data-role="collapsible" data-content-theme="c" data-iconpos="right" data-collapsed-icon="arrow-down" data-expanded-icon="arrow-up">
     <h3>Description</h3>
     <%= description %>
+</div>
+<% } %>
+<% if (!_.isEmpty(transcription)) { %>
+<div id="transcription" data-role="collapsible" data-content-theme="c" data-iconpos="right" data-collapsed-icon="arrow-down" data-expanded-icon="arrow-up">
+    <h3>Transcript</h3>
+    <p><%= transcription %></p>
 </div>
 <% } %>
 <% if (!_.isUndefined(nextStopPath)) { %>

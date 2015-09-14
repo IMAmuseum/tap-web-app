@@ -1,0 +1,56 @@
+/* Footer */
+
+.ui-footer {
+    .ui-btn {
+        background-color: $footer-background-color !important;
+        border: none !important;
+        color: $primary-color !important;
+        text-transform: lowercase;
+        font-weight: 400;
+        padding-top: 38px;
+
+        &:hover {
+            background-color: $footer-background-color-active !important;
+        }
+    }
+
+    .ui-btn-active {
+        background-color: $footer-background-color-active !important;
+    }
+}
+
+.ui-icon-keypadview:after,
+.ui-icon-stoplistview:after,
+.ui-icon-mapview:after {
+    background-color: transparent;
+    background-size: cover;
+    border-radius: 0;
+    width: 30px;
+    height: 30px;
+}
+
+.ui-icon-keypadview:after{
+    background-image: url(../images/icon_keypad.svg);
+}
+.ui-icon-stoplistview:after {
+    background-image: url(../images/icon_menu.svg);
+}
+.ui-icon-mapview:after {
+    background-image: url(../images/icon_map_pointer.svg);
+}
+
+.ui-btn-icon-notext:after,
+.ui-btn-icon-top:after,
+.ui-btn-icon-bottom:after {
+    margin-left: -15px;
+}
+
+.footer-credits {
+    color: $primary-color;
+    font-size: .6em;
+    font-weight: 400;
+
+    > a {
+        font-weight: 400;
+    }
+}
