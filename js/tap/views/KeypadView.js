@@ -21,21 +21,27 @@ TapAPI.classes.views.KeypadView = TapAPI.classes.views.StopSelectionView.extend(
     },
     submit: function() {
         this.code = this.$el.find('#code-label').html();
-        TapAPI.tracker.trackEvent('Navigation', 'tapped', 'KeyPad-Go', this.code);
 
-        var stop = TapAPI.tourStops.getStopByKeycode(this.code);
-        if(_.isEmpty(stop)) {
-            Backbone.trigger('tap.popup.dislay', {
-                title: 'Stop Not Found',
-                message: 'Stop not found for code \'' + this.code + '\'',
-                cancelButtonTitle: 'OK'
-            });
-
-            this.$el.find('#code-label').html('');
-            this.code = '';
-            return false;
+        if (this.code == 999999) {
+            localStorage.clear();
+            window.location = "/";
         } else {
-            Backbone.history.navigate(stop.getRoute(false), {trigger: true});
+            TapAPI.tracker.trackEvent('Navigation', 'tapped', 'KeyPad-Go', this.code);
+
+            var stop = TapAPI.tourStops.getStopByKeycode(this.code);
+            if(_.isEmpty(stop)) {
+                Backbone.trigger('tap.popup.dislay', {
+                    title: 'Stop Not Found',
+                    message: 'Stop not found for code \'' + this.code + '\'',
+                    cancelButtonTitle: 'OK'
+                });
+
+                this.$el.find('#code-label').html('');
+                this.code = '';
+                return false;
+            } else {
+                Backbone.history.navigate(stop.getRoute(false), {trigger: true});
+            }
         }
     },
     inputKeyCode: function(e) {
